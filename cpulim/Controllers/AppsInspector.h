@@ -15,6 +15,7 @@
 	IBOutlet NSTextField *pidDeleteTF;
 	NSMutableArray *tableData;
 	IBOutlet NSTableView *secondTableView;
+	IBOutlet NSTextField *activateAppTextField;
 }
 
 - (IBAction)setPidLimit:(NSButton *)sender;
@@ -23,6 +24,7 @@
 - (IBAction)procCPULimiterSuspend:(NSButton *)sender;
 - (IBAction)printStats:(NSButton *)sender;
 - (IBAction)exitApp:(NSButton *)sender;
+- (IBAction)activateOtherApp:(id)sender;
 
 
 @end

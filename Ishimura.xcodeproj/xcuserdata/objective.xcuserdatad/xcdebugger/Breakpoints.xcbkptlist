@@ -115,7 +115,7 @@
          endingColumnNumber = "9223372036854775807"
          startingLineNumber = "200"
          endingLineNumber = "200"
-         landmarkName = "-showmenu:"
+         landmarkName = "-setAppSubmenuSizeWithWidth:andHeight:"
          landmarkType = "5">
       </FileBreakpoint>
    </FileBreakpoints>

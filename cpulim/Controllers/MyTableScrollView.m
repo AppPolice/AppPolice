@@ -24,6 +24,10 @@
 	NSLog(@"SCROLL VIEW DRAW RECT");
 }
 
+- (void)reflectScrolledClipView:(NSClipView *)cView {
+	NSLog(@"SCROLLING");
+}
+
 //- (void)scrollWheel:(NSEvent *)theEvent {
 //	NSLog(@"SCROLL EVENT");
 //	[super scrollWheel:theEvent];

@@ -12,11 +12,10 @@
 
 @interface MyTableView : NSTableView
 {
-//	MyTableRowView *selectedRow;
-	MyTableRowView *mouseoverRow;
+//	IBOutlet MyTableRowView *rowView;
 }
 
-//@property (nonatomic, assign) MyTableRowView *selectedRow;
-@property (nonatomic, assign) MyTableRowView *mouseoverRow;
+
+//@property (assign) IBOutlet MyTableRowView *rowView;
 
 @end

@@ -39,25 +39,24 @@ struct proc_taskstats {
 	struct proc_taskstats *prev;
 };
 
-struct proc_taskstats *proc_taskstats;
+static struct proc_taskstats *proc_taskstats;
 
+static void proc_cpulim_set_run(int pid, float newlim);
+static int limiter_running_ok = 0;
+static void proc_limiter_resume(void);
+static uint64_t sleep_loop_run(void);
+static int proc_tasks_calcsleeptime(void);
+static uint64_t proc_tasks_execsleeptime(void);
+static void proc_task_delete(pid_t pid);
+static void proc_task_delete_run(pid_t pid);
 
-void proc_cpulim_set_run(int pid, float newlim);
-int limiter_running_ok = 0;
-void proc_limiter_resume(void);
-uint64_t sleep_loop_run(void);
-int proc_tasks_calcsleeptime(void);
-uint64_t proc_tasks_execsleeptime(void);
-void proc_task_delete(pid_t pid);
-void proc_task_delete_run(pid_t pid);
-
-dispatch_queue_t *get_limiter_queue(void);
-dispatch_queue_t *get_updtaskstats_queue(void);
+static dispatch_queue_t *get_limiter_queue(void);
+static dispatch_queue_t *get_updtaskstats_queue(void);
 
 //dispatch_queue_t limiter_queue;
 //dispatch_queue_t updtaskstats_queue;
 
-struct timespec format_time(uint64_t nanoseconds);
+static struct timespec format_time(uint64_t nanoseconds);
 
 
 
@@ -65,8 +64,9 @@ struct timespec format_time(uint64_t nanoseconds);
 
 int proc_cpulim_set(int pid, float newlim) {
 	short einval = 1;
+	pid_t shared_pid = getpid();
 
-	if (pid < 1 || newlim < 0)
+	if (pid < 1 || pid == shared_pid || newlim < 0)
 		return einval;
 	
 	/* safely add to the Serial Queue */
@@ -79,7 +79,7 @@ int proc_cpulim_set(int pid, float newlim) {
 }
 
 
-void proc_cpulim_set_run(int pid, float newlim) {
+static void proc_cpulim_set_run(int pid, float newlim) {
 	/* if there are no tasks yet */
 	if (proc_taskstats == NULL) {
 		if (newlim == 0)
@@ -140,7 +140,7 @@ void proc_cpulim_resume(void) {
 }
 
 
-void proc_limiter_resume(void) {
+static void proc_limiter_resume(void) {
 	struct timespec sleepspec;
 	uint64_t sleepns;
 	__block uint64_t loop_slept;
@@ -168,7 +168,7 @@ void proc_limiter_resume(void) {
 /*
  * Return total number of nanoseconds slept
  */
-uint64_t sleep_loop_run(void) {
+static uint64_t sleep_loop_run(void) {
 	uint proc_tasks_wlim_num;
 	uint64_t sleptns;
 	
@@ -189,7 +189,7 @@ uint64_t sleep_loop_run(void) {
  * Calculate how much time each task should sleep.
  * Return number of tasks that has sleep_time set.
  */
-int proc_tasks_calcsleeptime(void) {
+static int proc_tasks_calcsleeptime(void) {
 	struct proc_taskinfo ptinfo;
 	int error = 0;
 	uint64_t time_prev;
@@ -256,7 +256,7 @@ int proc_tasks_calcsleeptime(void) {
  * Put process tasks to sleep.
  * Return total number of nanoseconds slept.
  */
-uint64_t proc_tasks_execsleeptime(void) {
+static uint64_t proc_tasks_execsleeptime(void) {
 	uint64_t sleptns = 0;
 	short there_are_proc_sleeping = 0;
 	short all_awake = 0;
@@ -317,7 +317,7 @@ uint64_t proc_tasks_execsleeptime(void) {
 }
 
 
-dispatch_queue_t *get_limiter_queue(void) {
+static dispatch_queue_t *get_limiter_queue(void) {
 	static dispatch_queue_t limiter_queue;
 	static short initialized = 0;
 	if (initialized)
@@ -329,7 +329,7 @@ dispatch_queue_t *get_limiter_queue(void) {
 }
 
 
-dispatch_queue_t *get_updtaskstats_queue(void) {
+static dispatch_queue_t *get_updtaskstats_queue(void) {
 	static dispatch_queue_t updtaskstats_queue;
 	static short initialized = 0;
 	if (initialized)
@@ -361,7 +361,7 @@ void proc_cpulim_suspend_wait(void) {
 }
 
 
-void proc_task_delete(pid_t pid) {
+static void proc_task_delete(pid_t pid) {
 	dispatch_queue_t *updtaskstats_queue_ptr = get_updtaskstats_queue();
 	dispatch_async(*updtaskstats_queue_ptr, ^{
 		proc_task_delete_run(pid);
@@ -369,7 +369,7 @@ void proc_task_delete(pid_t pid) {
 }
 
 
-void proc_task_delete_run(pid_t pid) {
+static void proc_task_delete_run(pid_t pid) {
 	struct proc_taskstats *task;
 	for (task = proc_taskstats; task != NULL; task = task->next) {
 		if (task->pid == pid) {
@@ -400,7 +400,7 @@ void proc_task_delete_run(pid_t pid) {
 }
 
 
-struct timespec format_time(uint64_t nanoseconds) {
+static struct timespec format_time(uint64_t nanoseconds) {
 	struct timespec timef;
 	if (nanoseconds >= NANOSEC_PER_SEC) {
 		timef.tv_sec = floor(nanoseconds / NANOSEC_PER_SEC);

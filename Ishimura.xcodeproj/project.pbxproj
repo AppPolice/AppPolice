@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		A02EA4561759CDA300982A8A /* MyTableCellView.m in Sources */ = {isa = PBXBuildFile; fileRef = A02EA4551759CDA300982A8A /* MyTableCellView.m */; };
 		A02EA4591759F2A900982A8A /* MyTableRowView.m in Sources */ = {isa = PBXBuildFile; fileRef = A02EA4581759F2A900982A8A /* MyTableRowView.m */; };
-		A02EA45C175A6DEE00982A8A /* MyMenu.m in Sources */ = {isa = PBXBuildFile; fileRef = A02EA45B175A6DEE00982A8A /* MyMenu.m */; };
 		A04FA3D3174D4BD9002E688C /* selfprofile.c in Sources */ = {isa = PBXBuildFile; fileRef = A04FA3D2174D4BD9002E688C /* selfprofile.c */; };
 		A05A0B0517592618009A12B8 /* MyTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = A05A0B0417592618009A12B8 /* MyTableView.m */; };
 		A05A0B0817593112009A12B8 /* MyImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = A05A0B0717593112009A12B8 /* MyImageView.m */; };
@@ -25,9 +24,6 @@
 		A0ADD317174A24A2002BAADE /* AppsInspector.m in Sources */ = {isa = PBXBuildFile; fileRef = A0ADD316174A24A2002BAADE /* AppsInspector.m */; };
 		A0BF7C6B17733C2B002A2141 /* MyTableScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = A0BF7C6A17733C2B002A2141 /* MyTableScrollView.m */; };
 		A0CFFF92175500CB00930DFE /* StatusbarMenuController.m in Sources */ = {isa = PBXBuildFile; fileRef = A0CFFF91175500CA00930DFE /* StatusbarMenuController.m */; };
-		A0EE9861175D177A0076B99B /* TestView1.m in Sources */ = {isa = PBXBuildFile; fileRef = A0EE9860175D177A0076B99B /* TestView1.m */; };
-		A0EE9864175D17870076B99B /* TestView2.m in Sources */ = {isa = PBXBuildFile; fileRef = A0EE9863175D17870076B99B /* TestView2.m */; };
-		A0EE9867175D368B0076B99B /* TestTableRowView.m in Sources */ = {isa = PBXBuildFile; fileRef = A0EE9866175D368B0076B99B /* TestTableRowView.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -35,8 +31,6 @@
 		A02EA4551759CDA300982A8A /* MyTableCellView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MyTableCellView.m; path = Controllers/MyTableCellView.m; sourceTree = "<group>"; };
 		A02EA4571759F2A900982A8A /* MyTableRowView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MyTableRowView.h; path = Controllers/MyTableRowView.h; sourceTree = "<group>"; };
 		A02EA4581759F2A900982A8A /* MyTableRowView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MyTableRowView.m; path = Controllers/MyTableRowView.m; sourceTree = "<group>"; };
-		A02EA45A175A6DEE00982A8A /* MyMenu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MyMenu.h; path = Controllers/MyMenu.h; sourceTree = "<group>"; };
-		A02EA45B175A6DEE00982A8A /* MyMenu.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MyMenu.m; path = Controllers/MyMenu.m; sourceTree = "<group>"; };
 		A04FA3D2174D4BD9002E688C /* selfprofile.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = selfprofile.c; path = C/selfprofile.c; sourceTree = "<group>"; };
 		A04FA3D4174D4BF5002E688C /* selfprofile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = selfprofile.h; path = C/selfprofile.h; sourceTree = "<group>"; };
 		A04FA3D5174D552D002E688C /* def.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = def.h; path = C/def.h; sourceTree = "<group>"; };
@@ -69,12 +63,6 @@
 		A0BF7C6A17733C2B002A2141 /* MyTableScrollView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MyTableScrollView.m; path = Controllers/MyTableScrollView.m; sourceTree = "<group>"; };
 		A0CFFF90175500CA00930DFE /* StatusbarMenuController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = StatusbarMenuController.h; path = Controllers/StatusbarMenuController.h; sourceTree = "<group>"; };
 		A0CFFF91175500CA00930DFE /* StatusbarMenuController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = StatusbarMenuController.m; path = Controllers/StatusbarMenuController.m; sourceTree = "<group>"; };
-		A0EE985F175D177A0076B99B /* TestView1.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TestView1.h; path = Controllers/TestView1.h; sourceTree = "<group>"; };
-		A0EE9860175D177A0076B99B /* TestView1.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TestView1.m; path = Controllers/TestView1.m; sourceTree = "<group>"; };
-		A0EE9862175D17870076B99B /* TestView2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TestView2.h; path = Controllers/TestView2.h; sourceTree = "<group>"; };
-		A0EE9863175D17870076B99B /* TestView2.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TestView2.m; path = Controllers/TestView2.m; sourceTree = "<group>"; };
-		A0EE9865175D368B0076B99B /* TestTableRowView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TestTableRowView.h; path = Controllers/TestTableRowView.h; sourceTree = "<group>"; };
-		A0EE9866175D368B0076B99B /* TestTableRowView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TestTableRowView.m; path = Controllers/TestTableRowView.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -146,15 +134,7 @@
 				A05A0B0717593112009A12B8 /* MyImageView.m */,
 				A02EA4571759F2A900982A8A /* MyTableRowView.h */,
 				A02EA4581759F2A900982A8A /* MyTableRowView.m */,
-				A02EA45A175A6DEE00982A8A /* MyMenu.h */,
-				A02EA45B175A6DEE00982A8A /* MyMenu.m */,
 				A063797317492AEF006F2347 /* main.m */,
-				A0EE985F175D177A0076B99B /* TestView1.h */,
-				A0EE9860175D177A0076B99B /* TestView1.m */,
-				A0EE9862175D17870076B99B /* TestView2.h */,
-				A0EE9863175D17870076B99B /* TestView2.m */,
-				A0EE9865175D368B0076B99B /* TestTableRowView.h */,
-				A0EE9866175D368B0076B99B /* TestTableRowView.m */,
 				A063798417492CCB006F2347 /* C */,
 				A063796E17492AEF006F2347 /* Supporting Files */,
 			);
@@ -264,10 +244,6 @@
 				A05A0B0B1759527D009A12B8 /* MySubmenuView.m in Sources */,
 				A02EA4561759CDA300982A8A /* MyTableCellView.m in Sources */,
 				A02EA4591759F2A900982A8A /* MyTableRowView.m in Sources */,
-				A02EA45C175A6DEE00982A8A /* MyMenu.m in Sources */,
-				A0EE9861175D177A0076B99B /* TestView1.m in Sources */,
-				A0EE9864175D17870076B99B /* TestView2.m in Sources */,
-				A0EE9867175D368B0076B99B /* TestTableRowView.m in Sources */,
 				A0BF7C6B17733C2B002A2141 /* MyTableScrollView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

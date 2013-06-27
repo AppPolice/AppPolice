@@ -17,13 +17,13 @@
 	NSStatusItem *statusbarItem;
 	IBOutlet StatusbarMenuController *statusbarMenuController;
 	
-	IBOutlet NSTableView *_tableView;
-	IBOutlet TestView1 *_testView1;
+//	IBOutlet NSTableView *_tableView;
+//	IBOutlet TestView1 *_testView1;
 }
 
 @property (assign) IBOutlet NSWindow *window;
 
 
-- (IBAction)someAction4:(NSButton *)sender;
+//- (IBAction)someAction4:(NSButton *)sender;
 
 @end

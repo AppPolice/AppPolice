@@ -29,21 +29,26 @@
 //}
 
 - (void)viewDidMoveToSuperview {
-	table = (MyTableView *)[self superview];
+	NSLog(@"View: %@ Did More to Superview: %@", self, [self superview]);
+	NSView *superview = [self superview];
+	if ([[superview className] isEqualToString:@"MyTableView"]) {
+		table = (MyTableView *)superview;
+//		NSLog(@"View written as table: %@", superview);
+	}
 }
 
 
 - (void)drawRect:(NSRect)dirtyRect {
-//	[[self backgroundColor] set];
-//	[[NSColor clearColor] set];
-//	[NSBezierPath fillRect:dirtyRect];
-//	[[NSColor redColor] set];
-//	NSRectFill([self bounds]);
-	
 
-	NSString *title = [NSString stringWithFormat:@"DRAW ROW RECT # %ld ::", [(NSTableView *)[self superview] rowForView:self]];
-	[self printRect:[[self superview] convertRect:dirtyRect fromView:self] withTitle:title];
-
+	/* Print currently drawing row.
+	 * We have this check to not include rows that might be in the process of drawing using methods like: -insertRowWithIndexes
+	 * because row won't belong to a TableView during animation effect.
+	 */
+	NSView *superview = [self superview];
+	if ([[superview className] isEqualToString:@"MyTableView"]) {
+		NSString *title = [NSString stringWithFormat:@"DRAW ROW RECT # %ld ::", [(NSTableView *)superview rowForView:self]];
+		[self printRect:[[self superview] convertRect:dirtyRect fromView:self] withTitle:title];
+	}
 	
 	
 	NSPoint mouseLocation = [[self window] convertScreenToBase:[NSEvent mouseLocation]];
@@ -64,14 +69,14 @@
 //		mouseInside = NO;
 //	}
 	
+	
 
 	[self drawBackgroundInRect:dirtyRect];
-	
-	
-	if (self.isSelected) {
+
+	if (self.isSelected && !mouseInside) {
 		[self drawSelectionInRect:dirtyRect];
-//		NSLog(@"!!!!!!!!!!!!");
 	}
+
 	
 //	[super drawRect:dirtyRect];
 }
@@ -166,7 +171,7 @@
 }
 
 - (void)mouseDown:(NSEvent *)theEvent {
-	NSLog(@"Selected: %d", self.selected);
+	NSLog(@"Selected: %d, superview: %@", self.selected, [self superview]);
 	if (!self.selected) {
 		self.selected = YES;
 		[table selectRowIndexes:[NSIndexSet indexSetWithIndex:[table rowForView:self]] byExtendingSelection:NO];
@@ -207,10 +212,19 @@ static NSGradient *gradientWithTargetColor(NSColor *targetColor) {
 }
 
 
+- (NSGradient *)gradientWithTargetColor:(NSColor *)color1 andColor:(NSColor *)color2 {
+//    NSArray *colors = [NSArray arrayWithObjects:[color1 colorWithAlphaComponent:0.5], color1, color2, [color2 colorWithAlphaComponent:0.5], nil];
+    NSArray *colors = [NSArray arrayWithObjects:color1, color2, nil];
+    const CGFloat locations[2] = {0.0, 1.0};
+    return [[[NSGradient alloc] initWithColors:colors atLocations:locations colorSpace:[NSColorSpace sRGBColorSpace]] autorelease];
+//	return [[[NSGradient alloc] initWithStartingColor:color1 endingColor:color2] autorelease];
+}
+
+
+
 - (void)drawBackgroundInRect:(NSRect)dirtyRect {
 //	[[self backgroundColor] set];
 //	NSRectFill([self bounds]);
-
 	
 	//	[[self backgroundColor] set];
 //	[NSBezierPath fillRect:dirtyRect];
@@ -218,15 +232,19 @@ static NSGradient *gradientWithTargetColor(NSColor *targetColor) {
 //	NSLog(@"Called drawBackgroundInRect");
 //	NSLog(@"%@", [[self viewAtColumn:0] subviews]);
 	
-//	[self lockFocus];
 	
-	// Draw a white/alpha gradient
-    if (self.mouseInside) {
+    if (mouseInside) {
 //        NSGradient *gradient = gradientWithTargetColor([NSColor blueColor]);
-//        [gradient drawInRect:self.bounds angle:0];
-		[[NSColor selectedMenuItemColor] set];
-		[NSBezierPath fillRect:dirtyRect];
-//		NSRectFill([self bounds]);
+//        NSGradient *gradient = [self gradientWithTargetColor:[NSColor colorWithSRGBRed:0.52 green:0.7 blue:0.99 alpha:1.0] andColor:[NSColor colorWithSRGBRed:0.34 green:0.53 blue:0.89 alpha:1.0]];
+
+		NSGradient *gradient = [[[NSGradient alloc] initWithStartingColor:[NSColor colorWithSRGBRed:0.52 green:0.7 blue:0.99 alpha:1.0] endingColor:[NSColor colorWithSRGBRed:0.34 green:0.53 blue:0.89 alpha:1.0]] autorelease];
+        [gradient drawInRect:self.bounds angle:90];
+		
+		NSBezierPath *topLine = [NSBezierPath bezierPath];
+		[topLine moveToPoint:NSMakePoint(0.0, 0.0)];
+		[topLine lineToPoint:NSMakePoint([self bounds].size.width, 0.0)];
+		[[NSColor colorWithSRGBRed:0.43 green:0.59 blue:0.97 alpha:1.0] setStroke];
+		[topLine stroke];
 
 		[self updateTextColorForBackgroundStyle:NSBackgroundStyleDark];
 
@@ -241,8 +259,6 @@ static NSGradient *gradientWithTargetColor(NSColor *targetColor) {
 		[self updateTextColorForBackgroundStyle:NSBackgroundStyleLight];
 		
 	}
-	
-//	[self unlockFocus];
 }
 
 
@@ -284,39 +300,32 @@ static NSGradient *gradientWithTargetColor(NSColor *targetColor) {
 //        [selectionPath stroke];
 //    }
 
+//	[self printRect:[self frame] withTitle:@"Called Draw SELECTION :::"];
+//	NSGradient *gradient = gradientWithTargetColor([NSColor lightGrayColor]);
+//	[gradient drawInRect:self.bounds angle:0];
+	
 
+//	[[NSColor colorWithSRGBRed:0.66 green:0.8 blue:0.98 alpha:0.3] setFill];
+	[[NSColor colorWithSRGBRed:0.45 green:0.66 blue:0.96 alpha:0.7] setFill];
+//	[NSBezierPath strokeRect:[self bounds]];
+	[NSBezierPath fillRect:[self bounds]];
 	
-	
-	[self printRect:[self frame] withTitle:@"Called Draw SELECTION :::"];
-	
-	NSGradient *gradient = gradientWithTargetColor([NSColor lightGrayColor]);
-	[gradient drawInRect:self.bounds angle:0];
+	NSBezierPath *topBottomLine = [NSBezierPath bezierPath];
+	[topBottomLine moveToPoint:NSMakePoint(0.0, 0.0)];
+	[topBottomLine lineToPoint:NSMakePoint([self bounds].size.width, 0.0)];
+//	[topBottomLine moveToPoint:NSMakePoint(0.0, [self bounds].size.height)];
+//	[topBottomLine lineToPoint:NSMakePoint([self bounds].size.width, [self bounds].size.height)];
+//	[[NSColor colorWithSRGBRed:0.7 green:0.78 blue:1.0 alpha:1.0] setStroke];
+	[[NSColor colorWithSRGBRed:0.54 green:0.67 blue:1.0 alpha:1.0] setStroke];
+	[topBottomLine stroke];
 }
 
 
-//- (void)setFrame:(NSRect)frameRect {
-//    [super setFrame:frameRect];
-//    // We need to invalidate more things when live-resizing since we fill with a gradient and stroke
-//    if ([self inLiveResize]) {
-//        // Redraw everything if we are using a gradient
-//        if (self.selected || mouseInside) {
-//            [self setNeedsDisplay:YES];
-//        } else {
-//            // Redraw our horizontal grid line, which is a gradient
-////            [self setNeedsDisplayInRect:[self separatorRect]];
-//        }
-//    }
-//}
 
 
 
 - (void)resetRowViewProperties {
-//	[self printRect:[self convertRect:[row frame] fromView:nil] withTitle:@":::::"];
 	mouseInside = NO;
-//	[self printRect:[self frame] withTitle:@":::::"];
-//	[[NSColor redColor] set];
-//	[NSBezierPath fillRect:[self convertRect:[self frame] fromView:nil]];
-//	NSLog(@"row selected :::: %d", self.mouseInside);
 }
 
 - (void)printRect:(NSRect)rect withTitle:(NSString *)title {

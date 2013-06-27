@@ -7,31 +7,30 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "MyTableView.h"
-#import "MySubmenuView.h"
-#import "MyMenu.h"
+//#import "MyTableView.h"
+//#import "MySubmenuView.h"
+
+@class MySubmenuView, MyTableView;
 
 @interface StatusbarMenuController : NSObject<NSTableViewDataSource, NSTableViewDelegate>
 {
+@private
 	IBOutlet NSMenu *statusbarMenu;
-	NSMenu *appsSubmenu;
-//	IBOutlet NSMenu *statusbarMenu;
 //	NSMenu *appsSubmenu;
 
-	IBOutlet MySubmenuView *appsSubmenuView;
-//	IBOutlet NSView *appsSubmenuView;
-	
-//	IBOutlet NSTableView *menuTableView;
-	IBOutlet MyTableView *menuTableView;
-	NSMutableArray *tableContents;
+	IBOutlet MySubmenuView *appSubmenuView;
+	IBOutlet MyTableView *appListTableView;
 	
 	IBOutlet NSView *secondSubmenuView;
+
+	NSMutableArray *runningApplications;
+	NSMutableArray *tableContents;
 }
 
 @property (assign) NSMenu *statusbarMenu;
 
-- (void)populateMenuWithRunningApps;
-- (IBAction)clickButton1:(id)sender;
+- (void)linkStatusbarItemWithMenu;
+- (IBAction)activateSelf:(id)sender;
 
 @end
 

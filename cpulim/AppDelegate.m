@@ -15,8 +15,8 @@
 #endif
 
 
-#import "TestView1.h"
-#import "TestTableRowView.h"
+//#import "TestView1.h"
+//#import "TestTableRowView.h"
 
 @implementation AppDelegate
 
@@ -31,9 +31,10 @@
 	profiling_print_stats();
 #endif
 
-	[statusbarMenuController populateMenuWithRunningApps];
+//	[statusbarMenuController populateMenuWithRunningApplications];
+	[statusbarMenuController linkStatusbarItemWithMenu];
 	
-	[_tableView reloadData];
+//	[_tableView reloadData];
 }
 
 - (void)applicationWillFinishLaunching:(NSNotification *)notification {
@@ -69,7 +70,7 @@ extern void proc_cpulim_suspend_wait(void);		/* function returns only after limi
 
 
 
-
+/*
 - (NSInteger)numberOfRowsInTableView:(NSTableView *)tableView {
 	return 10;
 }
@@ -143,11 +144,11 @@ extern void proc_cpulim_suspend_wait(void);		/* function returns only after limi
 }
 
 
-- (NSTableRowView *)tableView:(NSTableView *)tableView rowViewForRow:(NSInteger)row {
-//	NSLog(@"hahahah");
-	TestTableRowView *tableRow = [tableView makeViewWithIdentifier:@"TestTableRowViewId" owner:self];
-	return tableRow;
-}
-
+//- (NSTableRowView *)tableView:(NSTableView *)tableView rowViewForRow:(NSInteger)row {
+////	NSLog(@"hahahah");
+//	TestTableRowView *tableRow = [tableView makeViewWithIdentifier:@"TestTableRowViewId" owner:self];
+//	return tableRow;
+//}
+*/
 
 @end

@@ -42,33 +42,30 @@
 }
 
 
+- (IBAction)activateOtherApp:(id)sender {
+//	NSWorkspace *ws = [NSWorkspace sharedWorkspace];
+//	NSArray *runningApps = [ws runningApplications];
+	int appId = [activateAppTextField intValue];
+	
+//	int i, c;
+//	pid_t pid;
+//	for (i = 0, c = (int)[runningApps count]; i < c; ++i) {
+//		pid = [runningApps[i] processIdentifier];
+//		if (pid > 0) {
+//			NSLog(@"%d - %@ has priority %d", pid, [runningApps[i] localizedName], getpriority(PRIO_PROCESS, pid));
+//		}
+//	}
+	
+	NSRunningApplication *ap = [NSRunningApplication runningApplicationWithProcessIdentifier:appId];
+	if (ap == nil) {
+		NSLog(@"\nError: process %d doesn't have ID", appId);
+	} else {
+//		NSDate *launchDate = [ap launchDate];
+//		NSLog(@"\n%@  - launch date: %@", [ap localizedName], [launchDate description]);
+		[ap activateWithOptions:NSApplicationActivateAllWindows];
+	}
+}
 
-//- (void)tableViewSelectionDidChange:(NSNotification *)notification {
-//    // Bold the text in the selected items, and unbold non-selected items
-//    [_tableView enumerateAvailableRowViewsUsingBlock:^(NSTableRowView *rowView, NSInteger row) {
-//        // Enumerate all the views, and find the NSTableCellViews.
-//        // This demo could hard-code things, as it knows that the first cell is always an
-//        // NSTableCellView, but it is better to have more abstract code that works
-//        // in more locations.
-//        //
-//        for (NSInteger column = 0; column < rowView.numberOfColumns; column++) {
-//            NSView *cellView = [rowView viewAtColumn:column];
-//            // Is this an NSTableCellView?
-//            if ([cellView isKindOfClass:[NSTableCellView class]]) {
-//                NSTableCellView *tableCellView = (NSTableCellView *)cellView;
-//                // It is -- grab the text field and bold the font if selected
-//                NSTextField *textField = tableCellView.textField;
-//                NSInteger fontSize = [textField.font pointSize];
-//                if (rowView.selected) {
-//                    textField.font = [NSFont boldSystemFontOfSize:fontSize];
-//					NSLog(@"%@", rowView);
-//                } else {
-//                    textField.font = [NSFont systemFontOfSize:fontSize];
-//                }
-//            }
-//        }
-//    }];
-//}
 
 
 @end

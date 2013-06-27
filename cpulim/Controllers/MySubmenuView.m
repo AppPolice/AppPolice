@@ -47,6 +47,11 @@
 	NSLog(@"MySubmenuView key down");
 }
 
+- (void)viewDidMoveToSuperview {
+	NSLog(@"MySubmenuView did movo to superview");
+}
+
+
 //- (BOOL)acceptsFirstMouse:(NSEvent *)theEvent {
 //	NSLog(@"MySubmenuView accepts first mouse");
 //	return YES;
