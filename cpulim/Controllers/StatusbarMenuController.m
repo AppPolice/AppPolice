@@ -265,9 +265,9 @@ static NSString *tableData[] = {
 
 
 	[self setAppSubmenuSizeWithWidth:0 andHeight:0 relative:YES];
-//	sleep(3);
+//	sleep(1);
 //	[appListTableView beginUpdates];
-//	[appListTableView insertRowsAtIndexes:[NSIndexSet indexSetWithIndex:index] withAnimation:NSTableViewAnimationSlideUp];
+	[appListTableView insertRowsAtIndexes:[NSIndexSet indexSetWithIndex:index] withAnimation:NSTableViewAnimationEffectFade];
 ////	[appListTableView scrollRowToVisible:index];
 //	[appListTableView endUpdates];
 }
@@ -275,10 +275,15 @@ static NSString *tableData[] = {
 - (void)appTerminatedHandler:(NSNotification *)notification {
 	NSLog(@"terminated %@\n", [[notification userInfo] objectForKey:@"NSApplicationName"]);
 	NSRunningApplication *app = [[notification userInfo] objectForKey:NSWorkspaceApplicationKey];
-	[runningApplications removeObject:app];
-	NSLog(@"Running apps: %@", runningApplications);
-	[appListTableView reloadData];
-	[self setAppSubmenuSizeWithWidth:0 andHeight:0 relative:NO];
+	NSUInteger index = [runningApplications indexOfObject:app];
+	[runningApplications removeObjectAtIndex:index];
+//	NSLog(@"Running apps: %@", runningApplications);
+
+
+	[appListTableView removeRowsAtIndexes:[NSIndexSet indexSetWithIndex:index] withAnimation:NSTableViewAnimationEffectFade];
+	/* We change the Menu View size on animation complete in
+	 * - didRemoveRowView:forRow:  method
+	 */
 }
 
 
@@ -304,7 +309,7 @@ static NSString *tableData[] = {
 				width = appNameWidth;
 		}
 		
-		const float leftIconPadding = 65.0;
+		const float leftIconPadding = 70.0;
 		width += leftIconPadding;
 	}
 	
@@ -318,7 +323,7 @@ static NSString *tableData[] = {
 			float textHeight;
 				
 			textHeight = [[[runningApplications objectAtIndex:0] localizedName] sizeWithAttributes:fontAttributes].height;
-			height = textHeight * (elementsCount + 0) + 2 * elementsCount; // 2 is cell spacing
+			height = textHeight * elementsCount + 2 * elementsCount; // 2 is cell spacing
 //			height += 10;
 		}
 //			else {
@@ -340,9 +345,10 @@ static NSString *tableData[] = {
 //	if (height > maxHeight)
 //		height = maxHeight;
 	
-//	NSLog(@"Screen size: %f, %f. Final Height: %f", screenFrame.size.width, screenFrame.size.height, height);
 	[appSubmenuView setFrameSize:NSMakeSize(width, height)];
-	[appSubmenuView setNeedsDisplay:YES];
+//	[appSubmenuView setNeedsDisplay:YES];
+	// we want to redisplay menu with new size immediately
+	[appSubmenuView display];
 }
 
 
@@ -414,6 +420,11 @@ int flag = 0;
 	MyTableRowView *tableRow = [tableView makeViewWithIdentifier:@"MyTableRowViewId" owner:self];
 	[tableRow resetRowViewProperties];
 	return tableRow;
+}
+
+
+- (void)tableView:(NSTableView *)tableView didRemoveRowView:(NSTableRowView *)rowView forRow:(NSInteger)row {
+	[self setAppSubmenuSizeWithWidth:0 andHeight:0 relative:NO];
 }
 
 

@@ -282,18 +282,18 @@
             </constraints>
         </customView>
         <customView id="1764" customClass="MySubmenuView">
-            <rect key="frame" x="0.0" y="0.0" width="277" height="38"/>
+            <rect key="frame" x="0.0" y="0.0" width="277" height="100"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
             <subviews>
                 <scrollView borderType="none" autohidesScrollers="YES" horizontalLineScroll="19" horizontalPageScroll="10" verticalLineScroll="19" verticalPageScroll="10" hasHorizontalScroller="NO" hasVerticalScroller="NO" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ekz-cS-hTX">
-                    <rect key="frame" x="0.0" y="0.0" width="277" height="38"/>
+                    <rect key="frame" x="0.0" y="0.0" width="277" height="100"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <clipView key="contentView" drawsBackground="NO" copiesOnScroll="NO" id="FpF-MU-xkC">
-                        <rect key="frame" x="0.0" y="0.0" width="277" height="38"/>
+                        <rect key="frame" x="0.0" y="0.0" width="277" height="100"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnReordering="NO" columnResizing="NO" multipleSelection="NO" autosaveColumns="NO" typeSelect="NO" rowHeight="19" rowSizeStyle="automatic" viewBased="YES" id="ZUz-G4-Kcv" customClass="MyTableView">
-                                <rect key="frame" x="0.0" y="0.0" width="277" height="38"/>
+                                <rect key="frame" x="0.0" y="0.0" width="277" height="100"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <size key="intercellSpacing" width="3" height="0.0"/>
                                 <color key="backgroundColor" name="selectedTextBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -317,12 +317,12 @@
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
                                                     <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="cC7-H1-tng" customClass="MyImageView">
-                                                        <rect key="frame" x="16" y="0.0" width="15" height="17"/>
+                                                        <rect key="frame" x="14" y="1" width="15" height="15"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                         <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="NSActionTemplate" id="Pqt-yw-zs2"/>
                                                     </imageView>
                                                     <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="Ypp-yy-raU">
-                                                        <rect key="frame" x="43" y="0.0" width="229" height="17"/>
+                                                        <rect key="frame" x="34" y="0.0" width="243" height="17"/>
                                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                                         <textFieldCell key="cell" lineBreakMode="truncatingTail" refusesFirstResponder="YES" sendsActionOnEndEditing="YES" title="Table View Cell" id="TQl-te-aZT">
                                                             <font key="font" metaFont="system"/>
@@ -332,14 +332,13 @@
                                                     </textField>
                                                 </subviews>
                                                 <constraints>
-                                                    <constraint firstAttribute="centerY" secondItem="cC7-H1-tng" secondAttribute="centerY" id="7Tl-Hc-4EL"/>
+                                                    <constraint firstItem="cC7-H1-tng" firstAttribute="top" secondItem="RrJ-F6-c2L" secondAttribute="top" constant="1" id="Ay8-bC-DHV"/>
                                                     <constraint firstItem="Ypp-yy-raU" firstAttribute="centerY" secondItem="RrJ-F6-c2L" secondAttribute="centerY" id="KNh-4u-aqB"/>
-                                                    <constraint firstItem="cC7-H1-tng" firstAttribute="leading" secondItem="RrJ-F6-c2L" secondAttribute="leading" constant="16" id="KhB-W6-gwc"/>
+                                                    <constraint firstItem="cC7-H1-tng" firstAttribute="leading" secondItem="RrJ-F6-c2L" secondAttribute="leading" constant="14" id="KhB-W6-gwc"/>
                                                     <constraint firstItem="Ypp-yy-raU" firstAttribute="top" secondItem="RrJ-F6-c2L" secondAttribute="top" id="Pna-oH-JyZ"/>
-                                                    <constraint firstItem="Ypp-yy-raU" firstAttribute="leading" secondItem="RrJ-F6-c2L" secondAttribute="leading" constant="46" id="ZKL-od-YRQ"/>
-                                                    <constraint firstAttribute="trailing" secondItem="Ypp-yy-raU" secondAttribute="trailing" constant="5" id="gsi-cC-itI"/>
-                                                    <constraint firstItem="cC7-H1-tng" firstAttribute="top" secondItem="RrJ-F6-c2L" secondAttribute="top" id="koF-LT-OAm"/>
-                                                    <constraint firstItem="Ypp-yy-raU" firstAttribute="leading" secondItem="cC7-H1-tng" secondAttribute="trailing" constant="15" id="yEh-wg-GXp"/>
+                                                    <constraint firstAttribute="bottom" secondItem="cC7-H1-tng" secondAttribute="bottom" constant="1" id="eXs-XQ-8ue"/>
+                                                    <constraint firstAttribute="trailing" secondItem="Ypp-yy-raU" secondAttribute="trailing" id="gsi-cC-itI"/>
+                                                    <constraint firstItem="Ypp-yy-raU" firstAttribute="leading" secondItem="cC7-H1-tng" secondAttribute="trailing" constant="8" id="yEh-wg-GXp"/>
                                                 </constraints>
                                                 <connections>
                                                     <outlet property="cellImage" destination="cC7-H1-tng" id="BGu-pY-9pN"/>
@@ -374,8 +373,8 @@
                 </scrollView>
             </subviews>
             <constraints>
+                <constraint firstItem="Ekz-cS-hTX" firstAttribute="bottom" secondItem="1764" secondAttribute="bottom" id="Sv6-Xm-sot"/>
                 <constraint firstAttribute="trailing" secondItem="Ekz-cS-hTX" secondAttribute="trailing" id="WDJ-wK-Oio"/>
-                <constraint firstAttribute="centerY" secondItem="Ekz-cS-hTX" secondAttribute="centerY" id="ZKI-jQ-qKo"/>
                 <constraint firstItem="Ekz-cS-hTX" firstAttribute="leading" secondItem="1764" secondAttribute="leading" id="nBe-Up-JXk"/>
                 <constraint firstItem="Ekz-cS-hTX" firstAttribute="top" secondItem="1764" secondAttribute="top" id="tO8-tG-FjD"/>
             </constraints>
@@ -438,7 +437,6 @@
             <source key="sourceIdentifier" type="project" relativePath="./Classes/StatusbarMenuController.h"/>
             <relationships>
                 <relationship kind="action" name="activateSelf:"/>
-                <relationship kind="action" name="clickButton1:"/>
                 <relationship kind="action" name="showmenu:"/>
                 <relationship kind="action" name="someAction2:" candidateClass="NSMenuItem"/>
                 <relationship kind="action" name="someAction:" candidateClass="NSMenuItem"/>
