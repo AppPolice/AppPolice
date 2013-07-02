@@ -27,6 +27,24 @@
 //	NSRectFill(dirtyRect);
 }
 
+
+//- (void)setFrameSize:(NSSize)newSize {
+//	NSLog(@"set frame size is called");
+//	if ([self inLiveResize])
+//		NSLog(@"IN live resize");
+//	
+//	NSLog(@"%@", tableView);
+//	[tableView setNeedsDisplay:NO];
+//	[self setNeedsDisplay:NO];
+//	[super setNeedsDisplay:NO];
+//	[super setFrameSize:newSize];
+//}
+//
+//- (BOOL)preservesContentDuringLiveResize {
+//	NSLog(@"Called preservesContentDuringLiveResize");
+//	return YES;
+//}
+
 //- (BOOL)acceptsFirstResponder {
 //	return YES;
 //}
@@ -49,6 +67,7 @@
 
 - (void)viewDidMoveToSuperview {
 	NSLog(@"MySubmenuView did movo to superview");
+//	[self setWantsLayer:YES];
 }
 
 

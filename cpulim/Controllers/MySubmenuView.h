@@ -8,6 +8,10 @@
 
 #import <Cocoa/Cocoa.h>
 
-@interface MySubmenuView : NSView
+@class MyTableView;
 
+@interface MySubmenuView : NSView
+{
+	IBOutlet MyTableView *tableView;
+}
 @end

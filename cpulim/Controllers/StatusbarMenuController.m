@@ -88,6 +88,14 @@ static NSString *tableData[] = {
 	[super dealloc];
 }
 
+- (void)awakeFromNib {
+	sortApplications = 1;
+}
+
+
+/*
+ *
+ */
 - (void)linkStatusbarItemWithMenu {
 
 	// set up Menu first with all submenus
@@ -169,6 +177,9 @@ static NSString *tableData[] = {
 		}
 	}
 	
+	if (sortApplications)
+		[self sortApplicationsByNameAndReload:NO];
+	
 	
 //	NSLog(@"%@", runningApplications);
 //	NSInteger appsCount = [runningApplications count];
@@ -238,8 +249,10 @@ static NSString *tableData[] = {
 / */
 
 //	[self setAppSubmenuSizeWithWidth:longestNameWidth andHeight:0];
-	[self setAppSubmenuSizeWithWidth:0 andHeight:0 relative:NO];
+//	[self setAppSubmenuSizeWithWidth:0 andHeight:0 relative:NO];
+	[self updateAppSubmenuViewSize];
 	
+
 	//	[[appListTableView enclosingScrollView] setFrameSize:maximumWidthSize];
 	//	[appListTableView sizeToFit];
 	//	maxSize = maximumWidthSize;
@@ -248,7 +261,9 @@ static NSString *tableData[] = {
 }
 
 
-
+/*
+ *
+ */
 - (void)appLaunchedHandler:(NSNotification *)notification {
 	NSLog(@"launched %@\n", [[notification userInfo] objectForKey:@"NSApplicationName"]);
 	NSRunningApplication *app = [[notification userInfo] objectForKey:NSWorkspaceApplicationKey];
@@ -259,19 +274,29 @@ static NSString *tableData[] = {
 //	[appListTableView reloadData];
 //	[self setAppSubmenuSizeWithWidth:0 andHeight:0];
 	
-	NSUInteger index = [runningApplications count];
-	index = 1;
+	NSUInteger index;
+	NSUInteger count = [runningApplications count];
+	if (sortApplications) {
+		NSString *appName = [app localizedName];
+		NSUInteger i = 0;
+		while (i < count && [appName compare:[[runningApplications objectAtIndex:i] localizedName]] == NSOrderedDescending)
+			++i;
+		index = i;
+	} else
+		index = count;
+
 	[runningApplications insertObject:app atIndex:index];
 
 
-	[self setAppSubmenuSizeWithWidth:0 andHeight:0 relative:YES];
-//	sleep(1);
-//	[appListTableView beginUpdates];
+//	[self setAppSubmenuSizeWithWidth:0 andHeight:0 relative:YES];
+	[self updateAppSubmenuViewSize];
 	[appListTableView insertRowsAtIndexes:[NSIndexSet indexSetWithIndex:index] withAnimation:NSTableViewAnimationEffectFade];
-////	[appListTableView scrollRowToVisible:index];
-//	[appListTableView endUpdates];
 }
 
+
+/*
+ *
+ */
 - (void)appTerminatedHandler:(NSNotification *)notification {
 	NSLog(@"terminated %@\n", [[notification userInfo] objectForKey:@"NSApplicationName"]);
 	NSRunningApplication *app = [[notification userInfo] objectForKey:NSWorkspaceApplicationKey];
@@ -284,6 +309,9 @@ static NSString *tableData[] = {
 	/* We change the Menu View size on animation complete in
 	 * - didRemoveRowView:forRow:  method
 	 */
+//	NSLog(@"----------------------------------------------------------------");
+//	[self setAppSubmenuSizeWithWidth:0 andHeight:0 relative:YES];
+	[self updateAppSubmenuViewSize];
 }
 
 
@@ -291,52 +319,41 @@ static NSString *tableData[] = {
  * Set the Applications List Submenu size.
  * If any of the parameters is passed as 0, we'll try to determine it on our own.
  */
-//- (void)ensureAppSubmenuSizeWithRowChange
-- (void)setAppSubmenuSizeWithWidth:(float)width andHeight:(float)height relative:(BOOL)relative {
-	NSInteger elementsCount = -1;
+- (void)updateAppSubmenuViewSize {
+//- (void)setAppSubmenuSizeWithWidth:(float)width andHeight:(float)height relative:(BOOL)relative {
+	float width;
+	float height;
+	NSInteger elementsCount = [runningApplications count];
 	// application names are displayed with these font settings
 	NSDictionary *fontAttributes = [NSDictionary dictionaryWithObjectsAndKeys:
 									[NSFont fontWithName:@"Lucida Grande" size:13.0], NSFontAttributeName, nil];
 	
-	if (width == 0) {
-		elementsCount = [runningApplications count];
-		float appNameWidth;
-		NSInteger i;
+	// WIDTH
+	float appNameWidth;
+	NSInteger i;
 
-		for (i = 0; i < elementsCount; ++i) {
-			appNameWidth = [[[runningApplications objectAtIndex:i] localizedName] sizeWithAttributes:fontAttributes].width;
-			if (appNameWidth > width)
-				width = appNameWidth;
-		}
-		
-		const float leftIconPadding = 70.0;
-		width += leftIconPadding;
+	for (i = 0; i < elementsCount; ++i) {
+		appNameWidth = [[[runningApplications objectAtIndex:i] localizedName] sizeWithAttributes:fontAttributes].width;
+		if (appNameWidth > width)
+			width = appNameWidth;
 	}
 	
-	if (height == 0) {
-		if (elementsCount == -1)
-			elementsCount = [runningApplications count];
-		if (elementsCount == 0)
-			height = 19;	// at least some height so the elements are visible
-//		} else if (elementsCount == 1) {
-		else {
-			float textHeight;
-				
-			textHeight = [[[runningApplications objectAtIndex:0] localizedName] sizeWithAttributes:fontAttributes].height;
-			height = textHeight * elementsCount + 2 * elementsCount; // 2 is cell spacing
-//			height += 10;
-		}
-//			else {
-//			height = [appListTableView frame].size.height;
-//		}
-		
-		NSLog(@"Calc height: %f for %ld elements. Taken height: %f", height, elementsCount, [appListTableView frame].size.height);
-		
-//		NSLog(@"tableView height: %f", height);
-//		NSLog(@"%@ height: %f", [appListTableView superview], [[appListTableView superview] frame].size.height);
-//		NSScrollView *scrollView = (NSScrollView *)[[appListTableView superview] superview];
-//		NSLog(@"%@ height: %f", scrollView, [scrollView contentSize].height);
+	const float leftIconPadding = 70.0;
+	width += leftIconPadding;
+	width = ceil(width);
+	
+	
+	// HEIGHT
+	if (elementsCount == 0)
+		height = 19;	// at least some height so the elements are visible
+	else {
+		float textHeight;
+			
+		textHeight = [[[runningApplications objectAtIndex:0] localizedName] sizeWithAttributes:fontAttributes].height;
+		height = textHeight * elementsCount + 2 * elementsCount; // 2 is cell spacing
 	}
+	
+	NSLog(@"Calc height: %f for %ld elements. Taken height: %f. Width: %f", height, elementsCount, [appListTableView frame].size.height, width);
 	
 	
 //	const float bottomPadding = 200.0;
@@ -345,10 +362,25 @@ static NSString *tableData[] = {
 //	if (height > maxHeight)
 //		height = maxHeight;
 	
+	
 	[appSubmenuView setFrameSize:NSMakeSize(width, height)];
 //	[appSubmenuView setNeedsDisplay:YES];
 	// we want to redisplay menu with new size immediately
 	[appSubmenuView display];
+	
+//	[[appSubmenuView animator] setFrameSize:NSMakeSize(width, height)];
+}
+
+
+/*
+ *
+ */
+- (void)sortApplicationsByNameAndReload:(BOOL)reload {
+	NSSortDescriptor *descriptor = [[NSSortDescriptor alloc] initWithKey:@"localizedName" ascending:YES];
+	[runningApplications sortUsingDescriptors:[NSArray arrayWithObject:descriptor]];
+	[descriptor release];
+	if (reload)
+		[appListTableView reloadData];
 }
 
 
@@ -417,15 +449,17 @@ int flag = 0;
 }
 
 - (NSTableRowView *)tableView:(NSTableView *)tableView rowViewForRow:(NSInteger)row {
+//	NSLog(@"------------------ ROWView for ROW ----------------");
 	MyTableRowView *tableRow = [tableView makeViewWithIdentifier:@"MyTableRowViewId" owner:self];
 	[tableRow resetRowViewProperties];
 	return tableRow;
 }
 
 
-- (void)tableView:(NSTableView *)tableView didRemoveRowView:(NSTableRowView *)rowView forRow:(NSInteger)row {
-	[self setAppSubmenuSizeWithWidth:0 andHeight:0 relative:NO];
-}
+//- (void)tableView:(NSTableView *)tableView didRemoveRowView:(NSTableRowView *)rowView forRow:(NSInteger)row {
+//	NSLog(@"==================================================================");
+////	[self setAppSubmenuSizeWithWidth:0 andHeight:0 relative:NO];
+//}
 
 
 //- (BOOL)tableView:(NSTableView *)tableView shouldSelectRow:(NSInteger)row {

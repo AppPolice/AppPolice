@@ -120,12 +120,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "cpulim/Controllers/StatusbarMenuController.m"
-            timestampString = "394039251.606301"
+            timestampString = "394373088.107801"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "347"
-            endingLineNumber = "347"
-            landmarkName = "-setAppSubmenuSizeWithWidth:andHeight:relative:"
+            startingLineNumber = "350"
+            endingLineNumber = "350"
+            landmarkName = "-updateAppSubmenuViewSize"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -136,60 +136,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "cpulim/Controllers/StatusbarMenuController.m"
-            timestampString = "394039251.606301"
+            timestampString = "394373088.107801"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "348"
-            endingLineNumber = "348"
-            landmarkName = "-setAppSubmenuSizeWithWidth:andHeight:relative:"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "cpulim/Controllers/StatusbarMenuController.m"
-            timestampString = "394039251.606301"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "296"
-            endingLineNumber = "296"
-            landmarkName = "-setAppSubmenuSizeWithWidth:andHeight:relative:"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "cpulim/Controllers/StatusbarMenuController.m"
-            timestampString = "394022590.172406"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "242"
-            endingLineNumber = "242"
-            landmarkName = "-populateMenuWithRunningApplications"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "cpulim/Controllers/StatusbarMenuController.m"
-            timestampString = "394039251.606301"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "304"
-            endingLineNumber = "304"
-            landmarkName = "-setAppSubmenuSizeWithWidth:andHeight:relative:"
+            startingLineNumber = "299"
+            endingLineNumber = "299"
+            landmarkName = "-updateAppSubmenuViewSize"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>

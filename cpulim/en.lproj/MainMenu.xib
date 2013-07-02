@@ -242,8 +242,6 @@
                 <action selector="someAction2:" destination="706" id="1667"/>
                 <outlet property="appListTableView" destination="ZUz-G4-Kcv" id="Ihv-2U-xvK"/>
                 <outlet property="appSubmenuView" destination="1764" id="tIi-je-ui7"/>
-                <outlet property="appsSubmenuView" destination="1764" id="2072"/>
-                <outlet property="menuTableView" destination="ZUz-G4-Kcv" id="bDy-GF-2Tb"/>
                 <outlet property="secondSubmenuView" destination="1620" id="1666"/>
                 <outlet property="statusbarMenu" destination="704" id="732"/>
             </connections>
@@ -281,7 +279,7 @@
                 <constraint firstItem="1730" firstAttribute="centerX" secondItem="1668" secondAttribute="centerX" id="1734"/>
             </constraints>
         </customView>
-        <customView id="1764" customClass="MySubmenuView">
+        <customView autoresizesSubviews="NO" id="1764" customClass="MySubmenuView">
             <rect key="frame" x="0.0" y="0.0" width="277" height="100"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
             <subviews>
@@ -378,6 +376,9 @@
                 <constraint firstItem="Ekz-cS-hTX" firstAttribute="leading" secondItem="1764" secondAttribute="leading" id="nBe-Up-JXk"/>
                 <constraint firstItem="Ekz-cS-hTX" firstAttribute="top" secondItem="1764" secondAttribute="top" id="tO8-tG-FjD"/>
             </constraints>
+            <connections>
+                <outlet property="tableView" destination="ZUz-G4-Kcv" id="azj-x6-lUV"/>
+            </connections>
         </customView>
     </objects>
     <resources>
@@ -413,6 +414,9 @@
         </class>
         <class className="MySubmenuView" superclassName="NSView">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/MySubmenuView.h"/>
+            <relationships>
+                <relationship kind="outlet" name="tableView" candidateClass="MyTableView"/>
+            </relationships>
         </class>
         <class className="MyTableCellView" superclassName="NSTableCellView">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/MyTableCellView.h"/>

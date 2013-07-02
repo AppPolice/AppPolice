@@ -14,6 +14,7 @@
 
 @interface StatusbarMenuController : NSObject<NSTableViewDataSource, NSTableViewDelegate>
 {
+	BOOL sortApplications; // it's temporary here
 @private
 	IBOutlet NSMenu *statusbarMenu;
 //	NSMenu *appsSubmenu;
@@ -31,6 +32,8 @@
 
 - (void)linkStatusbarItemWithMenu;
 - (IBAction)activateSelf:(id)sender;
+
+- (void)sortApplicationsByNameAndReload:(BOOL)reload;
 
 @end
 

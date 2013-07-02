@@ -9,6 +9,7 @@
 #import "MyTableRowView.h"
 #import "MyTableView.h"
 
+
 @interface MyTableRowView()
 	@property BOOL mouseInside;
 //	@property NSBackgroundStyle interiorBackgroundStyle;

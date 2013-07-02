@@ -14,7 +14,7 @@
 @interface MyTableRowView : NSTableRowView
 {
 //	MyTableCellView *cellView;
-	
+
 @private
 	BOOL mouseInside;
 	MyTableView *table;
