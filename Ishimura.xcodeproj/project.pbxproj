@@ -7,6 +7,17 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		A010F3291784311C003A9E92 /* MyWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = A010F328178430B1003A9E92 /* MyWindow.m */; };
+		A010F32C178437F6003A9E92 /* MyCustomWindowView.m in Sources */ = {isa = PBXBuildFile; fileRef = A010F32B17843712003A9E92 /* MyCustomWindowView.m */; };
+		A010F32F17845332003A9E92 /* StatusbarItemView.m in Sources */ = {isa = PBXBuildFile; fileRef = A010F32E1784530D003A9E92 /* StatusbarItemView.m */; };
+		A010F342178474AB003A9E92 /* CMMenu.m in Sources */ = {isa = PBXBuildFile; fileRef = A010F33D178470DD003A9E92 /* CMMenu.m */; };
+		A010F343178474AB003A9E92 /* ChromeMenuUnderlyingWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = A010F33F17847361003A9E92 /* ChromeMenuUnderlyingWindow.m */; };
+		A010F344178474AB003A9E92 /* ChromeMenuUnderlyingView.m in Sources */ = {isa = PBXBuildFile; fileRef = A010F341178473F2003A9E92 /* ChromeMenuUnderlyingView.m */; };
+		A010F34517847535003A9E92 /* CMMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = A010F33A17847043003A9E92 /* CMMenu.xib */; };
+		A010F3481784856B003A9E92 /* CMTableCellView.m in Sources */ = {isa = PBXBuildFile; fileRef = A010F34717848515003A9E92 /* CMTableCellView.m */; };
+		A01453BD17833F4D00FFFB39 /* AppInspector.xib in Resources */ = {isa = PBXBuildFile; fileRef = A0154E811782E300008CF159 /* AppInspector.xib */; };
+		A01453BE17833F5700FFFB39 /* PopoverContentView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A0154E7F1782E05B008CF159 /* PopoverContentView.xib */; };
+		A0154E851782EC6F008CF159 /* AppInspectorController.m in Sources */ = {isa = PBXBuildFile; fileRef = A0154E841782E972008CF159 /* AppInspectorController.m */; };
 		A02EA4561759CDA300982A8A /* MyTableCellView.m in Sources */ = {isa = PBXBuildFile; fileRef = A02EA4551759CDA300982A8A /* MyTableCellView.m */; };
 		A02EA4591759F2A900982A8A /* MyTableRowView.m in Sources */ = {isa = PBXBuildFile; fileRef = A02EA4581759F2A900982A8A /* MyTableRowView.m */; };
 		A04FA3D3174D4BD9002E688C /* selfprofile.c in Sources */ = {isa = PBXBuildFile; fileRef = A04FA3D2174D4BD9002E688C /* selfprofile.c */; };
@@ -27,6 +38,25 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		A010F327178430B1003A9E92 /* MyWindow.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MyWindow.h; path = Controllers/MyWindow.h; sourceTree = "<group>"; };
+		A010F328178430B1003A9E92 /* MyWindow.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = MyWindow.m; path = Controllers/MyWindow.m; sourceTree = "<group>"; };
+		A010F32A17843712003A9E92 /* MyCustomWindowView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MyCustomWindowView.h; path = Controllers/MyCustomWindowView.h; sourceTree = "<group>"; };
+		A010F32B17843712003A9E92 /* MyCustomWindowView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = MyCustomWindowView.m; path = Controllers/MyCustomWindowView.m; sourceTree = "<group>"; };
+		A010F32D1784530D003A9E92 /* StatusbarItemView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = StatusbarItemView.h; path = Controllers/StatusbarItemView.h; sourceTree = "<group>"; };
+		A010F32E1784530D003A9E92 /* StatusbarItemView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = StatusbarItemView.m; path = Controllers/StatusbarItemView.m; sourceTree = "<group>"; };
+		A010F33B17847043003A9E92 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = ChromeMenu/en.lproj/CMMenu.xib; sourceTree = SOURCE_ROOT; };
+		A010F33C178470DD003A9E92 /* CMMenu.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = CMMenu.h; path = ChromeMenu/src/CMMenu.h; sourceTree = SOURCE_ROOT; };
+		A010F33D178470DD003A9E92 /* CMMenu.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = CMMenu.m; path = ChromeMenu/src/CMMenu.m; sourceTree = SOURCE_ROOT; };
+		A010F33E17847361003A9E92 /* ChromeMenuUnderlyingWindow.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ChromeMenuUnderlyingWindow.h; path = ChromeMenu/src/ChromeMenuUnderlyingWindow.h; sourceTree = SOURCE_ROOT; };
+		A010F33F17847361003A9E92 /* ChromeMenuUnderlyingWindow.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = ChromeMenuUnderlyingWindow.m; path = ChromeMenu/src/ChromeMenuUnderlyingWindow.m; sourceTree = SOURCE_ROOT; };
+		A010F340178473F2003A9E92 /* ChromeMenuUnderlyingView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ChromeMenuUnderlyingView.h; path = ChromeMenu/src/ChromeMenuUnderlyingView.h; sourceTree = SOURCE_ROOT; };
+		A010F341178473F2003A9E92 /* ChromeMenuUnderlyingView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = ChromeMenuUnderlyingView.m; path = ChromeMenu/src/ChromeMenuUnderlyingView.m; sourceTree = SOURCE_ROOT; };
+		A010F34617848515003A9E92 /* CMTableCellView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = CMTableCellView.h; path = ChromeMenu/src/CMTableCellView.h; sourceTree = SOURCE_ROOT; };
+		A010F34717848515003A9E92 /* CMTableCellView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = CMTableCellView.m; path = ChromeMenu/src/CMTableCellView.m; sourceTree = SOURCE_ROOT; };
+		A0154E801782E05B008CF159 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/PopoverContentView.xib; sourceTree = "<group>"; };
+		A0154E821782E300008CF159 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/AppInspector.xib; sourceTree = "<group>"; };
+		A0154E831782E972008CF159 /* AppInspectorController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = AppInspectorController.h; path = AppInspector/AppInspectorController.h; sourceTree = "<group>"; };
+		A0154E841782E972008CF159 /* AppInspectorController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = AppInspectorController.m; path = AppInspector/AppInspectorController.m; sourceTree = "<group>"; };
 		A02EA4541759CDA300982A8A /* MyTableCellView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MyTableCellView.h; path = Controllers/MyTableCellView.h; sourceTree = "<group>"; };
 		A02EA4551759CDA300982A8A /* MyTableCellView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MyTableCellView.m; path = Controllers/MyTableCellView.m; sourceTree = "<group>"; };
 		A02EA4571759F2A900982A8A /* MyTableRowView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MyTableRowView.h; path = Controllers/MyTableRowView.h; sourceTree = "<group>"; };
@@ -40,6 +70,7 @@
 		A05A0B0717593112009A12B8 /* MyImageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MyImageView.m; path = Controllers/MyImageView.m; sourceTree = "<group>"; };
 		A05A0B091759527C009A12B8 /* MySubmenuView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MySubmenuView.h; path = Controllers/MySubmenuView.h; sourceTree = "<group>"; };
 		A05A0B0A1759527C009A12B8 /* MySubmenuView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MySubmenuView.m; path = Controllers/MySubmenuView.m; sourceTree = "<group>"; };
+		A05B788317857FE600015156 /* ChromMenu.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ChromMenu.h; path = ChromeMenu/src/ChromMenu.h; sourceTree = SOURCE_ROOT; };
 		A063796417492AEF006F2347 /* Ishimura.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Ishimura.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A063796717492AEF006F2347 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		A063796A17492AEF006F2347 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
@@ -77,6 +108,66 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		A010F33717846F5E003A9E92 /* ChromeMenu */ = {
+			isa = PBXGroup;
+			children = (
+				A010F33817846F6A003A9E92 /* src */,
+				A010F33917846F6E003A9E92 /* Resources */,
+			);
+			name = ChromeMenu;
+			sourceTree = "<group>";
+		};
+		A010F33817846F6A003A9E92 /* src */ = {
+			isa = PBXGroup;
+			children = (
+				A05B788317857FE600015156 /* ChromMenu.h */,
+				A010F33C178470DD003A9E92 /* CMMenu.h */,
+				A010F33D178470DD003A9E92 /* CMMenu.m */,
+				A010F33E17847361003A9E92 /* ChromeMenuUnderlyingWindow.h */,
+				A010F33F17847361003A9E92 /* ChromeMenuUnderlyingWindow.m */,
+				A010F340178473F2003A9E92 /* ChromeMenuUnderlyingView.h */,
+				A010F341178473F2003A9E92 /* ChromeMenuUnderlyingView.m */,
+				A010F34617848515003A9E92 /* CMTableCellView.h */,
+				A010F34717848515003A9E92 /* CMTableCellView.m */,
+			);
+			name = src;
+			sourceTree = "<group>";
+		};
+		A010F33917846F6E003A9E92 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				A010F33A17847043003A9E92 /* CMMenu.xib */,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+		};
+		A0154E7C1782DEDA008CF159 /* AppInspector */ = {
+			isa = PBXGroup;
+			children = (
+				A0154E7E1782DF37008CF159 /* src */,
+				A0154E7D1782DF16008CF159 /* Resources */,
+			);
+			name = AppInspector;
+			sourceTree = "<group>";
+		};
+		A0154E7D1782DF16008CF159 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				A0154E811782E300008CF159 /* AppInspector.xib */,
+				A0154E7F1782E05B008CF159 /* PopoverContentView.xib */,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+		};
+		A0154E7E1782DF37008CF159 /* src */ = {
+			isa = PBXGroup;
+			children = (
+				A0154E831782E972008CF159 /* AppInspectorController.h */,
+				A0154E841782E972008CF159 /* AppInspectorController.m */,
+			);
+			name = src;
+			sourceTree = "<group>";
+		};
 		A063795B17492AEF006F2347 = {
 			isa = PBXGroup;
 			children = (
@@ -116,6 +207,7 @@
 		A063796D17492AEF006F2347 /* Ishimura */ = {
 			isa = PBXGroup;
 			children = (
+				A010F33717846F5E003A9E92 /* ChromeMenu */,
 				A063797917492AEF006F2347 /* AppDelegate.h */,
 				A063797A17492AEF006F2347 /* AppDelegate.m */,
 				A0ADD315174A24A2002BAADE /* AppsInspector.h */,
@@ -134,7 +226,14 @@
 				A05A0B0717593112009A12B8 /* MyImageView.m */,
 				A02EA4571759F2A900982A8A /* MyTableRowView.h */,
 				A02EA4581759F2A900982A8A /* MyTableRowView.m */,
+				A010F327178430B1003A9E92 /* MyWindow.h */,
+				A010F328178430B1003A9E92 /* MyWindow.m */,
+				A010F32A17843712003A9E92 /* MyCustomWindowView.h */,
+				A010F32B17843712003A9E92 /* MyCustomWindowView.m */,
+				A010F32D1784530D003A9E92 /* StatusbarItemView.h */,
+				A010F32E1784530D003A9E92 /* StatusbarItemView.m */,
 				A063797317492AEF006F2347 /* main.m */,
+				A0154E7C1782DEDA008CF159 /* AppInspector */,
 				A063798417492CCB006F2347 /* C */,
 				A063796E17492AEF006F2347 /* Supporting Files */,
 			);
@@ -219,6 +318,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A010F34517847535003A9E92 /* CMMenu.xib in Resources */,
+				A01453BE17833F5700FFFB39 /* PopoverContentView.xib in Resources */,
+				A01453BD17833F4D00FFFB39 /* AppInspector.xib in Resources */,
 				A063797217492AEF006F2347 /* InfoPlist.strings in Resources */,
 				A063797817492AEF006F2347 /* Credits.rtf in Resources */,
 				A063797E17492AF0006F2347 /* MainMenu.xib in Resources */,
@@ -232,6 +334,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A010F3481784856B003A9E92 /* CMTableCellView.m in Sources */,
+				A010F342178474AB003A9E92 /* CMMenu.m in Sources */,
+				A010F343178474AB003A9E92 /* ChromeMenuUnderlyingWindow.m in Sources */,
+				A010F344178474AB003A9E92 /* ChromeMenuUnderlyingView.m in Sources */,
+				A010F32F17845332003A9E92 /* StatusbarItemView.m in Sources */,
+				A010F32C178437F6003A9E92 /* MyCustomWindowView.m in Sources */,
+				A010F3291784311C003A9E92 /* MyWindow.m in Sources */,
 				A063797417492AEF006F2347 /* main.m in Sources */,
 				A063797B17492AEF006F2347 /* AppDelegate.m in Sources */,
 				A063798717492D42006F2347 /* clevel.c in Sources */,
@@ -245,12 +354,37 @@
 				A02EA4561759CDA300982A8A /* MyTableCellView.m in Sources */,
 				A02EA4591759F2A900982A8A /* MyTableRowView.m in Sources */,
 				A0BF7C6B17733C2B002A2141 /* MyTableScrollView.m in Sources */,
+				A0154E851782EC6F008CF159 /* AppInspectorController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXVariantGroup section */
+		A010F33A17847043003A9E92 /* CMMenu.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				A010F33B17847043003A9E92 /* en */,
+			);
+			name = CMMenu.xib;
+			sourceTree = "<group>";
+		};
+		A0154E7F1782E05B008CF159 /* PopoverContentView.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				A0154E801782E05B008CF159 /* en */,
+			);
+			name = PopoverContentView.xib;
+			sourceTree = "<group>";
+		};
+		A0154E811782E300008CF159 /* AppInspector.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				A0154E821782E300008CF159 /* en */,
+			);
+			name = AppInspector.xib;
+			sourceTree = "<group>";
+		};
 		A063797017492AEF006F2347 /* InfoPlist.strings */ = {
 			isa = PBXVariantGroup;
 			children = (

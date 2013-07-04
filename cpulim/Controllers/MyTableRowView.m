@@ -30,7 +30,7 @@
 //}
 
 - (void)viewDidMoveToSuperview {
-	NSLog(@"View: %@ Did More to Superview: %@", self, [self superview]);
+//	NSLog(@"View: %@ Did Move to Superview: %@", self, [self superview]);
 	NSView *superview = [self superview];
 	if ([[superview className] isEqualToString:@"MyTableView"]) {
 		table = (MyTableView *)superview;
@@ -45,16 +45,16 @@
 	 * We have this check to not include rows that might be in the process of drawing using methods like: -insertRowWithIndexes
 	 * because row won't belong to a TableView during animation effect.
 	 */
-	NSView *superview = [self superview];
-	if ([[superview className] isEqualToString:@"MyTableView"]) {
-		NSString *title = [NSString stringWithFormat:@"DRAW ROW RECT # %ld ::", [(NSTableView *)superview rowForView:self]];
-		[self printRect:[[self superview] convertRect:dirtyRect fromView:self] withTitle:title];
-	}
+//	NSView *superview = [self superview];
+//	if ([[superview className] isEqualToString:@"MyTableView"]) {
+//		NSString *title = [NSString stringWithFormat:@"DRAW ROW RECT # %ld ::", [(NSTableView *)superview rowForView:self]];
+//		[self printRect:[[self superview] convertRect:dirtyRect fromView:self] withTitle:title];
+//	}
 	
 	
 	NSPoint mouseLocation = [[self window] convertScreenToBase:[NSEvent mouseLocation]];
 	mouseLocation = [[self superview] convertPoint:mouseLocation fromView:nil];
-	NSLog(@"TABLE ROW DRAWRECT. mouseLocation :::: x: %f, y: %f", mouseLocation.x, mouseLocation.y);
+//	NSLog(@"TABLE ROW DRAWRECT. mouseLocation :::: x: %f, y: %f", mouseLocation.x, mouseLocation.y);
 	
 	mouseInside = [self mouse:mouseLocation inRect:[self frame]];
 //	if (mouseInside) {

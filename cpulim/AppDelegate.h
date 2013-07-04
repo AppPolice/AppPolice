@@ -10,20 +10,14 @@
 
 @class StatusbarMenuController;
 
-@class TestView1;
 
-@interface AppDelegate : NSObject <NSApplicationDelegate, NSTableViewDataSource, NSTableViewDelegate>
+@interface AppDelegate : NSObject <NSApplicationDelegate>
 {
 	NSStatusItem *statusbarItem;
 	IBOutlet StatusbarMenuController *statusbarMenuController;
-	
-//	IBOutlet NSTableView *_tableView;
-//	IBOutlet TestView1 *_testView1;
 }
 
 @property (assign) IBOutlet NSWindow *window;
 
-
-//- (IBAction)someAction4:(NSButton *)sender;
 
 @end

@@ -7,16 +7,17 @@
 //
 
 #import <Foundation/Foundation.h>
-//#import "MyTableView.h"
-//#import "MySubmenuView.h"
 
-@class MySubmenuView, MyTableView;
+@class MySubmenuView, MyTableView, AppInspectorController;
 
 @interface StatusbarMenuController : NSObject<NSTableViewDataSource, NSTableViewDelegate>
 {
 	BOOL sortApplications; // it's temporary here
 @private
 	IBOutlet NSMenu *statusbarMenu;
+	IBOutlet NSView *statusbarItemView;
+	IBOutlet NSPanel *myPanel;
+	AppInspectorController *appInspectorController;
 //	NSMenu *appsSubmenu;
 
 	IBOutlet MySubmenuView *appSubmenuView;
@@ -29,9 +30,13 @@
 }
 
 @property (assign) NSMenu *statusbarMenu;
+@property (assign) NSView *statusbarItemView;
+@property (assign) NSPanel *myPanel;
+@property (readonly) AppInspectorController *appInspectorController;
 
 - (void)linkStatusbarItemWithMenu;
 - (IBAction)activateSelf:(id)sender;
+- (IBAction)addMenu:(id)sender;
 
 - (void)sortApplicationsByNameAndReload:(BOOL)reload;
 

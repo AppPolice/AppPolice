@@ -33,7 +33,7 @@
 }
 
 /*
- * When clicked on empty space in table, trying to click on actual rows will result
+ * When clicked on empty space in table, then trying to click on actual rows will result
  * in no response.
  * Returning NO helps.
  */

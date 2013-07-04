@@ -12,12 +12,15 @@
 #import "MyTableRowView.h"
 #import "MyImageView.h"
 
+#import "AppInspectorController.h"
+#import "ChromeMenu.h"
 
 
 @implementation StatusbarMenuController
 
 @synthesize statusbarMenu;
-
+@synthesize statusbarItemView;
+@synthesize myPanel;
 
 static NSString *tableData[] = {
     @"NSQuickLookTemplate",
@@ -85,11 +88,21 @@ static NSString *tableData[] = {
 - (void)dealloc {
 //	[appsSubmenu release];
 	[tableContents release];
+	[appInspectorController release];
 	[super dealloc];
 }
 
 - (void)awakeFromNib {
 	sortApplications = 1;
+	NSLog(@"%@ awakeFromNib", [self className]);
+}
+
+
+- (AppInspectorController *)appInspectorController {
+	if (appInspectorController == nil) {
+		appInspectorController = [[AppInspectorController alloc] init];
+	}
+	return appInspectorController;
 }
 
 
@@ -153,6 +166,12 @@ static NSString *tableData[] = {
 	[newItem setTarget:self];
 	[newItem setView:secondSubmenuView];
 	[[[statusbarMenu itemAtIndex:2] submenu] insertItem:newItem atIndex:1];
+	
+	
+	
+	
+	NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
+	[notificationCenter addObserver:self selector:@selector(statusbarItemClick:) name:@"StatusbarItemLMouseClick" object:nil];
 }
 
 
@@ -384,6 +403,13 @@ static NSString *tableData[] = {
 }
 
 
+
+- (void)statusbarItemClick:(NSNotification *)notification {
+	NSLog(@"catch click: %@", notification);
+}
+
+
+
 - (IBAction)someAction:(NSMenuItem *)sender {
 	NSLog(@"clicked menu item: %@", sender);
 }
@@ -395,6 +421,15 @@ static NSString *tableData[] = {
 }
 
 
+- (IBAction)addMenu:(id)sender {
+	static int i = 0;
+	++i;
+	ChromeMenu *menu = [[ChromeMenu alloc] initWithTitle:[NSString stringWithFormat:@"Title for menu # %d", i]];
+	NSLog(@"Created menu %@", menu);
+}
+
+
+
 - (IBAction)showmenu:(id)sender {
 	NSLog(@"BBBBB");
 	[statusbarMenu popUpMenuPositioningItem:[statusbarMenu itemAtIndex:0] atLocation:NSMakePoint(200, 200) inView:nil];
@@ -403,7 +438,8 @@ static NSString *tableData[] = {
 
 
 
-
+#pragma mark -
+#pragma mark ***** TableView Delegate & DataSource Methods *****
 
 
 - (NSInteger)numberOfRowsInTableView:(NSTableView *)tableView {
@@ -467,9 +503,16 @@ int flag = 0;
 //	return YES;
 //}
 
+- (void)tableViewSelectionDidChange:(NSNotification *)notification {
+	NSTableView *tableView = [notification object];
+	NSTableRowView *rowView = [tableView rowViewAtRow:[tableView selectedRow] makeIfNecessary:NO];
+	[[self appInspectorController] showAppDetailsPopoverRelativeTo:rowView];
+}
+
 
 - (void)notificationDeliver:(NSNotification *)notification {
 	NSLog(@"notification: %@", notification);
+	
 }
 
 
