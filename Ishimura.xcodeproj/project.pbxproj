@@ -24,6 +24,8 @@
 		A05A0B0517592618009A12B8 /* MyTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = A05A0B0417592618009A12B8 /* MyTableView.m */; };
 		A05A0B0817593112009A12B8 /* MyImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = A05A0B0717593112009A12B8 /* MyImageView.m */; };
 		A05A0B0B1759527D009A12B8 /* MySubmenuView.m in Sources */ = {isa = PBXBuildFile; fileRef = A05A0B0A1759527C009A12B8 /* MySubmenuView.m */; };
+		A05B78861785837500015156 /* CMTableRowView.m in Sources */ = {isa = PBXBuildFile; fileRef = A05B78851785829900015156 /* CMTableRowView.m */; };
+		A05B788917859D6E00015156 /* CMMenuItem.m in Sources */ = {isa = PBXBuildFile; fileRef = A05B788817859CF200015156 /* CMMenuItem.m */; };
 		A063796817492AEF006F2347 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A063796717492AEF006F2347 /* Cocoa.framework */; };
 		A063797217492AEF006F2347 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = A063797017492AEF006F2347 /* InfoPlist.strings */; };
 		A063797417492AEF006F2347 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = A063797317492AEF006F2347 /* main.m */; };
@@ -70,7 +72,11 @@
 		A05A0B0717593112009A12B8 /* MyImageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MyImageView.m; path = Controllers/MyImageView.m; sourceTree = "<group>"; };
 		A05A0B091759527C009A12B8 /* MySubmenuView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MySubmenuView.h; path = Controllers/MySubmenuView.h; sourceTree = "<group>"; };
 		A05A0B0A1759527C009A12B8 /* MySubmenuView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MySubmenuView.m; path = Controllers/MySubmenuView.m; sourceTree = "<group>"; };
-		A05B788317857FE600015156 /* ChromMenu.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ChromMenu.h; path = ChromeMenu/src/ChromMenu.h; sourceTree = SOURCE_ROOT; };
+		A05B788317857FE600015156 /* ChromeMenu.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ChromeMenu.h; path = ChromeMenu/src/ChromeMenu.h; sourceTree = SOURCE_ROOT; };
+		A05B78841785829900015156 /* CMTableRowView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = CMTableRowView.h; path = ChromeMenu/src/CMTableRowView.h; sourceTree = SOURCE_ROOT; };
+		A05B78851785829900015156 /* CMTableRowView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = CMTableRowView.m; path = ChromeMenu/src/CMTableRowView.m; sourceTree = SOURCE_ROOT; };
+		A05B788717859CF200015156 /* CMMenuItem.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = CMMenuItem.h; path = ChromeMenu/src/CMMenuItem.h; sourceTree = SOURCE_ROOT; };
+		A05B788817859CF200015156 /* CMMenuItem.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = CMMenuItem.m; path = ChromeMenu/src/CMMenuItem.m; sourceTree = SOURCE_ROOT; };
 		A063796417492AEF006F2347 /* Ishimura.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Ishimura.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A063796717492AEF006F2347 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		A063796A17492AEF006F2347 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
@@ -120,15 +126,19 @@
 		A010F33817846F6A003A9E92 /* src */ = {
 			isa = PBXGroup;
 			children = (
-				A05B788317857FE600015156 /* ChromMenu.h */,
+				A05B788317857FE600015156 /* ChromeMenu.h */,
 				A010F33C178470DD003A9E92 /* CMMenu.h */,
 				A010F33D178470DD003A9E92 /* CMMenu.m */,
+				A05B788717859CF200015156 /* CMMenuItem.h */,
+				A05B788817859CF200015156 /* CMMenuItem.m */,
 				A010F33E17847361003A9E92 /* ChromeMenuUnderlyingWindow.h */,
 				A010F33F17847361003A9E92 /* ChromeMenuUnderlyingWindow.m */,
 				A010F340178473F2003A9E92 /* ChromeMenuUnderlyingView.h */,
 				A010F341178473F2003A9E92 /* ChromeMenuUnderlyingView.m */,
 				A010F34617848515003A9E92 /* CMTableCellView.h */,
 				A010F34717848515003A9E92 /* CMTableCellView.m */,
+				A05B78841785829900015156 /* CMTableRowView.h */,
+				A05B78851785829900015156 /* CMTableRowView.m */,
 			);
 			name = src;
 			sourceTree = "<group>";
@@ -334,6 +344,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A05B788917859D6E00015156 /* CMMenuItem.m in Sources */,
+				A05B78861785837500015156 /* CMTableRowView.m in Sources */,
 				A010F3481784856B003A9E92 /* CMTableCellView.m in Sources */,
 				A010F342178474AB003A9E92 /* CMMenu.m in Sources */,
 				A010F343178474AB003A9E92 /* ChromeMenuUnderlyingWindow.m in Sources */,

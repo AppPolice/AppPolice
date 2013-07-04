@@ -422,10 +422,55 @@ static NSString *tableData[] = {
 
 
 - (IBAction)addMenu:(id)sender {
-	static int i = 0;
-	++i;
-	ChromeMenu *menu = [[ChromeMenu alloc] initWithTitle:[NSString stringWithFormat:@"Title for menu # %d", i]];
-	NSLog(@"Created menu %@", menu);
+//	NSMutableArray *items = [[NSMutableArray alloc] init];
+
+
+//    @"NSSmartBadgeTemplate",
+//    @"NSIconViewTemplate",
+
+//	[items addObject:[NSDictionary dictionaryWithObjectsAndKeys:
+//					  [NSImage imageNamed:@"NSIChatTheaterTemplate"], @"Icon",
+//					  @"Chat Template", @"Text", nil]];
+//	[items addObject:[NSDictionary dictionaryWithObjectsAndKeys:
+//					  [NSImage imageNamed:@"NSSlideshowTemplate"], @"Icon",
+//					  @"Slideshow Template", @"Text", nil]];
+//	[items addObject:[NSDictionary dictionaryWithObjectsAndKeys:
+//					  [NSImage imageNamed:@""], @"Icon",
+//					  @"Without icon", @"Text", nil]];
+//	[items addObject:[NSDictionary dictionaryWithObjectsAndKeys:
+//					  [NSImage imageNamed:@"NSActionTemplate"], @"Icon",
+//					  @"Action Template", @"Text", nil]];
+
+	CMMenu *menu = [[CMMenu alloc] init];
+	
+	CMMenuItem *item1 = [[CMMenuItem alloc] initWithTitle:@"Chat Template"];
+	[item1 setIcon:[NSImage imageNamed:@"NSIChatTheaterTemplate"]];
+	
+	CMMenuItem *item2 = [[CMMenuItem alloc] initWithTitle:@"Slideshow Template"];
+	[item2 setIcon:[NSImage imageNamed:@"NSSlideshowTemplate"]];
+	
+	CMMenuItem *item3 = [[CMMenuItem alloc] initWithTitle:@"Without icon"];
+
+	CMMenuItem *item4 = [[CMMenuItem alloc] initWithTitle:@"Actions Template"];
+	[item4 setIcon:[NSImage imageNamed:@"NSActionTemplate"]];
+	
+	
+	[menu addItem:item1];
+	[menu addItem:item2];
+	[menu addItem:item3];
+	[menu addItem:item4];
+	
+	[item1 release];
+	[item2 release];
+	[item3 release];
+	[item4 release];
+
+
+	[menu update];
+	
+//	NSLog(@"Should create menu with items: %@", items);
+	NSLog(@"menu: %@", menu);
+//	[items release];
 }
 
 
