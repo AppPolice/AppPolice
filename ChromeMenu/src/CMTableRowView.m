@@ -46,7 +46,7 @@
 	
 	NSPoint mouseLocation = [[self window] convertScreenToBase:[NSEvent mouseLocation]];
 	mouseLocation = [[self superview] convertPoint:mouseLocation fromView:nil];
-	//	NSLog(@"TABLE ROW DRAWRECT. mouseLocation :::: x: %f, y: %f", mouseLocation.x, mouseLocation.y);
+	NSLog(@"TABLE ROW DRAWRECT. mouseLocation :::: x: %f, y: %f", mouseLocation.x, mouseLocation.y);
 	
 	mouseInside = [self mouse:mouseLocation inRect:[self frame]];
 	//	if (mouseInside) {

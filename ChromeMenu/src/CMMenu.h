@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 #import "CMMenuItem.h"
 
-@class ChromeMenuUnderlyingWindow;
+@class ChromeMenuUnderlyingWindow, CMTableCellView;
 
 @interface CMMenu : NSObject <NSTableViewDataSource, NSTableViewDelegate>
 {
@@ -24,6 +24,7 @@
 //- (id)initWithItems:(NSArray *)items;
 
 - (void)addItem:(CMMenuItem *)newItem;
+- (void)setDefaultViewForItemsFromNibName:(NSString *)nibName withIdentifier:(NSString *)identifier andPropertyNames:(NSArray *)propertyNames;
 - (void)update;
 
 

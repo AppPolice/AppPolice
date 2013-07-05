@@ -14,6 +14,7 @@
 
 #import "AppInspectorController.h"
 #import "ChromeMenu.h"
+#import "CMMenuItemOverride.h"
 
 
 @implementation StatusbarMenuController
@@ -443,27 +444,55 @@ static NSString *tableData[] = {
 
 	CMMenu *menu = [[CMMenu alloc] init];
 	
-	CMMenuItem *item1 = [[CMMenuItem alloc] initWithTitle:@"Chat Template"];
-	[item1 setIcon:[NSImage imageNamed:@"NSIChatTheaterTemplate"]];
+//	CMMenuItem *item1 = [[CMMenuItem alloc] initWithTitle:@"Chat Template"];
+//	[item1 setIcon:[NSImage imageNamed:@"NSIChatTheaterTemplate"]];
+//	
+//	CMMenuItem *item2 = [[CMMenuItem alloc] initWithTitle:@"Slideshow Template"];
+//	[item2 setIcon:[NSImage imageNamed:@"NSSlideshowTemplate"]];
+//	
+//	CMMenuItem *item3 = [[CMMenuItem alloc] initWithTitle:@"Without icon"];
+//
+//	CMMenuItem *item4 = [[CMMenuItem alloc] initWithTitle:@"Actions Template"];
+//	[item4 setIcon:[NSImage imageNamed:@"NSActionTemplate"]];
+//	
+//	
+//	[menu addItem:item1];
+//	[menu addItem:item2];
+//	[menu addItem:item3];
+//	[menu addItem:item4];
 	
-	CMMenuItem *item2 = [[CMMenuItem alloc] initWithTitle:@"Slideshow Template"];
-	[item2 setIcon:[NSImage imageNamed:@"NSSlideshowTemplate"]];
+	NSArray *viewProperties = [[NSArray alloc] initWithObjects:@"statusIcon", @"icon", @"title", nil];
+	[menu setDefaultViewForItemsFromNibName:@"MenuItemView" withIdentifier:@"CMTableCellViewIdOverride" andPropertyNames:viewProperties];
+	[viewProperties release];
 	
-	CMMenuItem *item3 = [[CMMenuItem alloc] initWithTitle:@"Without icon"];
+	int i = 0;
+	NSString **data = &tableData[0];
+	while (*data != nil) {
+		NSString *name = *data;
+		NSImage *image = [NSImage imageNamed:name];
+		NSString *statusImageName = [NSString stringWithString:(i % 2 == 0) ? @"NSStatusAvailable" : @"NSStatusUnavailable"];
 
-	CMMenuItem *item4 = [[CMMenuItem alloc] initWithTitle:@"Actions Template"];
-	[item4 setIcon:[NSImage imageNamed:@"NSActionTemplate"]];
+//		CMMenuItem *item = [[CMMenuItem alloc] initWithTitle:name];
+		CMMenuItemOverride *item = [[CMMenuItemOverride alloc] initWithTitle:name];
+//		if (i == 2) {
+			
+//		} else {
+			[item setIcon:image];
+			[item setStatusIcon:[NSImage imageNamed:statusImageName]];
+//		}
+		
+		[menu addItem:item];
+		[item release];
+		
+		++data;
+		++i;
+	}
 	
 	
-	[menu addItem:item1];
-	[menu addItem:item2];
-	[menu addItem:item3];
-	[menu addItem:item4];
-	
-	[item1 release];
-	[item2 release];
-	[item3 release];
-	[item4 release];
+//	[item1 release];
+//	[item2 release];
+//	[item3 release];
+//	[item4 release];
 
 
 	[menu update];

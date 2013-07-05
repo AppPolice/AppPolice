@@ -7,8 +7,20 @@
 //
 
 #import "CMMenu.h"
-#import "CMTableCellView.h"
+#import "CMMenuItemView.h"
 #import "CMTableRowView.h"
+
+/*
+ * Private declarations
+ */
+@interface CMMenu()
+{
+	NSString *_itemsViewNibName;
+	NSString *_itemsViewIdentifier;
+	NSArray *_itemsViewProperties;
+	NSNib *_itemsViewRegisteredNib;
+}
+@end
 
 
 @implementation CMMenu
@@ -17,6 +29,9 @@
 	if (self = [super init]) {
 		[NSBundle loadNibNamed:[self className] owner:self];
 		_menuItems = [[NSMutableArray alloc] init];
+		
+//		NSNib *nib = [[NSNib alloc] initWithNibNamed:@"CMTableCellViewId3" bundle:[NSBundle mainBundle]];
+//		[_menuTableView registerNib:nib forIdentifier:@"CMTableCellViewId3"];
 	}
 	return self;
 }
@@ -33,12 +48,22 @@
 
 - (void)dealloc {
 	[_menuItems release];
+	if (_itemsViewRegisteredNib) {
+		[_itemsViewRegisteredNib release];
+		[_itemsViewNibName release];
+		[_itemsViewIdentifier release];
+		[_itemsViewProperties release];
+	}
+	
 	[super dealloc];
 }
 
 - (void)awakeFromNib {
 	NSLog(@"%@ awakeFromNib", [self className]);
 }
+
+
+
 
 
 - (void)addItem:(CMMenuItem *)newItem {
@@ -60,6 +85,22 @@
 	[_menuTableView reloadData];
 }
 
+- (void)setDefaultViewForItemsFromNibName:(NSString *)nibName withIdentifier:(NSString *)identifier andPropertyNames:(NSArray *)propertyNames {
+	if (nibName == nil || [nibName isEqualToString:@""] || identifier == nil || [identifier isEqualToString:@""] || propertyNames == nil)
+		[NSException raise:NSInvalidArgumentException format:@"Bad arguments provided in -%@", NSStringFromSelector(_cmd)];
+
+	_itemsViewRegisteredNib = [[NSNib alloc] initWithNibNamed:nibName bundle:[NSBundle mainBundle]];
+	if (_itemsViewRegisteredNib == nil)
+		return;
+	
+	_itemsViewNibName = [nibName retain];
+	_itemsViewIdentifier = [identifier retain];
+	_itemsViewProperties = [propertyNames retain];
+
+	[_menuTableView registerNib:_itemsViewRegisteredNib forIdentifier:identifier];
+}
+
+
 
 
 
@@ -75,7 +116,7 @@
 
 
 - (NSInteger)numberOfRowsInTableView:(NSTableView *)tableView {
-	NSLog(@"Inquired table rows count: %@", _menuItems);
+	NSLog(@"Inquired table rows count: %ld", [_menuItems count]);
 	return [_menuItems count];
 }
 
@@ -100,22 +141,45 @@ int flag2 = 0;
 	//	[[cellView cellImage] setImage:[dictionary objectForKey:@"Image"]];
 	
 
-	CMMenuItem *menuItem = [self itemAtIndex:row];
-	NSLog(@"loaded item: %@", menuItem);
-	CMTableCellView *cellView;
-	if (row == 1) {
-		cellView = [tableView makeViewWithIdentifier:@"CMTableCellViewId2" owner:self];
-	} else {
-		cellView = [tableView makeViewWithIdentifier:@"CMTableCellViewId" owner:self];
-	}
+	id menuItem = [self itemAtIndex:row];
+//	NSLog(@"loaded item: %@", menuItem);
 	
-	NSLog(@"cell view: %@", cellView);
-	
-	if ([menuItem icon])
-		[[cellView itemIcon] setImage:[menuItem icon]];
-	[[cellView itemText] setStringValue:[menuItem title]];
 
-	return cellView;
+	
+	if (_itemsViewIdentifier) {
+		id cellView;
+		cellView = [tableView makeViewWithIdentifier:_itemsViewIdentifier owner:self];
+		
+		NSEnumerator *enumerator = [_itemsViewProperties objectEnumerator];
+		NSString *propertyName;
+		while ((propertyName = [enumerator nextObject])) {
+//			if ([property isEqualToString:@"title"])
+//				cellView.title.stringValue = [menuItem title];
+//			else
+//				[cellView setValue:[menuItem valueForKey:property] forKey:property];
+			
+			SEL propertySetter = NSSelectorFromString([NSString stringWithFormat:@"set%@Property:", [propertyName	stringByReplacingCharactersInRange:NSMakeRange(0, 1) withString:[[propertyName substringToIndex:1] capitalizedString]]]);
+			if ([cellView respondsToSelector:propertySetter])
+				[cellView performSelector:propertySetter withObject:[menuItem valueForKey:propertyName]];
+		}
+		
+//		NSLog(@"cell view: %@", cellView);
+		
+		return cellView;
+
+	} else {
+		CMMenuItemView *defaultCellView;
+		defaultCellView = [tableView makeViewWithIdentifier:@"CMMenuItemViewId" owner:self];
+		
+		
+		if ([menuItem icon])
+			[[defaultCellView icon] setImage:[menuItem icon]];
+		[[defaultCellView title] setStringValue:[menuItem title]];
+		
+//		NSLog(@"default cell view: %@", defaultCellView);
+		
+		return defaultCellView;
+	}
 }
 
 - (NSTableRowView *)tableView:(NSTableView *)tableView rowViewForRow:(NSInteger)row {

@@ -8,15 +8,16 @@
 
 #import <Cocoa/Cocoa.h>
 
-@interface CMTableCellView : NSTableCellView
+@interface CMMenuItemView : NSTableCellView
 {
-	NSImageView *_itemIcon;
-	NSTextField *_itemText;
+@private
+	NSImageView *_icon;
+	NSTextField *_title;
 	NSImageView *_ownersIcon;
 }
 
-@property (assign) IBOutlet NSImageView *itemIcon;
-@property (assign) IBOutlet NSTextField *itemText;
+@property (assign) IBOutlet NSImageView *icon;
+@property (assign) IBOutlet NSTextField *title;
 @property (assign) IBOutlet NSImageView *ownersIcon;
 
 

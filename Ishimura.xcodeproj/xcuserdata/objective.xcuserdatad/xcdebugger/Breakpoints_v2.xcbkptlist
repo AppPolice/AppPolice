@@ -104,11 +104,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "cpulim/Controllers/StatusbarMenuController.m"
-            timestampString = "394542544.332691"
+            timestampString = "394709678.78286"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "248"
-            endingLineNumber = "248"
+            startingLineNumber = "249"
+            endingLineNumber = "249"
             landmarkName = "-populateMenuWithRunningApplications"
             landmarkType = "5">
          </BreakpointContent>
@@ -120,11 +120,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "cpulim/Controllers/StatusbarMenuController.m"
-            timestampString = "394542544.332691"
+            timestampString = "394709678.78286"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "360"
-            endingLineNumber = "360"
+            startingLineNumber = "361"
+            endingLineNumber = "361"
             landmarkName = "-updateAppSubmenuViewSize"
             landmarkType = "5">
          </BreakpointContent>
@@ -136,11 +136,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "cpulim/Controllers/StatusbarMenuController.m"
-            timestampString = "394542544.332691"
+            timestampString = "394709678.78286"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "309"
-            endingLineNumber = "309"
+            startingLineNumber = "310"
+            endingLineNumber = "310"
             landmarkName = "-appLaunchedHandler:"
             landmarkType = "5">
          </BreakpointContent>
@@ -168,11 +168,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "cpulim/Controllers/StatusbarMenuController.m"
-            timestampString = "394542544.332691"
+            timestampString = "394709678.78286"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "264"
-            endingLineNumber = "264"
+            startingLineNumber = "265"
+            endingLineNumber = "265"
             landmarkName = "-populateMenuWithRunningApplications"
             landmarkType = "5">
          </BreakpointContent>
@@ -225,6 +225,22 @@
             startingLineNumber = "64"
             endingLineNumber = "64"
             landmarkName = "-activateStatusbarItem"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "ChromeMenu/src/CMMenu.m"
+            timestampString = "394710460.298859"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "89"
+            endingLineNumber = "89"
+            landmarkName = "-setDefaultViewForItemsFromNibName:withIdentifier:andPropertyNames:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>

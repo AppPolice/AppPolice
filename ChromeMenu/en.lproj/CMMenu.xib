@@ -35,7 +35,7 @@
                                     <rect key="frame" x="0.0" y="0.0" width="277" height="100"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
-                                        <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnReordering="NO" columnResizing="NO" multipleSelection="NO" autosaveColumns="NO" typeSelect="NO" rowHeight="19" rowSizeStyle="automatic" viewBased="YES" id="IFg-m7-mZf">
+                                        <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnReordering="NO" columnResizing="NO" multipleSelection="NO" autosaveColumns="NO" typeSelect="NO" rowHeight="19" rowSizeStyle="automatic" viewBased="YES" id="IFg-m7-mZf" customClass="CMTableView">
                                             <rect key="frame" x="0.0" y="0.0" width="277" height="100"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <size key="intercellSpacing" width="3" height="0.0"/>
@@ -55,7 +55,7 @@
                                                     </textFieldCell>
                                                     <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                     <prototypeCellViews>
-                                                        <tableCellView identifier="CMTableCellViewId" id="i86-5f-LWv" customClass="CMTableCellView">
+                                                        <tableCellView identifier="CMMenuItemViewId" id="i86-5f-LWv" customClass="CMMenuItemView">
                                                             <rect key="frame" x="1" y="0.0" width="274" height="17"/>
                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                             <subviews>
@@ -91,9 +91,9 @@
                                                                 <constraint firstItem="O25-w2-y1M" firstAttribute="top" secondItem="i86-5f-LWv" secondAttribute="top" constant="1" id="tHe-BM-fAC"/>
                                                             </constraints>
                                                             <connections>
-                                                                <outlet property="itemIcon" destination="O25-w2-y1M" id="TMN-dt-NRP"/>
-                                                                <outlet property="itemText" destination="2XC-h2-qsI" id="Sme-eG-JfB"/>
+                                                                <outlet property="icon" destination="O25-w2-y1M" id="Kun-sC-MnY"/>
                                                                 <outlet property="ownersIcon" destination="WDJ-AU-3lH" id="OaY-zT-h7B"/>
+                                                                <outlet property="title" destination="2XC-h2-qsI" id="cXi-SJ-img"/>
                                                             </connections>
                                                         </tableCellView>
                                                         <customView identifier="CMTableRowViewId" id="jZv-8e-ULV" customClass="CMTableRowView">
@@ -151,30 +151,46 @@
                 </subviews>
             </view>
         </window>
-        <customView identifier="CMTableCellViewId2" id="8ep-bY-nlB" customClass="CMTableCellView">
-            <rect key="frame" x="0.0" y="0.0" width="251" height="30"/>
-            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-            <subviews>
-                <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="mcM-ua-peZ">
-                    <rect key="frame" x="216" y="8" width="15" height="15"/>
-                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                    <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="NSAddTemplate" id="qHk-sY-LjE"/>
-                </imageView>
-                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="PUO-Ki-40n">
-                    <rect key="frame" x="20" y="8" width="38" height="17"/>
-                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Label" id="G6c-OW-lgP">
-                        <font key="font" metaFont="system"/>
-                        <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                    </textFieldCell>
-                </textField>
-            </subviews>
-        </customView>
     </objects>
     <resources>
         <image name="NSActionTemplate" width="15" height="15"/>
-        <image name="NSAddTemplate" width="8" height="8"/>
         <image name="NSGoRightTemplate" width="9" height="9"/>
     </resources>
+    <classes>
+        <class className="CMMenu" superclassName="NSObject">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/CMMenu.h"/>
+            <relationships>
+                <relationship kind="action" name="buttonClick:"/>
+                <relationship kind="outlet" name="_menuTableView" candidateClass="NSTableView"/>
+                <relationship kind="outlet" name="_underlyingWindow" candidateClass="ChromeMenuUnderlyingWindow"/>
+                <relationship kind="outlet" name="title" candidateClass="NSTextField"/>
+            </relationships>
+        </class>
+        <class className="CMMenuItemView" superclassName="NSTableCellView">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/CMMenuItemView.h"/>
+            <relationships>
+                <relationship kind="outlet" name="icon" candidateClass="NSImageView"/>
+                <relationship kind="outlet" name="ownersIcon" candidateClass="NSImageView"/>
+                <relationship kind="outlet" name="title" candidateClass="NSTextField"/>
+            </relationships>
+        </class>
+        <class className="CMTableRowView" superclassName="NSTableRowView">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/CMTableRowView.h"/>
+        </class>
+        <class className="CMTableView" superclassName="NSTableView">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/CMTableView.h"/>
+        </class>
+        <class className="ChromeMenuUnderlyingView" superclassName="NSView">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/ChromeMenuUnderlyingView.h"/>
+        </class>
+        <class className="ChromeMenuUnderlyingWindow" superclassName="NSPanel">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/ChromeMenuUnderlyingWindow.h"/>
+        </class>
+        <class className="NSLayoutConstraint" superclassName="NSObject">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/NSLayoutConstraint.h"/>
+        </class>
+        <class className="NSTableRowView" superclassName="NSView">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/NSTableRowView.h"/>
+        </class>
+    </classes>
 </document>
