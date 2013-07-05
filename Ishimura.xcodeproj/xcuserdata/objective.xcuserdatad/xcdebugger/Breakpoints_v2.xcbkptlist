@@ -240,7 +240,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "89"
             endingLineNumber = "89"
-            landmarkName = "-setDefaultViewForItemsFromNibName:withIdentifier:andPropertyNames:"
+            landmarkName = "-setDefaultViewForItemsFromNibNamed:withIdentifier:andPropertyNames:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>

@@ -8,13 +8,14 @@
 
 #import <Cocoa/Cocoa.h>
 
-@interface CMTableRowView : NSTableRowView
+@interface CMMenuItemBackgroundView : NSTableRowView
 {
 @private
 	BOOL mouseInside;
     NSTrackingArea *trackingArea;
 }
 
-- (void)resetRowViewProperties;
+/* reset view properties after it was returned from -makeViewWithIdentifier: */
+- (void)resetBackgroundViewProperties;
 
 @end

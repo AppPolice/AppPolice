@@ -16,6 +16,15 @@
 #import "ChromeMenu.h"
 #import "CMMenuItemOverride.h"
 
+@interface StatusbarMenuController()
+{
+	CMMenu *menu;
+}
+
+- (IBAction)changeMenu:(id)sender;
+
+@end
+
 
 @implementation StatusbarMenuController
 
@@ -442,7 +451,7 @@ static NSString *tableData[] = {
 //					  [NSImage imageNamed:@"NSActionTemplate"], @"Icon",
 //					  @"Action Template", @"Text", nil]];
 
-	CMMenu *menu = [[CMMenu alloc] init];
+	menu = [[CMMenu alloc] init];
 	
 //	CMMenuItem *item1 = [[CMMenuItem alloc] initWithTitle:@"Chat Template"];
 //	[item1 setIcon:[NSImage imageNamed:@"NSIChatTheaterTemplate"]];
@@ -462,7 +471,7 @@ static NSString *tableData[] = {
 //	[menu addItem:item4];
 	
 	NSArray *viewProperties = [[NSArray alloc] initWithObjects:@"statusIcon", @"icon", @"title", nil];
-	[menu setDefaultViewForItemsFromNibName:@"MenuItemView" withIdentifier:@"CMTableCellViewIdOverride" andPropertyNames:viewProperties];
+	[menu setDefaultViewForItemsFromNibNamed:@"MenuItemView" withIdentifier:@"CMTableCellViewIdOverride" andPropertyNames:viewProperties];
 	[viewProperties release];
 	
 	int i = 0;
@@ -500,6 +509,24 @@ static NSString *tableData[] = {
 //	NSLog(@"Should create menu with items: %@", items);
 	NSLog(@"menu: %@", menu);
 //	[items release];
+}
+
+
+- (IBAction)changeMenu:(id)sender {
+	NSInteger index = 4;
+	static int i = 0;
+	NSString *statuses[] = {
+		@"NSStatusAvailable",
+		@"NSStatusUnavailable",
+		@"NSStatusPartiallyAvailable",
+		@"NSStatusNone"
+	};
+	
+	CMMenuItemOverride *item = [menu itemAtIndex:index];
+	[item setStatusIcon:[NSImage imageNamed:statuses[i % 4]]];
+	++i;
+	[menu updateItemsAtIndexes:[NSIndexSet indexSetWithIndex:index]];
+	NSLog(@"Item change: %@", item);
 }
 
 

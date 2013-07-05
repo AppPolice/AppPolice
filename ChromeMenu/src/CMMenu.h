@@ -24,7 +24,14 @@
 //- (id)initWithItems:(NSArray *)items;
 
 - (void)addItem:(CMMenuItem *)newItem;
-- (void)setDefaultViewForItemsFromNibName:(NSString *)nibName withIdentifier:(NSString *)identifier andPropertyNames:(NSArray *)propertyNames;
+- (id)itemAtIndex:(NSInteger)index;
+- (void)setDefaultViewForItemsFromNibNamed:(NSString *)nibName withIdentifier:(NSString *)identifier andPropertyNames:(NSArray *)propertyNames;
+
+
+/* Update only particular menu items */
+- (void)updateItemsAtIndexes:(NSIndexSet *)indexes;
+
+/* this is an actual table reload, scary thing. must be taken care of */
 - (void)update;
 
 

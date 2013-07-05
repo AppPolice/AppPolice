@@ -8,7 +8,7 @@
 
 #import "CMMenu.h"
 #import "CMMenuItemView.h"
-#import "CMTableRowView.h"
+#import "CMMenuItemBackgroundView.h"
 
 /*
  * Private declarations
@@ -17,7 +17,7 @@
 {
 	NSString *_itemsViewNibName;
 	NSString *_itemsViewIdentifier;
-	NSArray *_itemsViewProperties;
+	NSArray *_itemsViewPropertyNames;
 	NSNib *_itemsViewRegisteredNib;
 }
 @end
@@ -52,7 +52,7 @@
 		[_itemsViewRegisteredNib release];
 		[_itemsViewNibName release];
 		[_itemsViewIdentifier release];
-		[_itemsViewProperties release];
+		[_itemsViewPropertyNames release];
 	}
 	
 	[super dealloc];
@@ -85,7 +85,7 @@
 	[_menuTableView reloadData];
 }
 
-- (void)setDefaultViewForItemsFromNibName:(NSString *)nibName withIdentifier:(NSString *)identifier andPropertyNames:(NSArray *)propertyNames {
+- (void)setDefaultViewForItemsFromNibNamed:(NSString *)nibName withIdentifier:(NSString *)identifier andPropertyNames:(NSArray *)propertyNames {
 	if (nibName == nil || [nibName isEqualToString:@""] || identifier == nil || [identifier isEqualToString:@""] || propertyNames == nil)
 		[NSException raise:NSInvalidArgumentException format:@"Bad arguments provided in -%@", NSStringFromSelector(_cmd)];
 
@@ -95,12 +95,15 @@
 	
 	_itemsViewNibName = [nibName retain];
 	_itemsViewIdentifier = [identifier retain];
-	_itemsViewProperties = [propertyNames retain];
+	_itemsViewPropertyNames = [propertyNames retain];
 
 	[_menuTableView registerNib:_itemsViewRegisteredNib forIdentifier:identifier];
 }
 
 
+- (void)updateItemsAtIndexes:(NSIndexSet *)indexes {
+	[_menuTableView reloadDataForRowIndexes:indexes columnIndexes:[NSIndexSet indexSetWithIndex:0]];
+}
 
 
 
@@ -150,7 +153,7 @@ int flag2 = 0;
 		id cellView;
 		cellView = [tableView makeViewWithIdentifier:_itemsViewIdentifier owner:self];
 		
-		NSEnumerator *enumerator = [_itemsViewProperties objectEnumerator];
+		NSEnumerator *enumerator = [_itemsViewPropertyNames objectEnumerator];
 		NSString *propertyName;
 		while ((propertyName = [enumerator nextObject])) {
 //			if ([property isEqualToString:@"title"])
@@ -184,8 +187,8 @@ int flag2 = 0;
 
 - (NSTableRowView *)tableView:(NSTableView *)tableView rowViewForRow:(NSInteger)row {
 	//	NSLog(@"------------------ ROWView for ROW ----------------");
-	CMTableRowView *rowView = [tableView makeViewWithIdentifier:@"CMTableRowViewId" owner:self];
-	[rowView resetRowViewProperties];
+	CMMenuItemBackgroundView *rowView = [tableView makeViewWithIdentifier:@"CMMenuItemBackgroundViewId" owner:self];
+	[rowView resetBackgroundViewProperties];
 	return rowView;
 }
 

@@ -148,6 +148,14 @@
                             <font key="font" metaFont="system"/>
                         </buttonCell>
                     </button>
+                    <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="fGA-lt-rbg">
+                        <rect key="frame" x="376" y="20" width="128" height="32"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <buttonCell key="cell" type="push" title="Change menu" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="DFJ-OM-PsD">
+                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                            <font key="font" metaFont="system"/>
+                        </buttonCell>
+                    </button>
                 </subviews>
                 <constraints>
                     <constraint firstAttribute="bottom" secondItem="590" secondAttribute="bottom" constant="20" symbolic="YES" id="592"/>
@@ -244,6 +252,7 @@
             <connections>
                 <action selector="activateSelf:" destination="1668" id="oII-AU-j4o"/>
                 <action selector="addMenu:" destination="ZC4-jI-ScC" id="SkA-a2-IXK"/>
+                <action selector="changeMenu:" destination="fGA-lt-rbg" id="stX-OZ-UBF"/>
                 <action selector="showmenu:" destination="1673" id="1677"/>
                 <action selector="someAction2:" destination="706" id="1667"/>
                 <outlet property="appListTableView" destination="ZUz-G4-Kcv" id="Ihv-2U-xvK"/>

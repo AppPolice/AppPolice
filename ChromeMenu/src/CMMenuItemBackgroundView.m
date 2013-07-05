@@ -6,16 +6,16 @@
 //  Copyright (c) 2013 Maksym Stefanchuk. All rights reserved.
 //
 
-#import "CMTableRowView.h"
+#import "CMMenuItemBackgroundView.h"
 
 
 /* Private properties */
-@interface CMTableRowView()
+@interface CMMenuItemBackgroundView()
 	@property BOOL mouseInside;
 @end
 
 
-@implementation CMTableRowView
+@implementation CMMenuItemBackgroundView
 
 @dynamic mouseInside;
 
@@ -43,10 +43,15 @@
 	//		[self printRect:[[self superview] convertRect:dirtyRect fromView:self] withTitle:title];
 	//	}
 	
+	NSLog(@"rows subviews: %@", [self subviews]);
+	NSLog(@"row's supervew: %@", [self superview]);
+	[[NSColor grayColor] set];
+	NSRectFill([[[self subviews] objectAtIndex:0] bounds]);
+	
 	
 	NSPoint mouseLocation = [[self window] convertScreenToBase:[NSEvent mouseLocation]];
 	mouseLocation = [[self superview] convertPoint:mouseLocation fromView:nil];
-	NSLog(@"TABLE ROW DRAWRECT. mouseLocation :::: x: %f, y: %f", mouseLocation.x, mouseLocation.y);
+//	NSLog(@"TABLE ROW DRAWRECT. mouseLocation :::: x: %f, y: %f", mouseLocation.x, mouseLocation.y);
 	
 	mouseInside = [self mouse:mouseLocation inRect:[self frame]];
 	//	if (mouseInside) {
@@ -317,8 +322,7 @@ static NSGradient *gradientWithTargetColor(NSColor *targetColor) {
 
 
 
-
-- (void)resetRowViewProperties {
+- (void)resetBackgroundViewProperties {
 	mouseInside = NO;
 }
 

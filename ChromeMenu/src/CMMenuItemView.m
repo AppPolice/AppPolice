@@ -50,7 +50,13 @@
 }
 
 
-
+- (void)drawRect:(NSRect)dirtyRect {
+	NSLog(@"Cell View draw rect called. Cell subviews: %@", [self subviews]);
+	NSBezierPath *path = [NSBezierPath bezierPath];
+	[path appendBezierPathWithRect:dirtyRect];
+	[[NSColor greenColor] set];
+	[path stroke];
+}
 
 
 

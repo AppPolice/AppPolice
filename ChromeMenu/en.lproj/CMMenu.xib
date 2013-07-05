@@ -35,11 +35,11 @@
                                     <rect key="frame" x="0.0" y="0.0" width="277" height="100"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
-                                        <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnReordering="NO" columnResizing="NO" multipleSelection="NO" autosaveColumns="NO" typeSelect="NO" rowHeight="19" rowSizeStyle="automatic" viewBased="YES" id="IFg-m7-mZf" customClass="CMTableView">
+                                        <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnReordering="NO" columnResizing="NO" multipleSelection="NO" autosaveColumns="NO" typeSelect="NO" rowHeight="19" rowSizeStyle="automatic" viewBased="YES" id="IFg-m7-mZf">
                                             <rect key="frame" x="0.0" y="0.0" width="277" height="100"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <size key="intercellSpacing" width="3" height="0.0"/>
-                                            <color key="backgroundColor" name="selectedTextBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                             <color key="gridColor" name="gridColor" catalog="System" colorSpace="catalog"/>
                                             <tableColumns>
                                                 <tableColumn width="274" minWidth="40" maxWidth="1000" id="HOp-GQ-biD">
@@ -96,7 +96,7 @@
                                                                 <outlet property="title" destination="2XC-h2-qsI" id="cXi-SJ-img"/>
                                                             </connections>
                                                         </tableCellView>
-                                                        <customView identifier="CMTableRowViewId" id="jZv-8e-ULV" customClass="CMTableRowView">
+                                                        <customView identifier="CMMenuItemBackgroundViewId" id="jZv-8e-ULV" customClass="CMMenuItemBackgroundView">
                                                             <rect key="frame" x="1" y="17" width="274" height="19"/>
                                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                         </customView>
@@ -156,41 +156,4 @@
         <image name="NSActionTemplate" width="15" height="15"/>
         <image name="NSGoRightTemplate" width="9" height="9"/>
     </resources>
-    <classes>
-        <class className="CMMenu" superclassName="NSObject">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/CMMenu.h"/>
-            <relationships>
-                <relationship kind="action" name="buttonClick:"/>
-                <relationship kind="outlet" name="_menuTableView" candidateClass="NSTableView"/>
-                <relationship kind="outlet" name="_underlyingWindow" candidateClass="ChromeMenuUnderlyingWindow"/>
-                <relationship kind="outlet" name="title" candidateClass="NSTextField"/>
-            </relationships>
-        </class>
-        <class className="CMMenuItemView" superclassName="NSTableCellView">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/CMMenuItemView.h"/>
-            <relationships>
-                <relationship kind="outlet" name="icon" candidateClass="NSImageView"/>
-                <relationship kind="outlet" name="ownersIcon" candidateClass="NSImageView"/>
-                <relationship kind="outlet" name="title" candidateClass="NSTextField"/>
-            </relationships>
-        </class>
-        <class className="CMTableRowView" superclassName="NSTableRowView">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/CMTableRowView.h"/>
-        </class>
-        <class className="CMTableView" superclassName="NSTableView">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/CMTableView.h"/>
-        </class>
-        <class className="ChromeMenuUnderlyingView" superclassName="NSView">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/ChromeMenuUnderlyingView.h"/>
-        </class>
-        <class className="ChromeMenuUnderlyingWindow" superclassName="NSPanel">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/ChromeMenuUnderlyingWindow.h"/>
-        </class>
-        <class className="NSLayoutConstraint" superclassName="NSObject">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/NSLayoutConstraint.h"/>
-        </class>
-        <class className="NSTableRowView" superclassName="NSView">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/NSTableRowView.h"/>
-        </class>
-    </classes>
 </document>

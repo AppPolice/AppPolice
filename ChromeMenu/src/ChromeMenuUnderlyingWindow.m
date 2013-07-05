@@ -20,9 +20,9 @@
 }
 
 
-- (BOOL)canBecomeKeyWindow {
-	return YES;
-}
+//- (BOOL)canBecomeKeyWindow {
+//	return YES;
+//}
 
 
 - (void)mouseDown:(NSEvent *)theEvent {
@@ -30,6 +30,7 @@
     // Get the mouse location in window coordinates.
     initialLocation = [theEvent locationInWindow];
 }
+
 
 /*
  Once the user starts dragging the mouse, move the window with it. The window has no title bar for

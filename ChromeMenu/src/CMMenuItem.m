@@ -9,10 +9,22 @@
 #import "CMMenuItem.h"
 #import <objc/runtime.h>
 
+/*
+ * Private declarations
+ */
+@interface CMMenuItem()
+{
+	
+}
+@end
+
 @implementation CMMenuItem
 
-//@synthesize itemIcon;
-//@synthesize itemText;
+@synthesize viewNibName = _viewNibName;
+@synthesize viewIdentifier = _viewIdentifier;
+@synthesize viewPropertyNames = _viewPropertyNames;
+
+
 
 - (id)initWithTitle:(NSString *)aTitle {
 	if (self = [super init]) {
@@ -22,9 +34,22 @@
 	return self;
 }
 
+- (id)initWithTitle:(NSString *)aTitle andIcon:(NSImage *)anImage {
+	self = [self initWithTitle:aTitle];
+	if (self) {
+		[self setIcon:anImage];
+	}
+	return self;
+}
+
 
 - (void)dealloc {
 	[_icon release];
+	if (_viewIdentifier) {
+		[_viewIdentifier release];
+		[_viewNibName release];
+		[_viewPropertyNames release];
+	}
 	[super dealloc];
 }
 
@@ -46,9 +71,9 @@
 	return _title;
 }
 
-- (void)setIcon:(NSImage *)aImage {
-	[aImage retain];
-	_icon = aImage;
+- (void)setIcon:(NSImage *)anImage {
+	[anImage retain];
+	_icon = anImage;
 }
 
 - (NSImage *)icon {
@@ -57,6 +82,14 @@
 
 - (BOOL)isSeparatorItem {
 	return _isSeparatorItem;
+}
+
+- (void)setViewFromNibNamed:(NSString *)nibName withIdentifier:(NSString *)identifier andPropertyNames:(NSArray *)propertyNames {
+	if (nibName == nil || [nibName isEqualToString:@""] || identifier == nil || [identifier isEqualToString:@""] || propertyNames == nil)
+		[NSException raise:NSInvalidArgumentException format:@"Bad arguments provided in -%@", NSStringFromSelector(_cmd)];
+	_viewNibName = [nibName retain];
+	_viewIdentifier = [identifier retain];
+	_viewPropertyNames = [propertyNames retain];
 }
 
 

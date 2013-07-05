@@ -27,7 +27,7 @@
 		A05A0B0517592618009A12B8 /* MyTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = A05A0B0417592618009A12B8 /* MyTableView.m */; };
 		A05A0B0817593112009A12B8 /* MyImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = A05A0B0717593112009A12B8 /* MyImageView.m */; };
 		A05A0B0B1759527D009A12B8 /* MySubmenuView.m in Sources */ = {isa = PBXBuildFile; fileRef = A05A0B0A1759527C009A12B8 /* MySubmenuView.m */; };
-		A05B78861785837500015156 /* CMTableRowView.m in Sources */ = {isa = PBXBuildFile; fileRef = A05B78851785829900015156 /* CMTableRowView.m */; };
+		A05B78861785837500015156 /* CMMenuItemBackgroundView.m in Sources */ = {isa = PBXBuildFile; fileRef = A05B78851785829900015156 /* CMMenuItemBackgroundView.m */; };
 		A05B788917859D6E00015156 /* CMMenuItem.m in Sources */ = {isa = PBXBuildFile; fileRef = A05B788817859CF200015156 /* CMMenuItem.m */; };
 		A05B788C1786058A00015156 /* CMTableCellViewId3.xib in Resources */ = {isa = PBXBuildFile; fileRef = A05B788A1786054600015156 /* CMTableCellViewId3.xib */; };
 		A063796817492AEF006F2347 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A063796717492AEF006F2347 /* Cocoa.framework */; };
@@ -84,8 +84,8 @@
 		A05A0B091759527C009A12B8 /* MySubmenuView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MySubmenuView.h; path = Controllers/MySubmenuView.h; sourceTree = "<group>"; };
 		A05A0B0A1759527C009A12B8 /* MySubmenuView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MySubmenuView.m; path = Controllers/MySubmenuView.m; sourceTree = "<group>"; };
 		A05B788317857FE600015156 /* ChromeMenu.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ChromeMenu.h; path = ChromeMenu/src/ChromeMenu.h; sourceTree = SOURCE_ROOT; };
-		A05B78841785829900015156 /* CMTableRowView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = CMTableRowView.h; path = ChromeMenu/src/CMTableRowView.h; sourceTree = SOURCE_ROOT; };
-		A05B78851785829900015156 /* CMTableRowView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = CMTableRowView.m; path = ChromeMenu/src/CMTableRowView.m; sourceTree = SOURCE_ROOT; };
+		A05B78841785829900015156 /* CMMenuItemBackgroundView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = CMMenuItemBackgroundView.h; path = ChromeMenu/src/CMMenuItemBackgroundView.h; sourceTree = SOURCE_ROOT; };
+		A05B78851785829900015156 /* CMMenuItemBackgroundView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = CMMenuItemBackgroundView.m; path = ChromeMenu/src/CMMenuItemBackgroundView.m; sourceTree = SOURCE_ROOT; };
 		A05B788717859CF200015156 /* CMMenuItem.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = CMMenuItem.h; path = ChromeMenu/src/CMMenuItem.h; sourceTree = SOURCE_ROOT; };
 		A05B788817859CF200015156 /* CMMenuItem.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = CMMenuItem.m; path = ChromeMenu/src/CMMenuItem.m; sourceTree = SOURCE_ROOT; };
 		A05B788B1786054600015156 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = ChromeMenu/en.lproj/CMTableCellViewId3.xib; sourceTree = SOURCE_ROOT; };
@@ -151,8 +151,8 @@
 				A007EAF717870B4E00A7FE8D /* CMTableView.m */,
 				A010F34617848515003A9E92 /* CMMenuItemView.h */,
 				A010F34717848515003A9E92 /* CMMenuItemView.m */,
-				A05B78841785829900015156 /* CMTableRowView.h */,
-				A05B78851785829900015156 /* CMTableRowView.m */,
+				A05B78841785829900015156 /* CMMenuItemBackgroundView.h */,
+				A05B78851785829900015156 /* CMMenuItemBackgroundView.m */,
 			);
 			name = src;
 			sourceTree = "<group>";
@@ -369,7 +369,7 @@
 				A007EAF41786BBF000A7FE8D /* CMMenuItemOverride.m in Sources */,
 				A007EAF11786B46B00A7FE8D /* CMTableCellVewOverride.m in Sources */,
 				A05B788917859D6E00015156 /* CMMenuItem.m in Sources */,
-				A05B78861785837500015156 /* CMTableRowView.m in Sources */,
+				A05B78861785837500015156 /* CMMenuItemBackgroundView.m in Sources */,
 				A010F3481784856B003A9E92 /* CMMenuItemView.m in Sources */,
 				A010F342178474AB003A9E92 /* CMMenu.m in Sources */,
 				A010F343178474AB003A9E92 /* ChromeMenuUnderlyingWindow.m in Sources */,
