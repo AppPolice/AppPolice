@@ -471,8 +471,8 @@ static NSString *tableData[] = {
 //	[menu addItem:item4];
 	
 	NSArray *viewProperties = [[NSArray alloc] initWithObjects:@"statusIcon", @"icon", @"title", nil];
-	[menu setDefaultViewForItemsFromNibNamed:@"MenuItemView" withIdentifier:@"CMTableCellViewIdOverride" andPropertyNames:viewProperties];
-	[viewProperties release];
+//	[menu setDefaultViewForItemsFromNibNamed:@"MenuItemView" withIdentifier:@"CMTableCellViewIdOverride" andPropertyNames:viewProperties];
+
 	
 	int i = 0;
 	NSString **data = &tableData[0];
@@ -481,14 +481,18 @@ static NSString *tableData[] = {
 		NSImage *image = [NSImage imageNamed:name];
 		NSString *statusImageName = [NSString stringWithString:(i % 2 == 0) ? @"NSStatusAvailable" : @"NSStatusUnavailable"];
 
-//		CMMenuItem *item = [[CMMenuItem alloc] initWithTitle:name];
-		CMMenuItemOverride *item = [[CMMenuItemOverride alloc] initWithTitle:name];
-//		if (i == 2) {
-			
-//		} else {
-			[item setIcon:image];
+		id item = nil;
+		if (i == 1 || i == 4) {
+			item = [[CMMenuItemOverride alloc] initWithTitle:name];
+			[item setViewFromNibNamed:@"MenuItemView" withIdentifier:@"CMTableCellViewIdOverride" andPropertyNames:viewProperties];
 			[item setStatusIcon:[NSImage imageNamed:statusImageName]];
-//		}
+		} else {
+			item = [[CMMenuItem alloc] initWithTitle:name];
+		}
+		
+		[item setIcon:image];
+
+
 		
 		[menu addItem:item];
 		[item release];
@@ -497,6 +501,7 @@ static NSString *tableData[] = {
 		++i;
 	}
 	
+	[viewProperties release];
 	
 //	[item1 release];
 //	[item2 release];

@@ -15,10 +15,16 @@
  */
 @interface CMMenu()
 {
+/* this block of vartiables servers for storing one custom view that's to be used for all menu items */
 	NSString *_itemsViewNibName;
 	NSString *_itemsViewIdentifier;
 	NSArray *_itemsViewPropertyNames;
 	NSNib *_itemsViewRegisteredNib;
+
+/* this block of variables servers for storing custom views that certain menu items wish to use */
+//	NSMutableArray *_itemViewNibNames;
+	NSMutableArray *_itemViewRegesteredNibs;
+	int _registeredCustomNibs;
 }
 @end
 
@@ -29,7 +35,7 @@
 	if (self = [super init]) {
 		[NSBundle loadNibNamed:[self className] owner:self];
 		_menuItems = [[NSMutableArray alloc] init];
-		
+		_registeredCustomNibs = 0;
 //		NSNib *nib = [[NSNib alloc] initWithNibNamed:@"CMTableCellViewId3" bundle:[NSBundle mainBundle]];
 //		[_menuTableView registerNib:nib forIdentifier:@"CMTableCellViewId3"];
 	}
@@ -54,6 +60,11 @@
 		[_itemsViewIdentifier release];
 		[_itemsViewPropertyNames release];
 	}
+	
+	if (_itemViewRegesteredNibs)
+		[_itemViewRegesteredNibs release];
+	
+	[_underlyingWindow release];
 	
 	[super dealloc];
 }
@@ -101,6 +112,27 @@
 }
 
 
+/*
+ * Loads and registers nib only if it hasn't already
+ */
+- (void)loadAndRegisterNibNamed:(NSString *)nibName withIdentifier:(NSString *)identifier {
+	/* we already validated variables when added to menuItem */
+	
+	NSNib *nib = [[NSNib alloc] initWithNibNamed:nibName bundle:[NSBundle mainBundle]];
+	if (nib == nil)
+		return;
+	
+	if (_registeredCustomNibs == 0)
+		_itemViewRegesteredNibs = [[NSMutableArray alloc] init];
+	
+	
+	[_menuTableView registerNib:nib forIdentifier:identifier];
+	[_itemViewRegesteredNibs addObject:nib];
+	[nib release];
+	_registeredCustomNibs = 1;
+}
+
+
 - (void)updateItemsAtIndexes:(NSIndexSet *)indexes {
 	[_menuTableView reloadDataForRowIndexes:indexes columnIndexes:[NSIndexSet indexSetWithIndex:0]];
 }
@@ -109,6 +141,8 @@
 
 - (IBAction)buttonClick:(id)sender {
 	NSLog(@"table: %@", _menuTableView);
+	NSRect rect = [_underlyingWindow frame];
+	[_underlyingWindow setFrame:NSMakeRect(rect.origin.x, rect.origin.y, rect.size.width + 20, rect.size.height) display:YES];
 //	[menuTableView reloadData];
 }
 
@@ -122,6 +156,7 @@
 	NSLog(@"Inquired table rows count: %ld", [_menuItems count]);
 	return [_menuItems count];
 }
+
 
 int flag2 = 0;
 - (NSTableCellView *)tableView:(NSTableView *)tableView viewForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row {
@@ -147,8 +182,24 @@ int flag2 = 0;
 	id menuItem = [self itemAtIndex:row];
 //	NSLog(@"loaded item: %@", menuItem);
 	
-
+	/* menu item has individual view */
+	if ([menuItem viewIdentifier]) {
+		[self loadAndRegisterNibNamed:[menuItem viewNibName] withIdentifier:[menuItem viewIdentifier]];
+		id cellView = [tableView makeViewWithIdentifier:[menuItem viewIdentifier] owner:self];
+		NSEnumerator *enumerator = [[menuItem viewPropertyNames] objectEnumerator];
+		NSString *propertyName;
+		while ((propertyName = [enumerator nextObject])) {
+			SEL propertySetter = NSSelectorFromString([NSString stringWithFormat:@"set%@Property:", [propertyName	stringByReplacingCharactersInRange:NSMakeRange(0, 1) withString:[[propertyName substringToIndex:1] capitalizedString]]]);
+			if ([cellView respondsToSelector:propertySetter])
+				[cellView performSelector:propertySetter withObject:[menuItem valueForKey:propertyName]];
+		}
+		
+		NSLog(@"custom item cell view: %@", cellView);
+		
+		return cellView;
+	}
 	
+	/* custom view for all items */
 	if (_itemsViewIdentifier) {
 		id cellView;
 		cellView = [tableView makeViewWithIdentifier:_itemsViewIdentifier owner:self];
@@ -184,6 +235,7 @@ int flag2 = 0;
 		return defaultCellView;
 	}
 }
+
 
 - (NSTableRowView *)tableView:(NSTableView *)tableView rowViewForRow:(NSInteger)row {
 	//	NSLog(@"------------------ ROWView for ROW ----------------");

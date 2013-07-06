@@ -43,8 +43,8 @@
 	//		[self printRect:[[self superview] convertRect:dirtyRect fromView:self] withTitle:title];
 	//	}
 	
-	NSLog(@"rows subviews: %@", [self subviews]);
-	NSLog(@"row's supervew: %@", [self superview]);
+//	NSLog(@"rows subviews: %@", [self subviews]);
+//	NSLog(@"row's supervew: %@", [self superview]);
 	[[NSColor grayColor] set];
 	NSRectFill([[[self subviews] objectAtIndex:0] bounds]);
 	
