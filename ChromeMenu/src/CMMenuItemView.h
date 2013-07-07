@@ -6,7 +6,8 @@
 //  Copyright (c) 2013 Maksym Stefanchuk. All rights reserved.
 //
 
-#import <Cocoa/Cocoa.h>
+//#import <Cocoa/Cocoa.h>
+@class NSTableCellView;
 
 @interface CMMenuItemView : NSTableCellView
 {

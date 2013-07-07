@@ -490,7 +490,10 @@ static NSString *tableData[] = {
 			item = [[CMMenuItem alloc] initWithTitle:name];
 		}
 		
-		[item setIcon:image];
+		if (i > 3)
+			[item setIcon:image];
+		
+//		[item setIcon:image];
 
 
 		
@@ -509,7 +512,7 @@ static NSString *tableData[] = {
 //	[item4 release];
 
 
-	[menu update];
+//	[menu update];
 	
 //	NSLog(@"Should create menu with items: %@", items);
 	NSLog(@"menu: %@", menu);
@@ -518,20 +521,28 @@ static NSString *tableData[] = {
 
 
 - (IBAction)changeMenu:(id)sender {
-	NSInteger index = 4;
-	static int i = 0;
-	NSString *statuses[] = {
-		@"NSStatusAvailable",
-		@"NSStatusUnavailable",
-		@"NSStatusPartiallyAvailable",
-		@"NSStatusNone"
-	};
+//	NSInteger index = 4;
+//	static int i = 0;
+//	NSString *statuses[] = {
+//		@"NSStatusAvailable",
+//		@"NSStatusUnavailable",
+//		@"NSStatusPartiallyAvailable",
+//		@"NSStatusNone"
+//	};
+//	
+//	CMMenuItemOverride *item = [menu itemAtIndex:index];
+//	[item setStatusIcon:[NSImage imageNamed:statuses[i % 4]]];
+//	++i;
+//	[menu updateItemsAtIndexes:[NSIndexSet indexSetWithIndex:index]];
+//	NSLog(@"Item change: %@", item);
 	
-	CMMenuItemOverride *item = [menu itemAtIndex:index];
-	[item setStatusIcon:[NSImage imageNamed:statuses[i % 4]]];
+	static int i = 0;
+	if ((i % 2) == 0)
+		[menu showMenu];
+	else
+		[menu cancelTrackingWithoutAnimation];
+	
 	++i;
-	[menu updateItemsAtIndexes:[NSIndexSet indexSetWithIndex:index]];
-	NSLog(@"Item change: %@", item);
 }
 
 

@@ -80,6 +80,32 @@
 	return _icon;
 }
 
+
+- (void)setSubmenu:(CMMenu *)submenu {
+	if (submenu == nil)
+		[NSException raise:NSInvalidArgumentException format:@"Bad argument provided in -%@", NSStringFromSelector(_cmd)];
+	
+	_submenu = [submenu retain];
+}
+
+
+- (CMMenu *)submenu {
+	return _submenu;
+}
+
+- (BOOL)hasSubmenu {
+	return (_submenu) ? YES : NO;
+}
+
+
+
+
+
+
+
+
+
+
 - (BOOL)isSeparatorItem {
 	return _isSeparatorItem;
 }

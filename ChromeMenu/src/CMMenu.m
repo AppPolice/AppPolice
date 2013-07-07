@@ -6,15 +6,21 @@
 //  Copyright (c) 2013 Maksym Stefanchuk. All rights reserved.
 //
 
+//#import <AppKit/NSWindow.h>
 #import "CMMenu.h"
 #import "CMMenuItemView.h"
 #import "CMMenuItemBackgroundView.h"
+#import "ChromeMenuUnderlyingWindow.h"
+#import "ChromeMenuUnderlyingView.h"
 
 /*
  * Private declarations
  */
 @interface CMMenu()
 {
+	int _displayedFirstTime;
+	int _needsUpdating;
+	
 /* this block of vartiables servers for storing one custom view that's to be used for all menu items */
 	NSString *_itemsViewNibName;
 	NSString *_itemsViewIdentifier;
@@ -34,6 +40,8 @@
 - (id)init {
 	if (self = [super init]) {
 		[NSBundle loadNibNamed:[self className] owner:self];
+		_displayedFirstTime = 0;
+		_needsUpdating = 1;
 		_menuItems = [[NSMutableArray alloc] init];
 		_registeredCustomNibs = 0;
 //		NSNib *nib = [[NSNib alloc] initWithNibNamed:@"CMTableCellViewId3" bundle:[NSBundle mainBundle]];
@@ -92,9 +100,13 @@
 }
 
 
-- (void)update {
-	[_menuTableView reloadData];
+- (void)setSubmenu:(CMMenu *)aMenu forItem:(CMMenuItem *)anItem {
+	if (aMenu == nil || anItem == nil)
+		[NSException raise:NSInvalidArgumentException format:@"Bad argument in -%@", NSStringFromSelector(_cmd)];
+	
+	[anItem setSubmenu:aMenu];
 }
+
 
 - (void)setDefaultViewForItemsFromNibNamed:(NSString *)nibName withIdentifier:(NSString *)identifier andPropertyNames:(NSArray *)propertyNames {
 	if (nibName == nil || [nibName isEqualToString:@""] || identifier == nil || [identifier isEqualToString:@""] || propertyNames == nil)
@@ -125,11 +137,12 @@
 	if (_registeredCustomNibs == 0)
 		_itemViewRegesteredNibs = [[NSMutableArray alloc] init];
 	
-	
-	[_menuTableView registerNib:nib forIdentifier:identifier];
-	[_itemViewRegesteredNibs addObject:nib];
-	[nib release];
-	_registeredCustomNibs = 1;
+	if ([_itemViewRegesteredNibs containsObject:nib] == NO) {
+		[_menuTableView registerNib:nib forIdentifier:identifier];
+		[_itemViewRegesteredNibs addObject:nib];
+		[nib release];
+		_registeredCustomNibs = 1;
+	}
 }
 
 
@@ -137,6 +150,37 @@
 	[_menuTableView reloadDataForRowIndexes:indexes columnIndexes:[NSIndexSet indexSetWithIndex:0]];
 }
 
+
+- (void)update {
+	[_menuTableView reloadData];
+}
+
+
+- (void)showMenu {
+	/* when _underlyingView is initially set to Hidden and instantiating a Menu OSX will NOT draw tableView.
+		Otherwise it will, even if we are not going to show menu yet. */
+	if (_displayedFirstTime == 0) {
+		[_underlyingView setHidden:NO];
+		_displayedFirstTime = 1;
+	}
+	
+	if (_needsUpdating) {
+		[self update];
+		_needsUpdating = 0;
+	}
+	
+	[_underlyingWindow orderFront:self];
+}
+
+
+- (void)cancelTracking {
+	[self cancelTrackingWithoutAnimation];
+}
+
+
+- (void)cancelTrackingWithoutAnimation {
+	[_underlyingWindow orderOut:self];
+}
 
 
 - (IBAction)buttonClick:(id)sender {
@@ -153,7 +197,7 @@
 
 
 - (NSInteger)numberOfRowsInTableView:(NSTableView *)tableView {
-	NSLog(@"Inquired table rows count: %ld", [_menuItems count]);
+	NSLog(@"CMMenu: inquired table rows count: %ld", [_menuItems count]);
 	return [_menuItems count];
 }
 
@@ -223,11 +267,15 @@ int flag2 = 0;
 
 	} else {
 		CMMenuItemView *defaultCellView;
-		defaultCellView = [tableView makeViewWithIdentifier:@"CMMenuItemViewId" owner:self];
 		
-		
-		if ([menuItem icon])
+		if ([menuItem icon]) {
+			[self loadAndRegisterNibNamed:@"CMMenuItemIconView" withIdentifier:@"CMMenuItemIconViewId"];
+			defaultCellView = [tableView makeViewWithIdentifier:@"CMMenuItemIconViewId" owner:self];
 			[[defaultCellView icon] setImage:[menuItem icon]];
+		} else {
+			defaultCellView = [tableView makeViewWithIdentifier:@"CMMenuItemViewId" owner:self];
+		}
+		
 		[[defaultCellView title] setStringValue:[menuItem title]];
 		
 //		NSLog(@"default cell view: %@", defaultCellView);

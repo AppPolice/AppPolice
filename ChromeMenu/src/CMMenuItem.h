@@ -8,11 +8,14 @@
 
 #import <Foundation/Foundation.h>
 
+@class CMMenu;
+
 @interface CMMenuItem : NSObject
 {
 @private
 	NSImage *_icon;
 	NSString *_title;
+	CMMenu *_submenu;
 	BOOL _isSeparatorItem;
 	
 	NSString *_viewNibName;
@@ -28,6 +31,10 @@
 
 - (id)initWithTitle:(NSString *)aTitle;
 - (id)initWithTitle:(NSString *)aTitle andIcon:(NSImage *)anImage;
+
+- (BOOL)hasSubmenu;
+- (void)setSubmenu:(CMMenu *)submenu;
+- (CMMenu *)submenu;
 
 - (void)setViewFromNibNamed:(NSString *)nibName withIdentifier:(NSString *)identifier andPropertyNames:(NSArray *)propertyNames;
 

@@ -37,11 +37,11 @@
 	 * We have this check to not include rows that might be in the process of drawing using methods like: -insertRowWithIndexes
 	 * because row won't belong to a TableView during animation effect.
 	 */
-	//	NSView *superview = [self superview];
-	//	if ([[superview className] isEqualToString:@"MyTableView"]) {
-	//		NSString *title = [NSString stringWithFormat:@"DRAW ROW RECT # %ld ::", [(NSTableView *)superview rowForView:self]];
-	//		[self printRect:[[self superview] convertRect:dirtyRect fromView:self] withTitle:title];
-	//	}
+	NSView *superview = [self superview];
+	if ([[superview className] isEqualToString:@"NSTableView"]) {
+		NSString *title = [NSString stringWithFormat:@"DRAW ROW RECT # %ld ::", [(NSTableView *)superview rowForView:self]];
+		[self printRect:[[self superview] convertRect:dirtyRect fromView:self] withTitle:title];
+	}
 	
 //	NSLog(@"rows subviews: %@", [self subviews]);
 //	NSLog(@"row's supervew: %@", [self superview]);

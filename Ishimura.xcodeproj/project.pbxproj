@@ -23,6 +23,7 @@
 		A0154E851782EC6F008CF159 /* AppInspectorController.m in Sources */ = {isa = PBXBuildFile; fileRef = A0154E841782E972008CF159 /* AppInspectorController.m */; };
 		A02EA4561759CDA300982A8A /* MyTableCellView.m in Sources */ = {isa = PBXBuildFile; fileRef = A02EA4551759CDA300982A8A /* MyTableCellView.m */; };
 		A02EA4591759F2A900982A8A /* MyTableRowView.m in Sources */ = {isa = PBXBuildFile; fileRef = A02EA4581759F2A900982A8A /* MyTableRowView.m */; };
+		A0346CBB17882A4E0095A6CF /* CMMenuItemIconView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A0346CB9178827C00095A6CF /* CMMenuItemIconView.xib */; };
 		A04FA3D3174D4BD9002E688C /* selfprofile.c in Sources */ = {isa = PBXBuildFile; fileRef = A04FA3D2174D4BD9002E688C /* selfprofile.c */; };
 		A05A0B0517592618009A12B8 /* MyTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = A05A0B0417592618009A12B8 /* MyTableView.m */; };
 		A05A0B0817593112009A12B8 /* MyImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = A05A0B0717593112009A12B8 /* MyImageView.m */; };
@@ -74,6 +75,7 @@
 		A02EA4551759CDA300982A8A /* MyTableCellView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MyTableCellView.m; path = Controllers/MyTableCellView.m; sourceTree = "<group>"; };
 		A02EA4571759F2A900982A8A /* MyTableRowView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MyTableRowView.h; path = Controllers/MyTableRowView.h; sourceTree = "<group>"; };
 		A02EA4581759F2A900982A8A /* MyTableRowView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MyTableRowView.m; path = Controllers/MyTableRowView.m; sourceTree = "<group>"; };
+		A0346CBA178827C00095A6CF /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = ChromeMenu/en.lproj/CMMenuItemIconView.xib; sourceTree = SOURCE_ROOT; };
 		A04FA3D2174D4BD9002E688C /* selfprofile.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = selfprofile.c; path = C/selfprofile.c; sourceTree = "<group>"; };
 		A04FA3D4174D4BF5002E688C /* selfprofile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = selfprofile.h; path = C/selfprofile.h; sourceTree = "<group>"; };
 		A04FA3D5174D552D002E688C /* def.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = def.h; path = C/def.h; sourceTree = "<group>"; };
@@ -161,6 +163,7 @@
 			isa = PBXGroup;
 			children = (
 				A010F33A17847043003A9E92 /* CMMenu.xib */,
+				A0346CB9178827C00095A6CF /* CMMenuItemIconView.xib */,
 				A05B788A1786054600015156 /* CMTableCellViewId3.xib */,
 			);
 			name = Resources;
@@ -348,6 +351,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A0346CBB17882A4E0095A6CF /* CMMenuItemIconView.xib in Resources */,
 				A007EAF51786CA5500A7FE8D /* MenuItemView.xib in Resources */,
 				A05B788C1786058A00015156 /* CMTableCellViewId3.xib in Resources */,
 				A010F34517847535003A9E92 /* CMMenu.xib in Resources */,
@@ -427,6 +431,14 @@
 				A0154E821782E300008CF159 /* en */,
 			);
 			name = AppInspector.xib;
+			sourceTree = "<group>";
+		};
+		A0346CB9178827C00095A6CF /* CMMenuItemIconView.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				A0346CBA178827C00095A6CF /* en */,
+			);
+			name = CMMenuItemIconView.xib;
 			sourceTree = "<group>";
 		};
 		A05B788A1786054600015156 /* CMTableCellViewId3.xib */ = {
