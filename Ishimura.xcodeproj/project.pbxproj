@@ -42,6 +42,7 @@
 		A0ADD317174A24A2002BAADE /* AppsInspector.m in Sources */ = {isa = PBXBuildFile; fileRef = A0ADD316174A24A2002BAADE /* AppsInspector.m */; };
 		A0BF7C6B17733C2B002A2141 /* MyTableScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = A0BF7C6A17733C2B002A2141 /* MyTableScrollView.m */; };
 		A0CFFF92175500CB00930DFE /* StatusbarMenuController.m in Sources */ = {isa = PBXBuildFile; fileRef = A0CFFF91175500CA00930DFE /* StatusbarMenuController.m */; };
+		A0F0DF1D178A05C4008E85EA /* CMTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = A007EAF717870B4E00A7FE8D /* CMTableView.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -370,6 +371,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A0F0DF1D178A05C4008E85EA /* CMTableView.m in Sources */,
 				A007EAF41786BBF000A7FE8D /* CMMenuItemOverride.m in Sources */,
 				A007EAF11786B46B00A7FE8D /* CMTableCellVewOverride.m in Sources */,
 				A05B788917859D6E00015156 /* CMMenuItem.m in Sources */,

@@ -7,12 +7,26 @@
 //
 
 #import "CMTableView.h"
+#import "CMMenuItemBackgroundView.h"
 
 @implementation CMTableView
 
 
-- (void)drawRect:(NSRect)dirtyRect {
-    // Drawing code here.
+//- (void)drawRect:(NSRect)dirtyRect {
+//    // Drawing code here.
+//}
+
+- (void)mouseDown:(NSEvent *)theEvent {
+	[super mouseDown:theEvent];
+	
+	//	NSLog(@"table view mouse down: %@", [self subviews]);
+	
+	NSPoint mouseDownPoint = [self convertPoint:[theEvent locationInWindow] fromView:nil];
+	NSInteger row = [self rowAtPoint:mouseDownPoint];
+	if (row >= 0) {
+		CMMenuItemBackgroundView *rowView = [self viewAtColumn:0 row:row makeIfNecessary:NO];
+		[rowView mouseDown:theEvent];
+	}
 }
 
 @end

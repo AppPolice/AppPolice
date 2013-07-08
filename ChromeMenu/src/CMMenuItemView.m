@@ -53,10 +53,30 @@
 - (void)drawRect:(NSRect)dirtyRect {
 //	NSLog(@"Cell View draw rect called. Cell subviews: %@", [self subviews]);
 	NSBezierPath *path = [NSBezierPath bezierPath];
-	[path appendBezierPathWithRect:[super bounds]];
+	[path appendBezierPathWithRect:[[self superview] bounds]];
 	[[NSColor greenColor] set];
 	[path stroke];
+	
+	[self printRect:[self bounds] withTitle:@"Cell Rect:"];
+	[self printRect:[[self superview] bounds] withTitle:@"Superview rect:"];
 }
+
+
+//- (BOOL)acceptsFirstMouse:(NSEvent *)theEvent {
+//	return YES;
+//}
+
+
+
+- (void)mouseDown:(NSEvent *)theEvent {
+	NSLog(@"Cell mouse down");
+	[super mouseDown:theEvent];
+}
+
+- (void)rightMouseDown:(NSEvent *)theEvent {
+	NSLog(@"Cell right mouse down");
+}
+
 
 
 
@@ -81,6 +101,17 @@
 	}
 	
 	return description;
+}
+
+
+- (void)printRect:(NSRect)rect withTitle:(NSString *)title {
+	NSLog(@"%@. Rect: x: %f, y: %f, width: %f, height: %f",
+		  title,
+		  rect.origin.x,
+		  rect.origin.y,
+		  rect.size.width,
+		  rect.size.height);
+	
 }
 
 @end

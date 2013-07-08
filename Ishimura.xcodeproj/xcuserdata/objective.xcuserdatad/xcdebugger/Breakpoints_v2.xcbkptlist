@@ -218,29 +218,13 @@
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "cpulim/AppDelegate.m"
-            timestampString = "394552108.096668"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "64"
-            endingLineNumber = "64"
-            landmarkName = "-activateStatusbarItem"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
             filePath = "ChromeMenu/src/CMMenu.m"
             timestampString = "394710460.298859"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "89"
             endingLineNumber = "89"
-            landmarkName = "-setDefaultViewForItemsFromNibNamed:withIdentifier:andPropertyNames:"
+            landmarkName = "-addItem:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>

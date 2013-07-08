@@ -22,6 +22,7 @@
 
 	IBOutlet MySubmenuView *appSubmenuView;
 	IBOutlet MyTableView *appListTableView;
+	IBOutlet MyTableView *testTable;
 	
 	IBOutlet NSView *secondSubmenuView;
 

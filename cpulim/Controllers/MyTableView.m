@@ -7,7 +7,7 @@
 //
 
 #import "MyTableView.h"
-//#import "MyTableRowView.h"
+#import "MyTableRowView.h"
 
 @implementation MyTableView
 
@@ -37,8 +37,23 @@
  * in no response.
  * Returning NO helps.
  */
-- (BOOL)acceptsFirstResponder {
-	return NO;
+//- (BOOL)acceptsFirstResponder {
+//	return NO;
+//}
+
+
+
+- (void)mouseDown:(NSEvent *)theEvent {
+	[super mouseDown:theEvent];
+	
+//	NSLog(@"table view mouse down: %@", [self subviews]);
+	
+	NSPoint mousePoint = [self convertPoint:[theEvent locationInWindow] fromView:nil];
+	NSInteger row = [self rowAtPoint:mousePoint];
+	if (row >= 0) {
+		MyTableRowView *rowView = [self viewAtColumn:0 row:row makeIfNecessary:NO];
+		[rowView mouseDown:theEvent];
+	}
 }
 
 

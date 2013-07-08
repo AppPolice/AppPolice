@@ -58,13 +58,13 @@ extern void proc_cpulim_suspend_wait(void);		/* function returns only after limi
 	NSStatusBar *statusbar = [NSStatusBar systemStatusBar];
 	statusbarItem = [statusbar statusItemWithLength:NSVariableStatusItemLength];
 	[statusbarItem retain];
-	[statusbarItem setView:[statusbarMenuController statusbarItemView]];
-//	[statusbarItem setTitle: NSLocalizedString(@"Ishimura", @"")];
-//	[statusbarItem setHighlightMode: YES];
-//	[statusbarItem setTarget:self];
-//	[statusbarItem setAction:@selector(statusbarItemAction)];
+//	[statusbarItem setView:[statusbarMenuController statusbarItemView]];
+	[statusbarItem setTitle: NSLocalizedString(@"Ishimura", @"")];
+	[statusbarItem setHighlightMode: YES];
+	[statusbarItem setTarget:self];
+	[statusbarItem setAction:@selector(statusbarItemAction)];
 //	[statusbarItem sendActionOn:NSRightMouseDownMask];
-//	[statusbarItem setMenu: [statusbarMenuController statusbarMenu]];
+	[statusbarItem setMenu: [statusbarMenuController statusbarMenu]];
 }
 
 - (void)statusbarItemAction {

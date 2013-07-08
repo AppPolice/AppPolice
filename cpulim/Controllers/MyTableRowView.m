@@ -172,7 +172,7 @@
 }
 
 - (void)mouseDown:(NSEvent *)theEvent {
-	NSLog(@"Selected: %d, superview: %@", self.selected, [self superview]);
+	NSLog(@"Row mouse down %@, superview: %@", self, [self superview]);
 	if (!self.selected) {
 		self.selected = YES;
 		[table selectRowIndexes:[NSIndexSet indexSetWithIndex:[table rowForView:self]] byExtendingSelection:NO];

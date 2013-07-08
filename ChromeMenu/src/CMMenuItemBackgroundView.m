@@ -38,15 +38,15 @@
 	 * because row won't belong to a TableView during animation effect.
 	 */
 	NSView *superview = [self superview];
-	if ([[superview className] isEqualToString:@"NSTableView"]) {
+	if ([[superview className] isEqualToString:@"CMTableView"]) {
 		NSString *title = [NSString stringWithFormat:@"DRAW ROW RECT # %ld ::", [(NSTableView *)superview rowForView:self]];
 		[self printRect:[[self superview] convertRect:dirtyRect fromView:self] withTitle:title];
 	}
 	
 //	NSLog(@"rows subviews: %@", [self subviews]);
 //	NSLog(@"row's supervew: %@", [self superview]);
-	[[NSColor grayColor] set];
-	NSRectFill([[[self subviews] objectAtIndex:0] bounds]);
+//	[[NSColor grayColor] set];
+//	NSRectFill([[[self subviews] objectAtIndex:0] bounds]);
 	
 	
 	NSPoint mouseLocation = [[self window] convertScreenToBase:[NSEvent mouseLocation]];
@@ -99,9 +99,10 @@
 }
 
 
-- (BOOL)acceptsFirstMouse:(NSEvent *)theEvent {
-	return YES;
-}
+//- (BOOL)acceptsFirstMouse:(NSEvent *)theEvent {
+//	NSLog(@"row accepts");
+//	return YES;
+//}
 
 //- (void)setInteriorBackgroundStyle:(NSBackgroundStyle)_interiorBackgroundStyle {
 //	interiorBackgroundStyle = _interiorBackgroundStyle;
@@ -169,9 +170,9 @@
 }
 
 - (void)mouseDown:(NSEvent *)theEvent {
-	NSLog(@"Selected: %d, superview: %@", self.selected, [self superview]);
-	if (!self.selected) {
-		self.selected = YES;
+	NSLog(@"Row mouse down. View: %@, superview: %@", self, [self superview]);
+//	if (!self.selected) {
+//		self.selected = YES;
 //		[table selectRowIndexes:[NSIndexSet indexSetWithIndex:[table rowForView:self]] byExtendingSelection:NO];
 
 		//		if ([table selectedRow])
@@ -184,7 +185,14 @@
 		//	NSLog(@"Down: %@ \nMouse loc. converted: %f, %f", theEvent, mouseLocation.x, mouseLocation.y);
 		//	NSLog(@"superview: %@", [self superview]);
 		
-	}
+//	}
+	
+	
+//	NSLog(@"Owner: %@ with title: %@");
+}
+
+- (void)rightMouseDown:(NSEvent *)theEvent {
+	NSLog(@"right mouse donw!!");
 }
 
 //- (void)scrollWheel:(NSEvent *)theEvent {

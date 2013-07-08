@@ -225,6 +225,7 @@ static NSString *tableData[] = {
 	
 	
 	[appListTableView reloadData];
+	[testTable reloadData];
 	
 	
 	NSNotificationCenter *notificationCenter = [workspace notificationCenter];
@@ -482,16 +483,16 @@ static NSString *tableData[] = {
 		NSString *statusImageName = [NSString stringWithString:(i % 2 == 0) ? @"NSStatusAvailable" : @"NSStatusUnavailable"];
 
 		id item = nil;
-		if (i == 1 || i == 4) {
-			item = [[CMMenuItemOverride alloc] initWithTitle:name];
-			[item setViewFromNibNamed:@"MenuItemView" withIdentifier:@"CMTableCellViewIdOverride" andPropertyNames:viewProperties];
-			[item setStatusIcon:[NSImage imageNamed:statusImageName]];
-		} else {
+//		if (i == 1 || i == 4) {
+//			item = [[CMMenuItemOverride alloc] initWithTitle:name];
+//			[item setViewFromNibNamed:@"MenuItemView" withIdentifier:@"CMTableCellViewIdOverride" andPropertyNames:viewProperties];
+//			[item setStatusIcon:[NSImage imageNamed:statusImageName]];
+//		} else {
 			item = [[CMMenuItem alloc] initWithTitle:name];
-		}
+//		}
 		
-		if (i > 3)
-			[item setIcon:image];
+//		if (i > 3)
+//			[item setIcon:image];
 		
 //		[item setIcon:image];
 

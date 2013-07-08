@@ -156,6 +156,104 @@
                             <font key="font" metaFont="system"/>
                         </buttonCell>
                     </button>
+                    <customView autoresizesSubviews="NO" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="3aM-PP-Jf8" customClass="MySubmenuView">
+                        <rect key="frame" x="20" y="245" width="277" height="100"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <subviews>
+                            <scrollView ambiguous="YES" borderType="none" autohidesScrollers="YES" horizontalLineScroll="19" horizontalPageScroll="10" verticalLineScroll="19" verticalPageScroll="10" hasHorizontalScroller="NO" hasVerticalScroller="NO" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="LuN-rv-ixa">
+                                <rect key="frame" x="0.0" y="0.0" width="277" height="100"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                <clipView key="contentView" ambiguous="YES" drawsBackground="NO" copiesOnScroll="NO" id="fi3-bA-cGx">
+                                    <rect key="frame" x="0.0" y="0.0" width="277" height="100"/>
+                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                    <subviews>
+                                        <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnReordering="NO" columnResizing="NO" multipleSelection="NO" autosaveColumns="NO" typeSelect="NO" rowHeight="19" rowSizeStyle="automatic" viewBased="YES" id="NME-ZP-Mgt" customClass="MyTableView">
+                                            <rect key="frame" x="0.0" y="0.0" width="277" height="100"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <size key="intercellSpacing" width="3" height="0.0"/>
+                                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                            <color key="gridColor" name="gridColor" catalog="System" colorSpace="catalog"/>
+                                            <tableColumns>
+                                                <tableColumn width="236" minWidth="40" maxWidth="1000" id="n5c-1f-L65">
+                                                    <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left">
+                                                        <font key="font" metaFont="smallSystem"/>
+                                                        <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
+                                                        <color key="backgroundColor" white="0.33333298560000002" alpha="1" colorSpace="calibratedWhite"/>
+                                                    </tableHeaderCell>
+                                                    <textFieldCell key="dataCell" lineBreakMode="truncatingTail" selectable="YES" editable="YES" alignment="left" title="Text Cell" id="FCE-Nu-FAu">
+                                                        <font key="font" metaFont="system"/>
+                                                        <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                        <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                                    </textFieldCell>
+                                                    <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
+                                                    <prototypeCellViews>
+                                                        <tableCellView identifier="AppCellViewId" id="J9S-BD-1Ul" customClass="MyTableCellView">
+                                                            <rect key="frame" x="1" y="0.0" width="236" height="17"/>
+                                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                            <subviews>
+                                                                <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="FvD-Y6-g0K" customClass="MyImageView">
+                                                                    <rect key="frame" x="14" y="1" width="15" height="15"/>
+                                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                                    <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="NSActionTemplate" id="BdX-XC-id5"/>
+                                                                </imageView>
+                                                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="YD4-4i-3Yn">
+                                                                    <rect key="frame" x="34" y="0.0" width="205" height="17"/>
+                                                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
+                                                                    <textFieldCell key="cell" lineBreakMode="truncatingTail" refusesFirstResponder="YES" sendsActionOnEndEditing="YES" title="Table View Cell" id="tcc-vp-CeP">
+                                                                        <font key="font" metaFont="system"/>
+                                                                        <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                                                    </textFieldCell>
+                                                                </textField>
+                                                            </subviews>
+                                                            <constraints>
+                                                                <constraint firstAttribute="bottom" secondItem="FvD-Y6-g0K" secondAttribute="bottom" constant="1" id="4Vh-Wi-Okp"/>
+                                                                <constraint firstItem="YD4-4i-3Yn" firstAttribute="centerY" secondItem="J9S-BD-1Ul" secondAttribute="centerY" id="C1A-rs-qug"/>
+                                                                <constraint firstItem="YD4-4i-3Yn" firstAttribute="leading" secondItem="FvD-Y6-g0K" secondAttribute="trailing" constant="8" id="DxK-G9-hMk"/>
+                                                                <constraint firstAttribute="trailing" secondItem="YD4-4i-3Yn" secondAttribute="trailing" id="Oqt-de-QDe"/>
+                                                                <constraint firstItem="FvD-Y6-g0K" firstAttribute="leading" secondItem="J9S-BD-1Ul" secondAttribute="leading" constant="14" id="SOM-bv-bOC"/>
+                                                                <constraint firstItem="FvD-Y6-g0K" firstAttribute="top" secondItem="J9S-BD-1Ul" secondAttribute="top" constant="1" id="l65-qC-ugb"/>
+                                                                <constraint firstItem="YD4-4i-3Yn" firstAttribute="top" secondItem="J9S-BD-1Ul" secondAttribute="top" id="qcn-qm-OhF"/>
+                                                            </constraints>
+                                                            <connections>
+                                                                <outlet property="cellImage" destination="FvD-Y6-g0K" id="D4Y-u7-Srq"/>
+                                                                <outlet property="cellText" destination="YD4-4i-3Yn" id="LSX-RI-SvG"/>
+                                                                <outlet property="textField" destination="YD4-4i-3Yn" id="6yv-8S-gd2"/>
+                                                            </connections>
+                                                        </tableCellView>
+                                                        <customView identifier="MyTableRowViewId" id="niF-K7-F82" customClass="MyTableRowView">
+                                                            <rect key="frame" x="1" y="17" width="236" height="19"/>
+                                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        </customView>
+                                                    </prototypeCellViews>
+                                                </tableColumn>
+                                            </tableColumns>
+                                            <connections>
+                                                <outlet property="dataSource" destination="728" id="JoG-ek-0vX"/>
+                                                <outlet property="delegate" destination="728" id="xKa-32-GqU"/>
+                                                <outlet property="rowView" destination="niF-K7-F82" id="TyR-xr-I1R"/>
+                                            </connections>
+                                        </tableView>
+                                    </subviews>
+                                    <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                </clipView>
+                                <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" id="xVz-uF-tNY">
+                                    <rect key="frame" x="-100" y="-100" width="223" height="15"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                </scroller>
+                                <scroller key="verticalScroller" hidden="YES" verticalHuggingPriority="750" id="PEa-E4-B5B">
+                                    <rect key="frame" x="-100" y="-100" width="15" height="102"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                </scroller>
+                            </scrollView>
+                        </subviews>
+                        <constraints>
+                            <constraint firstItem="LuN-rv-ixa" firstAttribute="bottom" secondItem="3aM-PP-Jf8" secondAttribute="bottom" id="4r5-1w-Eha"/>
+                            <constraint firstItem="LuN-rv-ixa" firstAttribute="top" secondItem="3aM-PP-Jf8" secondAttribute="top" id="Fkb-t4-sxR"/>
+                            <constraint firstItem="LuN-rv-ixa" firstAttribute="leading" secondItem="3aM-PP-Jf8" secondAttribute="leading" id="hE5-3n-lpu"/>
+                            <constraint firstAttribute="trailing" secondItem="LuN-rv-ixa" secondAttribute="trailing" id="w2o-2U-a7P"/>
+                        </constraints>
+                    </customView>
                 </subviews>
                 <constraints>
                     <constraint firstAttribute="bottom" secondItem="590" secondAttribute="bottom" constant="20" symbolic="YES" id="592"/>
@@ -261,6 +359,7 @@
                 <outlet property="secondSubmenuView" destination="1620" id="1666"/>
                 <outlet property="statusbarItemView" destination="qPA-Mr-eaZ" id="uqc-B8-KJM"/>
                 <outlet property="statusbarMenu" destination="704" id="732"/>
+                <outlet property="testTable" destination="NME-ZP-Mgt" id="wxV-C9-k7I"/>
             </connections>
         </customObject>
         <customObject id="420" customClass="NSFontManager"/>
@@ -453,8 +552,93 @@
                 </textField>
             </subviews>
         </customView>
+        <customObject id="1V6-63-Dbp" customClass="test"/>
     </objects>
     <resources>
         <image name="NSActionTemplate" width="15" height="15"/>
     </resources>
+    <classes>
+        <class className="AppDelegate" superclassName="NSObject">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/AppDelegate.h"/>
+            <relationships>
+                <relationship kind="outlet" name="statusbarMenuController" candidateClass="StatusbarMenuController"/>
+                <relationship kind="outlet" name="window" candidateClass="NSWindow"/>
+            </relationships>
+        </class>
+        <class className="AppsInspector" superclassName="NSObject">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/AppsInspector.h"/>
+            <relationships>
+                <relationship kind="action" name="activateOtherApp:"/>
+                <relationship kind="action" name="deletePid:" candidateClass="NSButton"/>
+                <relationship kind="action" name="exitApp:" candidateClass="NSButton"/>
+                <relationship kind="action" name="printStats:" candidateClass="NSButton"/>
+                <relationship kind="action" name="procCPULimiterResume:" candidateClass="NSButton"/>
+                <relationship kind="action" name="procCPULimiterSuspend:" candidateClass="NSButton"/>
+                <relationship kind="action" name="setPidLimit:" candidateClass="NSButton"/>
+                <relationship kind="outlet" name="activateAppTextField" candidateClass="NSTextField"/>
+                <relationship kind="outlet" name="limTF" candidateClass="NSTextField"/>
+                <relationship kind="outlet" name="pidDeleteTF" candidateClass="NSTextField"/>
+                <relationship kind="outlet" name="pidTF" candidateClass="NSTextField"/>
+                <relationship kind="outlet" name="secondTableView" candidateClass="NSTableView"/>
+            </relationships>
+        </class>
+        <class className="MyCustomWindowView" superclassName="NSView">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/MyCustomWindowView.h"/>
+        </class>
+        <class className="MyImageView" superclassName="NSImageView">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/MyImageView.h"/>
+        </class>
+        <class className="MySubmenuView" superclassName="NSView">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/MySubmenuView.h"/>
+            <relationships>
+                <relationship kind="outlet" name="tableView" candidateClass="MyTableView"/>
+            </relationships>
+        </class>
+        <class className="MyTableCellView" superclassName="NSTableCellView">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/MyTableCellView.h"/>
+            <relationships>
+                <relationship kind="outlet" name="cellImage" candidateClass="MyImageView"/>
+                <relationship kind="outlet" name="cellText" candidateClass="NSTextField"/>
+            </relationships>
+        </class>
+        <class className="MyTableRowView" superclassName="NSTableRowView">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/MyTableRowView.h"/>
+        </class>
+        <class className="MyTableView" superclassName="NSTableView">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/MyTableView.h"/>
+        </class>
+        <class className="MyWindow" superclassName="NSPanel">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/MyWindow.h"/>
+        </class>
+        <class className="NSLayoutConstraint" superclassName="NSObject">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/NSLayoutConstraint.h"/>
+        </class>
+        <class className="NSTableRowView" superclassName="NSView">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/NSTableRowView.h"/>
+        </class>
+        <class className="StatusbarItemView" superclassName="NSView">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/StatusbarItemView.h"/>
+        </class>
+        <class className="StatusbarMenuController" superclassName="NSObject">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/StatusbarMenuController.h"/>
+            <relationships>
+                <relationship kind="action" name="activateSelf:"/>
+                <relationship kind="action" name="addMenu:"/>
+                <relationship kind="action" name="changeMenu:"/>
+                <relationship kind="action" name="showmenu:"/>
+                <relationship kind="action" name="someAction2:" candidateClass="NSMenuItem"/>
+                <relationship kind="action" name="someAction:" candidateClass="NSMenuItem"/>
+                <relationship kind="outlet" name="appListTableView" candidateClass="MyTableView"/>
+                <relationship kind="outlet" name="appSubmenuView" candidateClass="MySubmenuView"/>
+                <relationship kind="outlet" name="myPanel" candidateClass="NSPanel"/>
+                <relationship kind="outlet" name="secondSubmenuView" candidateClass="NSView"/>
+                <relationship kind="outlet" name="statusbarItemView" candidateClass="NSView"/>
+                <relationship kind="outlet" name="statusbarMenu" candidateClass="NSMenu"/>
+                <relationship kind="outlet" name="testTable" candidateClass="MyTableView"/>
+            </relationships>
+        </class>
+        <class className="test" superclassName="NSObject">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/test.h"/>
+        </class>
+    </classes>
 </document>
