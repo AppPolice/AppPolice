@@ -6,14 +6,23 @@
 //  Copyright (c) 2013 Maksym Stefanchuk. All rights reserved.
 //
 
+#import "CMMenuItem.h"
 #import "CMMenuItemBackgroundView.h"
 
 
 /* Private properties */
 @interface CMMenuItemBackgroundView()
-	@property BOOL mouseInside;
+{
+	BOOL _mouseInside;
+	NSTrackingArea *_trackingArea;
+}
+
+@property BOOL mouseInside;
+
 @end
 
+
+/******************* IMPLEMENTATION ******************/
 
 @implementation CMMenuItemBackgroundView
 
@@ -53,7 +62,7 @@
 	mouseLocation = [[self superview] convertPoint:mouseLocation fromView:nil];
 //	NSLog(@"TABLE ROW DRAWRECT. mouseLocation :::: x: %f, y: %f", mouseLocation.x, mouseLocation.y);
 	
-	mouseInside = [self mouse:mouseLocation inRect:[self frame]];
+	_mouseInside = [self mouse:mouseLocation inRect:[self frame]];
 	//	if (mouseInside) {
 	//		if ([table mouseoverRow] != self)
 	//			[[table mouseoverRow] setNeedsDisplay:YES];
@@ -71,7 +80,7 @@
 	
 	[self drawBackgroundInRect:dirtyRect];
 	
-	if (self.isSelected && !mouseInside) {
+	if (self.isSelected && !_mouseInside) {
 		[self drawSelectionInRect:dirtyRect];
 	}
 	
@@ -81,21 +90,30 @@
 
 
 - (void)dealloc {
-    [trackingArea release];
+    [_trackingArea release];
     [super dealloc];
 }
 
 
-- (void)setMouseInside:(BOOL)_mouseInside {
-	//	self.interiorBackgroundStyle = (_mouseInside) ? NSBackgroundStyleDark : NSBackgroundStyleLight;
-	if (mouseInside != _mouseInside) {
-		mouseInside = _mouseInside;
+- (void)setMouseInside:(BOOL)mouseInside {
+	if (_mouseInside != mouseInside) {
+		_mouseInside = mouseInside;
 		[self setNeedsDisplay:YES];
 	}
 }
 
 - (BOOL)mouseInside {
-	return mouseInside;
+	return _mouseInside;
+}
+
+- (void)setOwner:(CMMenuItem *)owner {
+	if (_owner != owner) {
+		_owner = owner;
+	}
+}
+
+- (CMMenuItem *)owner {
+	return _owner;
 }
 
 
@@ -133,16 +151,19 @@
 
 
 - (void)ensureTrackingArea {
-    if (trackingArea == nil) {
-        trackingArea = [[NSTrackingArea alloc] initWithRect:NSZeroRect options:NSTrackingInVisibleRect | NSTrackingActiveAlways | NSTrackingMouseEnteredAndExited owner:self userInfo:nil];
+    if (_trackingArea == nil) {
+        _trackingArea = [[NSTrackingArea alloc] initWithRect:NSZeroRect options:NSTrackingInVisibleRect | NSTrackingActiveAlways | NSTrackingMouseEnteredAndExited owner:self userInfo:nil];
     }
 }
 
+/*
+ * NSView's -updateTrackingAreas method override
+ */
 - (void)updateTrackingAreas {
 	//	[super updateTrackingAreas];
 	[self ensureTrackingArea];
-	if (![[self trackingAreas] containsObject:trackingArea]) {
-		[self addTrackingArea:trackingArea];
+	if (![[self trackingAreas] containsObject:_trackingArea]) {
+		[self addTrackingArea:_trackingArea];
 	}
 	
 	//	NSLog(@"Tracking areas: %@", [self trackingAreas]);
@@ -160,17 +181,27 @@
 
 - (void)mouseEntered:(NSEvent *)theEvent {
 	NSLog(@"Entered: %@", theEvent);
+	
+	[_owner mouseEntered:theEvent];
+	
 	//	[self becomeFirstResponder];
 	[self setMouseInside:YES];
 }
 
 - (void)mouseExited:(NSEvent *)theEvent {
 	NSLog(@"Exited: %@", theEvent);
+	
+	[_owner mouseExited:theEvent];
+	
 	[self setMouseInside:NO];
 }
 
 - (void)mouseDown:(NSEvent *)theEvent {
-	NSLog(@"Row mouse down. View: %@, superview: %@", self, [self superview]);
+//	NSLog(@"Row mouse down. View: %@, superview: %@", self, [self superview]);
+//	NSLog(@"Row owner: %@, owner title: %@, submenu: %@", _owner, [_owner title], [_owner submenu]);
+	
+	[_owner mouseDown:theEvent];
+	
 //	if (!self.selected) {
 //		self.selected = YES;
 //		[table selectRowIndexes:[NSIndexSet indexSetWithIndex:[table rowForView:self]] byExtendingSelection:NO];
@@ -240,7 +271,7 @@ static NSGradient *gradientWithTargetColor(NSColor *targetColor) {
 	//	NSLog(@"%@", [[self viewAtColumn:0] subviews]);
 	
 	
-    if (mouseInside) {
+    if (_mouseInside) {
 		//        NSGradient *gradient = gradientWithTargetColor([NSColor blueColor]);
 		//        NSGradient *gradient = [self gradientWithTargetColor:[NSColor colorWithSRGBRed:0.52 green:0.7 blue:0.99 alpha:1.0] andColor:[NSColor colorWithSRGBRed:0.34 green:0.53 blue:0.89 alpha:1.0]];
 		
@@ -331,7 +362,7 @@ static NSGradient *gradientWithTargetColor(NSColor *targetColor) {
 
 
 - (void)resetBackgroundViewProperties {
-	mouseInside = NO;
+	_mouseInside = NO;
 }
 
 - (void)printRect:(NSRect)rect withTitle:(NSString *)title {

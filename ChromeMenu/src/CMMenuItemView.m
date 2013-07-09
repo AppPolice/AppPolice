@@ -9,6 +9,7 @@
 #import "CMMenuItemView.h"
 #import <objc/runtime.h>
 
+
 @implementation CMMenuItemView
 
 @synthesize icon = _icon;
@@ -26,8 +27,18 @@
 //    return self;
 //}
 
+
 //- (void)drawRect:(NSRect)dirtyRect {
-//    // Drawing code here.
+//	//	NSLog(@"Cell View draw rect called. Cell subviews: %@", [self subviews]);
+//	
+//
+//	NSBezierPath *path = [NSBezierPath bezierPath];
+//	[path appendBezierPathWithRect:[self bounds]];
+//	[[NSColor greenColor] set];
+//	[path stroke];
+//	
+//	//	[self printRect:[self bounds] withTitle:@"Cell Rect:"];
+//	//	[self printRect:[[self superview] bounds] withTitle:@"Superview rect:"];
 //}
 
 
@@ -41,6 +52,7 @@
 //}
 
 
+
 - (void)setIconProperty:(NSImage *)aImage {
 	[_icon setImage:aImage];
 }
@@ -50,22 +62,9 @@
 }
 
 
-- (void)drawRect:(NSRect)dirtyRect {
-//	NSLog(@"Cell View draw rect called. Cell subviews: %@", [self subviews]);
-	NSBezierPath *path = [NSBezierPath bezierPath];
-	[path appendBezierPathWithRect:[[self superview] bounds]];
-	[[NSColor greenColor] set];
-	[path stroke];
-	
-	[self printRect:[self bounds] withTitle:@"Cell Rect:"];
-	[self printRect:[[self superview] bounds] withTitle:@"Superview rect:"];
-}
-
-
 //- (BOOL)acceptsFirstMouse:(NSEvent *)theEvent {
 //	return YES;
 //}
-
 
 
 - (void)mouseDown:(NSEvent *)theEvent {
@@ -76,6 +75,7 @@
 - (void)rightMouseDown:(NSEvent *)theEvent {
 	NSLog(@"Cell right mouse down");
 }
+
 
 
 

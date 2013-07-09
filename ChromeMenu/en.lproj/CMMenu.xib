@@ -67,8 +67,8 @@
                                                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                                                     </textFieldCell>
                                                                 </textField>
-                                                                <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="WDJ-AU-3lH">
-                                                                    <rect key="frame" x="323" y="5" width="9" height="9"/>
+                                                                <imageView hidden="YES" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="WDJ-AU-3lH">
+                                                                    <rect key="frame" x="326" y="5" width="9" height="9"/>
                                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                                     <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="NSGoRightTemplate" id="Md8-py-dbT"/>
                                                                 </imageView>
@@ -147,42 +147,4 @@
     <resources>
         <image name="NSGoRightTemplate" width="9" height="9"/>
     </resources>
-    <classes>
-        <class className="CMMenu" superclassName="NSObject">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/CMMenu.h"/>
-            <relationships>
-                <relationship kind="action" name="buttonClick:"/>
-                <relationship kind="outlet" name="_menuTableView" candidateClass="NSTableView"/>
-                <relationship kind="outlet" name="_underlyingView" candidateClass="ChromeMenuUnderlyingView"/>
-                <relationship kind="outlet" name="_underlyingWindow" candidateClass="ChromeMenuUnderlyingWindow"/>
-                <relationship kind="outlet" name="title" candidateClass="NSTextField"/>
-            </relationships>
-        </class>
-        <class className="CMMenuItemBackgroundView" superclassName="NSTableRowView">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/CMMenuItemBackgroundView.h"/>
-        </class>
-        <class className="CMMenuItemView" superclassName="NSTableCellView">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/CMMenuItemView.h"/>
-            <relationships>
-                <relationship kind="outlet" name="icon" candidateClass="NSImageView"/>
-                <relationship kind="outlet" name="ownersIcon" candidateClass="NSImageView"/>
-                <relationship kind="outlet" name="title" candidateClass="NSTextField"/>
-            </relationships>
-        </class>
-        <class className="CMTableView" superclassName="NSTableView">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/CMTableView.h"/>
-        </class>
-        <class className="ChromeMenuUnderlyingView" superclassName="NSView">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/ChromeMenuUnderlyingView.h"/>
-        </class>
-        <class className="ChromeMenuUnderlyingWindow" superclassName="NSPanel">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/ChromeMenuUnderlyingWindow.h"/>
-        </class>
-        <class className="NSLayoutConstraint" superclassName="NSObject">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/NSLayoutConstraint.h"/>
-        </class>
-        <class className="NSTableRowView" superclassName="NSView">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/NSTableRowView.h"/>
-        </class>
-    </classes>
 </document>

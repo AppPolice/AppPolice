@@ -29,4 +29,11 @@
 	}
 }
 
+
+- (void)rightMouseDown:(NSEvent *)theEvent {
+	[super rightMouseDown:theEvent];
+	
+	NSLog(@"table view right mouse down: %@", theEvent);
+}
+
 @end

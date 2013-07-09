@@ -7,12 +7,13 @@
 //
 
 #import <Foundation/Foundation.h>
-
+//#import "CMMenu.h"
 @class CMMenu;
 
 @interface CMMenuItem : NSObject
 {
 @private
+	CMMenu *_menu;
 	NSImage *_icon;
 	NSString *_title;
 	CMMenu *_submenu;
@@ -31,6 +32,9 @@
 
 - (id)initWithTitle:(NSString *)aTitle;
 - (id)initWithTitle:(NSString *)aTitle andIcon:(NSImage *)anImage;
+
+/* returns menu to which item belongs */
+- (CMMenu *)menu;
 
 - (BOOL)hasSubmenu;
 - (void)setSubmenu:(CMMenu *)submenu;

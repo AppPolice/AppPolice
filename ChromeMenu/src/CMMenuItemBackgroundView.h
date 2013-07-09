@@ -7,19 +7,29 @@
 //
 
 //#import <Cocoa/Cocoa.h>
+#import "CMMenuItem.h"
 
 @class NSTableRowView;
-@class CMMenuItem;
+//@class CMMenuItem;
 
 @interface CMMenuItemBackgroundView : NSTableRowView
 {
 @private
-	BOOL mouseInside;
-    NSTrackingArea *trackingArea;
 	CMMenuItem *_owner;
 }
 
+@property (assign) CMMenuItem *owner;
+
 /* reset view properties after it was returned from -makeViewWithIdentifier: */
 - (void)resetBackgroundViewProperties;
+
+@end
+
+
+@interface CMMenuItem (CMMenuItemEventCommunication)
+
+- (void)mouseEntered:(NSEvent *)theEvent;
+- (void)mouseExited:(NSEvent *)theEvent;
+- (void)mouseDown:(NSEvent *)theEvent;
 
 @end

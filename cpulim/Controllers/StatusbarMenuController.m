@@ -483,16 +483,16 @@ static NSString *tableData[] = {
 		NSString *statusImageName = [NSString stringWithString:(i % 2 == 0) ? @"NSStatusAvailable" : @"NSStatusUnavailable"];
 
 		id item = nil;
-//		if (i == 1 || i == 4) {
-//			item = [[CMMenuItemOverride alloc] initWithTitle:name];
-//			[item setViewFromNibNamed:@"MenuItemView" withIdentifier:@"CMTableCellViewIdOverride" andPropertyNames:viewProperties];
-//			[item setStatusIcon:[NSImage imageNamed:statusImageName]];
-//		} else {
+		if (i == 1 || i == 4) {
+			item = [[CMMenuItemOverride alloc] initWithTitle:name];
+			[item setViewFromNibNamed:@"MenuItemView" withIdentifier:@"CMTableCellViewIdOverride" andPropertyNames:viewProperties];
+			[item setStatusIcon:[NSImage imageNamed:statusImageName]];
+		} else {
 			item = [[CMMenuItem alloc] initWithTitle:name];
-//		}
+		}
 		
-//		if (i > 3)
-//			[item setIcon:image];
+		if (i > 3)
+			[item setIcon:image];
 		
 //		[item setIcon:image];
 
@@ -507,11 +507,19 @@ static NSString *tableData[] = {
 	
 	[viewProperties release];
 	
-//	[item1 release];
-//	[item2 release];
-//	[item3 release];
-//	[item4 release];
 
+	CMMenu *submenu = [[CMMenu alloc] init];
+	CMMenuItem *submenuItem1 = [[CMMenuItem alloc] initWithTitle:@"one"];
+	[submenu addItem:submenuItem1];
+	[submenuItem1 release];
+	CMMenuItem *submenuItem2 = [[CMMenuItem alloc] initWithTitle:@"two"];
+	[submenu addItem:submenuItem2];
+	[submenuItem2 release];
+	
+	[menu setSubmenu:submenu forItem:[menu itemAtIndex:3]];
+	[submenu release];
+
+	
 
 //	[menu update];
 	

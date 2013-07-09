@@ -7,16 +7,16 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "CMMenuItem.h"
+//#import "CMMenuItem.h"
 
 @class ChromeMenuUnderlyingWindow, ChromeMenuUnderlyingView, CMTableCellView;
+@class CMMenuItem;
 
 @interface CMMenu : NSObject <NSTableViewDataSource, NSTableViewDelegate>
 {
 @private
 	IBOutlet ChromeMenuUnderlyingWindow *_underlyingWindow;
 	IBOutlet ChromeMenuUnderlyingView *_underlyingView;
-	IBOutlet NSTextField *title;
 	IBOutlet NSTableView *_menuTableView;
 	
 	NSMutableArray *_menuItems;

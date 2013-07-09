@@ -7,16 +7,35 @@
 //
 
 #import "CMMenuItem.h"
+#import "CMMenu.h"
 #import <objc/runtime.h>
+
 
 /*
  * Private declarations
  */
 @interface CMMenuItem()
 {
-	
+	int _submenuIntervalSetToPopup;
 }
+
+- (void)setMenu:(CMMenu *)aMenu;
+- (void)mouseEntered:(NSEvent *)theEvent;
+- (void)mouseExited:(NSEvent *)theEvent;
+- (void)mouseDown:(NSEvent *)theEvent;
+- (void)showSubmenu;
+
 @end
+
+
+@interface CMMenu (CMMenuPrivateMethods)
+- (void)showMenuAsSubmenuOf:(CMMenuItem *)menuItem;	// may not be needed
+//- (void)orderFront;
+- (NSInteger)windowLevel;
+@end
+
+
+
 
 @implementation CMMenuItem
 
@@ -60,6 +79,16 @@
 		instance->_isSeparatorItem = YES;
 	}
 	return instance;
+}
+
+
+- (void)setMenu:(CMMenu *)aMenu {
+	if (_menu != aMenu)
+		_menu = aMenu;
+}
+
+- (CMMenu *)menu {
+	return _menu;
 }
 
 
@@ -116,6 +145,41 @@
 	_viewNibName = [nibName retain];
 	_viewIdentifier = [identifier retain];
 	_viewPropertyNames = [propertyNames retain];
+}
+
+
+- (void)mouseEntered:(NSEvent *)theEvent {
+	if (_submenu) {
+		[self performSelector:@selector(showSubmenu) withObject:nil afterDelay:0.2];
+		_submenuIntervalSetToPopup = 1;
+//		[_submenu showMenu];
+	}
+}
+
+
+- (void)mouseExited:(NSEvent *)theEvent {
+	if (_submenu) {
+		if (_submenuIntervalSetToPopup)
+			[NSObject cancelPreviousPerformRequestsWithTarget:self];
+		else
+			[_submenu cancelTrackingWithoutAnimation];
+	}
+}
+
+
+- (void)mouseDown:(NSEvent *)theEvent {
+	// submenu should always stay on top
+//	if (_submenu)
+//		[_submenu orderFront];
+	
+//	NSLog(@"submenu window number: %ld, parnet menu WN: %ld", [_submenu windowLevel], [_menu windowLevel]);
+}
+
+
+- (void)showSubmenu {
+	_submenuIntervalSetToPopup = 0;
+//	[_submenu showMenu];
+	[_submenu showMenuAsSubmenuOf:self];
 }
 
 

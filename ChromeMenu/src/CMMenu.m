@@ -13,8 +13,9 @@
 #import "ChromeMenuUnderlyingWindow.h"
 #import "ChromeMenuUnderlyingView.h"
 
+
 /*
- * Private declarations
+ * Private class declarations
  */
 @interface CMMenu()
 {
@@ -32,7 +33,22 @@
 	NSMutableArray *_itemViewRegesteredNibs;
 	int _registeredCustomNibs;
 }
+
+//- (void)orderFront;
+- (NSInteger)windowNumber;	// may not be needed
+- (void)showMenuAsSubmenuOf:(CMMenuItem *)menuItem; // may not be needed
+
 @end
+
+
+/*
+ * Private decalrations of CMMenuItem
+ */
+@interface CMMenuItem (CMMenuItemPrivateMethods)
+- (void)setMenu:(CMMenu *)aMenu;
+@end
+
+
 
 
 @implementation CMMenu
@@ -44,6 +60,12 @@
 		_needsUpdating = 1;
 		_menuItems = [[NSMutableArray alloc] init];
 		_registeredCustomNibs = 0;
+			
+		// maks: might need to be elaborated: only submenus of menu should be of higher level
+		static int level = 0;
+		[_underlyingWindow setLevel:NSPopUpMenuWindowLevel + level];
+		++level;
+		
 //		NSNib *nib = [[NSNib alloc] initWithNibNamed:@"CMTableCellViewId3" bundle:[NSBundle mainBundle]];
 //		[_menuTableView registerNib:nib forIdentifier:@"CMTableCellViewId3"];
 	}
@@ -90,6 +112,7 @@
 		[NSException raise:NSInvalidArgumentException format:@"Exception: nil provided as Menu Item object."];
 	
 	[_menuItems addObject:newItem];
+	[newItem setMenu:self];
 }
 
 
@@ -157,20 +180,40 @@
 
 
 - (void)showMenu {
-	/* when _underlyingView is initially set to Hidden and instantiating a Menu OSX will NOT draw tableView.
-		Otherwise it will, even if we are not going to show menu yet. */
-	if (_displayedFirstTime == 0) {
-		[_underlyingView setHidden:NO];
-		_displayedFirstTime = 1;
-	}
 	
 	if (_needsUpdating) {
 		[self update];
 		_needsUpdating = 0;
 	}
+
+	/* when _underlyingView is initially set to Hidden and instantiating a Menu OSX will NOT draw tableView.
+	 Otherwise it will, even if we are not going to show menu yet.
+	 First time Menu is displayed we redraw shadows. Otherwise Menu appears without shadows when we use
+	 _underlyingView set to Hidden.
+	 */
+	if (_displayedFirstTime == 0) {
+		[_underlyingView setHidden:NO];
+		[_underlyingWindow display];
+		[_underlyingWindow setHasShadow:NO];
+		[_underlyingWindow setHasShadow:YES];
+
+		[_underlyingWindow orderFront:self];
+
+	} else
+		[_underlyingWindow orderFront:self];
 	
-	[_underlyingWindow orderFront:self];
+	_displayedFirstTime = 1;
 }
+
+
+- (void)showMenuAsSubmenuOf:(CMMenuItem *)menuItem {
+	[self showMenu];
+}
+
+
+//- (void)orderFront {
+//	[_underlyingWindow orderFront:self];
+//}
 
 
 - (void)cancelTracking {
@@ -278,6 +321,11 @@ int flag2 = 0;
 		
 		[[defaultCellView title] setStringValue:[menuItem title]];
 		
+		if ([menuItem hasSubmenu])
+			[[defaultCellView ownersIcon] setHidden:NO];
+		else
+			[[defaultCellView ownersIcon] setHidden:YES];
+		
 //		NSLog(@"default cell view: %@", defaultCellView);
 		
 		return defaultCellView;
@@ -288,6 +336,7 @@ int flag2 = 0;
 - (NSTableRowView *)tableView:(NSTableView *)tableView rowViewForRow:(NSInteger)row {
 	//	NSLog(@"------------------ ROWView for ROW ----------------");
 	CMMenuItemBackgroundView *rowView = [tableView makeViewWithIdentifier:@"CMMenuItemBackgroundViewId" owner:self];
+	[rowView setOwner:[self itemAtIndex:row]];
 	[rowView resetBackgroundViewProperties];
 	return rowView;
 }
@@ -311,6 +360,18 @@ int flag2 = 0;
 //	[[self appInspectorController] showAppDetailsPopoverRelativeTo:rowView];
 }
 
+
+- (NSWindow *)window {
+	return _underlyingWindow;
+}
+
+- (NSInteger)windowNumber {
+	return [_underlyingWindow windowNumber];
+}
+
+- (NSInteger)windowLevel {
+	return [_underlyingWindow level];
+}
 
 
 
