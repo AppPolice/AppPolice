@@ -11,7 +11,7 @@
 @implementation ChromeMenuUnderlyingWindow
 
 - (id)initWithContentRect:(NSRect)contentRect styleMask:(NSUInteger)aStyle backing:(NSBackingStoreType)bufferingType defer:(BOOL)flag {
-	if (self = [super initWithContentRect:contentRect styleMask:NSBorderlessWindowMask backing:NSBackingStoreBuffered defer:NO]) {
+	if (self = [super initWithContentRect:contentRect styleMask:NSBorderlessWindowMask backing:NSBackingStoreBuffered defer:YES]) {
 		[self setBackgroundColor:[NSColor clearColor]];
 		[self setOpaque:NO];
 		//		[self setAlphaValue:0.95];
@@ -23,7 +23,6 @@
 //- (BOOL)canBecomeKeyWindow {
 //	return YES;
 //}
-
 
 - (void)mouseDown:(NSEvent *)theEvent {
 	NSLog(@"Mouse Down");
@@ -55,6 +54,12 @@
     
     // Move the window to the new location
     [self setFrameOrigin:newOrigin];
+}
+
+
+- (void)keyDown:(NSEvent *)theEvent {
+	[super keyDown:theEvent];
+	NSLog(@"window key down event");
 }
 
 

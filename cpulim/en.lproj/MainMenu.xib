@@ -200,7 +200,7 @@
                                                                     <rect key="frame" x="34" y="0.0" width="205" height="17"/>
                                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                                                     <textFieldCell key="cell" lineBreakMode="truncatingTail" refusesFirstResponder="YES" sendsActionOnEndEditing="YES" title="Table View Cell" id="tcc-vp-CeP">
-                                                                        <font key="font" metaFont="system"/>
+                                                                        <font key="font" size="14" name="LucidaGrande"/>
                                                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                                                     </textFieldCell>
@@ -436,7 +436,7 @@
                                                         <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="NSActionTemplate" id="Pqt-yw-zs2"/>
                                                     </imageView>
                                                     <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="Ypp-yy-raU">
-                                                        <rect key="frame" x="34" y="0.0" width="243" height="17"/>
+                                                        <rect key="frame" x="34" y="1" width="243" height="17"/>
                                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                                         <textFieldCell key="cell" lineBreakMode="truncatingTail" refusesFirstResponder="YES" sendsActionOnEndEditing="YES" title="Table View Cell" id="TQl-te-aZT">
                                                             <font key="font" metaFont="system"/>
@@ -447,9 +447,8 @@
                                                 </subviews>
                                                 <constraints>
                                                     <constraint firstItem="cC7-H1-tng" firstAttribute="top" secondItem="RrJ-F6-c2L" secondAttribute="top" constant="1" id="Ay8-bC-DHV"/>
-                                                    <constraint firstItem="Ypp-yy-raU" firstAttribute="centerY" secondItem="RrJ-F6-c2L" secondAttribute="centerY" id="KNh-4u-aqB"/>
+                                                    <constraint firstItem="Ypp-yy-raU" firstAttribute="centerY" secondItem="RrJ-F6-c2L" secondAttribute="centerY" constant="-1" id="KNh-4u-aqB"/>
                                                     <constraint firstItem="cC7-H1-tng" firstAttribute="leading" secondItem="RrJ-F6-c2L" secondAttribute="leading" constant="14" id="KhB-W6-gwc"/>
-                                                    <constraint firstItem="Ypp-yy-raU" firstAttribute="top" secondItem="RrJ-F6-c2L" secondAttribute="top" id="Pna-oH-JyZ"/>
                                                     <constraint firstAttribute="bottom" secondItem="cC7-H1-tng" secondAttribute="bottom" constant="1" id="eXs-XQ-8ue"/>
                                                     <constraint firstAttribute="trailing" secondItem="Ypp-yy-raU" secondAttribute="trailing" id="gsi-cC-itI"/>
                                                     <constraint firstItem="Ypp-yy-raU" firstAttribute="leading" secondItem="cC7-H1-tng" secondAttribute="trailing" constant="8" id="yEh-wg-GXp"/>
@@ -557,88 +556,4 @@
     <resources>
         <image name="NSActionTemplate" width="15" height="15"/>
     </resources>
-    <classes>
-        <class className="AppDelegate" superclassName="NSObject">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/AppDelegate.h"/>
-            <relationships>
-                <relationship kind="outlet" name="statusbarMenuController" candidateClass="StatusbarMenuController"/>
-                <relationship kind="outlet" name="window" candidateClass="NSWindow"/>
-            </relationships>
-        </class>
-        <class className="AppsInspector" superclassName="NSObject">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/AppsInspector.h"/>
-            <relationships>
-                <relationship kind="action" name="activateOtherApp:"/>
-                <relationship kind="action" name="deletePid:" candidateClass="NSButton"/>
-                <relationship kind="action" name="exitApp:" candidateClass="NSButton"/>
-                <relationship kind="action" name="printStats:" candidateClass="NSButton"/>
-                <relationship kind="action" name="procCPULimiterResume:" candidateClass="NSButton"/>
-                <relationship kind="action" name="procCPULimiterSuspend:" candidateClass="NSButton"/>
-                <relationship kind="action" name="setPidLimit:" candidateClass="NSButton"/>
-                <relationship kind="outlet" name="activateAppTextField" candidateClass="NSTextField"/>
-                <relationship kind="outlet" name="limTF" candidateClass="NSTextField"/>
-                <relationship kind="outlet" name="pidDeleteTF" candidateClass="NSTextField"/>
-                <relationship kind="outlet" name="pidTF" candidateClass="NSTextField"/>
-                <relationship kind="outlet" name="secondTableView" candidateClass="NSTableView"/>
-            </relationships>
-        </class>
-        <class className="MyCustomWindowView" superclassName="NSView">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/MyCustomWindowView.h"/>
-        </class>
-        <class className="MyImageView" superclassName="NSImageView">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/MyImageView.h"/>
-        </class>
-        <class className="MySubmenuView" superclassName="NSView">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/MySubmenuView.h"/>
-            <relationships>
-                <relationship kind="outlet" name="tableView" candidateClass="MyTableView"/>
-            </relationships>
-        </class>
-        <class className="MyTableCellView" superclassName="NSTableCellView">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/MyTableCellView.h"/>
-            <relationships>
-                <relationship kind="outlet" name="cellImage" candidateClass="MyImageView"/>
-                <relationship kind="outlet" name="cellText" candidateClass="NSTextField"/>
-            </relationships>
-        </class>
-        <class className="MyTableRowView" superclassName="NSTableRowView">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/MyTableRowView.h"/>
-        </class>
-        <class className="MyTableView" superclassName="NSTableView">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/MyTableView.h"/>
-        </class>
-        <class className="MyWindow" superclassName="NSPanel">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/MyWindow.h"/>
-        </class>
-        <class className="NSLayoutConstraint" superclassName="NSObject">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/NSLayoutConstraint.h"/>
-        </class>
-        <class className="NSTableRowView" superclassName="NSView">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/NSTableRowView.h"/>
-        </class>
-        <class className="StatusbarItemView" superclassName="NSView">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/StatusbarItemView.h"/>
-        </class>
-        <class className="StatusbarMenuController" superclassName="NSObject">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/StatusbarMenuController.h"/>
-            <relationships>
-                <relationship kind="action" name="activateSelf:"/>
-                <relationship kind="action" name="addMenu:"/>
-                <relationship kind="action" name="changeMenu:"/>
-                <relationship kind="action" name="showmenu:"/>
-                <relationship kind="action" name="someAction2:" candidateClass="NSMenuItem"/>
-                <relationship kind="action" name="someAction:" candidateClass="NSMenuItem"/>
-                <relationship kind="outlet" name="appListTableView" candidateClass="MyTableView"/>
-                <relationship kind="outlet" name="appSubmenuView" candidateClass="MySubmenuView"/>
-                <relationship kind="outlet" name="myPanel" candidateClass="NSPanel"/>
-                <relationship kind="outlet" name="secondSubmenuView" candidateClass="NSView"/>
-                <relationship kind="outlet" name="statusbarItemView" candidateClass="NSView"/>
-                <relationship kind="outlet" name="statusbarMenu" candidateClass="NSMenu"/>
-                <relationship kind="outlet" name="testTable" candidateClass="MyTableView"/>
-            </relationships>
-        </class>
-        <class className="test" superclassName="NSObject">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/test.h"/>
-        </class>
-    </classes>
 </document>

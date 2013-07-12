@@ -29,6 +29,7 @@
 
 
 @interface CMMenu (CMMenuPrivateMethods)
+- (void)setSupermenu:(CMMenu *)aMenu;
 - (void)showMenuAsSubmenuOf:(CMMenuItem *)menuItem;	// may not be needed
 //- (void)orderFront;
 - (NSInteger)windowLevel;
@@ -115,6 +116,7 @@
 		[NSException raise:NSInvalidArgumentException format:@"Bad argument provided in -%@", NSStringFromSelector(_cmd)];
 	
 	_submenu = [submenu retain];
+	[_submenu setSupermenu:[self menu]];
 }
 
 
@@ -172,7 +174,7 @@
 //	if (_submenu)
 //		[_submenu orderFront];
 	
-//	NSLog(@"submenu window number: %ld, parnet menu WN: %ld", [_submenu windowLevel], [_menu windowLevel]);
+	NSLog(@"submenu window number: %ld, parnet menu WN: %ld", [_submenu windowLevel], [_menu windowLevel]);
 }
 
 

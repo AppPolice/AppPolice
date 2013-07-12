@@ -547,7 +547,7 @@ static NSString *tableData[] = {
 	
 	static int i = 0;
 	if ((i % 2) == 0)
-		[menu showMenu];
+		[menu startMenu];
 	else
 		[menu cancelTrackingWithoutAnimation];
 	
@@ -606,6 +606,8 @@ int flag = 0;
 	MyTableCellView *cellView = [tableView makeViewWithIdentifier:@"AppCellViewId" owner:self];
 	cellView.cellImage.image = [app icon];
 	cellView.cellText.stringValue = [app localizedName];
+	
+	[cellView.cellText setFont:[NSFont menuFontOfSize:14.0]];
 	
 	return cellView;
 }
@@ -693,10 +695,10 @@ int flag = 0;
 
 
 - (IBAction)activateSelf:(id)sender {
-	NSApplication *app = [NSApplication sharedApplication];
-	NSLog(@"%@", app);
-	[app activateIgnoringOtherApps:YES];
-
+//	NSApplication *app = [NSApplication sharedApplication];
+//	NSLog(@"%@", app);
+//	[app activateIgnoringOtherApps:YES];
+	NSLog(@"window: %@", [statusbarItemView superview]);
 }
 
 

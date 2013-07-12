@@ -19,7 +19,10 @@
 - (void)mouseDown:(NSEvent *)theEvent {
 	[super mouseDown:theEvent];
 	
-	//	NSLog(@"table view mouse down: %@", [self subviews]);
+//	NSLog(@"window: %@", [self window]);
+//	[[self window] makeKeyWindow];
+	
+	NSLog(@"table view mouse down: %@", [self subviews]);
 	
 	NSPoint mouseDownPoint = [self convertPoint:[theEvent locationInWindow] fromView:nil];
 	NSInteger row = [self rowAtPoint:mouseDownPoint];
@@ -35,5 +38,21 @@
 	
 	NSLog(@"table view right mouse down: %@", theEvent);
 }
+
+
+- (void)moveUp:(id)sender {
+	NSLog(@"table view Move Up event");
+}
+
+
+- (void)keyDown:(NSEvent *)theEvent {
+	[super keyDown:theEvent];
+	NSLog(@"table view key down");
+}
+
+
+//- (BOOL)acceptsFirstMouse:(NSEvent *)theEvent {
+//	return YES;
+//}
 
 @end

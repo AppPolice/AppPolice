@@ -63,6 +63,7 @@
 //	NSLog(@"TABLE ROW DRAWRECT. mouseLocation :::: x: %f, y: %f", mouseLocation.x, mouseLocation.y);
 	
 	_mouseInside = [self mouse:mouseLocation inRect:[self frame]];
+
 	//	if (mouseInside) {
 	//		if ([table mouseoverRow] != self)
 	//			[[table mouseoverRow] setNeedsDisplay:YES];
@@ -222,6 +223,11 @@
 //	NSLog(@"Owner: %@ with title: %@");
 }
 
+
+//- (void)mouseUp:(NSEvent *)theEvent {
+//	NSLog(@"Row mouse UP: %@", self);
+//}
+
 - (void)rightMouseDown:(NSEvent *)theEvent {
 	NSLog(@"right mouse donw!!");
 }
@@ -238,9 +244,14 @@
 //}
 
 //
-//- (void)keyDown:(NSEvent *)theEvent {
-//	NSLog(@"KEY DOWN ROW :::: %@", theEvent);
-//}
+- (void)keyDown:(NSEvent *)theEvent {
+	NSLog(@"KEY DOWN ROW :::: %@", theEvent);
+}
+
+
+- (void)moveUp:(id)sender {
+	NSLog(@"Move up");
+}
 
 
 static NSGradient *gradientWithTargetColor(NSColor *targetColor) {

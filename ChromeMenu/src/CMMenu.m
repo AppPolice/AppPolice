@@ -21,6 +21,10 @@
 {
 	int _displayedFirstTime;
 	int _needsUpdating;
+	id _localEventMonitor;
+	
+	CGFloat _minimumWidth;
+	NSSize _size;
 	
 /* this block of vartiables servers for storing one custom view that's to be used for all menu items */
 	NSString *_itemsViewNibName;
@@ -34,6 +38,8 @@
 	int _registeredCustomNibs;
 }
 
+- (void)showMenu;
+- (void)setSupermenu:(CMMenu *)aMenu;
 //- (void)orderFront;
 - (NSInteger)windowNumber;	// may not be needed
 - (void)showMenuAsSubmenuOf:(CMMenuItem *)menuItem; // may not be needed
@@ -58,6 +64,7 @@
 		[NSBundle loadNibNamed:[self className] owner:self];
 		_displayedFirstTime = 0;
 		_needsUpdating = 1;
+		_minimumWidth = 0;
 		_menuItems = [[NSMutableArray alloc] init];
 		_registeredCustomNibs = 0;
 			
@@ -105,6 +112,11 @@
 
 
 
+- (CMMenu *)supermenu {
+	return _supermenu;
+}
+
+
 
 
 - (void)addItem:(CMMenuItem *)newItem {
@@ -123,10 +135,22 @@
 }
 
 
+- (NSInteger)numberOfItems {
+	return [_menuItems count];
+}
+
+
+- (NSInteger)indexOfItem:(CMMenuItem *)index {
+	// need implement
+	return 0;
+}
+
+
 - (void)setSubmenu:(CMMenu *)aMenu forItem:(CMMenuItem *)anItem {
 	if (aMenu == nil || anItem == nil)
 		[NSException raise:NSInvalidArgumentException format:@"Bad argument in -%@", NSStringFromSelector(_cmd)];
 	
+	// pass to Menu Item method
 	[anItem setSubmenu:aMenu];
 }
 
@@ -179,6 +203,24 @@
 }
 
 
+- (void)startMenu {
+	_localEventMonitor = [NSEvent addLocalMonitorForEventsMatchingMask:NSKeyDownMask handler:^(NSEvent *theEvent) {
+		unsigned short keyCode = [theEvent keyCode];
+
+		NSLog(@"key code: %d", keyCode);
+		if (keyCode == 126 || keyCode == 125) {
+			[_menuTableView keyDown:theEvent];
+			theEvent = nil;
+		}
+		
+		return theEvent;
+	}];
+	
+	
+	[self showMenu];
+}
+
+
 - (void)showMenu {
 	
 	if (_needsUpdating) {
@@ -223,6 +265,23 @@
 
 - (void)cancelTrackingWithoutAnimation {
 	[_underlyingWindow orderOut:self];
+	[NSEvent removeMonitor:_localEventMonitor];
+	_localEventMonitor = nil;
+}
+
+
+- (CGFloat)minimumWidth {
+	return _minimumWidth;
+}
+
+
+- (void)setMinimumWidth:(CGFloat)width {
+	_minimumWidth = width;
+}
+
+
+- (NSSize)size {
+	return [_underlyingWindow frame].size;
 }
 
 
@@ -232,6 +291,31 @@
 	[_underlyingWindow setFrame:NSMakeRect(rect.origin.x, rect.origin.y, rect.size.width + 20, rect.size.height) display:YES];
 //	[menuTableView reloadData];
 }
+
+
+
+
+#pragma mark -
+#pragma mark ***** CMMenu Private Methods *****
+
+
+- (void)setSupermenu:(CMMenu *)aMenu {
+	_supermenu = aMenu;
+}
+
+
+- (NSWindow *)window {
+	return _underlyingWindow;
+}
+
+- (NSInteger)windowNumber {
+	return [_underlyingWindow windowNumber];
+}
+
+- (NSInteger)windowLevel {
+	return [_underlyingWindow level];
+}
+
 
 
 
@@ -361,17 +445,7 @@ int flag2 = 0;
 }
 
 
-- (NSWindow *)window {
-	return _underlyingWindow;
-}
 
-- (NSInteger)windowNumber {
-	return [_underlyingWindow windowNumber];
-}
-
-- (NSInteger)windowLevel {
-	return [_underlyingWindow level];
-}
 
 
 

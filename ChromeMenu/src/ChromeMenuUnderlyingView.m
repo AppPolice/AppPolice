@@ -10,11 +10,11 @@
 
 @implementation ChromeMenuUnderlyingView
 
-//- (id)initWithFrame:(NSRect)frame
-//{
+//- (id)initWithFrame:(NSRect)frame {
 //    self = [super initWithFrame:frame];
 //    if (self) {
 //        // Initialization code here.
+////		[self setHidden:YES];
 //    }
 //    
 //    return self;
@@ -29,5 +29,11 @@
 	[[NSColor colorWithCalibratedWhite:1.0 alpha:0.95] set];
 	[windowBorder fill];
 }
+
+
+- (BOOL)acceptsFirstMouse:(NSEvent *)theEvent {
+	return YES;
+}
+
 
 @end
