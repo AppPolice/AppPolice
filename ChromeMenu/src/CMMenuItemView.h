@@ -7,9 +7,9 @@
 //
 
 //#import <Cocoa/Cocoa.h>
-@class NSTableCellView;
+//@class NSTableCellView;
 
-@interface CMMenuItemView : NSTableCellView
+@interface CMMenuItemView : NSView
 {
 @private
 	NSImageView *_icon;

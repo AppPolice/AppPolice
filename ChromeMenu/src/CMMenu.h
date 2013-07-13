@@ -12,13 +12,13 @@
 @class ChromeMenuUnderlyingWindow, ChromeMenuUnderlyingView, CMTableCellView;
 @class CMMenuItem;
 
-@interface CMMenu : NSObject <NSTableViewDataSource, NSTableViewDelegate>
+@interface CMMenu : NSObject
 {
 @private
 	CMMenu *_supermenu;
-	IBOutlet ChromeMenuUnderlyingWindow *_underlyingWindow;
-	IBOutlet ChromeMenuUnderlyingView *_underlyingView;
-	IBOutlet NSTableView *_menuTableView;
+//	IBOutlet ChromeMenuUnderlyingWindow *_underlyingWindow;
+//	IBOutlet ChromeMenuUnderlyingView *_underlyingView;
+//	IBOutlet NSTableView *_menuTableView;
 	
 	NSMutableArray *_menuItems;
 }
@@ -80,6 +80,6 @@
 
 
 
-- (IBAction)buttonClick:(id)sender;
+//- (IBAction)buttonClick:(id)sender;
 
 @end

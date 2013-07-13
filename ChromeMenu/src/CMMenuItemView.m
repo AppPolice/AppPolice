@@ -28,18 +28,19 @@
 //}
 
 
-//- (void)drawRect:(NSRect)dirtyRect {
-//	//	NSLog(@"Cell View draw rect called. Cell subviews: %@", [self subviews]);
-//	
-//
-//	NSBezierPath *path = [NSBezierPath bezierPath];
-//	[path appendBezierPathWithRect:[self bounds]];
-//	[[NSColor greenColor] set];
-//	[path stroke];
-//	
-//	//	[self printRect:[self bounds] withTitle:@"Cell Rect:"];
-//	//	[self printRect:[[self superview] bounds] withTitle:@"Superview rect:"];
-//}
+- (void)drawRect:(NSRect)dirtyRect {
+	//	NSLog(@"Cell View draw rect called. Cell subviews: %@", [self subviews]);
+	
+
+	NSBezierPath *path = [NSBezierPath bezierPath];
+	[path appendBezierPathWithRect:[self bounds]];
+//	[path setLineWidth:1.0];
+	[[NSColor redColor] set];
+	[path stroke];
+	
+	//	[self printRect:[self bounds] withTitle:@"Cell Rect:"];
+	//	[self printRect:[[self superview] bounds] withTitle:@"Superview rect:"];
+}
 
 
 //- (NSImageView *)icon {
@@ -68,15 +69,19 @@
 
 
 - (void)mouseDown:(NSEvent *)theEvent {
-	NSLog(@"Cell mouse down");
+	NSLog(@"View mouse down");
 	[super mouseDown:theEvent];
 }
 
 - (void)rightMouseDown:(NSEvent *)theEvent {
-	NSLog(@"Cell right mouse down");
+	NSLog(@"View right mouse down");
 }
 
 
+//- (void)updateTrackingAreas {
+//	NSLog(@"Update tracking areas called");
+//	[super updateTrackingAreas];
+//}
 
 
 

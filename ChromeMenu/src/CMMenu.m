@@ -8,20 +8,28 @@
 
 //#import <AppKit/NSWindow.h>
 #import "CMMenu.h"
+#import "CMMenuItem.h"
+#import "CMMenu+InternalMethods.h"
+#import "CMMenuItem+InternalMethods.h"
 #import "CMMenuItemView.h"
-#import "CMMenuItemBackgroundView.h"
-#import "ChromeMenuUnderlyingWindow.h"
-#import "ChromeMenuUnderlyingView.h"
+#import "CMWindowController.h"
+//#import "CMMenuItemBackgroundView.h"
+//#import "ChromeMenuUnderlyingWindow.h"
+//#import "ChromeMenuUnderlyingView.h"
+
 
 
 /*
  * Private class declarations
  */
-@interface CMMenu()
+@interface CMMenu ()
 {
-	int _displayedFirstTime;
-	int _needsUpdating;
-	id _localEventMonitor;
+	CMWindowController *_underlyingWindowController;
+	
+	
+	
+	BOOL _displayedFirstTime;
+	BOOL _needsUpdating;
 	
 	CGFloat _minimumWidth;
 	NSSize _size;
@@ -38,11 +46,12 @@
 	int _registeredCustomNibs;
 }
 
+- (void)reloadData;
 - (void)showMenu;
-- (void)setSupermenu:(CMMenu *)aMenu;
+//- (void)setSupermenu:(CMMenu *)aMenu;
 //- (void)orderFront;
-- (NSInteger)windowNumber;	// may not be needed
-- (void)showMenuAsSubmenuOf:(CMMenuItem *)menuItem; // may not be needed
+//- (NSInteger)windowNumber;	// may not be needed
+//- (void)showMenuAsSubmenuOf:(CMMenuItem *)menuItem; // may not be needed
 
 @end
 
@@ -50,9 +59,9 @@
 /*
  * Private decalrations of CMMenuItem
  */
-@interface CMMenuItem (CMMenuItemPrivateMethods)
-- (void)setMenu:(CMMenu *)aMenu;
-@end
+//@interface CMMenuItem (CMMenuItemPrivateMethods)
+//- (void)setMenu:(CMMenu *)aMenu;
+//@end
 
 
 
@@ -62,15 +71,15 @@
 - (id)init {
 	if (self = [super init]) {
 		[NSBundle loadNibNamed:[self className] owner:self];
-		_displayedFirstTime = 0;
-		_needsUpdating = 1;
+		_displayedFirstTime = NO;
+		_needsUpdating = YES;
 		_minimumWidth = 0;
 		_menuItems = [[NSMutableArray alloc] init];
-		_registeredCustomNibs = 0;
+//		_registeredCustomNibs = 0;
 			
 		// maks: might need to be elaborated: only submenus of menu should be of higher level
 		static int level = 0;
-		[_underlyingWindow setLevel:NSPopUpMenuWindowLevel + level];
+//		[_underlyingWindow setLevel:NSPopUpMenuWindowLevel + level];
 		++level;
 		
 //		NSNib *nib = [[NSNib alloc] initWithNibNamed:@"CMTableCellViewId3" bundle:[NSBundle mainBundle]];
@@ -91,17 +100,17 @@
 
 - (void)dealloc {
 	[_menuItems release];
-	if (_itemsViewRegisteredNib) {
-		[_itemsViewRegisteredNib release];
+//	if (_itemsViewRegisteredNib) {
+//		[_itemsViewRegisteredNib release];
 		[_itemsViewNibName release];
 		[_itemsViewIdentifier release];
 		[_itemsViewPropertyNames release];
-	}
+//	}
 	
-	if (_itemViewRegesteredNibs)
-		[_itemViewRegesteredNibs release];
+//	if (_itemViewRegesteredNibs)
+//		[_itemViewRegesteredNibs release];
 	
-	[_underlyingWindow release];
+//	[_underlyingWindow release];
 	
 	[super dealloc];
 }
@@ -159,97 +168,176 @@
 	if (nibName == nil || [nibName isEqualToString:@""] || identifier == nil || [identifier isEqualToString:@""] || propertyNames == nil)
 		[NSException raise:NSInvalidArgumentException format:@"Bad arguments provided in -%@", NSStringFromSelector(_cmd)];
 
-	_itemsViewRegisteredNib = [[NSNib alloc] initWithNibNamed:nibName bundle:[NSBundle mainBundle]];
-	if (_itemsViewRegisteredNib == nil)
-		return;
+//	_itemsViewRegisteredNib = [[NSNib alloc] initWithNibNamed:nibName bundle:[NSBundle mainBundle]];
+//	if (_itemsViewRegisteredNib == nil)
+//		return;
 	
-	_itemsViewNibName = [nibName retain];
-	_itemsViewIdentifier = [identifier retain];
-	_itemsViewPropertyNames = [propertyNames retain];
+	_itemsViewNibName = [nibName copy];
+	_itemsViewIdentifier = [identifier copy];
+	_itemsViewPropertyNames = [propertyNames copy];
 
-	[_menuTableView registerNib:_itemsViewRegisteredNib forIdentifier:identifier];
+//	[_menuTableView registerNib:_itemsViewRegisteredNib forIdentifier:identifier];
 }
 
 
 /*
  * Loads and registers nib only if it hasn't already
  */
-- (void)loadAndRegisterNibNamed:(NSString *)nibName withIdentifier:(NSString *)identifier {
-	/* we already validated variables when added to menuItem */
-	
-	NSNib *nib = [[NSNib alloc] initWithNibNamed:nibName bundle:[NSBundle mainBundle]];
-	if (nib == nil)
-		return;
-	
-	if (_registeredCustomNibs == 0)
-		_itemViewRegesteredNibs = [[NSMutableArray alloc] init];
-	
-	if ([_itemViewRegesteredNibs containsObject:nib] == NO) {
-		[_menuTableView registerNib:nib forIdentifier:identifier];
-		[_itemViewRegesteredNibs addObject:nib];
-		[nib release];
-		_registeredCustomNibs = 1;
-	}
-}
+//- (void)loadAndRegisterNibNamed:(NSString *)nibName withIdentifier:(NSString *)identifier {
+//	/* we already validated variables when added to menuItem */
+//	
+//	NSNib *nib = [[NSNib alloc] initWithNibNamed:nibName bundle:[NSBundle mainBundle]];
+//	if (nib == nil)
+//		return;
+//	
+//	if (_registeredCustomNibs == 0)
+//		_itemViewRegesteredNibs = [[NSMutableArray alloc] init];
+//	
+//	if ([_itemViewRegesteredNibs containsObject:nib] == NO) {
+//		[_menuTableView registerNib:nib forIdentifier:identifier];
+//		[_itemViewRegesteredNibs addObject:nib];
+//		[nib release];
+//		_registeredCustomNibs = 1;
+//	}
+//}
 
 
 - (void)updateItemsAtIndexes:(NSIndexSet *)indexes {
-	[_menuTableView reloadDataForRowIndexes:indexes columnIndexes:[NSIndexSet indexSetWithIndex:0]];
+//	[_menuTableView reloadDataForRowIndexes:indexes columnIndexes:[NSIndexSet indexSetWithIndex:0]];
 }
 
 
-- (void)update {
-	[_menuTableView reloadData];
-}
+//- (void)update {
+//	[_menuTableView reloadData];
+//}
 
 
 - (void)startMenu {
-	_localEventMonitor = [NSEvent addLocalMonitorForEventsMatchingMask:NSKeyDownMask handler:^(NSEvent *theEvent) {
-		unsigned short keyCode = [theEvent keyCode];
-
-		NSLog(@"key code: %d", keyCode);
-		if (keyCode == 126 || keyCode == 125) {
-			[_menuTableView keyDown:theEvent];
-			theEvent = nil;
-		}
-		
-		return theEvent;
-	}];
-	
 	
 	[self showMenu];
+
 }
 
 
 - (void)showMenu {
-	
-	if (_needsUpdating) {
-		[self update];
-		_needsUpdating = 0;
+	if (!_underlyingWindowController) {
+		_underlyingWindowController = [[CMWindowController alloc] init];
+		[self reloadData];
 	}
+	
+	[_underlyingWindowController display];
+	
+	
+//	if (_needsUpdating) {
+//		[self update];
+//		_needsUpdating = 0;
+//	}
 
 	/* when _underlyingView is initially set to Hidden and instantiating a Menu OSX will NOT draw tableView.
 	 Otherwise it will, even if we are not going to show menu yet.
 	 First time Menu is displayed we redraw shadows. Otherwise Menu appears without shadows when we use
 	 _underlyingView set to Hidden.
 	 */
-	if (_displayedFirstTime == 0) {
-		[_underlyingView setHidden:NO];
-		[_underlyingWindow display];
-		[_underlyingWindow setHasShadow:NO];
-		[_underlyingWindow setHasShadow:YES];
-
-		[_underlyingWindow orderFront:self];
-
-	} else
-		[_underlyingWindow orderFront:self];
-	
-	_displayedFirstTime = 1;
+//	if (_displayedFirstTime == 0) {
+//		[_underlyingView setHidden:NO];
+//		[_underlyingWindow display];
+//		[_underlyingWindow setHasShadow:NO];
+//		[_underlyingWindow setHasShadow:YES];
+//
+//		[_underlyingWindow orderFront:self];
+//
+//	} else
+//		[_underlyingWindow orderFront:self];
+//	
+//	_displayedFirstTime = 1;
 }
 
 
 - (void)showMenuAsSubmenuOf:(CMMenuItem *)menuItem {
 	[self showMenu];
+}
+
+
+/*
+ * Based on Menu Items we create View Controllers and give them for drawing to Window Controller
+ */
+- (void)reloadData {
+//	NSUInteger i;
+//	NSUInteger count = [_menuItems count];
+	NSMutableArray *viewControllers = [NSMutableArray array];
+	
+	for (id menuItem in _menuItems) {
+		
+		/* menu item has individual view */
+		if ([menuItem viewNibName]) {
+			NSViewController *viewController = [[NSViewController alloc] initWithNibName:[menuItem viewNibName] bundle:nil];
+			id view = viewController.view;
+			
+//			[self loadAndRegisterNibNamed:[menuItem viewNibName] withIdentifier:[menuItem viewIdentifier]];
+//			id cellView = [tableView makeViewWithIdentifier:[menuItem viewIdentifier] owner:self];
+			NSEnumerator *enumerator = [[menuItem viewPropertyNames] objectEnumerator];
+			NSString *propertyName;
+			while ((propertyName = [enumerator nextObject])) {
+				SEL propertySetter = NSSelectorFromString([NSString stringWithFormat:@"set%@Property:", [propertyName	stringByReplacingCharactersInRange:NSMakeRange(0, 1) withString:[[propertyName substringToIndex:1] capitalizedString]]]);
+				if ([view respondsToSelector:propertySetter])
+					[view performSelector:propertySetter withObject:[menuItem valueForKey:propertyName]];
+			}
+			
+			NSLog(@"custom item cell view: %@", view);
+			
+			[viewControllers addObject:viewController];
+
+		} else if (_itemsViewNibName) { 		/* custom view for all items */
+//			id cellView;
+//			cellView = [tableView makeViewWithIdentifier:_itemsViewIdentifier owner:self];
+			
+			NSViewController *viewController = [[NSViewController alloc] initWithNibName:_itemsViewNibName bundle:nil];
+			id view = viewController.view;
+			
+			NSEnumerator *enumerator = [_itemsViewPropertyNames objectEnumerator];
+			NSString *propertyName;
+			while ((propertyName = [enumerator nextObject])) {
+				SEL propertySetter = NSSelectorFromString([NSString stringWithFormat:@"set%@Property:", [propertyName	stringByReplacingCharactersInRange:NSMakeRange(0, 1) withString:[[propertyName substringToIndex:1] capitalizedString]]]);
+				if ([view respondsToSelector:propertySetter])
+					[view performSelector:propertySetter withObject:[menuItem valueForKey:propertyName]];
+			}
+			
+			//		NSLog(@"cell view: %@", cellView);
+			
+			[viewControllers addObject:viewController];
+			
+		} else {
+			NSViewController *viewController;
+			CMMenuItemView *view;
+			
+			if ([menuItem icon]) {
+//				[self loadAndRegisterNibNamed:@"CMMenuItemIconView" withIdentifier:@"CMMenuItemIconViewId"];
+//				defaultCellView = [tableView makeViewWithIdentifier:@"CMMenuItemIconViewId" owner:self];
+//				[[defaultCellView icon] setImage:[menuItem icon]];
+				viewController = [[NSViewController alloc] initWithNibName:@"CMMenuItemIconView" bundle:nil];
+				view = (CMMenuItemView *)viewController.view;
+				[[view icon] setImage:[menuItem icon]];
+			} else {
+//				defaultCellView = [tableView makeViewWithIdentifier:@"CMMenuItemViewId" owner:self];
+				viewController = [[NSViewController alloc] initWithNibName:@"CMMenuItemView" bundle:nil];
+				view = (CMMenuItemView *)viewController.view;
+			}
+			
+			[[view title] setStringValue:[menuItem title]];
+			
+			if ([menuItem hasSubmenu])
+				[[view ownersIcon] setHidden:NO];
+			else
+				[[view ownersIcon] setHidden:YES];
+			
+			//		NSLog(@"default cell view: %@", defaultCellView);
+			
+			[viewControllers addObject:viewController];
+		}
+	}
+	
+	[_underlyingWindowController layoutViews:viewControllers];
+	
 }
 
 
@@ -264,9 +352,8 @@
 
 
 - (void)cancelTrackingWithoutAnimation {
-	[_underlyingWindow orderOut:self];
-	[NSEvent removeMonitor:_localEventMonitor];
-	_localEventMonitor = nil;
+//	[_underlyingWindow orderOut:self];
+	[_underlyingWindowController hide];
 }
 
 
@@ -281,22 +368,23 @@
 
 
 - (NSSize)size {
-	return [_underlyingWindow frame].size;
+//	return [_underlyingWindow frame].size;
+	return (_underlyingWindowController) ? _underlyingWindowController.window.frame.size : CGSizeMake(0, 0);
 }
 
 
-- (IBAction)buttonClick:(id)sender {
-	NSLog(@"table: %@", _menuTableView);
-	NSRect rect = [_underlyingWindow frame];
-	[_underlyingWindow setFrame:NSMakeRect(rect.origin.x, rect.origin.y, rect.size.width + 20, rect.size.height) display:YES];
-//	[menuTableView reloadData];
-}
+//- (IBAction)buttonClick:(id)sender {
+//	NSLog(@"table: %@", _menuTableView);
+//	NSRect rect = [_underlyingWindow frame];
+//	[_underlyingWindow setFrame:NSMakeRect(rect.origin.x, rect.origin.y, rect.size.width + 20, rect.size.height) display:YES];
+////	[menuTableView reloadData];
+//}
 
 
 
 
 #pragma mark -
-#pragma mark ***** CMMenu Private Methods *****
+#pragma mark ***** CMMenu Internal Methods *****
 
 
 - (void)setSupermenu:(CMMenu *)aMenu {
@@ -304,20 +392,20 @@
 }
 
 
-- (NSWindow *)window {
-	return _underlyingWindow;
-}
+//- (NSWindow *)window {
+//	return (_underlyingWindowController) ? _underlyingWindowController.window : nil;
+//}
 
-- (NSInteger)windowNumber {
-	return [_underlyingWindow windowNumber];
-}
+//- (NSInteger)windowNumber {
+//	return (_underlyingWindowController) ? [_underlyingWindowController.window windowNumber] : 0;
+//}
 
 - (NSInteger)windowLevel {
-	return [_underlyingWindow level];
+	return (_underlyingWindowController) ? _underlyingWindowController.window.level : 0;
 }
 
 
-
+/*
 
 #pragma mark -
 #pragma mark ***** TableView Delegate & DataSource Methods *****
@@ -353,7 +441,7 @@ int flag2 = 0;
 	id menuItem = [self itemAtIndex:row];
 //	NSLog(@"loaded item: %@", menuItem);
 	
-	/* menu item has individual view */
+	// menu item has individual view 
 	if ([menuItem viewIdentifier]) {
 		[self loadAndRegisterNibNamed:[menuItem viewNibName] withIdentifier:[menuItem viewIdentifier]];
 		id cellView = [tableView makeViewWithIdentifier:[menuItem viewIdentifier] owner:self];
@@ -370,7 +458,7 @@ int flag2 = 0;
 		return cellView;
 	}
 	
-	/* custom view for all items */
+	// custom view for all items
 	if (_itemsViewIdentifier) {
 		id cellView;
 		cellView = [tableView makeViewWithIdentifier:_itemsViewIdentifier owner:self];
@@ -446,7 +534,7 @@ int flag2 = 0;
 
 
 
-
+*/
 
 
 @end

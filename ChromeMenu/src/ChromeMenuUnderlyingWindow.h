@@ -14,6 +14,10 @@
 
 @interface ChromeMenuUnderlyingWindow : NSPanel
 {
+	@private
 	NSPoint initialLocation;
 }
+
+- (id)initWithContentRect:(NSRect)contentRect defer:(BOOL)flag;
+
 @end

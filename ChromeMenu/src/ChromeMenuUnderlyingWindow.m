@@ -10,9 +10,15 @@
 
 @implementation ChromeMenuUnderlyingWindow
 
+- (id)initWithContentRect:(NSRect)contentRect defer:(BOOL)flag {
+	return [self initWithContentRect:contentRect styleMask:NSBorderlessWindowMask backing:NSBackingStoreBuffered defer:YES];
+}
+
+
 - (id)initWithContentRect:(NSRect)contentRect styleMask:(NSUInteger)aStyle backing:(NSBackingStoreType)bufferingType defer:(BOOL)flag {
-	if (self = [super initWithContentRect:contentRect styleMask:NSBorderlessWindowMask backing:NSBackingStoreBuffered defer:YES]) {
+	if (self = [super initWithContentRect:contentRect styleMask:aStyle backing:bufferingType defer:flag]) {
 		[self setBackgroundColor:[NSColor clearColor]];
+		[self setHasShadow:YES];
 		[self setOpaque:NO];
 		//		[self setAlphaValue:0.95];
 	}

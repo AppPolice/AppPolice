@@ -8,6 +8,8 @@
 
 #import "CMMenuItem.h"
 #import "CMMenu.h"
+#import "CMMenu+InternalMethods.h"
+#import "CMMenuItem+InternalMethods.h"
 #import <objc/runtime.h>
 
 
@@ -19,22 +21,13 @@
 	int _submenuIntervalSetToPopup;
 }
 
-- (void)setMenu:(CMMenu *)aMenu;
+
 - (void)mouseEntered:(NSEvent *)theEvent;
 - (void)mouseExited:(NSEvent *)theEvent;
 - (void)mouseDown:(NSEvent *)theEvent;
 - (void)showSubmenu;
 
 @end
-
-
-@interface CMMenu (CMMenuPrivateMethods)
-- (void)setSupermenu:(CMMenu *)aMenu;
-- (void)showMenuAsSubmenuOf:(CMMenuItem *)menuItem;	// may not be needed
-//- (void)orderFront;
-- (NSInteger)windowLevel;
-@end
-
 
 
 

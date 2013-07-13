@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="4457.6" systemVersion="12E55" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+    <dependencies>
+        <deployment defaultVersion="1070" identifier="macosx"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="4457.6"/>
+    </dependencies>
+    <objects>
+        <customObject id="-2" userLabel="File's Owner" customClass="NSViewController">
+            <connections>
+                <outlet property="view" destination="aL4-aY-Vxd" id="INK-80-4no"/>
+            </connections>
+        </customObject>
+        <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
+        <customObject id="-3" userLabel="Application"/>
+        <tableCellView identifier="CMMenuItemViewId" id="aL4-aY-Vxd" customClass="CMMenuItemView">
+            <rect key="frame" x="0.0" y="0.0" width="249" height="19"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="Pzs-b2-vUL">
+                    <rect key="frame" x="15" y="1" width="189" height="18"/>
+                    <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
+                    <textFieldCell key="cell" lineBreakMode="truncatingTail" refusesFirstResponder="YES" sendsActionOnEndEditing="YES" title="Table View Cell Text" id="yOt-Ue-Rcd">
+                        <font key="font" size="14" name="LucidaGrande"/>
+                        <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                    </textFieldCell>
+                </textField>
+                <imageView hidden="YES" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Uqo-n6-f6A">
+                    <rect key="frame" x="230" y="5" width="9" height="9"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="9" id="tO7-V3-JXP"/>
+                    </constraints>
+                    <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="NSGoRightTemplate" id="Cjs-L1-4Nf"/>
+                </imageView>
+            </subviews>
+            <constraints>
+                <constraint firstItem="Pzs-b2-vUL" firstAttribute="leading" secondItem="aL4-aY-Vxd" secondAttribute="leading" constant="18" id="4u0-KM-JWO"/>
+                <constraint firstAttribute="trailing" secondItem="Pzs-b2-vUL" secondAttribute="trailing" constant="48" id="Cd9-GV-jQP"/>
+                <constraint firstItem="Pzs-b2-vUL" firstAttribute="centerY" secondItem="aL4-aY-Vxd" secondAttribute="centerY" id="JdN-c4-2S9"/>
+                <constraint firstAttribute="centerY" secondItem="Uqo-n6-f6A" secondAttribute="centerY" id="igh-0T-Am3"/>
+                <constraint firstAttribute="trailing" secondItem="Uqo-n6-f6A" secondAttribute="trailing" constant="10" id="qWn-6M-X8O"/>
+            </constraints>
+            <connections>
+                <outlet property="ownersIcon" destination="Uqo-n6-f6A" id="AWm-HX-xJg"/>
+                <outlet property="title" destination="Pzs-b2-vUL" id="H2U-1m-Wd9"/>
+            </connections>
+        </tableCellView>
+    </objects>
+    <resources>
+        <image name="NSGoRightTemplate" width="9" height="9"/>
+    </resources>
+    <classes>
+        <class className="CMMenuItemView" superclassName="NSView">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/CMMenuItemView.h"/>
+            <relationships>
+                <relationship kind="outlet" name="icon" candidateClass="NSImageView"/>
+                <relationship kind="outlet" name="ownersIcon" candidateClass="NSImageView"/>
+                <relationship kind="outlet" name="title" candidateClass="NSTextField"/>
+            </relationships>
+        </class>
+        <class className="NSLayoutConstraint" superclassName="NSObject">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/NSLayoutConstraint.h"/>
+        </class>
+    </classes>
+</document>
