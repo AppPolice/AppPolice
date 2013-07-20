@@ -16,7 +16,11 @@
 
 - (void)layoutViews:(NSMutableArray *)viewControllers;
 
-- (void)display;
+//- (void)display;
+- (void)displayInFrame:(NSRect)frame;
 - (void)hide;
+
+- (NSSize)intrinsicContentSize;
+- (CGFloat)verticalPadding;
 
 @end

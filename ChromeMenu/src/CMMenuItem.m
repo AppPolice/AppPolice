@@ -8,6 +8,7 @@
 
 #import "CMMenuItem.h"
 #import "CMMenu.h"
+#import "CMMenuItemView.h"
 #import "CMMenu+InternalMethods.h"
 #import "CMMenuItem+InternalMethods.h"
 #import <objc/runtime.h>
@@ -18,14 +19,17 @@
  */
 @interface CMMenuItem()
 {
-	int _submenuIntervalSetToPopup;
+	BOOL _isSelected;
+	BOOL _mouseOver;						// this doesn't mean the item is selected
+	int _submenuIntervalIsSetToPopup;
+	NSViewController *_representedViewController;
 }
 
 
-- (void)mouseEntered:(NSEvent *)theEvent;
-- (void)mouseExited:(NSEvent *)theEvent;
-- (void)mouseDown:(NSEvent *)theEvent;
-- (void)showSubmenu;
+//- (void)mouseEntered:(NSEvent *)theEvent;
+//- (void)mouseExited:(NSEvent *)theEvent;
+//- (void)mouseDown:(NSEvent *)theEvent;
+- (void)showItemSubmenu;
 
 @end
 
@@ -76,11 +80,6 @@
 }
 
 
-- (void)setMenu:(CMMenu *)aMenu {
-	if (_menu != aMenu)
-		_menu = aMenu;
-}
-
 - (CMMenu *)menu {
 	return _menu;
 }
@@ -105,11 +104,18 @@
 
 
 - (void)setSubmenu:(CMMenu *)submenu {
-	if (submenu == nil)
-		[NSException raise:NSInvalidArgumentException format:@"Bad argument provided in -%@", NSStringFromSelector(_cmd)];
+//	if (submenu == nil)
+//		[NSException raise:NSInvalidArgumentException format:@"Bad argument provided in -%@", NSStringFromSelector(_cmd)];
 	
-	_submenu = [submenu retain];
-	[_submenu setSupermenu:[self menu]];
+	if (_submenu != submenu) {
+		[_submenu release];
+		if (submenu) {
+			_submenu = [submenu retain];
+			[_submenu setSupermenu:[self menu]];
+			[_submenu setParentItem:self];
+		} else
+			_submenu = nil;
+	}
 }
 
 
@@ -143,40 +149,149 @@
 }
 
 
-- (void)mouseEntered:(NSEvent *)theEvent {
-	if (_submenu) {
-		[self performSelector:@selector(showSubmenu) withObject:nil afterDelay:0.2];
-		_submenuIntervalSetToPopup = 1;
-//		[_submenu showMenu];
-	}
-}
+#pragma mark -
+#pragma mark ***** Events and Tracking methods *****
 
 
-- (void)mouseExited:(NSEvent *)theEvent {
-	if (_submenu) {
-		if (_submenuIntervalSetToPopup)
-			[NSObject cancelPreviousPerformRequestsWithTarget:self];
-		else
-			[_submenu cancelTrackingWithoutAnimation];
-	}
-}
+
+//- (void)mouseEntered:(NSEvent *)theEvent {
+//	if (_submenu) {
+//		[self performSelector:@selector(showSubmenu) withObject:nil afterDelay:0.2];
+//		_submenuIntervalSetToPopup = 1;
+////		[_submenu showMenu];
+//	}
+//}
+//
+//
+//- (void)mouseExited:(NSEvent *)theEvent {
+//	if (_submenu) {
+//		if (_submenuIntervalSetToPopup)
+//			[NSObject cancelPreviousPerformRequestsWithTarget:self];
+//		else
+//			[_submenu cancelTrackingWithoutAnimation];
+//	}
+//}
 
 
-- (void)mouseDown:(NSEvent *)theEvent {
-	// submenu should always stay on top
-//	if (_submenu)
-//		[_submenu orderFront];
+//- (void)mouseDown:(NSEvent *)theEvent {
+//	// submenu should always stay on top
+////	if (_submenu)
+////		[_submenu orderFront];
+//	
+//	NSLog(@"submenu window number: %ld, parnet menu WN: %ld", [_submenu windowLevel], [_menu windowLevel]);
+//}
+
+
+- (BOOL)shouldChangeItemSelectionStatusForEvent:(CMMenuEventType)eventType {
+	BOOL changeStatus = YES;
 	
-	NSLog(@"submenu window number: %ld, parnet menu WN: %ld", [_submenu windowLevel], [_menu windowLevel]);
+	if (eventType & CMMenuEventMouseEnteredItem) {
+		_mouseOver = YES;
+		
+		if (_isSelected) {
+			changeStatus = NO;
+			if ([[self menu] isTrackingSubmenu])
+				[[self menu] stopTrackingSubmenuReasonSuccess:YES];
+		} else {
+			if ([[self menu] activeSubmenu]) {
+				// must do work here
+				changeStatus = NO;
+			} else {
+				_isSelected = YES;
+				
+				if ([self hasSubmenu]) {
+					[self performSelector:@selector(showItemSubmenu) withObject:nil afterDelay:0.2];
+					_submenuIntervalIsSetToPopup = 1;
+				}
+			}
+		}
+	} else if (eventType & CMMenuEventMouseExitedItem) {
+		_mouseOver = NO;
+		
+		if ([[self menu] activeSubmenu]) {
+			if (! [[self menu] isTrackingSubmenu]) {
+				[[self menu] startTrackingSubmenu:_submenu forItem:self];
+				// temporary
+//				changeStatus = YES;
+//				[_submenu cancelTrackingWithoutAnimation];
+			}
+			changeStatus = NO;
+		} else if ([self hasSubmenu]) {
+//			if (_submenuIntervalIsSetToPopup) {		// not yet showed a menu
+				[NSObject cancelPreviousPerformRequestsWithTarget:self];
+				_isSelected = NO;
+//			} else {
+//				// need to see how exactly we're exiting a menu item
+//				[_submenu cancelTrackingWithoutAnimation];
+//				changeStatus = YES;
+//				_isSelected = NO;
+//			}
+		} else {
+			_isSelected = NO;
+		}
+	}
+	
+	return changeStatus;
 }
 
 
-- (void)showSubmenu {
-	_submenuIntervalSetToPopup = 0;
+- (void)showItemSubmenu {
+	_submenuIntervalIsSetToPopup = 0;
 //	[_submenu showMenu];
 	[_submenu showMenuAsSubmenuOf:self];
 }
 
+
+
+
+
+#pragma mark -
+#pragma mark ***** CMMenuItem Internal Methods *****
+
+
+- (void)setRepresentedViewController:(NSViewController *)viewController {
+	_representedViewController = viewController;
+}
+
+
+- (void)setMenu:(CMMenu *)aMenu {
+	if (_menu != aMenu)
+		_menu = aMenu;
+}
+
+
+- (NSRect)frame {
+	return [[_representedViewController view] frame];
+}
+
+
+- (NSRect)frameRelativeToWindow {
+	NSRect frame = [[_representedViewController view] convertRect:[[_representedViewController view] bounds] toView:nil];
+	return frame;
+}
+
+
+- (BOOL)mouseOver {
+	return _mouseOver;
+}
+
+
+- (void)selectWithDelayForSubmenu:(NSTimeInterval)delay {
+	_isSelected = YES;
+	[(CMMenuItemView *)[_representedViewController view] setSelected:YES];
+//	BOOL res = [self shouldChangeItemSelectionStatusForEvent:CMMenuEventMouseEnteredItem];
+//	NSLog(@"res: %d", res);
+	if ([self hasSubmenu]) {
+		[self performSelector:@selector(showItemSubmenu) withObject:nil afterDelay:delay];
+		_submenuIntervalIsSetToPopup = 1;
+	}
+}
+
+
+- (void)deselect {
+	_isSelected = NO;
+	[(CMMenuItemView *)[_representedViewController view] setSelected:NO];
+}
 
 
 - (NSString *)description {

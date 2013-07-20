@@ -7,8 +7,21 @@
 //
 
 @interface CMMenu (CMMenuInternalMethods)
+
 - (void)setSupermenu:(CMMenu *)aMenu;
+- (void)setParentItem:(CMMenuItem *)anItem;
+- (BOOL)isActive;
+- (void)setIsActive:(BOOL)isActive;
+- (CMMenu *)activeSubmenu;
+- (void)setActiveSubmenu:(CMMenu *)submenu;
+
+- (BOOL)isTrackingSubmenu;
+- (void)startTrackingSubmenu:(CMMenu *)submenu forItem:(CMMenuItem *)item;
+- (void)stopTrackingSubmenuReasonSuccess:(BOOL)reasonSuccess;
+//- (void)startTrackingActiveSubmenu;
+
 - (void)showMenuAsSubmenuOf:(CMMenuItem *)menuItem;	// may not be needed
 //- (void)orderFront;
 - (NSInteger)windowLevel;
+
 @end

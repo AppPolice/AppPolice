@@ -292,21 +292,421 @@
                     <attributedString key="attributedTitle"/>
                     <modifierMask key="keyEquivalentModifierMask"/>
                 </menuItem>
-                <menuItem title="Menu" id="1116">
-                    <modifierMask key="keyEquivalentModifierMask"/>
-                    <menu key="submenu" title="Menu" autoenablesItems="NO" id="1117">
-                        <items>
-                            <menuItem title="Some title:" id="1678">
-                                <modifierMask key="keyEquivalentModifierMask"/>
-                                <menu key="submenu" title="Some title:" autoenablesItems="NO" id="1679"/>
-                            </menuItem>
-                        </items>
-                    </menu>
-                </menuItem>
                 <menuItem title="Pause Ishimura" enabled="NO" id="707">
                     <modifierMask key="keyEquivalentModifierMask"/>
                 </menuItem>
                 <menuItem isSeparatorItem="YES" id="715"/>
+                <menuItem title="Menu" id="1116">
+                    <modifierMask key="keyEquivalentModifierMask"/>
+                    <menu key="submenu" title="Menu" autoenablesItems="NO" id="1117">
+                        <items>
+                            <menuItem title="Menu" id="y1r-td-st4">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <menu key="submenu" title="Menu" id="igc-Pn-7Y3">
+                                    <items>
+                                        <menuItem title="Menu" id="GrA-Kz-bmE">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <menu key="submenu" title="Menu" id="vDN-Kl-Xeu">
+                                                <items>
+                                                    <menuItem title="Menu" id="nWM-uZ-iNu">
+                                                        <modifierMask key="keyEquivalentModifierMask"/>
+                                                        <menu key="submenu" title="Menu" id="haB-1t-unO">
+                                                            <items>
+                                                                <menuItem title="Item" id="8vg-2x-bJs">
+                                                                    <modifierMask key="keyEquivalentModifierMask"/>
+                                                                </menuItem>
+                                                                <menuItem title="Item" id="W89-cy-QVi">
+                                                                    <modifierMask key="keyEquivalentModifierMask"/>
+                                                                </menuItem>
+                                                            </items>
+                                                        </menu>
+                                                    </menuItem>
+                                                    <menuItem title="Item" id="S4D-nx-e4i">
+                                                        <modifierMask key="keyEquivalentModifierMask"/>
+                                                    </menuItem>
+                                                    <menuItem title="Item" id="23B-ol-1qA">
+                                                        <modifierMask key="keyEquivalentModifierMask"/>
+                                                    </menuItem>
+                                                </items>
+                                            </menu>
+                                        </menuItem>
+                                        <menuItem title="Item" id="EKx-G2-GY9">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                        </menuItem>
+                                    </items>
+                                </menu>
+                            </menuItem>
+                            <menuItem title="NSQuickLookTemplate" id="aFs-x7-YGQ">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                            </menuItem>
+                            <menuItem title="NSBluetoothTemplate" id="Qnc-2r-sfh">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                            </menuItem>
+                            <menuItem id="3V9-LE-O7V">
+                                <string key="title" base64-UTF8="YES">
+ThBTQ2hhdFRoZWF0cmVUZW1wbGF0ZQ
+</string>
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                            </menuItem>
+                            <menuItem id="gTF-1Y-agg">
+                                <string key="title" base64-UTF8="YES">
+ThBTQ2hhdFRoZWF0cmVUZW1wbGF0ZQ
+</string>
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <menu key="submenu" id="QeQ-wf-1pc">
+                                    <string key="title" base64-UTF8="YES">
+ThBTQ2hhdFRoZWF0cmVUZW1wbGF0ZQ
+</string>
+                                    <items>
+                                        <menuItem title="Item" id="J00-Sr-kbi">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                        </menuItem>
+                                    </items>
+                                </menu>
+                            </menuItem>
+                            <menuItem title="NSSlidershowTemplate" id="s9b-05-NkX">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                            </menuItem>
+                            <menuItem title="NSActionTemplate" id="NU7-uy-Doe">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                            </menuItem>
+                            <menuItem title="Item" id="pLJ-l9-nPd">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                            </menuItem>
+                            <menuItem title="Item" id="Tuk-j8-Ra0">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                            </menuItem>
+                            <menuItem title="Item" id="eY4-u1-Vl4">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                            </menuItem>
+                            <menuItem title="Item" id="hsA-CM-dal">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                            </menuItem>
+                            <menuItem title="Item" id="92Z-8N-JLe">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                            </menuItem>
+                            <menuItem title="Item" id="a6j-Ms-wwe">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                            </menuItem>
+                            <menuItem title="Item" id="emJ-gM-PQL">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                            </menuItem>
+                            <menuItem title="Item" id="pbW-J8-ZPj">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                            </menuItem>
+                            <menuItem title="Menu" id="uQ4-Fq-7oI">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <menu key="submenu" title="Menu" id="1jU-6z-yth">
+                                    <items>
+                                        <menuItem title="Menu" id="nXW-3U-bqt">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <menu key="submenu" title="Menu" id="6TZ-G4-tx4">
+                                                <items>
+                                                    <menuItem title="Menu" id="Svi-5m-Rlr">
+                                                        <modifierMask key="keyEquivalentModifierMask"/>
+                                                        <menu key="submenu" title="Menu" id="PUO-62-B4d">
+                                                            <items>
+                                                                <menuItem title="Item" id="4rG-Ft-6hC">
+                                                                    <modifierMask key="keyEquivalentModifierMask"/>
+                                                                </menuItem>
+                                                            </items>
+                                                        </menu>
+                                                    </menuItem>
+                                                    <menuItem title="Item" id="d1o-fv-dZj">
+                                                        <modifierMask key="keyEquivalentModifierMask"/>
+                                                    </menuItem>
+                                                </items>
+                                            </menu>
+                                        </menuItem>
+                                        <menuItem title="Item" id="ona-RW-Jrs">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                        </menuItem>
+                                        <menuItem title="Item" id="sw1-FI-9Hd">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                        </menuItem>
+                                        <menuItem title="Item" id="VDH-HU-x99">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                        </menuItem>
+                                        <menuItem title="Item" id="v7B-lV-Asx">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                        </menuItem>
+                                        <menuItem title="Item" id="C44-t7-u0P">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                        </menuItem>
+                                        <menuItem title="Item" id="Tbk-TT-8n9">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                        </menuItem>
+                                        <menuItem title="Item" id="Bq2-iI-u7N">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                        </menuItem>
+                                        <menuItem title="Item" id="U68-Tr-Oqj">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                        </menuItem>
+                                        <menuItem title="Item" id="rf5-B2-xmC">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                        </menuItem>
+                                        <menuItem title="Item" id="fti-Jt-vDq">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                        </menuItem>
+                                        <menuItem title="Item" id="ZAY-Di-R5N">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                        </menuItem>
+                                        <menuItem title="Item" id="tYb-0K-ALZ">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                        </menuItem>
+                                        <menuItem title="Item" id="L5k-QR-9RJ">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                        </menuItem>
+                                        <menuItem title="Item" id="vOh-mW-w2g">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                        </menuItem>
+                                        <menuItem title="Item" id="WAv-Op-06V">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                        </menuItem>
+                                        <menuItem title="Item" id="FL3-FQ-Hy4">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                        </menuItem>
+                                        <menuItem title="Item" id="RBr-9K-jgI">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                        </menuItem>
+                                        <menuItem title="Item" id="Abh-Qo-j0I">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                        </menuItem>
+                                        <menuItem title="Item" id="Ov2-iT-AXy">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                        </menuItem>
+                                        <menuItem title="Item" id="8Fd-KR-eYB">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                        </menuItem>
+                                        <menuItem title="Item" id="7q6-iC-dAh">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                        </menuItem>
+                                        <menuItem title="Item" id="JSg-iE-9Um">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                        </menuItem>
+                                        <menuItem title="Item" id="eW0-BZ-DNV">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                        </menuItem>
+                                        <menuItem title="Item" id="bvJ-CX-ePJ">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                        </menuItem>
+                                        <menuItem title="Item" id="fhZ-i9-Reo">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                        </menuItem>
+                                        <menuItem title="Item" id="oLQ-yN-Bay">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                        </menuItem>
+                                        <menuItem title="Item" id="lUa-fY-jV7">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                        </menuItem>
+                                        <menuItem title="Item" id="Ow0-KX-glS">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                        </menuItem>
+                                        <menuItem title="Item" id="GOq-YG-qSw">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                        </menuItem>
+                                    </items>
+                                </menu>
+                            </menuItem>
+                            <menuItem title="Item" id="dtz-k9-4VP">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                            </menuItem>
+                            <menuItem title="Item" id="6Fd-kD-3a9">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                            </menuItem>
+                            <menuItem title="Item some other value" id="OPV-m8-R39">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                            </menuItem>
+                            <menuItem title="Item" id="kcV-ri-9q7">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                            </menuItem>
+                            <menuItem title="Item" id="RnY-ql-tfD">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                            </menuItem>
+                            <menuItem title="Item afa faf " id="TeD-B9-PC8">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                            </menuItem>
+                            <menuItem title="Item" id="LMe-Ho-xWK">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                            </menuItem>
+                            <menuItem title="Item" id="reF-bI-30e">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                            </menuItem>
+                            <menuItem title="Item" id="LcM-Vk-14d">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                            </menuItem>
+                            <menuItem title="Item" id="pFl-ub-tNH">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                            </menuItem>
+                            <menuItem title="Item" id="LGo-3G-Gp3">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                            </menuItem>
+                            <menuItem title="Item" id="W3E-ym-M0D">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                            </menuItem>
+                            <menuItem title="Item" id="3lM-WZ-zTG">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                            </menuItem>
+                            <menuItem title="Item" id="ZOc-oL-w77">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                            </menuItem>
+                            <menuItem title="Item" id="SHZ-OP-lTg">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                            </menuItem>
+                            <menuItem title="Item" id="vn0-87-7C0">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                            </menuItem>
+                            <menuItem title="Item" id="OeH-9z-ydm">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                            </menuItem>
+                            <menuItem title="Item" id="ZCD-kj-M6Y">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                            </menuItem>
+                            <menuItem title="Item" id="LCv-dw-3FT">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                            </menuItem>
+                            <menuItem title="Item" id="f1m-bA-8vx">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                            </menuItem>
+                            <menuItem title="Item" id="yQH-vR-dlX">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                            </menuItem>
+                            <menuItem title="Item" id="V23-lu-yJC">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                            </menuItem>
+                            <menuItem title="Item" id="cUd-Kc-14a">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                            </menuItem>
+                            <menuItem title="Item" id="jTT-f6-p6L">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                            </menuItem>
+                            <menuItem title="Item" id="K6I-01-2g9">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                            </menuItem>
+                            <menuItem title="Item" id="3Bi-0M-pL7">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                            </menuItem>
+                            <menuItem title="Item" id="Wx4-Me-2no">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                            </menuItem>
+                            <menuItem title="Item" id="j2m-8Z-IpU">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                            </menuItem>
+                            <menuItem title="Item" id="eii-Y6-pGt">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                            </menuItem>
+                            <menuItem title="Item" id="9cc-gd-Cxn">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                            </menuItem>
+                            <menuItem title="Item" id="R8H-lP-NJq">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                            </menuItem>
+                            <menuItem title="Item" id="1Bk-fC-PS2">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                            </menuItem>
+                            <menuItem title="Item" id="Beb-Sy-aSf">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                            </menuItem>
+                            <menuItem title="Item" id="ewo-ms-UxE">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                            </menuItem>
+                            <menuItem title="Item" id="hNW-mb-gtZ">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                            </menuItem>
+                            <menuItem title="Item" id="3XE-2r-0FH">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                            </menuItem>
+                            <menuItem title="Item" id="EEs-dj-f64">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                            </menuItem>
+                            <menuItem title="Item" id="pDw-Lr-1Pz">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                            </menuItem>
+                            <menuItem title="Item" id="tU0-1E-AsK">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                            </menuItem>
+                            <menuItem title="Item" id="979-LO-25W">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                            </menuItem>
+                            <menuItem title="Item" id="Sh9-VK-EJR">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                            </menuItem>
+                            <menuItem title="Item" id="Rdd-fw-nWA">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                            </menuItem>
+                            <menuItem title="Item" id="5kg-PI-x0h">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                            </menuItem>
+                            <menuItem title="Item" id="4Jt-pd-Yxz">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                            </menuItem>
+                            <menuItem title="Item" id="rvf-rv-voi">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                            </menuItem>
+                            <menuItem title="Item" id="cgY-XW-wd7">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                            </menuItem>
+                            <menuItem title="Item" id="QeP-KH-Ldd">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                            </menuItem>
+                            <menuItem title="Item" id="mzw-Vx-Ft0">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                            </menuItem>
+                            <menuItem title="Item" id="5QL-87-s3J">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                            </menuItem>
+                            <menuItem title="Item" id="sIk-5B-5WQ">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                            </menuItem>
+                            <menuItem title="Item" id="aE4-tP-YB9">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                            </menuItem>
+                            <menuItem title="Item" id="yg6-Ow-fKd">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                            </menuItem>
+                            <menuItem title="Item" id="ILz-BM-g1V">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                            </menuItem>
+                            <menuItem title="Item 7" id="1S2-Zb-qPA">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                            </menuItem>
+                            <menuItem title="Item" id="CWv-BA-1i4">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                            </menuItem>
+                            <menuItem title="Item" id="gK8-fn-8Wc">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                            </menuItem>
+                            <menuItem title="Item" id="dkv-iA-20I">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                            </menuItem>
+                            <menuItem title="Item" id="PuV-yD-J0a">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                            </menuItem>
+                            <menuItem title="Item" id="3Gw-8B-2LN">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                            </menuItem>
+                            <menuItem title="Item 1" id="GLU-Ep-meB">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                            </menuItem>
+                            <menuItem title="Item 0" id="cVt-3j-FuT">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                            </menuItem>
+                            <menuItem title="Item last" id="qhc-Qn-T6p">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                            </menuItem>
+                        </items>
+                    </menu>
+                </menuItem>
+                <menuItem title="Test" id="wlN-DZ-yJ6">
+                    <modifierMask key="keyEquivalentModifierMask"/>
+                    <menu key="submenu" title="Test" id="nye-pH-Q1g">
+                        <items>
+                            <menuItem title="Item" id="bj5-hA-4xU">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                            </menuItem>
+                        </items>
+                    </menu>
+                </menuItem>
                 <menuItem title="Donate" id="711">
                     <modifierMask key="keyEquivalentModifierMask"/>
                 </menuItem>
@@ -355,7 +755,6 @@
                 <action selector="someAction2:" destination="706" id="1667"/>
                 <outlet property="appListTableView" destination="ZUz-G4-Kcv" id="Ihv-2U-xvK"/>
                 <outlet property="appSubmenuView" destination="1764" id="tIi-je-ui7"/>
-                <outlet property="myPanel" destination="Boz-oK-cXU" id="sUV-Ig-s0J"/>
                 <outlet property="secondSubmenuView" destination="1620" id="1666"/>
                 <outlet property="statusbarItemView" destination="qPA-Mr-eaZ" id="uqc-B8-KJM"/>
                 <outlet property="statusbarMenu" destination="704" id="732"/>
@@ -495,47 +894,6 @@
                 <outlet property="tableView" destination="ZUz-G4-Kcv" id="azj-x6-lUV"/>
             </connections>
         </customView>
-        <window title="Window" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" releasedWhenClosed="NO" showsToolbarButton="NO" animationBehavior="default" id="Boz-oK-cXU" customClass="MyWindow">
-            <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
-            <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
-            <rect key="contentRect" x="781" y="420" width="188" height="266"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1920" height="1058"/>
-            <view key="contentView" id="s8D-Qc-vhX">
-                <rect key="frame" x="0.0" y="0.0" width="188" height="266"/>
-                <autoresizingMask key="autoresizingMask"/>
-                <subviews>
-                    <customView translatesAutoresizingMaskIntoConstraints="NO" id="fDc-tX-2Oj" customClass="MyCustomWindowView">
-                        <rect key="frame" x="0.0" y="0.0" width="188" height="266"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                        <subviews>
-                            <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="YLJ-ak-AVP">
-                                <rect key="frame" x="8" y="127" width="96" height="22"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="2uy-Fg-lR8">
-                                    <font key="font" metaFont="system"/>
-                                    <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
-                                    <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
-                                </textFieldCell>
-                            </textField>
-                            <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="fSd-Eh-ztP">
-                                <rect key="frame" x="7" y="91" width="82" height="32"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                <buttonCell key="cell" type="push" title="Button" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="tZU-YV-h14">
-                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                                    <font key="font" metaFont="system"/>
-                                </buttonCell>
-                            </button>
-                        </subviews>
-                    </customView>
-                </subviews>
-                <constraints>
-                    <constraint firstItem="fDc-tX-2Oj" firstAttribute="leading" secondItem="s8D-Qc-vhX" secondAttribute="leading" id="0vl-JT-wn8"/>
-                    <constraint firstAttribute="trailing" secondItem="fDc-tX-2Oj" secondAttribute="trailing" id="mAk-WX-VFr"/>
-                    <constraint firstAttribute="bottom" secondItem="fDc-tX-2Oj" secondAttribute="bottom" id="ojR-Dn-ieR"/>
-                    <constraint firstItem="fDc-tX-2Oj" firstAttribute="top" secondItem="s8D-Qc-vhX" secondAttribute="top" id="uv5-Fm-XpA"/>
-                </constraints>
-            </view>
-        </window>
         <customView id="qPA-Mr-eaZ" customClass="StatusbarItemView">
             <rect key="frame" x="0.0" y="0.0" width="84" height="26"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
@@ -556,4 +914,76 @@
     <resources>
         <image name="NSActionTemplate" width="15" height="15"/>
     </resources>
+    <classes>
+        <class className="AppDelegate" superclassName="NSObject">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/AppDelegate.h"/>
+            <relationships>
+                <relationship kind="outlet" name="statusbarMenuController" candidateClass="StatusbarMenuController"/>
+                <relationship kind="outlet" name="window" candidateClass="NSWindow"/>
+            </relationships>
+        </class>
+        <class className="AppsInspector" superclassName="NSObject">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/AppsInspector.h"/>
+            <relationships>
+                <relationship kind="action" name="activateOtherApp:"/>
+                <relationship kind="action" name="deletePid:" candidateClass="NSButton"/>
+                <relationship kind="action" name="exitApp:" candidateClass="NSButton"/>
+                <relationship kind="action" name="printStats:" candidateClass="NSButton"/>
+                <relationship kind="action" name="procCPULimiterResume:" candidateClass="NSButton"/>
+                <relationship kind="action" name="procCPULimiterSuspend:" candidateClass="NSButton"/>
+                <relationship kind="action" name="setPidLimit:" candidateClass="NSButton"/>
+                <relationship kind="outlet" name="activateAppTextField" candidateClass="NSTextField"/>
+                <relationship kind="outlet" name="limTF" candidateClass="NSTextField"/>
+                <relationship kind="outlet" name="pidDeleteTF" candidateClass="NSTextField"/>
+                <relationship kind="outlet" name="pidTF" candidateClass="NSTextField"/>
+                <relationship kind="outlet" name="secondTableView" candidateClass="NSTableView"/>
+            </relationships>
+        </class>
+        <class className="MyImageView" superclassName="NSImageView">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/MyImageView.h"/>
+        </class>
+        <class className="MySubmenuView" superclassName="NSView">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/MySubmenuView.h"/>
+            <relationships>
+                <relationship kind="outlet" name="tableView" candidateClass="MyTableView"/>
+            </relationships>
+        </class>
+        <class className="MyTableCellView" superclassName="NSTableCellView">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/MyTableCellView.h"/>
+            <relationships>
+                <relationship kind="outlet" name="cellImage" candidateClass="MyImageView"/>
+                <relationship kind="outlet" name="cellText" candidateClass="NSTextField"/>
+            </relationships>
+        </class>
+        <class className="MyTableRowView" superclassName="NSTableRowView">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/MyTableRowView.h"/>
+        </class>
+        <class className="MyTableView" superclassName="NSTableView">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/MyTableView.h"/>
+        </class>
+        <class className="NSLayoutConstraint" superclassName="NSObject">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/NSLayoutConstraint.h"/>
+        </class>
+        <class className="NSTableRowView" superclassName="NSView">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/NSTableRowView.h"/>
+        </class>
+        <class className="StatusbarItemView" superclassName="NSView">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/StatusbarItemView.h"/>
+        </class>
+        <class className="StatusbarMenuController" superclassName="NSObject">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/StatusbarMenuController.h"/>
+            <relationships>
+                <relationship kind="action" name="activateSelf:"/>
+                <relationship kind="action" name="addMenu:"/>
+                <relationship kind="action" name="changeMenu:"/>
+                <relationship kind="outlet" name="appListTableView" candidateClass="MyTableView"/>
+                <relationship kind="outlet" name="appSubmenuView" candidateClass="MySubmenuView"/>
+                <relationship kind="outlet" name="myPanel" candidateClass="NSPanel"/>
+                <relationship kind="outlet" name="secondSubmenuView" candidateClass="NSView"/>
+                <relationship kind="outlet" name="statusbarItemView" candidateClass="NSView"/>
+                <relationship kind="outlet" name="statusbarMenu" candidateClass="NSMenu"/>
+                <relationship kind="outlet" name="testTable" candidateClass="MyTableView"/>
+            </relationships>
+        </class>
+    </classes>
 </document>

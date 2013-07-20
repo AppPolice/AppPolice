@@ -172,10 +172,10 @@ static NSString *tableData[] = {
 	
 	
 	
-	NSMenuItem *newItem = [[NSMenuItem allocWithZone:[NSMenu menuZone]] initWithTitle:@"new item" action:NULL keyEquivalent:@""];
-	[newItem setTarget:self];
-	[newItem setView:secondSubmenuView];
-	[[[statusbarMenu itemAtIndex:2] submenu] insertItem:newItem atIndex:1];
+//	NSMenuItem *newItem = [[NSMenuItem allocWithZone:[NSMenu menuZone]] initWithTitle:@"new item" action:NULL keyEquivalent:@""];
+//	[newItem setTarget:self];
+//	[newItem setView:secondSubmenuView];
+//	[[[statusbarMenu itemAtIndex:2] submenu] insertItem:newItem atIndex:1];
 	
 	
 	
@@ -235,8 +235,8 @@ static NSString *tableData[] = {
 	
 	
 	
-/* 
- /
+/* /
+ 
 	//	NSSize maximumWidthSize = {0, 0};
 	float longestNameWidth;
 	float textHeight;
@@ -380,7 +380,8 @@ static NSString *tableData[] = {
 		float textHeight;
 			
 		textHeight = [[[runningApplications objectAtIndex:0] localizedName] sizeWithAttributes:fontAttributes].height;
-		height = textHeight * elementsCount + 2 * elementsCount; // 2 is cell spacing
+//		height = textHeight * elementsCount + 2 * elementsCount; // 2 is cell spacing
+		height = 1100;
 	}
 	
 	NSLog(@"Calc height: %f for %ld elements. Taken height: %f. Width: %f", height, elementsCount, [appListTableView frame].size.height, width);
@@ -516,9 +517,43 @@ static NSString *tableData[] = {
 	[submenu addItem:submenuItem2];
 	[submenuItem2 release];
 	
-	[menu setSubmenu:submenu forItem:[menu itemAtIndex:3]];
+	[menu setSubmenu:submenu forItem:[menu itemAtIndex:6]];
 	[submenu release];
 
+	
+	
+	submenu = [[CMMenu alloc] init];
+	submenuItem1 = [[CMMenuItem alloc] initWithTitle:@"three"];
+	[submenu addItem:submenuItem1];
+	[submenuItem1 release];
+	submenuItem2 = [[CMMenuItem alloc] initWithTitle:@"four"];
+	[submenu addItem:submenuItem2];
+	[submenuItem2 release];
+	
+	CMMenuItem *submenuItem3 = [[CMMenuItem alloc] initWithTitle:@"five"];
+	[submenu addItem:submenuItem3];
+	[submenuItem3 release];
+
+	CMMenuItem *submenuItem4 = [[CMMenuItem alloc] initWithTitle:@"six, little bit longer"];
+	[submenu addItem:submenuItem4];
+	[submenuItem4 release];
+
+	CMMenuItem *submenuItem5 = [[CMMenuItem alloc] initWithTitle:@"seven"];
+	[submenu addItem:submenuItem5];
+	[submenuItem5 release];
+	
+	
+	i = 0;
+	int lim = 14;
+	for (i = 0; i < lim; ++i) {
+		CMMenuItem *submenuItemA = [[CMMenuItem alloc] initWithTitle:@"Automatically generated"];
+		[submenu addItem:submenuItemA];
+		[submenuItemA release];
+	}
+
+	
+	[menu setSubmenu:submenu forItem:[menu itemAtIndex:22]];
+	[submenu release];
 	
 
 //	[menu update];
@@ -570,7 +605,7 @@ static NSString *tableData[] = {
 
 - (NSInteger)numberOfRowsInTableView:(NSTableView *)tableView {
 	NSLog(@"Inquired table rows count: %lu", [runningApplications count]);
-	return [runningApplications count];
+	return 5 * [runningApplications count];
 }
 
 int flag = 0;
@@ -600,8 +635,9 @@ int flag = 0;
 //	cellView.cellText.stringValue = [dictionary objectForKey:@"Name"];
 //	[[cellView cellImage] setImage:[dictionary objectForKey:@"Image"]];
 
+	uint64_t i = (row % [runningApplications count]);
 	
-	NSRunningApplication *app = [runningApplications objectAtIndex:row];
+	NSRunningApplication *app = [runningApplications objectAtIndex:i];
 //	NSLog(@"%@", app);
 	MyTableCellView *cellView = [tableView makeViewWithIdentifier:@"AppCellViewId" owner:self];
 	cellView.cellImage.image = [app icon];

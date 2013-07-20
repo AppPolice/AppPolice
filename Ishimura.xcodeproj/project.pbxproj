@@ -10,6 +10,7 @@
 		A007EAF11786B46B00A7FE8D /* CMTableCellVewOverride.m in Sources */ = {isa = PBXBuildFile; fileRef = A007EAF01786B45A00A7FE8D /* CMTableCellVewOverride.m */; };
 		A007EAF41786BBF000A7FE8D /* CMMenuItemOverride.m in Sources */ = {isa = PBXBuildFile; fileRef = A007EAF31786BBE400A7FE8D /* CMMenuItemOverride.m */; };
 		A007EAF51786CA5500A7FE8D /* MenuItemView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A007EAED1786B0DA00A7FE8D /* MenuItemView.xib */; };
+		A00EF4801793D5A50045ACB5 /* CMScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = A00EF47F1793D59E0045ACB5 /* CMScrollView.m */; };
 		A010F3291784311C003A9E92 /* MyWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = A010F328178430B1003A9E92 /* MyWindow.m */; };
 		A010F32C178437F6003A9E92 /* MyCustomWindowView.m in Sources */ = {isa = PBXBuildFile; fileRef = A010F32B17843712003A9E92 /* MyCustomWindowView.m */; };
 		A010F32F17845332003A9E92 /* StatusbarItemView.m in Sources */ = {isa = PBXBuildFile; fileRef = A010F32E1784530D003A9E92 /* StatusbarItemView.m */; };
@@ -56,6 +57,8 @@
 		A007EAF31786BBE400A7FE8D /* CMMenuItemOverride.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = CMMenuItemOverride.m; path = Controllers/CMMenuItemOverride.m; sourceTree = "<group>"; };
 		A007EAF617870B4D00A7FE8D /* CMTableView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = CMTableView.h; path = ChromeMenu/src/CMTableView.h; sourceTree = SOURCE_ROOT; };
 		A007EAF717870B4E00A7FE8D /* CMTableView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = CMTableView.m; path = ChromeMenu/src/CMTableView.m; sourceTree = SOURCE_ROOT; };
+		A00EF47E1793D59E0045ACB5 /* CMScrollView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = CMScrollView.h; path = ChromeMenu/src/CMScrollView.h; sourceTree = SOURCE_ROOT; };
+		A00EF47F1793D59E0045ACB5 /* CMScrollView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = CMScrollView.m; path = ChromeMenu/src/CMScrollView.m; sourceTree = SOURCE_ROOT; };
 		A010F327178430B1003A9E92 /* MyWindow.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MyWindow.h; path = Controllers/MyWindow.h; sourceTree = "<group>"; };
 		A010F328178430B1003A9E92 /* MyWindow.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = MyWindow.m; path = Controllers/MyWindow.m; sourceTree = "<group>"; };
 		A010F32A17843712003A9E92 /* MyCustomWindowView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MyCustomWindowView.h; path = Controllers/MyCustomWindowView.h; sourceTree = "<group>"; };
@@ -166,6 +169,8 @@
 				A010F341178473F2003A9E92 /* ChromeMenuUnderlyingView.m */,
 				A0ED124117900A8A00244C3D /* CMScrollDocumentView.h */,
 				A0ED124217900A8A00244C3D /* CMScrollDocumentView.m */,
+				A00EF47E1793D59E0045ACB5 /* CMScrollView.h */,
+				A00EF47F1793D59E0045ACB5 /* CMScrollView.m */,
 				A007EAF617870B4D00A7FE8D /* CMTableView.h */,
 				A007EAF717870B4E00A7FE8D /* CMTableView.m */,
 				A010F34617848515003A9E92 /* CMMenuItemView.h */,
@@ -389,6 +394,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A00EF4801793D5A50045ACB5 /* CMScrollView.m in Sources */,
 				A0ED124317900A9000244C3D /* CMScrollDocumentView.m in Sources */,
 				A0ED12401790055C00244C3D /* CMWindowController.m in Sources */,
 				A0F0DF1D178A05C4008E85EA /* CMTableView.m in Sources */,

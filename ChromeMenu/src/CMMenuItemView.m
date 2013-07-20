@@ -8,6 +8,13 @@
 
 #import "CMMenuItemView.h"
 #import <objc/runtime.h>
+//
+//@interface CMMenuItemView ()
+//{
+//	BOOL _mouseInside;
+//}
+//
+//@end
 
 
 @implementation CMMenuItemView
@@ -15,7 +22,7 @@
 @synthesize icon = _icon;
 @synthesize title = _title;
 @synthesize ownersIcon = _ownersIcon;
-
+//@synthesize mouseInside = _mouseInside;
 
 //- (id)initWithFrame:(NSRect)frame
 //{
@@ -29,19 +36,53 @@
 
 
 - (void)drawRect:(NSRect)dirtyRect {
-	//	NSLog(@"Cell View draw rect called. Cell subviews: %@", [self subviews]);
+//	NSLog(@"Cell View draw rect called. Cell subviews: %@", [self subviews]);
+//	NSLog(@"DRAW ItemView");
 	
 
-	NSBezierPath *path = [NSBezierPath bezierPath];
-	[path appendBezierPathWithRect:[self bounds]];
-//	[path setLineWidth:1.0];
-	[[NSColor redColor] set];
-	[path stroke];
+//	NSBezierPath *path = [NSBezierPath bezierPath];
+//	[path appendBezierPathWithRect:[self bounds]];
+//	[[NSColor blueColor] set];
+//	[path stroke];
 	
-	//	[self printRect:[self bounds] withTitle:@"Cell Rect:"];
-	//	[self printRect:[[self superview] bounds] withTitle:@"Superview rect:"];
+	
+	if (_selected) {
+		NSGraphicsContext *currentContext = [NSGraphicsContext currentContext];
+		[currentContext saveGraphicsState];
+		CGFloat xOffset = NSMinX([self convertRect:self.bounds toView:nil]);
+		CGFloat yOffset = NSMaxY([self convertRect:self.bounds toView:nil]);
+		[currentContext setPatternPhase:NSMakePoint(xOffset, yOffset)];
+		
+		[[NSColor selectedMenuItemColor] setFill];
+		NSRectFill([self bounds]);
+		[currentContext restoreGraphicsState];
+		
+		[_title setTextColor:[NSColor selectedMenuItemTextColor]];
+	} else {
+		[_title setTextColor:[NSColor textColor]];
+	}
 }
 
+
+- (BOOL)isSelected {
+	return _selected;
+}
+
+
+- (void)setSelected:(BOOL)selected {
+	if (_selected != selected) {
+		_selected = selected;
+		[self setNeedsDisplay:YES];
+	}
+}
+
+
+//- (void)setMouseInside:(BOOL)inside {
+//	if (_mouseInside != inside) {
+//		_mouseInside = inside;
+//		[self setNeedsDisplay:YES];
+//	}
+//}
 
 //- (NSImageView *)icon {
 //	return _icon;
@@ -108,15 +149,5 @@
 	return description;
 }
 
-
-- (void)printRect:(NSRect)rect withTitle:(NSString *)title {
-	NSLog(@"%@. Rect: x: %f, y: %f, width: %f, height: %f",
-		  title,
-		  rect.origin.x,
-		  rect.origin.y,
-		  rect.size.width,
-		  rect.size.height);
-	
-}
 
 @end

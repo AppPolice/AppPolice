@@ -39,6 +39,9 @@
 - (void)setSubmenu:(CMMenu *)aMenu forItem:(CMMenuItem *)anItem;
 
 
+/* Returns an array containing the receiver's menu items. */
+- (NSArray *)itemArray;
+
 /* Returns the number of menu items in the menu. */
 - (NSInteger)numberOfItems;
 
@@ -48,6 +51,8 @@
 /* Returns the index of the item in the menu, or -1 if the item is not present in the menu */
 - (NSInteger)indexOfItem:(CMMenuItem *)index;
 
+/* Returns item of a supermenu the menu belongs to. Otherwise returns nil */
+//- (CMMenuItem *)parentItem;
 
 
 /* Update only particular menu items */
