@@ -9,9 +9,10 @@
 //#import <AppKit/NSWindow.h>
 #import "CMMenu.h"
 #import "CMMenuItem.h"
+#import "CMMenuItemView.h"
 #import "CMMenu+InternalMethods.h"
 #import "CMMenuItem+InternalMethods.h"
-#import "CMMenuItemView.h"
+#import "CMMenuItemView+InternalMethods.h"
 #import "CMWindowController.h"
 //#import "CMMenuItemBackgroundView.h"
 //#import "ChromeMenuUnderlyingWindow.h"
@@ -93,7 +94,16 @@ struct _submenu_tracking_event {
 - (NSRect)frameOfItemRelativeToScreen:(CMMenuItem *)item;
 - (void)reloadData;
 - (void)showMenu;
-- (NSRect)getBestFrame;
+
+/**
+ * @function bestFrame
+ * @abstract Returns the frame in screen coordinates in which menu will be drawn.
+ * @discussion Depending on the position of menu's parent item and the proximity to the screen 
+ *		menu can be positioned either from the left or from the right of it, aligned to the top or to the bottom.
+ * @result Frame in screen coordinates.
+ */
+- (NSRect)bestFrame;
+
 //- (void)setSupermenu:(CMMenu *)aMenu;
 //- (void)orderFront;
 //- (NSInteger)windowNumber;	// may not be needed
@@ -182,6 +192,15 @@ struct _submenu_tracking_event {
 }
 
 
+- (CMMenuItem *)itemAtPoint:(NSPoint)aPoint {
+	NSViewController *viewController = [_underlyingWindowController viewControllerAtPoint:aPoint];
+	if (viewController)
+		return [viewController representedObject];
+	else
+		return nil;
+}
+
+
 - (NSArray *)itemArray {
 	return _menuItems;
 }
@@ -191,6 +210,10 @@ struct _submenu_tracking_event {
 	return [_menuItems count];
 }
 
+
+- (CMMenuItem *)parentItem {
+	return _parentItem;
+}
 
 - (NSInteger)indexOfItem:(CMMenuItem *)index {
 	// need implement
@@ -265,12 +288,12 @@ struct _submenu_tracking_event {
 
 - (void)showMenu {
 	if (!_underlyingWindowController) {
-		_underlyingWindowController = [[CMWindowController alloc] init];
+		_underlyingWindowController = [[CMWindowController alloc] initWithOwner:self];
 		[self reloadData];
 	}
 	
 
-	NSRect frame = [self getBestFrame];
+	NSRect frame = [self bestFrame];
 
 	
 	[_underlyingWindowController displayInFrame:frame];
@@ -320,6 +343,10 @@ struct _submenu_tracking_event {
 
 
 - (void)cancelTrackingWithoutAnimation {
+	if (_activeSubmenu) {
+		[_activeSubmenu cancelTrackingWithoutAnimation];
+	}
+	
 //	[_underlyingWindow orderOut:self];
 	[_underlyingWindowController hide];
 	_isActive = NO;
@@ -359,7 +386,10 @@ struct _submenu_tracking_event {
 }
 
 
-- (NSRect)getBestFrame {
+/*
+ *
+ */
+- (NSRect)bestFrame {
 	NSRect frame;
 	NSSize intrinsicSize = [_underlyingWindowController intrinsicContentSize];
 	
@@ -445,7 +475,7 @@ struct _submenu_tracking_event {
 	//	NSUInteger count = [_menuItems count];
 	NSMutableArray *viewControllers = [NSMutableArray array];
 	
-	for (id menuItem in _menuItems) {
+	for (CMMenuItem *menuItem in _menuItems) {
 		
 		/* menu item has individual view */
 		if ([menuItem viewNibName]) {
@@ -491,27 +521,28 @@ struct _submenu_tracking_event {
 			
 		} else {
 			NSViewController *viewController;
-			CMMenuItemView *view;
 			
-			if ([menuItem icon]) {
-				//				[self loadAndRegisterNibNamed:@"CMMenuItemIconView" withIdentifier:@"CMMenuItemIconViewId"];
-				//				defaultCellView = [tableView makeViewWithIdentifier:@"CMMenuItemIconViewId" owner:self];
-				//				[[defaultCellView icon] setImage:[menuItem icon]];
-				viewController = [[NSViewController alloc] initWithNibName:@"CMMenuItemIconView" bundle:nil];
-				view = (CMMenuItemView *)viewController.view;
-				[[view icon] setImage:[menuItem icon]];
+			if ([menuItem isSeparatorItem]) {
+				viewController = [[NSViewController alloc] initWithNibName:@"CMMenuItemSeparatorView" bundle:nil];
+//				CMMenuItemSeparatorView *view =
 			} else {
-				//				defaultCellView = [tableView makeViewWithIdentifier:@"CMMenuItemViewId" owner:self];
-				viewController = [[NSViewController alloc] initWithNibName:@"CMMenuItemView" bundle:nil];
-				view = (CMMenuItemView *)viewController.view;
+			
+				CMMenuItemView *view;
+				
+				if ([menuItem icon]) {
+					viewController = [[NSViewController alloc] initWithNibName:@"CMMenuItemIconView" bundle:nil];
+					view = (CMMenuItemView *)viewController.view;
+					[[view icon] setImage:[menuItem icon]];
+				} else {
+					viewController = [[NSViewController alloc] initWithNibName:@"CMMenuItemView" bundle:nil];
+					view = (CMMenuItemView *)viewController.view;
+				}
+				
+				[[view title] setStringValue:[menuItem title]];
+				
+				if ([menuItem hasSubmenu])
+					[view setHasSubmenuIcon:YES];
 			}
-			
-			[[view title] setStringValue:[menuItem title]];
-			
-			if ([menuItem hasSubmenu])
-				[[view ownersIcon] setHidden:NO];
-			else
-				[[view ownersIcon] setHidden:YES];
 			
 
 			[menuItem setRepresentedViewController:viewController];
@@ -578,6 +609,36 @@ struct _submenu_tracking_event {
 
 - (BOOL)isTrackingSubmenu {
 	return _isTrackingSubmenu;
+}
+
+
+- (void)mouseEvent:(NSEvent *)theEvent {
+	NSUInteger eventType = [theEvent type];
+	NSPoint mouseLocatoin = [theEvent locationInWindow];
+	
+	/*
+	 * Possible Events:
+	 * 1. Mouse entered a menu when it is showing a submenu:
+	 *		a. mouse hovered submenu's parent item;
+	 *		b. mouse hovered other area;
+	 * 2. Mouse entered submenu when it was being tracked by the supermenu.
+	 */
+	
+	if (eventType == NSMouseEntered) {
+		if (_activeSubmenu) {				// 1.
+			CMMenuItem *menuItem = [self itemAtPoint:mouseLocatoin];
+			if (menuItem && menuItem == [_activeSubmenu parentItem]) {	// 1.a
+				if ([_activeSubmenu activeSubmenu])						// if submenu has active submenus -- close them
+					[[_activeSubmenu activeSubmenu] cancelTrackingWithoutAnimation];
+			} else
+				[_activeSubmenu cancelTrackingWithoutAnimation];		// 1.b.
+				// TODO: Highlight new item
+		} else if (_supermenu && [_supermenu isTrackingSubmenu]) {		// 2.
+			[_supermenu stopTrackingSubmenuReasonSuccess:YES];
+		}
+	} else {
+		
+	}
 }
 
 
@@ -798,11 +859,11 @@ struct _submenu_tracking_event {
 	
 	
 	
-	if (NSPointInRect(mouseLocation, tracking_event.target_rect)) {
-		[self stopTrackingSubmenuReasonSuccess:YES];
-		NSLog(@"Stop tracking, reason: success!");
-		return;
-	}
+//	if (NSPointInRect(mouseLocation, tracking_event.target_rect)) {
+//		[self stopTrackingSubmenuReasonSuccess:YES];
+//		NSLog(@"Stop tracking, reason: success!");
+//		return;
+//	}
 	
 	
 		
@@ -834,136 +895,6 @@ struct _submenu_tracking_event {
 }
 
 
-/*
-
-#pragma mark -
-#pragma mark ***** TableView Delegate & DataSource Methods *****
-
-
-- (NSInteger)numberOfRowsInTableView:(NSTableView *)tableView {
-	NSLog(@"CMMenu: inquired table rows count: %ld", [_menuItems count]);
-	return [_menuItems count];
-}
-
-
-int flag2 = 0;
-- (NSTableCellView *)tableView:(NSTableView *)tableView viewForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row {
-	
-	if (flag2 == 0) {
-		NSLog(@"Menu table draw called");
-		flag2 = 1;
-	}
-	
-	//	if (row == [tableContents count] - 1) {
-	if (row == [_menuItems count] - 1) {
-		flag2 = 0;
-	}
-	
-	//	NSLog(@"table ROW draw called");
-	
-	//	NSDictionary *dictionary = [tableContents objectAtIndex:row];
-	//	MyTableCellView *cellView = [tableView makeViewWithIdentifier:@"AppCellViewId" owner:self];
-	//	cellView.cellText.stringValue = [dictionary objectForKey:@"Name"];
-	//	[[cellView cellImage] setImage:[dictionary objectForKey:@"Image"]];
-	
-
-	id menuItem = [self itemAtIndex:row];
-//	NSLog(@"loaded item: %@", menuItem);
-	
-	// menu item has individual view 
-	if ([menuItem viewIdentifier]) {
-		[self loadAndRegisterNibNamed:[menuItem viewNibName] withIdentifier:[menuItem viewIdentifier]];
-		id cellView = [tableView makeViewWithIdentifier:[menuItem viewIdentifier] owner:self];
-		NSEnumerator *enumerator = [[menuItem viewPropertyNames] objectEnumerator];
-		NSString *propertyName;
-		while ((propertyName = [enumerator nextObject])) {
-			SEL propertySetter = NSSelectorFromString([NSString stringWithFormat:@"set%@Property:", [propertyName	stringByReplacingCharactersInRange:NSMakeRange(0, 1) withString:[[propertyName substringToIndex:1] capitalizedString]]]);
-			if ([cellView respondsToSelector:propertySetter])
-				[cellView performSelector:propertySetter withObject:[menuItem valueForKey:propertyName]];
-		}
-		
-		NSLog(@"custom item cell view: %@", cellView);
-		
-		return cellView;
-	}
-	
-	// custom view for all items
-	if (_itemsViewIdentifier) {
-		id cellView;
-		cellView = [tableView makeViewWithIdentifier:_itemsViewIdentifier owner:self];
-		
-		NSEnumerator *enumerator = [_itemsViewPropertyNames objectEnumerator];
-		NSString *propertyName;
-		while ((propertyName = [enumerator nextObject])) {
-//			if ([property isEqualToString:@"title"])
-//				cellView.title.stringValue = [menuItem title];
-//			else
-//				[cellView setValue:[menuItem valueForKey:property] forKey:property];
-			
-			SEL propertySetter = NSSelectorFromString([NSString stringWithFormat:@"set%@Property:", [propertyName	stringByReplacingCharactersInRange:NSMakeRange(0, 1) withString:[[propertyName substringToIndex:1] capitalizedString]]]);
-			if ([cellView respondsToSelector:propertySetter])
-				[cellView performSelector:propertySetter withObject:[menuItem valueForKey:propertyName]];
-		}
-		
-//		NSLog(@"cell view: %@", cellView);
-		
-		return cellView;
-
-	} else {
-		CMMenuItemView *defaultCellView;
-		
-		if ([menuItem icon]) {
-			[self loadAndRegisterNibNamed:@"CMMenuItemIconView" withIdentifier:@"CMMenuItemIconViewId"];
-			defaultCellView = [tableView makeViewWithIdentifier:@"CMMenuItemIconViewId" owner:self];
-			[[defaultCellView icon] setImage:[menuItem icon]];
-		} else {
-			defaultCellView = [tableView makeViewWithIdentifier:@"CMMenuItemViewId" owner:self];
-		}
-		
-		[[defaultCellView title] setStringValue:[menuItem title]];
-		
-		if ([menuItem hasSubmenu])
-			[[defaultCellView ownersIcon] setHidden:NO];
-		else
-			[[defaultCellView ownersIcon] setHidden:YES];
-		
-//		NSLog(@"default cell view: %@", defaultCellView);
-		
-		return defaultCellView;
-	}
-}
-
-
-- (NSTableRowView *)tableView:(NSTableView *)tableView rowViewForRow:(NSInteger)row {
-	//	NSLog(@"------------------ ROWView for ROW ----------------");
-	CMMenuItemBackgroundView *rowView = [tableView makeViewWithIdentifier:@"CMMenuItemBackgroundViewId" owner:self];
-	[rowView setOwner:[self itemAtIndex:row]];
-	[rowView resetBackgroundViewProperties];
-	return rowView;
-}
-
-
-//- (void)tableView:(NSTableView *)tableView didRemoveRowView:(NSTableRowView *)rowView forRow:(NSInteger)row {
-//	NSLog(@"==================================================================");
-////	[self setAppSubmenuSizeWithWidth:0 andHeight:0 relative:NO];
-//}
-
-
-//- (BOOL)tableView:(NSTableView *)tableView shouldSelectRow:(NSInteger)row {
-//	NSLog(@"should select row %ld", row);
-//	return YES;
-//}
-
-- (void)tableViewSelectionDidChange:(NSNotification *)notification {
-	NSTableView *tableView = [notification object];
-	NSTableRowView *rowView = [tableView rowViewAtRow:[tableView selectedRow] makeIfNecessary:NO];
-	NSLog(@"tableview selectionDidChange: %@", rowView);
-//	[[self appInspectorController] showAppDetailsPopoverRelativeTo:rowView];
-}
-
-
-
-*/
 
 
 @end

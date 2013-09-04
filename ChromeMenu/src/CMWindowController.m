@@ -14,6 +14,8 @@
 #import "CMMenuItemView.h"
 #import "CMMenuItem.h"
 #import "CMMenuItem+InternalMethods.h"
+#import "CMMenu.h"
+#import "CMMenu+InternalMethods.h"
 
 
 #define kTrackingAreaViewControllerKey @"viewController"
@@ -31,6 +33,7 @@
 
 @interface CMWindowController ()
 {
+	id _owner;
 	CMScrollView *_scrollView;
 	CGFloat _verticalPadding;
 //	CMScrollDocumentView *_scrollDocumentView;
@@ -38,16 +41,18 @@
 	BOOL _needsLayoutUpdate;
 	CGFloat _maximumViewWidth;
 	CGFloat _viewHeight;
+	CGFloat _separatorViewHeight;
 	
 	NSMutableArray *_viewControllers;
 	NSMutableArray *_trackingAreas;
+	NSTrackingArea *_contentViewTrackingArea;
 	
 	id _localEventMonitor;
 }
 
 @property (assign) BOOL needsLayoutUpdate;
 
-- (void)setSizeWithFrame:(NSRect)frame;
+- (void)setFrame:(NSRect)frame;
 - (NSTrackingArea *)trackingAreaForViewController:(NSViewController *)viewController;
 - (void)mouseEventOnViewController:(NSViewController *)viewController eventType:(CMMenuEventType)eventType;
 
@@ -74,12 +79,13 @@
  */
 
 
-- (id)init {
+- (id)initWithOwner:(id)owner {
 	NSRect rect = {{0, 0}, {20, 20}};
 	NSWindow *window = [[ChromeMenuUnderlyingWindow alloc] initWithContentRect:rect defer:YES];
 	
 	self = [super initWithWindow:window];
 	if (self) {
+		_owner = owner;
 		ChromeMenuUnderlyingView *contentView = [[ChromeMenuUnderlyingView alloc] initWithFrame:rect];
 		window.contentView = contentView;
 		[contentView setAutoresizesSubviews:NO];
@@ -97,7 +103,7 @@
 		[_scrollView setHasVerticalScroller:YES];
 		[_scrollView setHasVerticalScroller:NO];
 		
-		CMScrollDocumentView *documentView = [[CMScrollDocumentView alloc] initWithFrame:rect];
+		CMScrollDocumentView *documentView = [[CMScrollDocumentView alloc] initWithFrame:NSZeroRect];
 		[_scrollView setDocumentView:documentView];
 		[contentView addSubview:_scrollView];
 		
@@ -107,6 +113,7 @@
 		[documentView release];
 		[contentView release];
 		
+		_separatorViewHeight = 12.0;
 		_verticalPadding = 4.0;
 		
 		[self setNeedsLayoutUpdate:YES];
@@ -149,13 +156,18 @@
 //	[self displayInFrame:NSMakeRect(100, 200, 200, 200)];
 //}
 
+
+/*
+ *
+ */
 - (void)displayInFrame:(NSRect)frame {
 //	[self.window setFrameOrigin:origin];
 
-	[self setSizeWithFrame:frame];
+	[self setFrame:frame];
 	[self.window orderFront:self];
 	
 	[self updateTrackingAreasForVisibleRect:[[_scrollView contentView] bounds]];
+	[self updateContentViewTrackingArea];
 	
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(scrollViewContentViewBoundsDidChange:) name:NSViewBoundsDidChangeNotification object:[_scrollView contentView]];
 	
@@ -173,12 +185,18 @@
 }
 
 
-- (void)setSizeWithFrame:(NSRect)frame {
+/*
+ *
+ */
+- (void)setFrame:(NSRect)frame {
 	[self.window setFrame:frame display:NO];
 	[_scrollView setFrame:NSMakeRect(0, _verticalPadding, frame.size.width, frame.size.height - 2 * _verticalPadding)];
 }
 
 
+/*
+ *
+ */
 - (void)hide {
 	[self.window orderOut:self];
 
@@ -190,12 +208,18 @@
 }
 
 
+/*
+ *
+ */
 - (void)scrollViewContentViewBoundsDidChange:(NSNotification *)notification {
 	NSLog(@"Scroll notification: %@, new bounds: %@", notification, NSStringFromRect([[_scrollView contentView] bounds]));
 	[self updateTrackingAreasForVisibleRect:[[_scrollView contentView] bounds]];
 }
 
 
+/*
+ *
+ */
 - (void)layoutViews:(NSMutableArray *)viewControllers {
 	if (!viewControllers)
 		return;
@@ -210,6 +234,7 @@
 	}
 	_viewControllers = [viewControllers retain];
 //	}
+
 	
 	NSView *documentView = [_scrollView documentView];
 	CGFloat maximumWidth = 0.0f;
@@ -220,23 +245,31 @@
 		if (size.width > maximumWidth)
 			maximumWidth = size.width;
 
-//		[_scrollDocumentView addSubview:view];
 		[documentView addSubview:view];
 	}
 	
-	_maximumViewWidth = maximumWidth;
 	_viewHeight = [[viewControllers objectAtIndex:0] view].frame.size.height;
+	_maximumViewWidth = maximumWidth;
+
 	
 	[self updateViews];
 }
 
 
+
+/*
+ *
+ */
 - (void)updateViews {
+	NSArray *viewControllers = _viewControllers;
 	NSView *documentView = [_scrollView documentView];
 	CGFloat width = _maximumViewWidth;
-	CGFloat height = _viewHeight;
+	CGFloat viewHeight = _viewHeight;
+	CGFloat separatorViewHeight = _separatorViewHeight;
 	CGFloat offset = 0.0f;
-	CGFloat documentViewHeight = [[documentView subviews] count] * (height + VERTICAL_SPACING);
+//	CGFloat documentViewHeight = 0.0;
+//	CGFloat documentViewHeight = [[documentView subviews] count] * (viewHeight + VERTICAL_SPACING);
+
 //	CGFloat heightLimit = 817.0;
 //	CGFloat menuHeight;
 	
@@ -245,22 +278,56 @@
 	
 //	[self.window setFrame:CGRectMake(0, 0, width, menuHeight + 2 * _verticalPadding) display:NO];
 //	[_scrollView setFrame:CGRectMake(0, _verticalPadding, width, menuHeight)];
-	[documentView setFrame:NSMakeRect(0, 0, width, documentViewHeight)];
 	
-	for (NSView *view in [documentView subviews]) {
-		CGRect frame = [view frame];
+//	[documentView setFrame:NSMakeRect(0, 0, width, documentViewHeight)];
+	
+//	for (NSView *view in [documentView subviews]) {
+//	for (NSViewController *viewController in [viewControllers reverseObjectEnumerator]) {
+	for (NSViewController *viewController in [viewControllers reverseObjectEnumerator]) {
+		CMMenuItem *menuItem = [viewController representedObject];
+		NSView *view = [viewController view];
+		CGRect frame;
+		CGFloat height = ([menuItem isSeparatorItem]) ? separatorViewHeight : viewHeight;
 		frame.size = NSMakeSize(width, height);
+		offset -= height + VERTICAL_SPACING;
 		frame.origin.y = offset;
 		frame.origin.x = 0;
 		[view setFrame:frame];
-		offset += height + VERTICAL_SPACING;
 	}
+
+	[documentView setFrame:NSMakeRect(0, 0, width, -1 * offset)];
 }
+
+
+/*
+ *
+ */
+- (NSViewController *)viewControllerAtPoint:(NSPoint)aPoint {
+	aPoint = [[_scrollView documentView] convertPoint:aPoint fromView:nil];
+	NSRect documentViewFrame = [[_scrollView documentView] frame];;
+	if (aPoint.x < documentViewFrame.origin.x || aPoint.x > documentViewFrame.origin.x + documentViewFrame.size.width
+		|| aPoint.y < documentViewFrame.origin.y || aPoint.y > documentViewFrame.origin.y + documentViewFrame.size.height)
+		return nil;
+	
+	NSArray *viewControllers = _viewControllers;
+	for (NSViewController *viewController in viewControllers) {
+		NSRect frame = [[viewController view] frame];
+		if (frame.origin.y + frame.size.height >= aPoint.y)
+			return viewController;
+	}
+	
+	return nil;
+}
+
 
 
 #pragma mark -
 #pragma mark ******** Tracking Areas & Events Handling ********
 
+
+/*
+ *
+ */
 - (void)updateTrackingAreasForVisibleRect:(NSRect)visibleRect {
 //	NSLog(@"Visible RECT: %@", NSStringFromRect(visibleRect));
 	NSView *documentView = [_scrollView documentView];
@@ -281,7 +348,7 @@
 		_trackingAreas = [[NSMutableArray alloc] init];
 	}
 	
-	
+	NSArray *controllers = _viewControllers;
 	NSPoint mouseLocation;
 	NSUInteger firstIndex;
 	NSUInteger lastIndex;
@@ -294,33 +361,57 @@
 	mouseLocation = [[self window] mouseLocationOutsideOfEventStream];
 	mouseLocation = [documentView convertPoint:mouseLocation fromView:nil];
 	
-	firstIndex = floor(visibleRect.origin.y / (_viewHeight + VERTICAL_SPACING));
-	if (VERTICAL_SPACING != 0 && ((visibleRect.origin.y - firstIndex * (_viewHeight + VERTICAL_SPACING)) > _viewHeight))
-		++firstIndex;
-	lastIndex = floor((visibleRect.origin.y + visibleRect.size.height - 1) / (_viewHeight + VERTICAL_SPACING));
-	if (lastIndex >= [_viewControllers count])
-		lastIndex = [_viewControllers count] - 1;
+//	firstIndex = floor(visibleRect.origin.y / (_viewHeight + VERTICAL_SPACING));
+//	if (VERTICAL_SPACING != 0 && ((visibleRect.origin.y - firstIndex * (_viewHeight + VERTICAL_SPACING)) > _viewHeight))
+//		++firstIndex;
+//	lastIndex = floor((visibleRect.origin.y + visibleRect.size.height - 1) / (_viewHeight + VERTICAL_SPACING));
+//	if (lastIndex >= [_viewControllers count])
+//		lastIndex = [_viewControllers count] - 1;
 
 //	NSLog(@"First index: %d, last index: %d", firstIndex, lastIndex);
 	
 //	NSArray *subviews = [documentView subviews];
-	for (i = firstIndex; i <= lastIndex; ++i) {
+//	for (i = firstIndex; i <= lastIndex; ++i) {
+	
+	firstIndex = -1;
+	i = 0;
+	
+	for (NSViewController *viewController in controllers) {
+		NSRect frame = [[viewController view] frame];
+		if (frame.origin.y < visibleRect.origin.y)
+			continue;
+		
+		if (frame.origin.y > visibleRect.origin.y + visibleRect.size.height)
+			break;
+		
+		if (firstIndex == -1)
+			firstIndex = i;
+		
+		if (! [(CMMenuItemView *)[viewController view] needsTracking])
+			continue;
+	
 //		CMMenuItemView *view = [subviews objectAtIndex:i];
 //		NSTrackingArea *trackingArea = [self trackingAreaForView:view];
-		NSViewController *viewController = [_viewControllers objectAtIndex:i];
+//		NSViewController *viewController = [_viewControllers objectAtIndex:i];
 		NSTrackingArea *trackingArea = [self trackingAreaForViewController:viewController];
 		[documentView addTrackingArea:trackingArea];
 		[_trackingAreas addObject:trackingArea];
 		
 //		if (NSPointInRect(mouseLocation, [view frame]))
 //			[view setSelected:YES];
-		if (NSPointInRect(mouseLocation, [[viewController view] frame]))
+		if (NSPointInRect(mouseLocation, frame))
 			[self mouseEventOnViewController:viewController eventType:CMMenuEventMouseEnteredItem | CMMenuEventImplicit];
+		
+		++i;
 	}
+	
+	NSLog(@"first index: %ld, last: %ld", firstIndex, i);
 }
 
 
-//- (NSTrackingArea *)trackingAreaForView:(NSView *)view {
+/*
+ *
+ */
 - (NSTrackingArea *)trackingAreaForViewController:(NSViewController *)viewController {
 	NSRect trackingRect = [[_scrollView documentView] convertRect:[[viewController view] bounds] fromView:[viewController view]];
 	NSTrackingAreaOptions trackingOptions = NSTrackingMouseEnteredAndExited | NSTrackingEnabledDuringMouseDrag | NSTrackingActiveInActiveApp;
@@ -332,27 +423,56 @@
 }
 
 
-- (void)mouseEntered:(NSEvent *)theEvent {
-//	static NSViewController *ctrl = nil;
+
+/*
+ * Tracking Area for Menu Rect
+ */
+- (void)updateContentViewTrackingArea {
+	NSView *contentView = self.window.contentView;
 	
-	//	CMMenuItemView *view = [(NSDictionary *)[theEvent userData] objectForKey:kTrackingAreaViewControllerKey];
-	NSViewController *viewController = [(NSDictionary *)[theEvent userData] objectForKey:kTrackingAreaViewControllerKey];
-	[self mouseEventOnViewController:viewController eventType:CMMenuEventMouseEnteredItem];
-//	[(CMMenuItemView *)[viewController view] setSelected:YES];
+	if (_contentViewTrackingArea) {
+		[contentView removeTrackingArea:_contentViewTrackingArea];
+		[_contentViewTrackingArea release];
+	}
 	
-//	if (ctrl == nil) {
-//		ctrl = viewController;
-//	} else {
-////		[self mouseEventOnViewController:ctrl eventType:CMMenuEventMouseExitedItem];
-//		[(CMMenuItemView *)[ctrl view] setSelected:NO];
-//		ctrl = viewController;
-//	}
+	NSRect trackingRect = [contentView bounds];
+	NSTrackingAreaOptions trackingOptions = NSTrackingMouseEnteredAndExited | NSTrackingActiveInActiveApp | NSTrackingEnabledDuringMouseDrag;
+//	NSDictionary *trackingData = [NSDictionary];
 	
-	
-//	NSLog(@"Mouse Entered %@", theEvent);
+	NSTrackingArea *trackingArea = [[NSTrackingArea alloc] initWithRect:trackingRect options:trackingOptions owner:self userInfo:nil];
+	[contentView addTrackingArea:trackingArea];
+	_contentViewTrackingArea = trackingArea;
 }
 
 
+
+/*
+ *
+ */
+- (void)mouseEntered:(NSEvent *)theEvent {
+//	NSLog(@"Mouse Entered %@", theEvent);
+	
+//	NSPoint mouseLocation = [theEvent locationInWindow];
+//	mouseLocation = [[_scrollView documentView] convertPoint:mouseLocation fromView:nil];
+//	NSViewController *viewController = [self viewControllerAtPoint:mouseLocation];
+//	NSString *text = (viewController) ? [[(CMMenuItemView *)[viewController view] title] stringValue] : @"nil";
+//	NSLog(@"loc in win: %@, viewtext: %@", NSStringFromPoint(mouseLocation), text);
+
+
+	if ([theEvent userData]) {		// mouse entered menu item view
+		NSViewController *viewController = [(NSDictionary *)[theEvent userData] objectForKey:kTrackingAreaViewControllerKey];
+		[self mouseEventOnViewController:viewController eventType:CMMenuEventMouseEnteredItem];
+	} else {						// mouse entered menu itself
+		CMMenu *menu = (CMMenu *)_owner;
+		[menu mouseEvent:theEvent];
+	}
+
+}
+
+
+/*
+ *
+ */
 - (void)mouseExited:(NSEvent *)theEvent {
 //	CMMenuItemView *view = [(NSDictionary *)[theEvent userData] objectForKey:kTrackingAreaViewControllerKey];
 //	NSViewController *viewController = [(NSDictionary *)[theEvent userData] objectForKey:kTrackingAreaViewControllerKey];
@@ -361,22 +481,53 @@
 	
 //	NSLog(@"Mouse Exited %@", theEvent);
 	
-	/*
-	 * We want to redraw currently selected item after newly hovered item has background.
-	 * This technic is used to solve the blinking problem when moving mouse swiftly through the menu items.
-	 */
-	[self performSelector:@selector(delayedMouseExitedEvent:) withObject:theEvent afterDelay:0.0];
+	if ([theEvent userData]) {
+		/*
+		 * We want to redraw currently selected item after newly hovered item has background.
+		 * This technic is used to solve the blinking problem when moving mouse swiftly through the menu items.
+		 */
+		[self performSelector:@selector(delayedMouseExitedEvent:) withObject:theEvent afterDelay:0.0];
+	} else {
+		CMMenu *menu = (CMMenu *)_owner;
+		[menu mouseEvent:theEvent];
+	}
 }
 
 
+/*
+ *
+ */
+- (void)mouseUp:(NSEvent *)theEvent {
+	NSLog(@"UP: %@", theEvent);
+}
+
+
+//- (void)mouseDown:(NSEvent *)theEvent {
+//	NSLog(@"DOWN: %@", theEvent);
+//}
+
+
+/*
+ *
+ */
 - (void)delayedMouseExitedEvent:(NSEvent *)theEvent {
 	NSViewController *viewController = [(NSDictionary *)[theEvent userData] objectForKey:kTrackingAreaViewControllerKey];
 	[self mouseEventOnViewController:viewController eventType:CMMenuEventMouseExitedItem];
 }
 
 
+/*
+ *
+ */
 - (void)mouseEventOnViewController:(NSViewController *)viewController eventType:(CMMenuEventType)eventType {
 	CMMenuItem *menuItem = [viewController representedObject];
+	
+//	if ([menuItem isSeparatorItem])
+//		return;
+//	CMMenuItemView *view = (CMMenuItemView *)[viewController view];
+//	NSLog(@"ffframe: %@", NSStringFromRect([view frame]));
+	
+	
 	BOOL selected;
 	BOOL changeSelectionStatus = [menuItem shouldChangeItemSelectionStatusForEvent:eventType];
 	

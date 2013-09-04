@@ -484,20 +484,30 @@ static NSString *tableData[] = {
 		NSString *statusImageName = [NSString stringWithString:(i % 2 == 0) ? @"NSStatusAvailable" : @"NSStatusUnavailable"];
 
 		id item = nil;
-		if (i == 1 || i == 4) {
-			item = [[CMMenuItemOverride alloc] initWithTitle:name];
-			[item setViewFromNibNamed:@"MenuItemView" withIdentifier:@"CMTableCellViewIdOverride" andPropertyNames:viewProperties];
-			[item setStatusIcon:[NSImage imageNamed:statusImageName]];
+		
+		if (i == 1 || i == 12) {
+			item = [CMMenuItem separatorItem];
+			[menu addItem:item];
+			++i;
+			continue;
 		} else {
-			item = [[CMMenuItem alloc] initWithTitle:name];
+
+		
+
+			if (i == 1 || i == 9) {
+				item = [[CMMenuItemOverride alloc] initWithTitle:name];
+				[item setViewFromNibNamed:@"MenuItemView" withIdentifier:@"CMTableCellViewIdOverride" andPropertyNames:viewProperties];
+				[item setStatusIcon:[NSImage imageNamed:statusImageName]];
+			} else {
+				item = [[CMMenuItem alloc] initWithTitle:name];
+			}
+					
+			if (i > 3)
+				[item setIcon:image];
+			
+	//		[item setIcon:image];
+
 		}
-		
-		if (i > 3)
-			[item setIcon:image];
-		
-//		[item setIcon:image];
-
-
 		
 		[menu addItem:item];
 		[item release];
@@ -510,15 +520,40 @@ static NSString *tableData[] = {
 	
 
 	CMMenu *submenu = [[CMMenu alloc] init];
-	CMMenuItem *submenuItem1 = [[CMMenuItem alloc] initWithTitle:@"one"];
+	CMMenuItem *submenuItem1 = [[CMMenuItem alloc] initWithTitle:@"ViewTemplate"];
 	[submenu addItem:submenuItem1];
 	[submenuItem1 release];
-	CMMenuItem *submenuItem2 = [[CMMenuItem alloc] initWithTitle:@"two"];
+	CMMenuItem *submenuItem2 = [[CMMenuItem alloc] initWithTitle:@"Item"];
 	[submenu addItem:submenuItem2];
 	[submenuItem2 release];
 	
 	[menu setSubmenu:submenu forItem:[menu itemAtIndex:6]];
 	[submenu release];
+	
+	
+	submenu = [[CMMenu alloc] init];
+	submenuItem1 = [[CMMenuItem alloc] initWithTitle:@"one"];
+	[submenu addItem:submenuItem1];
+	[submenuItem1 release];
+	submenuItem2 = [[CMMenuItem alloc] initWithTitle:@"Item"];
+	[submenu addItem:submenuItem2];
+	[submenuItem2 release];
+	
+	[menu setSubmenu:submenu forItem:[menu itemAtIndex:7]];
+	[submenu release];
+	
+	
+	CMMenu *submenuOfSubmenu = [[CMMenu alloc] init];
+	submenuItem1 = [[CMMenuItem alloc] initWithTitle:@"one"];
+	[submenuOfSubmenu addItem:submenuItem1];
+	[submenuItem1 release];
+	submenuItem2 = [[CMMenuItem alloc] initWithTitle:@"two"];
+	[submenuOfSubmenu addItem:submenuItem2];
+	[submenuItem2 release];
+	
+	[submenu setSubmenu:submenuOfSubmenu forItem:[submenu itemAtIndex:0]];
+	[submenuOfSubmenu release];
+
 
 	
 	

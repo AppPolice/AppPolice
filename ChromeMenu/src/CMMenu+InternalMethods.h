@@ -6,6 +6,8 @@
 //  Copyright (c) 2013 Maksym Stefanchuk. All rights reserved.
 //
 
+//#include "CMMenuEventTypes.h"
+
 @interface CMMenu (CMMenuInternalMethods)
 
 - (void)setSupermenu:(CMMenu *)aMenu;
@@ -19,6 +21,8 @@
 - (void)startTrackingSubmenu:(CMMenu *)submenu forItem:(CMMenuItem *)item;
 - (void)stopTrackingSubmenuReasonSuccess:(BOOL)reasonSuccess;
 //- (void)startTrackingActiveSubmenu;
+
+- (void)mouseEvent:(NSEvent *)theEvent;
 
 - (void)showMenuAsSubmenuOf:(CMMenuItem *)menuItem;	// may not be needed
 //- (void)orderFront;

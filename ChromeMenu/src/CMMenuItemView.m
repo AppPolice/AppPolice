@@ -7,21 +7,25 @@
 //
 
 #import "CMMenuItemView.h"
+#import "CMMenuItemView+InternalMethods.h"
 #import <objc/runtime.h>
-//
-//@interface CMMenuItemView ()
-//{
-//	BOOL _mouseInside;
-//}
-//
-//@end
+
+
+
+@interface CMMenuItemView ()
+{
+	NSImageView *_submenuIconView;
+	NSMutableArray *_submenuIconConstraints;
+}
+
+@end
 
 
 @implementation CMMenuItemView
 
 @synthesize icon = _icon;
 @synthesize title = _title;
-@synthesize ownersIcon = _ownersIcon;
+//@synthesize ownersIcon = _ownersIcon;
 //@synthesize mouseInside = _mouseInside;
 
 //- (id)initWithFrame:(NSRect)frame
@@ -35,9 +39,17 @@
 //}
 
 
+- (void)dealloc {
+	[_submenuIconView release];
+	[_submenuIconConstraints release];
+	[super dealloc];
+}
+
+
 - (void)drawRect:(NSRect)dirtyRect {
 //	NSLog(@"Cell View draw rect called. Cell subviews: %@", [self subviews]);
 //	NSLog(@"DRAW ItemView");
+//	NSLog(@"frame: %@", NSStringFromRect([self frame]));
 	
 
 //	NSBezierPath *path = [NSBezierPath bezierPath];
@@ -61,6 +73,11 @@
 	} else {
 		[_title setTextColor:[NSColor textColor]];
 	}
+}
+
+
+- (BOOL)needsTracking {
+	return YES;
 }
 
 
@@ -110,7 +127,13 @@
 
 
 - (void)mouseDown:(NSEvent *)theEvent {
-	NSLog(@"View mouse down");
+//	NSLog(@"View mouse down");
+//	NSLog(@"contstraints: %@", [self constraints]);
+//	NSLog(@"subview: %@", [self subviews]);
+//	NSView *documentView = [self superview];
+//	NSSize size = [documentView frame].size;
+//	[[documentView animator] setFrame:NSMakeRect(0, 0, size.width, size.height - 19)];
+	
 	[super mouseDown:theEvent];
 }
 
@@ -123,6 +146,51 @@
 //	NSLog(@"Update tracking areas called");
 //	[super updateTrackingAreas];
 //}
+
+
+
+//- (void)viewDidMoveToSuperview {
+//	[[[self superview] window] visualizeConstraints:[self constraints]];
+//	NSLog(@"window: %@", [[self superview] window]);
+//	NSLog(@"contstraints: %@", [self constraints]);
+//}
+
+
+
+- (void)setHasSubmenuIcon:(BOOL)hasIcon {
+	if (hasIcon == NO) {
+		if (_submenuIconView) {
+			[self removeConstraints:_submenuIconConstraints];
+			[_submenuIconView removeFromSuperview];
+			[_submenuIconView release];
+			[_submenuIconConstraints release];
+		}
+		return;
+	}
+	
+	NSView *lastView = [[self subviews] lastObject];
+	NSMutableArray *constraints = [NSMutableArray array];
+	
+	_submenuIconView = [[NSImageView alloc] initWithFrame:NSMakeRect(0, 0, 9, 9)];
+	[_submenuIconView setTranslatesAutoresizingMaskIntoConstraints:NO];
+	[_submenuIconView setImage:[NSImage imageNamed:@"NSGoRightTemplate"]];
+	[self addSubview:_submenuIconView];
+	[constraints addObjectsFromArray:[NSLayoutConstraint constraintsWithVisualFormat:@"H:[lastView]-(>=27)-[_submenuIconView(9)]-(9)-|" options:0 metrics:nil views:NSDictionaryOfVariableBindings(lastView, _submenuIconView)]];
+	
+//	[constraints addObject:[NSLayoutConstraint constraintWithItem:lastView attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:_submenuIconView attribute:NSLayoutAttributeLeading multiplier:1.0 constant:-27]];
+//	
+//	[constraints addObject:[NSLayoutConstraint constraintWithItem:self attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:_submenuIconView attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:9]];
+	
+	[constraints addObject:[NSLayoutConstraint constraintWithItem:self attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:_submenuIconView attribute:NSLayoutAttributeCenterY multiplier:1.0 constant:0.0]];
+	
+//	[constraints addObjectsFromArray:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-[_submenuIconView]-|" options:NSLayoutFormatAlignAllCenterY metrics:nil views:NSDictionaryOfVariableBindings(_submenuIconView)]];
+	
+	[self addConstraints:constraints];
+	_submenuIconConstraints = [constraints retain];
+}
+
+
+
 
 
 

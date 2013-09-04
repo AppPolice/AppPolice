@@ -32,8 +32,12 @@
 
 - (void)mouseDown:(NSEvent *)theEvent {
 	NSLog(@"Mouse Down");
-    // Get the mouse location in window coordinates.
-    initialLocation = [theEvent locationInWindow];
+	
+	NSUInteger modifierFlags = [theEvent modifierFlags];
+    if (modifierFlags & NSShiftKeyMask)
+		initialLocation = [theEvent locationInWindow];
+	
+	[super mouseDown:theEvent];
 }
 
 
@@ -42,7 +46,11 @@
  the user to drag (so we have to implement dragging ourselves)
  */
 - (void)mouseDragged:(NSEvent *)theEvent {
-    
+    NSUInteger modifierFlags = [theEvent modifierFlags];
+	if ((modifierFlags & NSShiftKeyMask) == 0)
+		return;
+	
+	
     NSRect screenVisibleFrame = [[NSScreen mainScreen] visibleFrame];
     NSRect windowFrame = [self frame];
     NSPoint newOrigin = windowFrame.origin;
@@ -63,10 +71,10 @@
 }
 
 
-- (void)keyDown:(NSEvent *)theEvent {
-	[super keyDown:theEvent];
-	NSLog(@"window key down event");
-}
+//- (void)keyDown:(NSEvent *)theEvent {
+//	[super keyDown:theEvent];
+//	NSLog(@"window key down event");
+//}
 
 
 @end

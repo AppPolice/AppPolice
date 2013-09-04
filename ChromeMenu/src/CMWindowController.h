@@ -12,7 +12,7 @@
 
 
 /* The designated initializer. This window controller creates its own custom suggestions window. */
-- (id)init;
+- (id)initWithOwner:(id)owner;
 
 - (void)layoutViews:(NSMutableArray *)viewControllers;
 
@@ -22,5 +22,13 @@
 
 - (NSSize)intrinsicContentSize;
 - (CGFloat)verticalPadding;
+
+/**
+ * @function viewController:
+ * @abastract Returns the view controller at a given point.
+ * @discussion Point should be in Window coordinates.
+ * @param aPoint Point in NSWindow coordinates.
+ */
+- (NSViewController *)viewControllerAtPoint:(NSPoint)aPoint;
 
 @end

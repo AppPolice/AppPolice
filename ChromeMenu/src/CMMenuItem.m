@@ -20,7 +20,7 @@
 @interface CMMenuItem()
 {
 	BOOL _isSelected;
-	BOOL _mouseOver;						// this doesn't mean the item is selected
+	BOOL _mouseOver;						// this doesn't mean the item is selected (e.g. during submenu tracking)
 	int _submenuIntervalIsSetToPopup;
 	NSViewController *_representedViewController;
 }
@@ -72,11 +72,11 @@
 
 
 + (CMMenuItem *)separatorItem {
-	CMMenuItem *instance = [[[self alloc] init] autorelease];
+	CMMenuItem *instance = [[self alloc] init];
 	if (instance) {
 		instance->_isSeparatorItem = YES;
 	}
-	return instance;
+	return [instance autorelease];
 }
 
 
@@ -106,6 +106,11 @@
 - (void)setSubmenu:(CMMenu *)submenu {
 //	if (submenu == nil)
 //		[NSException raise:NSInvalidArgumentException format:@"Bad argument provided in -%@", NSStringFromSelector(_cmd)];
+	
+	if (_isSeparatorItem) {
+		[NSException raise:NSInternalInconsistencyException format:@"Menu separator item cannot have submenus."];
+		return;
+	}
 	
 	if (_submenu != submenu) {
 		[_submenu release];
@@ -211,9 +216,6 @@
 		if ([[self menu] activeSubmenu]) {
 			if (! [[self menu] isTrackingSubmenu]) {
 				[[self menu] startTrackingSubmenu:_submenu forItem:self];
-				// temporary
-//				changeStatus = YES;
-//				[_submenu cancelTrackingWithoutAnimation];
 			}
 			changeStatus = NO;
 		} else if ([self hasSubmenu]) {
@@ -296,7 +298,8 @@
 
 - (NSString *)description {
 	NSMutableString *description = [[NSMutableString alloc] initWithString:[super description]];
-	
+
+	/*
 	id currentClass = [self class];
 	NSString *propertyName;
 	unsigned int outCount, i;
@@ -313,6 +316,9 @@
 		[description appendFormat:@"\n\ttitle: %@", _title];
 		[description appendFormat:@"\n\ticon: %@", _icon];
 	}
+	 */
+	
+	[description appendFormat:@"\nTitle: %@", _title];
 	
 	return description;
 }

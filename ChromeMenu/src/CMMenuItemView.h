@@ -14,17 +14,24 @@
 @private
 	NSImageView *_icon;
 	NSTextField *_title;
-	NSImageView *_ownersIcon;
+//	NSImageView *_ownersIcon;
 	
 	BOOL _selected;
 }
 
 @property (assign) IBOutlet NSImageView *icon;
 @property (assign) IBOutlet NSTextField *title;
-@property (assign) IBOutlet NSImageView *ownersIcon;
+//@property (assign) IBOutlet NSImageView *ownersIcon;
 
 //@property (assign) BOOL mouseInside;
 - (BOOL)isSelected;
 - (void)setSelected:(BOOL)selected;
+
+/**
+ * @function needsTracking
+ * @abstract Tells whether a view will have a tracking area created.
+ * @discussion This method is meant to be overridden by the Separator View.
+ */
+- (BOOL)needsTracking;
 
 @end

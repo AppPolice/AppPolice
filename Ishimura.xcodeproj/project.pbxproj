@@ -39,6 +39,8 @@
 		A063797B17492AEF006F2347 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = A063797A17492AEF006F2347 /* AppDelegate.m */; };
 		A063797E17492AF0006F2347 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = A063797C17492AF0006F2347 /* MainMenu.xib */; };
 		A063798717492D42006F2347 /* clevel.c in Sources */ = {isa = PBXBuildFile; fileRef = A063798617492D42006F2347 /* clevel.c */; };
+		A07CEC24179D6FFD0016067E /* CMMenuItemSeparatorView.m in Sources */ = {isa = PBXBuildFile; fileRef = A07CEC23179D6FE20016067E /* CMMenuItemSeparatorView.m */; };
+		A07CEC25179D70040016067E /* CMMenuItemSeparatorView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A07CEC20179D6F6D0016067E /* CMMenuItemSeparatorView.xib */; };
 		A0ADD314174A1438002BAADE /* subroutines.c in Sources */ = {isa = PBXBuildFile; fileRef = A0ADD313174A1438002BAADE /* subroutines.c */; };
 		A0ADD317174A24A2002BAADE /* AppsInspector.m in Sources */ = {isa = PBXBuildFile; fileRef = A0ADD316174A24A2002BAADE /* AppsInspector.m */; };
 		A0BF7C6B17733C2B002A2141 /* MyTableScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = A0BF7C6A17733C2B002A2141 /* MyTableScrollView.m */; };
@@ -113,6 +115,9 @@
 		A063797D17492AF0006F2347 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/MainMenu.xib; sourceTree = "<group>"; };
 		A063798517492D19006F2347 /* clevel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = clevel.h; path = C/clevel.h; sourceTree = "<group>"; };
 		A063798617492D42006F2347 /* clevel.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = clevel.c; path = C/clevel.c; sourceTree = "<group>"; };
+		A07CEC21179D6F6D0016067E /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = ChromeMenu/en.lproj/CMMenuItemSeparatorView.xib; sourceTree = SOURCE_ROOT; };
+		A07CEC22179D6FE20016067E /* CMMenuItemSeparatorView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = CMMenuItemSeparatorView.h; path = ChromeMenu/src/CMMenuItemSeparatorView.h; sourceTree = SOURCE_ROOT; };
+		A07CEC23179D6FE20016067E /* CMMenuItemSeparatorView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = CMMenuItemSeparatorView.m; path = ChromeMenu/src/CMMenuItemSeparatorView.m; sourceTree = SOURCE_ROOT; };
 		A0ADD312174A142A002BAADE /* subroutines.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = subroutines.h; path = C/subroutines.h; sourceTree = "<group>"; };
 		A0ADD313174A1438002BAADE /* subroutines.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = subroutines.c; path = C/subroutines.c; sourceTree = "<group>"; };
 		A0ADD315174A24A2002BAADE /* AppsInspector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppsInspector.h; path = Controllers/AppsInspector.h; sourceTree = "<group>"; };
@@ -128,6 +133,8 @@
 		A0ED1244179016A900244C3D /* CMMenuItem+InternalMethods.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "CMMenuItem+InternalMethods.h"; path = "ChromeMenu/src/CMMenuItem+InternalMethods.h"; sourceTree = SOURCE_ROOT; };
 		A0ED12461790218700244C3D /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = ChromeMenu/en.lproj/CMMenuItemView.xib; sourceTree = SOURCE_ROOT; };
 		A0ED1248179040ED00244C3D /* CMMenu+InternalMethods.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "CMMenu+InternalMethods.h"; path = "ChromeMenu/src/CMMenu+InternalMethods.h"; sourceTree = SOURCE_ROOT; };
+		A0F03057179A96FC000C767D /* CMMenuItemView+InternalMethods.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "CMMenuItemView+InternalMethods.h"; path = "ChromeMenu/src/CMMenuItemView+InternalMethods.h"; sourceTree = SOURCE_ROOT; };
+		A0FD2889179BE92900740A12 /* CMMenuEventTypes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = CMMenuEventTypes.h; path = ChromeMenu/src/CMMenuEventTypes.h; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -161,6 +168,8 @@
 				A05B788817859CF200015156 /* CMMenuItem.m */,
 				A0ED1248179040ED00244C3D /* CMMenu+InternalMethods.h */,
 				A0ED1244179016A900244C3D /* CMMenuItem+InternalMethods.h */,
+				A0F03057179A96FC000C767D /* CMMenuItemView+InternalMethods.h */,
+				A0FD2889179BE92900740A12 /* CMMenuEventTypes.h */,
 				A0ED123E179004D800244C3D /* CMWindowController.h */,
 				A0ED123F179004D800244C3D /* CMWindowController.m */,
 				A010F33E17847361003A9E92 /* ChromeMenuUnderlyingWindow.h */,
@@ -175,6 +184,8 @@
 				A007EAF717870B4E00A7FE8D /* CMTableView.m */,
 				A010F34617848515003A9E92 /* CMMenuItemView.h */,
 				A010F34717848515003A9E92 /* CMMenuItemView.m */,
+				A07CEC22179D6FE20016067E /* CMMenuItemSeparatorView.h */,
+				A07CEC23179D6FE20016067E /* CMMenuItemSeparatorView.m */,
 				A05B78841785829900015156 /* CMMenuItemBackgroundView.h */,
 				A05B78851785829900015156 /* CMMenuItemBackgroundView.m */,
 			);
@@ -187,6 +198,7 @@
 				A010F33A17847043003A9E92 /* CMMenu.xib */,
 				A0ED12451790218700244C3D /* CMMenuItemView.xib */,
 				A0346CB9178827C00095A6CF /* CMMenuItemIconView.xib */,
+				A07CEC20179D6F6D0016067E /* CMMenuItemSeparatorView.xib */,
 				A05B788A1786054600015156 /* CMTableCellViewId3.xib */,
 			);
 			name = Resources;
@@ -374,6 +386,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A07CEC25179D70040016067E /* CMMenuItemSeparatorView.xib in Resources */,
 				A0ED1249179043F900244C3D /* CMMenuItemView.xib in Resources */,
 				A0346CBB17882A4E0095A6CF /* CMMenuItemIconView.xib in Resources */,
 				A007EAF51786CA5500A7FE8D /* MenuItemView.xib in Resources */,
@@ -394,6 +407,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A07CEC24179D6FFD0016067E /* CMMenuItemSeparatorView.m in Sources */,
 				A00EF4801793D5A50045ACB5 /* CMScrollView.m in Sources */,
 				A0ED124317900A9000244C3D /* CMScrollDocumentView.m in Sources */,
 				A0ED12401790055C00244C3D /* CMWindowController.m in Sources */,
@@ -499,6 +513,14 @@
 				A063797D17492AF0006F2347 /* en */,
 			);
 			name = MainMenu.xib;
+			sourceTree = "<group>";
+		};
+		A07CEC20179D6F6D0016067E /* CMMenuItemSeparatorView.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				A07CEC21179D6F6D0016067E /* en */,
+			);
+			name = CMMenuItemSeparatorView.xib;
 			sourceTree = "<group>";
 		};
 		A0ED12451790218700244C3D /* CMMenuItemView.xib */ = {
