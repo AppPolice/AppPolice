@@ -39,6 +39,9 @@
 		A063797B17492AEF006F2347 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = A063797A17492AEF006F2347 /* AppDelegate.m */; };
 		A063797E17492AF0006F2347 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = A063797C17492AF0006F2347 /* MainMenu.xib */; };
 		A063798717492D42006F2347 /* clevel.c in Sources */ = {isa = PBXBuildFile; fileRef = A063798617492D42006F2347 /* clevel.c */; };
+		A071B69517D8812500D3866E /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A071B69417D8812500D3866E /* XCTest.framework */; };
+		A071B69B17D8812500D3866E /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = A071B69917D8812500D3866E /* InfoPlist.strings */; };
+		A071B69D17D8812500D3866E /* Ishimura_Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = A071B69C17D8812500D3866E /* Ishimura_Tests.m */; };
 		A07CEC24179D6FFD0016067E /* CMMenuItemSeparatorView.m in Sources */ = {isa = PBXBuildFile; fileRef = A07CEC23179D6FE20016067E /* CMMenuItemSeparatorView.m */; };
 		A07CEC25179D70040016067E /* CMMenuItemSeparatorView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A07CEC20179D6F6D0016067E /* CMMenuItemSeparatorView.xib */; };
 		A0ADD314174A1438002BAADE /* subroutines.c in Sources */ = {isa = PBXBuildFile; fileRef = A0ADD313174A1438002BAADE /* subroutines.c */; };
@@ -50,6 +53,16 @@
 		A0ED1249179043F900244C3D /* CMMenuItemView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A0ED12451790218700244C3D /* CMMenuItemView.xib */; };
 		A0F0DF1D178A05C4008E85EA /* CMTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = A007EAF717870B4E00A7FE8D /* CMTableView.m */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		A071B69F17D8812500D3866E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = A063795C17492AEF006F2347 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = A063796317492AEF006F2347;
+			remoteInfo = Ishimura;
+		};
+/* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		A007EAEE1786B0DA00A7FE8D /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/MenuItemView.xib; sourceTree = "<group>"; };
@@ -115,6 +128,12 @@
 		A063797D17492AF0006F2347 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/MainMenu.xib; sourceTree = "<group>"; };
 		A063798517492D19006F2347 /* clevel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = clevel.h; path = C/clevel.h; sourceTree = "<group>"; };
 		A063798617492D42006F2347 /* clevel.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = clevel.c; path = C/clevel.c; sourceTree = "<group>"; };
+		A071B69317D8812500D3866E /* Ishimura Tests.xctest */ = {isa = PBXFileReference; explicitFileType = folder; includeInIndex = 0; path = "Ishimura Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		A071B69417D8812500D3866E /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
+		A071B69817D8812500D3866E /* Ishimura Tests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Ishimura Tests-Info.plist"; sourceTree = "<group>"; };
+		A071B69A17D8812500D3866E /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		A071B69C17D8812500D3866E /* Ishimura_Tests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Ishimura_Tests.m; sourceTree = "<group>"; };
+		A071B69E17D8812500D3866E /* Ishimura Tests-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Ishimura Tests-Prefix.pch"; sourceTree = "<group>"; };
 		A07CEC21179D6F6D0016067E /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = ChromeMenu/en.lproj/CMMenuItemSeparatorView.xib; sourceTree = SOURCE_ROOT; };
 		A07CEC22179D6FE20016067E /* CMMenuItemSeparatorView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = CMMenuItemSeparatorView.h; path = ChromeMenu/src/CMMenuItemSeparatorView.h; sourceTree = SOURCE_ROOT; };
 		A07CEC23179D6FE20016067E /* CMMenuItemSeparatorView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = CMMenuItemSeparatorView.m; path = ChromeMenu/src/CMMenuItemSeparatorView.m; sourceTree = SOURCE_ROOT; };
@@ -143,6 +162,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				A063796817492AEF006F2347 /* Cocoa.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A071B69017D8812500D3866E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A071B69517D8812500D3866E /* XCTest.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -235,6 +262,7 @@
 			isa = PBXGroup;
 			children = (
 				A063796D17492AEF006F2347 /* Ishimura */,
+				A071B69617D8812500D3866E /* Ishimura Tests */,
 				A063796617492AEF006F2347 /* Frameworks */,
 				A063796517492AEF006F2347 /* Products */,
 			);
@@ -244,6 +272,7 @@
 			isa = PBXGroup;
 			children = (
 				A063796417492AEF006F2347 /* Ishimura.app */,
+				A071B69317D8812500D3866E /* Ishimura Tests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -252,6 +281,7 @@
 			isa = PBXGroup;
 			children = (
 				A063796717492AEF006F2347 /* Cocoa.framework */,
+				A071B69417D8812500D3866E /* XCTest.framework */,
 				A063796917492AEF006F2347 /* Other Frameworks */,
 			);
 			name = Frameworks;
@@ -335,6 +365,25 @@
 			name = C;
 			sourceTree = "<group>";
 		};
+		A071B69617D8812500D3866E /* Ishimura Tests */ = {
+			isa = PBXGroup;
+			children = (
+				A071B69C17D8812500D3866E /* Ishimura_Tests.m */,
+				A071B69717D8812500D3866E /* Supporting Files */,
+			);
+			path = "Ishimura Tests";
+			sourceTree = "<group>";
+		};
+		A071B69717D8812500D3866E /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				A071B69817D8812500D3866E /* Ishimura Tests-Info.plist */,
+				A071B69917D8812500D3866E /* InfoPlist.strings */,
+				A071B69E17D8812500D3866E /* Ishimura Tests-Prefix.pch */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -355,6 +404,24 @@
 			productReference = A063796417492AEF006F2347 /* Ishimura.app */;
 			productType = "com.apple.product-type.application";
 		};
+		A071B69217D8812500D3866E /* Ishimura Tests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A071B6A117D8812500D3866E /* Build configuration list for PBXNativeTarget "Ishimura Tests" */;
+			buildPhases = (
+				A071B68F17D8812500D3866E /* Sources */,
+				A071B69017D8812500D3866E /* Frameworks */,
+				A071B69117D8812500D3866E /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				A071B6A017D8812500D3866E /* PBXTargetDependency */,
+			);
+			name = "Ishimura Tests";
+			productName = "Ishimura Tests";
+			productReference = A071B69317D8812500D3866E /* Ishimura Tests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -363,6 +430,11 @@
 			attributes = {
 				LastUpgradeCheck = 0460;
 				ORGANIZATIONNAME = "Maksym Stefanchuk";
+				TargetAttributes = {
+					A071B69217D8812500D3866E = {
+						TestTargetID = A063796317492AEF006F2347;
+					};
+				};
 			};
 			buildConfigurationList = A063795F17492AEF006F2347 /* Build configuration list for PBXProject "Ishimura" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -377,6 +449,7 @@
 			projectRoot = "";
 			targets = (
 				A063796317492AEF006F2347 /* Ishimura */,
+				A071B69217D8812500D3866E /* Ishimura Tests */,
 			);
 		};
 /* End PBXProject section */
@@ -397,6 +470,14 @@
 				A063797217492AEF006F2347 /* InfoPlist.strings in Resources */,
 				A063797817492AEF006F2347 /* Credits.rtf in Resources */,
 				A063797E17492AF0006F2347 /* MainMenu.xib in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A071B69117D8812500D3866E /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A071B69B17D8812500D3866E /* InfoPlist.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -440,7 +521,23 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		A071B68F17D8812500D3866E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A071B69D17D8812500D3866E /* Ishimura_Tests.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		A071B6A017D8812500D3866E /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = A063796317492AEF006F2347 /* Ishimura */;
+			targetProxy = A071B69F17D8812500D3866E /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		A007EAED1786B0DA00A7FE8D /* MenuItemView.xib */ = {
@@ -513,6 +610,14 @@
 				A063797D17492AF0006F2347 /* en */,
 			);
 			name = MainMenu.xib;
+			sourceTree = "<group>";
+		};
+		A071B69917D8812500D3866E /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				A071B69A17D8812500D3866E /* en */,
+			);
+			name = InfoPlist.strings;
 			sourceTree = "<group>";
 		};
 		A07CEC20179D6F6D0016067E /* CMMenuItemSeparatorView.xib */ = {
@@ -617,6 +722,63 @@
 			};
 			name = Release;
 		};
+		A071B6A217D8812500D3866E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/Ishimura.app/Contents/MacOS/Ishimura";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(DEVELOPER_FRAMEWORKS_DIR)",
+					"$(inherited)",
+				);
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "Ishimura Tests/Ishimura Tests-Prefix.pch";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				INFOPLIST_FILE = "Ishimura Tests/Ishimura Tests-Info.plist";
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUNDLE_LOADER)";
+				WRAPPER_EXTENSION = xctest;
+			};
+			name = Debug;
+		};
+		A071B6A317D8812500D3866E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/Ishimura.app/Contents/MacOS/Ishimura";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				ENABLE_NS_ASSERTIONS = NO;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(DEVELOPER_FRAMEWORKS_DIR)",
+					"$(inherited)",
+				);
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "Ishimura Tests/Ishimura Tests-Prefix.pch";
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				INFOPLIST_FILE = "Ishimura Tests/Ishimura Tests-Info.plist";
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUNDLE_LOADER)";
+				WRAPPER_EXTENSION = xctest;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -637,6 +799,14 @@
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
+		};
+		A071B6A117D8812500D3866E /* Build configuration list for PBXNativeTarget "Ishimura Tests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A071B6A217D8812500D3866E /* Debug */,
+				A071B6A317D8812500D3866E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
 		};
 /* End XCConfigurationList section */
 	};

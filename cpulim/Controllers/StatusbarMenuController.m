@@ -496,7 +496,8 @@ static NSString *tableData[] = {
 
 			if (i == 1 || i == 9) {
 				item = [[CMMenuItemOverride alloc] initWithTitle:name];
-				[item setViewFromNibNamed:@"MenuItemView" withIdentifier:@"CMTableCellViewIdOverride" andPropertyNames:viewProperties];
+//				[item setViewFromNibNamed:@"MenuItemView" withIdentifier:@"CMTableCellViewIdOverride" andPropertyNames:viewProperties];
+				[item setViewFromNibNamed:@"MenuItemView" andPropertyNames:viewProperties];
 				[item setStatusIcon:[NSImage imageNamed:statusImageName]];
 			} else {
 				item = [[CMMenuItem alloc] initWithTitle:name];

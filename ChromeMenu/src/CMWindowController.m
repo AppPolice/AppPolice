@@ -282,7 +282,6 @@
 //	[documentView setFrame:NSMakeRect(0, 0, width, documentViewHeight)];
 	
 //	for (NSView *view in [documentView subviews]) {
-//	for (NSViewController *viewController in [viewControllers reverseObjectEnumerator]) {
 	for (NSViewController *viewController in [viewControllers reverseObjectEnumerator]) {
 		CMMenuItem *menuItem = [viewController representedObject];
 		NSView *view = [viewController view];
@@ -340,7 +339,7 @@
 			NSViewController *viewController = [(NSDictionary *)[trackingArea userInfo] objectForKey:kTrackingAreaViewControllerKey];
 //			if ([view isSelected])
 //				[view setSelected:NO];
-			[self mouseEventOnViewController:viewController eventType:CMMenuEventMouseExitedItem | CMMenuEventImplicit];
+			[self mouseEventOnViewController:viewController eventType:CMMenuEventMouseExitedItem | CMMenuEventDuringScroll];
 		}
 		[_trackingAreas removeAllObjects];
 	} else {
@@ -351,7 +350,7 @@
 	NSArray *controllers = _viewControllers;
 	NSPoint mouseLocation;
 	NSUInteger firstIndex;
-	NSUInteger lastIndex;
+//	NSUInteger lastIndex;
 	NSUInteger i;
 	
 	/* When scrolling -mouseEntered and -mouseExited events are not being fired.
@@ -400,7 +399,7 @@
 //		if (NSPointInRect(mouseLocation, [view frame]))
 //			[view setSelected:YES];
 		if (NSPointInRect(mouseLocation, frame))
-			[self mouseEventOnViewController:viewController eventType:CMMenuEventMouseEnteredItem | CMMenuEventImplicit];
+			[self mouseEventOnViewController:viewController eventType:CMMenuEventMouseEnteredItem | CMMenuEventDuringScroll];
 		
 		++i;
 	}
@@ -533,7 +532,7 @@
 	
 //	NSLog(@"should change: %d", changeSelectionStatus);
 	
-	if (eventType & CMMenuEventImplicit) {
+	if (eventType & CMMenuEventDuringScroll) {
 		selected = (eventType & CMMenuEventMouseEnteredItem) ? YES : NO;
 		[(CMMenuItemView *)[viewController view] setSelected:selected];
 	} else {

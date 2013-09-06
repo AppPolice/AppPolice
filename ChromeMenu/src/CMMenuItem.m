@@ -38,7 +38,7 @@
 @implementation CMMenuItem
 
 @synthesize viewNibName = _viewNibName;
-@synthesize viewIdentifier = _viewIdentifier;
+//@synthesize viewIdentifier = _viewIdentifier;
 @synthesize viewPropertyNames = _viewPropertyNames;
 
 
@@ -62,8 +62,8 @@
 
 - (void)dealloc {
 	[_icon release];
-	if (_viewIdentifier) {
-		[_viewIdentifier release];
+	if (_viewNibName) {
+//		[_viewIdentifier release];
 		[_viewNibName release];
 		[_viewPropertyNames release];
 	}
@@ -145,11 +145,13 @@
 	return _isSeparatorItem;
 }
 
-- (void)setViewFromNibNamed:(NSString *)nibName withIdentifier:(NSString *)identifier andPropertyNames:(NSArray *)propertyNames {
-	if (nibName == nil || [nibName isEqualToString:@""] || identifier == nil || [identifier isEqualToString:@""] || propertyNames == nil)
+//- (void)setViewFromNibNamed:(NSString *)nibName withIdentifier:(NSString *)identifier andPropertyNames:(NSArray *)propertyNames {
+- (void)setViewFromNibNamed:(NSString *)nibName andPropertyNames:(NSArray *)propertyNames {
+//	if (nibName == nil || [nibName isEqualToString:@""] || identifier == nil || [identifier isEqualToString:@""] || propertyNames == nil)
+	if (nibName == nil || [nibName isEqualToString:@""] || propertyNames == nil)
 		[NSException raise:NSInvalidArgumentException format:@"Bad arguments provided in -%@", NSStringFromSelector(_cmd)];
 	_viewNibName = [nibName retain];
-	_viewIdentifier = [identifier retain];
+//	_viewIdentifier = [identifier retain];
 	_viewPropertyNames = [propertyNames retain];
 }
 
@@ -267,9 +269,15 @@
 }
 
 
-- (NSRect)frameRelativeToWindow {
+- (NSRect)frameRelativeToMenu {
 	NSRect frame = [[_representedViewController view] convertRect:[[_representedViewController view] bounds] toView:nil];
 	return frame;
+}
+
+
+- (NSRect)frameRelativeToScreen {
+	NSRect frame = [self frameRelativeToMenu];
+	return [_menu convertRectToScreen:frame];
 }
 
 

@@ -300,25 +300,9 @@
             timestampString = "396267158.400696"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "384"
-            endingLineNumber = "384"
-            landmarkName = "-frameOfItemRelativeToScreen:"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "ChromeMenu/src/CMMenu.m"
-            timestampString = "396267158.400696"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
             startingLineNumber = "380"
             endingLineNumber = "380"
-            landmarkName = "-frame"
+            landmarkName = "-size"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -334,8 +318,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "574"
             endingLineNumber = "574"
-            landmarkName = "@implementation CMMenu"
-            landmarkType = "3">
+            landmarkName = "-reloadData"
+            landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -410,7 +394,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "427"
             endingLineNumber = "427"
-            landmarkName = "-bestFrame"
+            landmarkName = "-getBestFrameForMenuWindow"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>

@@ -685,7 +685,86 @@ ThBTQ2hhdFRoZWF0cmVUZW1wbGF0ZQ
                             <menuItem title="Item" id="3Gw-8B-2LN">
                                 <modifierMask key="keyEquivalentModifierMask"/>
                             </menuItem>
+                            <menuItem title="Menu" id="Shp-jx-PG3">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <menu key="submenu" title="Menu" id="J9S-9V-L0W">
+                                    <items>
+                                        <menuItem title="Item eeeeehghh" id="AnY-nQ-OiA">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                        </menuItem>
+                                        <menuItem title="Item" id="Tny-F3-LVt">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                        </menuItem>
+                                        <menuItem title="Item" id="Xug-jb-HI3">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                        </menuItem>
+                                        <menuItem title="Item agagag" id="WN4-ja-QFD">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                        </menuItem>
+                                        <menuItem title="Item" id="sOM-eR-ssH">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                        </menuItem>
+                                        <menuItem title="Item asdf a" id="fCe-v0-WZn">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                        </menuItem>
+                                        <menuItem title="Item" id="L2Y-Hr-Wfo">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                        </menuItem>
+                                        <menuItem title="Item" id="uw6-H5-CIc">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                        </menuItem>
+                                        <menuItem title="Item" id="VxZ-GQ-HmQ">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                        </menuItem>
+                                        <menuItem title="Item asdf asd f" id="IWy-l4-DP2">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                        </menuItem>
+                                        <menuItem title="Item" id="YDX-Ek-dK8">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                        </menuItem>
+                                        <menuItem title="Item" id="LNZ-Ag-zZl">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                        </menuItem>
+                                        <menuItem title="Item" id="f5p-Y1-aH3">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                        </menuItem>
+                                        <menuItem title="Item" id="gSo-l5-dPu">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                        </menuItem>
+                                        <menuItem title="Item" id="CGA-Ca-MOv">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                        </menuItem>
+                                        <menuItem title="Item" id="2Qy-nF-FJh">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                        </menuItem>
+                                    </items>
+                                </menu>
+                            </menuItem>
                             <menuItem title="Item 1" id="GLU-Ep-meB">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                            </menuItem>
+                            <menuItem title="Item 1" id="G9e-5D-Lr2">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                            </menuItem>
+                            <menuItem title="Item 1" id="4V2-8N-r8R">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                            </menuItem>
+                            <menuItem title="Item 1" id="N6N-an-SDH">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                            </menuItem>
+                            <menuItem title="Item 1" id="S5x-IC-BOb">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                            </menuItem>
+                            <menuItem title="Item 1" id="45C-x9-HPY">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                            </menuItem>
+                            <menuItem title="Item 1" id="6CK-sx-pSn">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                            </menuItem>
+                            <menuItem title="Item 1" id="5CN-S9-XW3">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                            </menuItem>
+                            <menuItem title="Item 1" id="jjt-UB-CtJ">
                                 <modifierMask key="keyEquivalentModifierMask"/>
                             </menuItem>
                             <menuItem title="Item 0" id="cVt-3j-FuT">
@@ -976,6 +1055,9 @@ ThBTQ2hhdFRoZWF0cmVUZW1wbGF0ZQ
                 <relationship kind="action" name="activateSelf:"/>
                 <relationship kind="action" name="addMenu:"/>
                 <relationship kind="action" name="changeMenu:"/>
+                <relationship kind="action" name="showmenu:"/>
+                <relationship kind="action" name="someAction2:" candidateClass="NSMenuItem"/>
+                <relationship kind="action" name="someAction:" candidateClass="NSMenuItem"/>
                 <relationship kind="outlet" name="appListTableView" candidateClass="MyTableView"/>
                 <relationship kind="outlet" name="appSubmenuView" candidateClass="MySubmenuView"/>
                 <relationship kind="outlet" name="myPanel" candidateClass="NSPanel"/>

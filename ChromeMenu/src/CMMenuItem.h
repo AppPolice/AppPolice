@@ -20,7 +20,7 @@
 	BOOL _isSeparatorItem;
 	
 	NSString *_viewNibName;
-	NSString *_viewIdentifier;
+//	NSString *_viewIdentifier;
 	NSArray *_viewPropertyNames;
 }
 
@@ -40,7 +40,8 @@
 - (void)setSubmenu:(CMMenu *)submenu;
 - (CMMenu *)submenu;
 
-- (void)setViewFromNibNamed:(NSString *)nibName withIdentifier:(NSString *)identifier andPropertyNames:(NSArray *)propertyNames;
+//- (void)setViewFromNibNamed:(NSString *)nibName withIdentifier:(NSString *)identifier andPropertyNames:(NSArray *)propertyNames;
+- (void)setViewFromNibNamed:(NSString *)nibName andPropertyNames:(NSArray *)propertyNames;
 
 - (void)setTitle:(NSString *)aString;
 - (NSString *)title;

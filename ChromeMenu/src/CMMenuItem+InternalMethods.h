@@ -19,7 +19,8 @@
 - (BOOL)shouldChangeItemSelectionStatusForEvent:(CMMenuEventType)eventType;
 
 - (NSRect)frame;
-- (NSRect)frameRelativeToWindow;
+- (NSRect)frameRelativeToMenu;
+- (NSRect)frameRelativeToScreen;
 
 - (BOOL)mouseOver;
 

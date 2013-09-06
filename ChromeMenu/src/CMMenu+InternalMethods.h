@@ -28,4 +28,6 @@
 //- (void)orderFront;
 - (NSInteger)windowLevel;
 
+- (NSRect)convertRectToScreen:(NSRect)aRect;
+
 @end
