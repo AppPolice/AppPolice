@@ -376,6 +376,7 @@ ThBTQ2hhdFRoZWF0cmVUZW1wbGF0ZQ
                             <menuItem title="Item" id="Tuk-j8-Ra0">
                                 <modifierMask key="keyEquivalentModifierMask"/>
                             </menuItem>
+                            <menuItem isSeparatorItem="YES" id="ZhW-FY-5u1"/>
                             <menuItem title="Item" id="eY4-u1-Vl4">
                                 <modifierMask key="keyEquivalentModifierMask"/>
                             </menuItem>
@@ -589,6 +590,7 @@ ThBTQ2hhdFRoZWF0cmVUZW1wbGF0ZQ
                             <menuItem title="Item" id="Wx4-Me-2no">
                                 <modifierMask key="keyEquivalentModifierMask"/>
                             </menuItem>
+                            <menuItem isSeparatorItem="YES" id="z2s-QR-hmQ"/>
                             <menuItem title="Item" id="j2m-8Z-IpU">
                                 <modifierMask key="keyEquivalentModifierMask"/>
                             </menuItem>

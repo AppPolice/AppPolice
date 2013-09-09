@@ -528,7 +528,7 @@ static NSString *tableData[] = {
 	[submenu addItem:submenuItem2];
 	[submenuItem2 release];
 	
-	[menu setSubmenu:submenu forItem:[menu itemAtIndex:6]];
+	[menu setSubmenu:submenu forItem:[menu itemAtIndex:7]];
 	[submenu release];
 	
 	
@@ -540,7 +540,7 @@ static NSString *tableData[] = {
 	[submenu addItem:submenuItem2];
 	[submenuItem2 release];
 	
-	[menu setSubmenu:submenu forItem:[menu itemAtIndex:7]];
+	[menu setSubmenu:submenu forItem:[menu itemAtIndex:6]];
 	[submenu release];
 	
 	
@@ -552,7 +552,7 @@ static NSString *tableData[] = {
 	[submenuOfSubmenu addItem:submenuItem2];
 	[submenuItem2 release];
 	
-	[submenu setSubmenu:submenuOfSubmenu forItem:[submenu itemAtIndex:0]];
+	[submenu setSubmenu:submenuOfSubmenu forItem:[submenu itemAtIndex:1]];
 	[submenuOfSubmenu release];
 
 

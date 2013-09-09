@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 //#import "CMMenuItem.h"
 
-@class ChromeMenuUnderlyingWindow, ChromeMenuUnderlyingView, CMTableCellView;
+//@class ChromeMenuUnderlyingWindow, ChromeMenuUnderlyingView, CMTableCellView;
 @class CMMenuItem;
 
 @interface CMMenu : NSObject

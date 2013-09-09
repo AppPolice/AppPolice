@@ -200,9 +200,18 @@
 			if ([[self menu] isTrackingSubmenu])
 				[[self menu] stopTrackingSubmenuReasonSuccess:YES];
 		} else {
-			if ([[self menu] activeSubmenu]) {
+//			if ([[self menu] activeSubmenu]) {
+			if ([[self menu] activeSubmenu] && [[self menu] isTrackingSubmenu]) {
 				// must do work here
-				changeStatus = NO;
+//				if ([[self menu] isTrackingSubmenu])
+					changeStatus = NO;
+//				else {
+//					_isSelected = YES;
+//					if ([self hasSubmenu]) {
+//						[self performSelector:@selector(showItemSubmenu) withObject:nil afterDelay:0.2];
+//						_submenuIntervalIsSetToPopup = 1;
+//					}
+//				}
 			} else {
 				_isSelected = YES;
 				
@@ -215,7 +224,8 @@
 	} else if (eventType & CMMenuEventMouseExitedItem) {
 		_mouseOver = NO;
 		
-		if ([[self menu] activeSubmenu]) {
+		CMMenu *activeSubmenu = [[self menu] activeSubmenu];
+		if (activeSubmenu && activeSubmenu == _submenu) {
 			if (! [[self menu] isTrackingSubmenu]) {
 				[[self menu] startTrackingSubmenu:_submenu forItem:self];
 			}
@@ -326,7 +336,7 @@
 	}
 	 */
 	
-	[description appendFormat:@"\nTitle: %@", _title];
+	[description appendFormat:@"\n\tTitle: %@", _title];
 	
 	return description;
 }

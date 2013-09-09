@@ -29,5 +29,20 @@
 	return YES;
 }
 
+//- (void)updateTrackingAreas {
+////	NSPoint currentLocation = [[self window] mouseLocationOutsideOfEventStream];
+////	currentLocation = [self convertPoint:currentLocation fromView:nil];
+////	NSLog(@"Update Tracking Areas called!! Mouse at: %@", NSStringFromPoint(currentLocation));
+//	if (_updateTrackingAreasListener &&
+//		[_updateTrackingAreasListener respondsToSelector:@selector(shouldUpdateTrackingAreas)])
+//		[_updateTrackingAreasListener performSelector:@selector(shouldUpdateTrackingAreas)];
+//	
+//	[super updateTrackingAreas];
+//}
+//
+//
+//- (void)setListenerForUpdateTrackingAreasEvent:(id)anObject {
+//	_updateTrackingAreasListener = anObject;
+//}
 
 @end

@@ -6,6 +6,8 @@
 //  Copyright (c) 2013 Maksym Stefanchuk. All rights reserved.
 //
 
+#include <stdlib.h>		// malloc
+
 //#import <AppKit/NSWindow.h>
 #import "CMMenu.h"
 #import "CMMenuItem.h"
@@ -31,7 +33,7 @@ enum {
 typedef NSUInteger CMMenuAlignment;
 
 
-struct _submenu_tracking_event {
+struct __submenu_tracking_event {
 	int active;
 	NSPoint event_origin;
 	NSRect item_rect;
@@ -56,7 +58,9 @@ struct _submenu_tracking_event {
 	CGFloat averageVelocity;
 	CGFloat averageDeltaX;
 	
-} tracking_event;
+};
+
+typedef struct __submenu_tracking_event tracking_event_t;
 
 
 
@@ -91,6 +95,8 @@ struct _submenu_tracking_event {
 //	NSMutableArray *_itemViewNibNames;
 	NSMutableArray *_itemViewRegesteredNibs;
 	int _registeredCustomNibs;
+	
+	tracking_event_t *_tracking_event;
 }
 
 - (CMMenuAlignment)horizontalAlignment;
@@ -668,25 +674,32 @@ struct _submenu_tracking_event {
 	NSTimeInterval interval = 0.07;
 	_isTrackingSubmenu = YES;
 	
+	_tracking_event = (tracking_event_t *)malloc(sizeof(tracking_event_t));
+	if (_tracking_event == 0) {
+		fputs("Memory exhausted", stderr);
+		exit(EXIT_FAILURE);
+	}
+	
+	
 	NSPoint mouseLocation = [NSEvent mouseLocation];
-	tracking_event.event_origin = mouseLocation;
-	tracking_event.last_mouse_location = mouseLocation;
-//	tracking_event.item_rect = [self frameOfItemRelativeToScreen:item];
-	tracking_event.item_rect = [item frameRelativeToScreen];
-	tracking_event.menu_rect = [self frame];
-	tracking_event.submenu_rect = [submenu frame];
-	tracking_event.menu_horizontal_alignment = [submenu horizontalAlignment];
-	tracking_event.submenu_vertical_alignment = [submenu verticalAlignment];
-//	submenu_tracking_event.selectedItem = item;
-//	tracking_event.mouse_over_other_item = 0;
-	tracking_event.timestamp = [NSDate timeIntervalSinceReferenceDate];
-//	tracking_event.active = 1;
+	_tracking_event->event_origin = mouseLocation;
+	_tracking_event->last_mouse_location = mouseLocation;
+//	_tracking_event->item_rect = [self frameOfItemRelativeToScreen:item];
+	_tracking_event->item_rect = [item frameRelativeToScreen];
+	_tracking_event->menu_rect = [self frame];
+	_tracking_event->submenu_rect = [submenu frame];
+	_tracking_event->menu_horizontal_alignment = [submenu horizontalAlignment];
+	_tracking_event->submenu_vertical_alignment = [submenu verticalAlignment];
+//	submenu__tracking_event->selectedItem = item;
+//	_tracking_event->mouse_over_other_item = 0;
+	_tracking_event->timestamp = [NSDate timeIntervalSinceReferenceDate];
+//	_tracking_event->active = 1;
 	
 //	CGFloat heightLeg;
-//	if (tracking_event.submenu_vertical_alignment == CMMenuAlignedTop)
-//		heightLeg = NSMinY(tracking_event.item_rect) - NSMinY(tracking_event.submenu_rect);
+//	if (_tracking_event->submenu_vertical_alignment == CMMenuAlignedTop)
+//		heightLeg = NSMinY(_tracking_event->item_rect) - NSMinY(_tracking_event->submenu_rect);
 //	else
-//		heightLeg = NSMaxY(tracking_event.submenu_rect) - NSMaxY(tracking_event.item_rect);
+//		heightLeg = NSMaxY(_tracking_event->submenu_rect) - NSMaxY(_tracking_event->item_rect);
 	
 //	if (heightLeg < 80)
 //		heightLeg *= 1.2;
@@ -700,23 +713,25 @@ struct _submenu_tracking_event {
 	CGFloat extendHeight = 20;
 //	heightLeg += 20;
 	
-//	tracking_event.tanAlpha = heightLeg / NSWidth(tracking_event.item_rect);
-//	tracking_event.tanBeta = 30 / NSWidth(tracking_event.item_rect);
-	tracking_event.tanAlpha = (NSMinY(tracking_event.item_rect) - NSMinY(tracking_event.submenu_rect) +
-							extendHeight) / NSWidth(tracking_event.item_rect);
-	tracking_event.tanBeta = (NSMaxY(tracking_event.submenu_rect) - NSMaxY(tracking_event.item_rect) +
-							extendHeight) / NSWidth(tracking_event.item_rect);
+//	_tracking_event->tanAlpha = heightLeg / NSWidth(_tracking_event->item_rect);
+//	_tracking_event->tanBeta = 30 / NSWidth(_tracking_event->item_rect);
+	_tracking_event->tanAlpha = (NSMinY(_tracking_event->item_rect) - NSMinY(_tracking_event->submenu_rect) +
+							extendHeight) / NSWidth(_tracking_event->item_rect);
+	_tracking_event->tanBeta = (NSMaxY(_tracking_event->submenu_rect) - NSMaxY(_tracking_event->item_rect) +
+							extendHeight) / NSWidth(_tracking_event->item_rect);
 
-	tracking_event.averageVelocity = 0;
-	tracking_event.averageDeltaX = 0;
-	tracking_event.timeLeftMenuBounds = 0;
+	_tracking_event->averageVelocity = 0;
+	_tracking_event->averageDeltaX = 0;
+	_tracking_event->timeLeftMenuBounds = 0;
 	
 	
-	tracking_event.timer = [[NSTimer scheduledTimerWithTimeInterval:interval
+	_tracking_event->timer = [[NSTimer scheduledTimerWithTimeInterval:interval
 															 target:self
 														   selector:@selector(trackingLoop:)
 														   userInfo:nil
 															repeats:YES] retain];
+	
+//	NSLog(@"START tracking menu: %@, submenu: %@. Timer: %@", self, submenu,_tracking_event->timer);
 }
 
 
@@ -728,13 +743,16 @@ struct _submenu_tracking_event {
  *	// to be cont.
  *
  */
-
 - (void)stopTrackingSubmenuReasonSuccess:(BOOL)reasonSuccess {
 	_isTrackingSubmenu = NO;
 	
-	[tracking_event.timer invalidate];
-	[tracking_event.timer release];
-	tracking_event.timer = nil;
+//	NSLog(@"STOP tracking menu: %@, submenu: %@. Timer: %@", self, [self activeSubmenu], _tracking_event->timer);
+	
+	[_tracking_event->timer invalidate];
+	[_tracking_event->timer release];
+	_tracking_event->timer = nil;
+	free(_tracking_event);
+	_tracking_event = NULL;
 	
 	if (reasonSuccess == NO) {
 		[_activeSubmenu cancelTrackingWithoutAnimation];
@@ -755,16 +773,16 @@ struct _submenu_tracking_event {
 	NSPoint mouseLocation = [NSEvent mouseLocation];
 	NSTimeInterval timestamp = [NSDate timeIntervalSinceReferenceDate];
 
-	
+	tracking_event_t *event = _tracking_event;
 	
 	/* Mouse moved in the opposite direction to the submenu */
-	if (tracking_event.menu_horizontal_alignment == CMMenuAlignedLeft) {
-		if (mouseLocation.x < tracking_event.event_origin.x) {
+	if (event->menu_horizontal_alignment == CMMenuAlignedLeft) {
+		if (mouseLocation.x < event->event_origin.x) {
 			[self stopTrackingSubmenuReasonSuccess:NO];
 			NSLog(@"Stop tracking, reason: opposite direction");
 			return;
 		}
-	} else if (mouseLocation.x > tracking_event.event_origin.x) {
+	} else if (mouseLocation.x > event->event_origin.x) {
 		[self stopTrackingSubmenuReasonSuccess:NO];
 		NSLog(@"Stop tracking, reason: opposite direction");
 		return;
@@ -772,13 +790,13 @@ struct _submenu_tracking_event {
 	
 	
 	
-	CGFloat mouseTravelDistance = sqrt(pow((tracking_event.last_mouse_location.x - mouseLocation.x), 2) + pow((tracking_event.last_mouse_location.y - mouseLocation.y), 2));
-	CGFloat mouseVelocity = mouseTravelDistance / (timestamp - tracking_event.timestamp);
+	CGFloat mouseTravelDistance = sqrt(pow((event->last_mouse_location.x - mouseLocation.x), 2) + pow((event->last_mouse_location.y - mouseLocation.y), 2));
+	CGFloat mouseVelocity = mouseTravelDistance / (timestamp - event->timestamp);
 
 	
 	/* when mouse is moving too slowly */
-	tracking_event.averageVelocity = (tracking_event.averageVelocity + mouseVelocity) / 2;
-	if (tracking_event.averageVelocity < 60) {
+	event->averageVelocity = (event->averageVelocity + mouseVelocity) / 2;
+	if (event->averageVelocity < 60) {
 		[self stopTrackingSubmenuReasonSuccess:NO];
 		NSLog(@"Stop tracking, reason: slow veloctiy");
 		return;
@@ -786,28 +804,28 @@ struct _submenu_tracking_event {
 	
 	
 	/* mouse pointer has not left bounds of original menu */
-	if ((tracking_event.menu_horizontal_alignment == CMMenuAlignedLeft && mouseLocation.x < NSMinX(tracking_event.submenu_rect)) || (tracking_event.menu_horizontal_alignment == CMMenuAlignedRight && mouseLocation.x > NSMaxX(tracking_event.submenu_rect))) {
+	if ((event->menu_horizontal_alignment == CMMenuAlignedLeft && mouseLocation.x < NSMinX(event->submenu_rect)) || (event->menu_horizontal_alignment == CMMenuAlignedRight && mouseLocation.x > NSMaxX(event->submenu_rect))) {
 		
-		if (tracking_event.submenu_vertical_alignment == CMMenuAlignedTop) {
-			if (mouseLocation.y < NSMinY(tracking_event.item_rect)) {				/* mouse went BELOW menu item */
+		if (event->submenu_vertical_alignment == CMMenuAlignedTop) {
+			if (mouseLocation.y < NSMinY(event->item_rect)) {				/* mouse went BELOW menu item */
 
 				CGFloat widthLeg;
 				BOOL mouseCloseToSubmenu;
-				if (tracking_event.menu_horizontal_alignment == CMMenuAlignedLeft) {
-					widthLeg = mouseLocation.x - NSMinX(tracking_event.item_rect);
-					tracking_event.averageDeltaX = (mouseLocation.x - tracking_event.last_mouse_location.x + tracking_event.averageDeltaX) / 2;
+				if (event->menu_horizontal_alignment == CMMenuAlignedLeft) {
+					widthLeg = mouseLocation.x - NSMinX(event->item_rect);
+					event->averageDeltaX = (mouseLocation.x - event->last_mouse_location.x + event->averageDeltaX) / 2;
 					/* When mouse starts moving down closely to the submenu we can't expect much change in deltaX.
 					   Let's give here some freedom */
-					if ((mouseCloseToSubmenu = (NSMaxX(tracking_event.item_rect) - mouseLocation.x < 50)))
-						tracking_event.averageDeltaX += 2;
+					if ((mouseCloseToSubmenu = (NSMaxX(event->item_rect) - mouseLocation.x < 50)))
+						event->averageDeltaX += 2;
 				} else {
-					widthLeg = NSMaxX(tracking_event.item_rect) - mouseLocation.x;
-					tracking_event.averageDeltaX = (tracking_event.last_mouse_location.x - mouseLocation.x + tracking_event.averageDeltaX) / 2;
-					if ((mouseCloseToSubmenu = (NSMinX(tracking_event.item_rect) - mouseLocation.x < 50)))
-						tracking_event.averageDeltaX += 2;
+					widthLeg = NSMaxX(event->item_rect) - mouseLocation.x;
+					event->averageDeltaX = (event->last_mouse_location.x - mouseLocation.x + event->averageDeltaX) / 2;
+					if ((mouseCloseToSubmenu = (NSMinX(event->item_rect) - mouseLocation.x < 50)))
+						event->averageDeltaX += 2;
 				}
 				
-				if (((NSMinY(tracking_event.item_rect) - mouseLocation.y) / widthLeg) > tracking_event.tanAlpha) {
+				if (((NSMinY(event->item_rect) - mouseLocation.y) / widthLeg) > event->tanAlpha) {
 					[self stopTrackingSubmenuReasonSuccess:NO];
 					NSLog(@"Stop tracking, reason: bottom left hypotenuse crossed at loc.: %@", NSStringFromPoint(mouseLocation));
 					return;
@@ -815,9 +833,9 @@ struct _submenu_tracking_event {
 				
 				/* we calculate here how fast the mouse pointer is moving towards submenu using Delta X and mouse velocity.
 				   Multiplier at the end makes it easier for moving the mouse the closer to menu you get. */
-				CGFloat multiplier = (mouseCloseToSubmenu) ? (2.5 * widthLeg / NSWidth(tracking_event.item_rect)) : 1;
-				CGFloat targetVector = tracking_event.averageVelocity * tracking_event.averageDeltaX * multiplier;
-//				NSLog(@"Val: %f, deltaX: %f, close to submenu: %d", targetVector, tracking_event.averageDeltaX, mouseCloseToSubmenu);
+				CGFloat multiplier = (mouseCloseToSubmenu) ? (2.5 * widthLeg / NSWidth(event->item_rect)) : 1;
+				CGFloat targetVector = event->averageVelocity * event->averageDeltaX * multiplier;
+//				NSLog(@"Val: %f, deltaX: %f, close to submenu: %d", targetVector, event->averageDeltaX, mouseCloseToSubmenu);
 				if (ABS(targetVector) < 1000) {
 					[self stopTrackingSubmenuReasonSuccess:NO];
 					NSLog(@"Stop tracking, reason: moving not enough fast * correct direction.");
@@ -827,21 +845,21 @@ struct _submenu_tracking_event {
 			} else {				/* mouse went ABOVE menu item */
 			
 				CGFloat widthLeg;
-				if (tracking_event.menu_horizontal_alignment == CMMenuAlignedLeft) {
-					widthLeg = mouseLocation.x - NSMinX(tracking_event.item_rect);
-					tracking_event.averageDeltaX = (mouseLocation.x - tracking_event.last_mouse_location.x + tracking_event.averageDeltaX) / 2;
+				if (event->menu_horizontal_alignment == CMMenuAlignedLeft) {
+					widthLeg = mouseLocation.x - NSMinX(event->item_rect);
+					event->averageDeltaX = (mouseLocation.x - event->last_mouse_location.x + event->averageDeltaX) / 2;
 				} else {
-					widthLeg = NSMaxX(tracking_event.item_rect) - mouseLocation.x;
-					tracking_event.averageDeltaX = (tracking_event.last_mouse_location.x - mouseLocation.x + tracking_event.averageDeltaX) / 2;
+					widthLeg = NSMaxX(event->item_rect) - mouseLocation.x;
+					event->averageDeltaX = (event->last_mouse_location.x - mouseLocation.x + event->averageDeltaX) / 2;
 				}
 				
-				if ((mouseLocation.y  - NSMaxY(tracking_event.item_rect)) / widthLeg > tracking_event.tanBeta) {
+				if ((mouseLocation.y  - NSMaxY(event->item_rect)) / widthLeg > event->tanBeta) {
 					[self stopTrackingSubmenuReasonSuccess:NO];
 					NSLog(@"Stop tracking, reason: top left hypotenuse crossed at loc.: %@", NSStringFromPoint(mouseLocation));
 					return;
 				}
 				
-				CGFloat targetVector = tracking_event.averageVelocity * tracking_event.averageDeltaX;
+				CGFloat targetVector = event->averageVelocity * event->averageDeltaX;
 //				NSLog(@"Val: %f, deltaX: %f", targetVector, averageDeltaX);
 				if (ABS(targetVector) < 4000) {
 					[self stopTrackingSubmenuReasonSuccess:NO];
@@ -854,25 +872,25 @@ struct _submenu_tracking_event {
 
 			CGFloat widthLeg;
 			BOOL mouseCloseToSubmenu;
-			if (tracking_event.menu_horizontal_alignment == CMMenuAlignedLeft) {
-				widthLeg = mouseLocation.x - NSMinX(tracking_event.item_rect);
-				tracking_event.averageDeltaX = (mouseLocation.x - tracking_event.last_mouse_location.x + tracking_event.averageDeltaX) / 2;
+			if (event->menu_horizontal_alignment == CMMenuAlignedLeft) {
+				widthLeg = mouseLocation.x - NSMinX(event->item_rect);
+				event->averageDeltaX = (mouseLocation.x - event->last_mouse_location.x + event->averageDeltaX) / 2;
 				/* When mouse starts moving down closely to the submenu we can't expect much change in deltaX.
 				 Let's give here some freedom */
-				if ((mouseCloseToSubmenu = (NSMaxX(tracking_event.item_rect) - mouseLocation.x < 50)))
-					tracking_event.averageDeltaX += 2;
+				if ((mouseCloseToSubmenu = (NSMaxX(event->item_rect) - mouseLocation.x < 50)))
+					event->averageDeltaX += 2;
 			} else {
-				widthLeg = NSMaxX(tracking_event.item_rect) - mouseLocation.x;
-				tracking_event.averageDeltaX = (tracking_event.last_mouse_location.x - mouseLocation.x + tracking_event.averageDeltaX) / 2;
-				if ((mouseCloseToSubmenu = (NSMinX(tracking_event.item_rect) - mouseLocation.x < 50)))
-					tracking_event.averageDeltaX += 2;
+				widthLeg = NSMaxX(event->item_rect) - mouseLocation.x;
+				event->averageDeltaX = (event->last_mouse_location.x - mouseLocation.x + event->averageDeltaX) / 2;
+				if ((mouseCloseToSubmenu = (NSMinX(event->item_rect) - mouseLocation.x < 50)))
+					event->averageDeltaX += 2;
 			}
 			
 			BOOL mouseCrossedHypotenuse;
-			if (mouseLocation.y < NSMinY(tracking_event.item_rect)) {		/* mouse went BELOW menu item */
-				mouseCrossedHypotenuse = (((NSMinY(tracking_event.item_rect) - mouseLocation.y) / widthLeg) > tracking_event.tanAlpha);
+			if (mouseLocation.y < NSMinY(event->item_rect)) {		/* mouse went BELOW menu item */
+				mouseCrossedHypotenuse = (((NSMinY(event->item_rect) - mouseLocation.y) / widthLeg) > event->tanAlpha);
 			} else {
-				mouseCrossedHypotenuse = (((mouseLocation.y - NSMaxY(tracking_event.item_rect)) / widthLeg) > tracking_event.tanBeta);
+				mouseCrossedHypotenuse = (((mouseLocation.y - NSMaxY(event->item_rect)) / widthLeg) > event->tanBeta);
 			}
 			if (mouseCrossedHypotenuse) {
 				[self stopTrackingSubmenuReasonSuccess:NO];
@@ -882,9 +900,9 @@ struct _submenu_tracking_event {
 			
 			/* we calculate here how fast the mouse pointer is moving towards submenu using Delta X and mouse velocity.
 			 Multiplier at the end makes it easier for moving the mouse the closer to menu you get. */
-			CGFloat multiplier = (mouseCloseToSubmenu) ? (2.5 * widthLeg / NSWidth(tracking_event.item_rect)) : 1;
-			CGFloat targetVector = tracking_event.averageVelocity * tracking_event.averageDeltaX * multiplier;
-//				NSLog(@"Val: %f, deltaX: %f, close to submenu: %d", targetVector, tracking_event.averageDeltaX, mouseCloseToSubmenu);
+			CGFloat multiplier = (mouseCloseToSubmenu) ? (2.5 * widthLeg / NSWidth(event->item_rect)) : 1;
+			CGFloat targetVector = event->averageVelocity * event->averageDeltaX * multiplier;
+//				NSLog(@"Val: %f, deltaX: %f, close to submenu: %d", targetVector, event->averageDeltaX, mouseCloseToSubmenu);
 			if (ABS(targetVector) < 1000) {
 				[self stopTrackingSubmenuReasonSuccess:NO];
 				NSLog(@"Stop tracking, reason: (menu aligned BOTTOM) moving not enough fast * correct direction.");
@@ -896,8 +914,8 @@ struct _submenu_tracking_event {
 	} else {
 		/* mouse left menu bounds, and obviously hasn't entered submenu */
 		
-//		if (tracking_event.submenu_vertical_alignment == CMMenuAlignedTop) {
-			if (mouseLocation.y - NSMaxY(tracking_event.submenu_rect) > 60 || NSMinY(tracking_event.submenu_rect) - mouseLocation.y > 60) {
+//		if (event->submenu_vertical_alignment == CMMenuAlignedTop) {
+			if (mouseLocation.y - NSMaxY(event->submenu_rect) > 60 || NSMinY(event->submenu_rect) - mouseLocation.y > 60) {
 				[self stopTrackingSubmenuReasonSuccess:NO];
 				NSLog(@"Stop tracking, reason: mouse went vertically too far");
 				return;
@@ -906,9 +924,9 @@ struct _submenu_tracking_event {
 			
 //		}
 	
-		if (tracking_event.timeLeftMenuBounds == 0)
-			tracking_event.timeLeftMenuBounds = timestamp;
-		else if (timestamp - tracking_event.timeLeftMenuBounds > 0.5) {
+		if (event->timeLeftMenuBounds == 0)
+			event->timeLeftMenuBounds = timestamp;
+		else if (timestamp - event->timeLeftMenuBounds > 0.5) {
 			[self stopTrackingSubmenuReasonSuccess:NO];
 			NSLog(@"Stop tracking, reason: time elapsed while out of menu bounds.");
 			return;
@@ -918,7 +936,7 @@ struct _submenu_tracking_event {
 	
 	
 	
-//	if (NSPointInRect(mouseLocation, tracking_event.submenu_rect)) {
+//	if (NSPointInRect(mouseLocation, event->submenu_rect)) {
 //		[self stopTrackingSubmenuReasonSuccess:YES];
 //		NSLog(@"Stop tracking, reason: success!");
 //		return;
@@ -926,12 +944,12 @@ struct _submenu_tracking_event {
 	
 	
 		
-//	NSLog(@"time: %f", timestamp - submenu_tracking_event.timestamp);
-//	NSLog(@"origin: %@", NSStringFromPoint(submenu_tracking_event.event_origin));
-	NSLog(@"mouse location: %@, velocity: %f, average velocity: %f", NSStringFromPoint(mouseLocation), mouseVelocity, tracking_event.averageVelocity);
+//	NSLog(@"time: %f", timestamp - submenu_event->timestamp);
+//	NSLog(@"origin: %@", NSStringFromPoint(submenu_event->event_origin));
+	NSLog(@"mouse location: %@, velocity: %f, average velocity: %f", NSStringFromPoint(mouseLocation), mouseVelocity, event->averageVelocity);
 	
-	tracking_event.timestamp = timestamp;
-	tracking_event.last_mouse_location = mouseLocation;
+	event->timestamp = timestamp;
+	event->last_mouse_location = mouseLocation;
 }
 
 

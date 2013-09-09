@@ -224,8 +224,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "145"
             endingLineNumber = "145"
-            landmarkName = "@implementation CMMenu"
-            landmarkType = "3">
+            landmarkName = "-init"
+            landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -235,11 +235,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "ChromeMenu/src/CMWindowController.m"
-            timestampString = "396267158.400696"
+            timestampString = "400248903.808006"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "326"
-            endingLineNumber = "326"
+            startingLineNumber = "328"
+            endingLineNumber = "328"
             landmarkName = "@implementation CMWindowController"
             landmarkType = "3">
             <Locations>
@@ -280,29 +280,13 @@
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "ChromeMenu/src/CMWindowController.m"
-            timestampString = "396267158.400696"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "419"
-            endingLineNumber = "419"
-            landmarkName = "-trackingAreaForViewController:"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
             filePath = "ChromeMenu/src/CMMenu.m"
             timestampString = "396267158.400696"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "380"
             endingLineNumber = "380"
-            landmarkName = "-size"
+            landmarkName = "-setMinimumWidth:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -405,12 +389,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "ChromeMenu/src/CMWindowController.m"
-            timestampString = "396198249.856227"
+            timestampString = "400248903.808006"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "263"
-            endingLineNumber = "263"
-            landmarkName = "-updateViews"
+            startingLineNumber = "265"
+            endingLineNumber = "265"
+            landmarkName = "-layoutViews:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -421,12 +405,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "ChromeMenu/src/CMWindowController.m"
-            timestampString = "396267158.400696"
+            timestampString = "400248903.808006"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "352"
-            endingLineNumber = "352"
-            landmarkName = "-updateTrackingAreasForVisibleRect:"
+            startingLineNumber = "353"
+            endingLineNumber = "353"
+            landmarkName = "-updateMenuScrollers"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -437,11 +421,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "ChromeMenu/src/CMWindowController.m"
-            timestampString = "396198759.462975"
+            timestampString = "400248903.808006"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "296"
-            endingLineNumber = "296"
+            startingLineNumber = "298"
+            endingLineNumber = "298"
             landmarkName = "-updateViews"
             landmarkType = "5">
             <Locations>

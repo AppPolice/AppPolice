@@ -9,5 +9,11 @@
 #import <Cocoa/Cocoa.h>
 
 @interface CMScrollDocumentView : NSView
+//{
+//	id _updateTrackingAreasListener;
+//}
+//
+//
+//- (void)setListenerForUpdateTrackingAreasEvent:(id)anObject;
 
 @end

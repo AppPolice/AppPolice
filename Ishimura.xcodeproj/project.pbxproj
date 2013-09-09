@@ -24,6 +24,7 @@
 		A0154E851782EC6F008CF159 /* AppInspectorController.m in Sources */ = {isa = PBXBuildFile; fileRef = A0154E841782E972008CF159 /* AppInspectorController.m */; };
 		A02EA4561759CDA300982A8A /* MyTableCellView.m in Sources */ = {isa = PBXBuildFile; fileRef = A02EA4551759CDA300982A8A /* MyTableCellView.m */; };
 		A02EA4591759F2A900982A8A /* MyTableRowView.m in Sources */ = {isa = PBXBuildFile; fileRef = A02EA4581759F2A900982A8A /* MyTableRowView.m */; };
+		A0336A7F17DB9E3A004C2DDB /* CMMenuScroller.m in Sources */ = {isa = PBXBuildFile; fileRef = A0336A7E17DB9616004C2DDB /* CMMenuScroller.m */; };
 		A0346CBB17882A4E0095A6CF /* CMMenuItemIconView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A0346CB9178827C00095A6CF /* CMMenuItemIconView.xib */; };
 		A04FA3D3174D4BD9002E688C /* selfprofile.c in Sources */ = {isa = PBXBuildFile; fileRef = A04FA3D2174D4BD9002E688C /* selfprofile.c */; };
 		A05A0B0517592618009A12B8 /* MyTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = A05A0B0417592618009A12B8 /* MyTableView.m */; };
@@ -97,6 +98,8 @@
 		A02EA4551759CDA300982A8A /* MyTableCellView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MyTableCellView.m; path = Controllers/MyTableCellView.m; sourceTree = "<group>"; };
 		A02EA4571759F2A900982A8A /* MyTableRowView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MyTableRowView.h; path = Controllers/MyTableRowView.h; sourceTree = "<group>"; };
 		A02EA4581759F2A900982A8A /* MyTableRowView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MyTableRowView.m; path = Controllers/MyTableRowView.m; sourceTree = "<group>"; };
+		A0336A7D17DB9616004C2DDB /* CMMenuScroller.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = CMMenuScroller.h; path = ChromeMenu/src/CMMenuScroller.h; sourceTree = SOURCE_ROOT; };
+		A0336A7E17DB9616004C2DDB /* CMMenuScroller.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = CMMenuScroller.m; path = ChromeMenu/src/CMMenuScroller.m; sourceTree = SOURCE_ROOT; };
 		A0346CBA178827C00095A6CF /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = ChromeMenu/en.lproj/CMMenuItemIconView.xib; sourceTree = SOURCE_ROOT; };
 		A04FA3D2174D4BD9002E688C /* selfprofile.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = selfprofile.c; path = C/selfprofile.c; sourceTree = "<group>"; };
 		A04FA3D4174D4BF5002E688C /* selfprofile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = selfprofile.h; path = C/selfprofile.h; sourceTree = "<group>"; };
@@ -213,6 +216,8 @@
 				A010F34717848515003A9E92 /* CMMenuItemView.m */,
 				A07CEC22179D6FE20016067E /* CMMenuItemSeparatorView.h */,
 				A07CEC23179D6FE20016067E /* CMMenuItemSeparatorView.m */,
+				A0336A7D17DB9616004C2DDB /* CMMenuScroller.h */,
+				A0336A7E17DB9616004C2DDB /* CMMenuScroller.m */,
 				A05B78841785829900015156 /* CMMenuItemBackgroundView.h */,
 				A05B78851785829900015156 /* CMMenuItemBackgroundView.m */,
 			);
@@ -488,6 +493,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A0336A7F17DB9E3A004C2DDB /* CMMenuScroller.m in Sources */,
 				A07CEC24179D6FFD0016067E /* CMMenuItemSeparatorView.m in Sources */,
 				A00EF4801793D5A50045ACB5 /* CMScrollView.m in Sources */,
 				A0ED124317900A9000244C3D /* CMScrollDocumentView.m in Sources */,
@@ -807,6 +813,7 @@
 				A071B6A317D8812500D3866E /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

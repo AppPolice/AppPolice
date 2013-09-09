@@ -21,6 +21,11 @@
 - (void)hide;
 
 - (NSSize)intrinsicContentSize;
+
+/**
+ * @function verticalPadding
+ * @abstract The top and bottom padding for the menu.
+ */
 - (CGFloat)verticalPadding;
 
 /**

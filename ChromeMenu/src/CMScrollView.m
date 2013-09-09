@@ -12,16 +12,21 @@
 
 
 - (void)scrollWheel:(NSEvent *)theEvent {
+	CGFloat deltaY = theEvent.deltaY;
 	CGFloat lineHeight = [self lineScroll];
 	CGFloat yOrigin = NSMinY([[self contentView] bounds]);
-	if (theEvent.deltaY < 0) {
-		yOrigin += lineHeight;
+	int multiplier;
+	
+	multiplier = ceil(ABS(deltaY) / 2);
+	
+	if (deltaY < 0) {
+		yOrigin += lineHeight * multiplier;
 		CGFloat yBound = NSMaxY([[self documentView] bounds]) - NSHeight([[self contentView] bounds]);
 		if (yOrigin > yBound) {
 			yOrigin = yBound;
 		}
-	} else if (theEvent.deltaY > 0) {
-		yOrigin -= lineHeight;
+	} else if (deltaY > 0) {
+		yOrigin -= lineHeight * multiplier;
 		if (yOrigin < 0)
 			yOrigin = 0;
 	}
