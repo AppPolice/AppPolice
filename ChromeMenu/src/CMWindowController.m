@@ -21,7 +21,7 @@
 
 #define kTrackingAreaViewControllerKey @"viewController"
 #define VERTICAL_SPACING 0		// between menu items
-#define MENU_SCROLLER_HEIGHT 19
+#define MENU_SCROLLER_HEIGHT 15
 
 
 //enum {
@@ -122,7 +122,7 @@
 		[contentView release];
 		
 		_separatorViewHeight = 12.0;
-		_verticalPadding = 4.0;
+		_verticalPadding = 5.0;
 		
 		[self setNeedsLayoutUpdate:YES];
 	}
@@ -325,6 +325,7 @@
 }
 
 
+// TODO: Comb me!
 /**
  * Update top and/or bottom menu scrollers. If needed -- create them, if not -- hide.
  */
@@ -336,36 +337,83 @@
 	if (documentRect.size.height == visibleRect.size.height)
 		return;
 	
-
+	NSRect scrollRect = [_scrollView frame];
 	NSView *contentView = [self.window contentView];
-	if (visibleRect.origin.y != 0) {
+	CGFloat scrollAmount = 0;
+	// TOP scroller
+//	if (visibleRect.origin.y != 0) {
+	if (visibleRect.origin.y < 19) {
+		if (_topScroller && [_topScroller superview]) {
+			[_topScroller removeFromSuperview];
+			scrollRect.size.height += MENU_SCROLLER_HEIGHT;
+//			NSLog(@"scrolling up by 19px");
+
+			/* We keep track on changes to Visible Rect because on it depends the bottom scroller display.
+				Actual scrolling is done in the very end as it generates another Scroll Event and the execution
+				of this function is being interrupted in the middle */
+			visibleRect.size.height += MENU_SCROLLER_HEIGHT;
+			visibleRect.origin.y -= MENU_SCROLLER_HEIGHT;
+
+			scrollAmount = -19;
+//			[_scrollView scrollUpByAmount:19];		// 19 -- just large enough height to scroll to top
+		}
+	} else {
 		if (! _topScroller) {
 			_topScroller = [[CMMenuScroller alloc] initWithScrollerType:CMMenuScrollerTop];
 			[_topScroller setFrame:NSMakeRect(0, contentView.frame.size.height - MENU_SCROLLER_HEIGHT - _verticalPadding, documentRect.size.width, MENU_SCROLLER_HEIGHT)];
 		}
 			
 //		NSLog(@"updatin top scroller: %@", _topScroller);
-		[contentView addSubview:_topScroller];
-	} else if (_topScroller && [_topScroller superview])
-		[_topScroller removeFromSuperview];
-	
-	
-	if (visibleRect.origin.y + visibleRect.size.height != documentRect.size.height) {
+		if (! [_topScroller superview]) {
+			[contentView addSubview:_topScroller];
+			scrollRect.size.height -= MENU_SCROLLER_HEIGHT;
+			visibleRect.size.height -= MENU_SCROLLER_HEIGHT;
+			visibleRect.origin.y += MENU_SCROLLER_HEIGHT;
+//			NSLog(@"scrolling bottom by 15px");
+//			[_scrollView scrollBottomByAmount:MENU_SCROLLER_HEIGHT];
+			scrollAmount = MENU_SCROLLER_HEIGHT;
+		}
+		
+	}
+//	else if (_topScroller && [_topScroller superview]) {
+//		[_topScroller removeFromSuperview];
+//		scrollRect.size.height += MENU_SCROLLER_HEIGHT;
+//	}
+
+	// BOTTOM scroller
+	CGFloat visibleRectHeight = (_bottomScroller && [_bottomScroller superview]) ? visibleRect.size.height + MENU_SCROLLER_HEIGHT :
+		visibleRect.size.height;
+//	visibleRectHeight = visibleRect.size.height;
+//	NSLog(@"visible rect %@, and height (imagining): %f", NSStringFromRect(visibleRect), visibleRectHeight);
+	if (visibleRect.origin.y + visibleRectHeight < documentRect.size.height) {
 		if (! _bottomScroller) {
 			_bottomScroller = [[CMMenuScroller alloc] initWithScrollerType:CMMenuScrollerBottom];
 			NSRect scrollerRect = NSMakeRect(0, _verticalPadding, documentRect.size.width, MENU_SCROLLER_HEIGHT);
 			[_bottomScroller setFrame:scrollerRect];
 		}
 		
-
-		[contentView addSubview:_bottomScroller];
+		if (! [_bottomScroller superview]) {
+			[contentView addSubview:_bottomScroller];
+			scrollRect.origin.y +=  MENU_SCROLLER_HEIGHT;
+			scrollRect.size.height -= MENU_SCROLLER_HEIGHT;
+		}
 //		NSRect scrollViewFrame = [_scrollView frame];
 //		CGFloat bottom = contentView.frame.size.height;
 //		NSRect scrollerRect = NSMakeRect(0, bottom - MENU_SCROLLER_HEIGHT - 100, documentRect.size.width, MENU_SCROLLER_HEIGHT);
-//		NSLog(@"updating bottom scroller: %@", _bottomScroller);
-	} else if (_bottomScroller && [_bottomScroller superview])
+//		NSLog(@"updating bottom scroller: ", _bottomScroller);
+	} else if (_bottomScroller && [_bottomScroller superview]) {
+//		NSLog(@"removing bottom scroller");
 		[_bottomScroller removeFromSuperview];
+		scrollRect.origin.y -= MENU_SCROLLER_HEIGHT;
+		scrollRect.size.height += MENU_SCROLLER_HEIGHT;
+	}
 
+//	NSLog(@"new scroll frame: %@", NSStringFromRect(scrollRect));
+	[_scrollView setFrame:scrollRect];
+	if (scrollAmount > 0)
+		[_scrollView scrollBottomByAmount:scrollAmount];
+	else if (scrollAmount < 0)
+		[_scrollView scrollUpByAmount:-scrollAmount];
 }
 
 
@@ -693,9 +741,9 @@
 	if ([theEvent userData]) {		// mouse entered menu item view
 		NSViewController *viewController = [(NSDictionary *)[theEvent userData] objectForKey:kTrackingAreaViewControllerKey];
 		/* debuggin */
-		CMMenuItem *item = [viewController representedObject];
-		fputs("\n", stdout);
-		NSLog(@"Mouse Enter MENU ITEM: %@", item);
+//		CMMenuItem *item = [viewController representedObject];
+//		fputs("\n", stdout);
+//		NSLog(@"Mouse Enter MENU ITEM: %@", item);
 		/* debuggin */
 		[self mouseEventOnViewController:viewController eventType:CMMenuEventMouseEnteredItem];
 	} else {						// mouse entered menu itself
@@ -720,9 +768,9 @@
 	
 	if ([theEvent userData]) {
 		/* debuggin */
-		NSViewController *viewController = [(NSDictionary *)[theEvent userData] objectForKey:kTrackingAreaViewControllerKey];
-		CMMenuItem *item = [viewController representedObject];
-		NSLog(@"Mouse Exit MENU ITEM: %@", item);
+//		NSViewController *viewController = [(NSDictionary *)[theEvent userData] objectForKey:kTrackingAreaViewControllerKey];
+//		CMMenuItem *item = [viewController representedObject];
+//		NSLog(@"Mouse Exit MENU ITEM: %@", item);
 		/* debuggin */
 		
 		/*
@@ -747,9 +795,10 @@
 	NSLog(@"Mouse UP, location: %@", NSStringFromPoint(location));
 	
 	
-	NSLog(@"document: %@, visible view: %@", NSStringFromRect([[_scrollView documentView] bounds]),
+	NSLog(@"document: %@, visible view: %@, scroll view: %@", NSStringFromRect([[_scrollView documentView] bounds]),
 //		  NSStringFromRect([[_scrollView contentView] bounds])
-		  NSStringFromRect([_scrollView documentVisibleRect])
+		  NSStringFromRect([_scrollView documentVisibleRect]),
+		  NSStringFromRect([_scrollView frame])
 		  //		  NSStringFromSize([_scrollView contentSize])
 		  );
 

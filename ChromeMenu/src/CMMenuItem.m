@@ -61,7 +61,10 @@
 
 
 - (void)dealloc {
-	[_icon release];
+	[_title release];
+	if (_icon)
+		[_icon release];
+	
 	if (_viewNibName) {
 //		[_viewIdentifier release];
 		[_viewNibName release];
@@ -86,7 +89,7 @@
 
 
 - (void)setTitle:(NSString *)aTitle {
-	_title = aTitle;
+	_title = [aTitle copy];
 }
 
 - (NSString *)title {
@@ -94,8 +97,8 @@
 }
 
 - (void)setIcon:(NSImage *)anImage {
-	[anImage retain];
-	_icon = anImage;
+//	[anImage retain];
+	_icon = [anImage copy];
 }
 
 - (NSImage *)icon {

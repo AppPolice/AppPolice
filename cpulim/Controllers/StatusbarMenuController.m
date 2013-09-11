@@ -19,6 +19,7 @@
 @interface StatusbarMenuController()
 {
 	CMMenu *menu;
+	CMMenu *smallMenu;
 }
 
 - (IBAction)changeMenu:(id)sender;
@@ -485,7 +486,7 @@ static NSString *tableData[] = {
 
 		id item = nil;
 		
-		if (i == 1 || i == 12) {
+		if (i == 2 || i == 12) {
 			item = [CMMenuItem separatorItem];
 			[menu addItem:item];
 			++i;
@@ -624,6 +625,33 @@ static NSString *tableData[] = {
 	
 	++i;
 }
+
+
+- (IBAction)addSmallMenu:(id)sender {
+	smallMenu = [[CMMenu alloc] init];
+	
+	int i;
+	int count = 4;
+	
+	for (i = 0; i < count; ++i) {
+		CMMenuItem *item  = [[CMMenuItem alloc] initWithTitle:[NSString stringWithFormat:@"Menu Item %d", (i + 1)]];
+//		CMMenuItem *item  = [[CMMenuItem alloc] initWithTitle:@"Some title"];
+		[smallMenu addItem:item];
+		[item release];
+	}
+	
+}
+
+- (IBAction)toggleSmallMenu:(id)sender {
+	static int i = 0;
+	if ((i % 2) == 0)
+		[smallMenu startMenu];
+	else
+		[smallMenu cancelTrackingWithoutAnimation];
+	
+	++i;
+}
+
 
 
 

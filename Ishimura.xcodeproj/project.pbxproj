@@ -11,6 +11,8 @@
 		A007EAF41786BBF000A7FE8D /* CMMenuItemOverride.m in Sources */ = {isa = PBXBuildFile; fileRef = A007EAF31786BBE400A7FE8D /* CMMenuItemOverride.m */; };
 		A007EAF51786CA5500A7FE8D /* MenuItemView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A007EAED1786B0DA00A7FE8D /* MenuItemView.xib */; };
 		A00EF4801793D5A50045ACB5 /* CMScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = A00EF47F1793D59E0045ACB5 /* CMScrollView.m */; };
+		A00FBF4D17DF54BF0083B482 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A00FBF4C17DF54BF0083B482 /* QuartzCore.framework */; };
+		A00FBF5317DF68280083B482 /* NSImage+CMMenuImageRepAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = A00FBF5217DF67D70083B482 /* NSImage+CMMenuImageRepAdditions.m */; };
 		A010F3291784311C003A9E92 /* MyWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = A010F328178430B1003A9E92 /* MyWindow.m */; };
 		A010F32C178437F6003A9E92 /* MyCustomWindowView.m in Sources */ = {isa = PBXBuildFile; fileRef = A010F32B17843712003A9E92 /* MyCustomWindowView.m */; };
 		A010F32F17845332003A9E92 /* StatusbarItemView.m in Sources */ = {isa = PBXBuildFile; fileRef = A010F32E1784530D003A9E92 /* StatusbarItemView.m */; };
@@ -75,6 +77,9 @@
 		A007EAF717870B4E00A7FE8D /* CMTableView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = CMTableView.m; path = ChromeMenu/src/CMTableView.m; sourceTree = SOURCE_ROOT; };
 		A00EF47E1793D59E0045ACB5 /* CMScrollView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = CMScrollView.h; path = ChromeMenu/src/CMScrollView.h; sourceTree = SOURCE_ROOT; };
 		A00EF47F1793D59E0045ACB5 /* CMScrollView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = CMScrollView.m; path = ChromeMenu/src/CMScrollView.m; sourceTree = SOURCE_ROOT; };
+		A00FBF4C17DF54BF0083B482 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		A00FBF5117DF67D70083B482 /* NSImage+CMMenuImageRepAdditions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "NSImage+CMMenuImageRepAdditions.h"; path = "../ChromeMenu/src/NSImage+CMMenuImageRepAdditions.h"; sourceTree = "<group>"; };
+		A00FBF5217DF67D70083B482 /* NSImage+CMMenuImageRepAdditions.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = "NSImage+CMMenuImageRepAdditions.m"; path = "../ChromeMenu/src/NSImage+CMMenuImageRepAdditions.m"; sourceTree = "<group>"; };
 		A010F327178430B1003A9E92 /* MyWindow.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MyWindow.h; path = Controllers/MyWindow.h; sourceTree = "<group>"; };
 		A010F328178430B1003A9E92 /* MyWindow.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = MyWindow.m; path = Controllers/MyWindow.m; sourceTree = "<group>"; };
 		A010F32A17843712003A9E92 /* MyCustomWindowView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MyCustomWindowView.h; path = Controllers/MyCustomWindowView.h; sourceTree = "<group>"; };
@@ -164,6 +169,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A00FBF4D17DF54BF0083B482 /* QuartzCore.framework in Frameworks */,
 				A063796817492AEF006F2347 /* Cocoa.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -218,6 +224,8 @@
 				A07CEC23179D6FE20016067E /* CMMenuItemSeparatorView.m */,
 				A0336A7D17DB9616004C2DDB /* CMMenuScroller.h */,
 				A0336A7E17DB9616004C2DDB /* CMMenuScroller.m */,
+				A00FBF5117DF67D70083B482 /* NSImage+CMMenuImageRepAdditions.h */,
+				A00FBF5217DF67D70083B482 /* NSImage+CMMenuImageRepAdditions.m */,
 				A05B78841785829900015156 /* CMMenuItemBackgroundView.h */,
 				A05B78851785829900015156 /* CMMenuItemBackgroundView.m */,
 			);
@@ -285,6 +293,7 @@
 		A063796617492AEF006F2347 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				A00FBF4C17DF54BF0083B482 /* QuartzCore.framework */,
 				A063796717492AEF006F2347 /* Cocoa.framework */,
 				A071B69417D8812500D3866E /* XCTest.framework */,
 				A063796917492AEF006F2347 /* Other Frameworks */,
@@ -493,6 +502,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A00FBF5317DF68280083B482 /* NSImage+CMMenuImageRepAdditions.m in Sources */,
 				A0336A7F17DB9E3A004C2DDB /* CMMenuScroller.m in Sources */,
 				A07CEC24179D6FFD0016067E /* CMMenuItemSeparatorView.m in Sources */,
 				A00EF4801793D5A50045ACB5 /* CMScrollView.m in Sources */,

@@ -415,6 +415,7 @@ typedef struct __submenu_tracking_event tracking_event_t;
 		frame.origin = NSMakePoint(100, 200);
 		frame.size.width = intrinsicSize.width;
 		frame.size.height = (intrinsicSize.height > 817) ? 825 : intrinsicSize.height;
+//		frame.size.height = 67;
 		return frame;
 	}
 	

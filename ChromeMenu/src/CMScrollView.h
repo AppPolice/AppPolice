@@ -10,4 +10,7 @@
 
 @interface CMScrollView : NSScrollView
 
+- (void)scrollUpByAmount:(CGFloat)amount;
+- (void)scrollBottomByAmount:(CGFloat)amount;
+
 @end
