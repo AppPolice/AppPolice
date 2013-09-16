@@ -10,11 +10,16 @@
 #define Ishimura_CMMenuEventTypes_h
 
 enum {
-	CMMenuEventDuringScroll = 1 << 0,				// when mouse event occurred because of scrolling
-	CMMenuEventMouseEnteredItem = 1 << 1,
-	CMMenuEventMouseExitedItem = 1 << 2,
-	CMMenuEventMouseEnteredMenu = 1 << 3,
-	CMMenuEventMouseExitedMenu = 1 << 4
+	CMMenuEventDuringScroll = 0x001,				// when mouse event occurred because of scrolling
+	CMMenuEventMouseEnteredItem = 0x002,
+	CMMenuEventMouseExitedItem = 0x004,
+	CMMenuEventMouseItem = 0x006,
+	CMMenuEventMouseEnteredMenu = 0x008,
+	CMMenuEventMouseExitedMenu = 0x010,
+	CMMenuEventMouseMenu = 0x018,
+	CMMenuEventMouseEnteredScroller = 0x020,
+	CMMenuEventMouseExitedScroller = 0x040,
+	CMMenuEventMouseScroller = 0x060
 };
 typedef NSUInteger CMMenuEventType;
 

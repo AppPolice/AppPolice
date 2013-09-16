@@ -16,6 +16,7 @@
 #import "CMMenuItem+InternalMethods.h"
 #import "CMMenuItemView+InternalMethods.h"
 #import "CMWindowController.h"
+#import "CMMenuKeyEventInterpreter.h"
 //#import "CMMenuItemBackgroundView.h"
 //#import "ChromeMenuUnderlyingWindow.h"
 //#import "ChromeMenuUnderlyingView.h"
@@ -31,6 +32,7 @@ enum {
 	CMMenuAlignedBottom = 4
 };
 typedef NSUInteger CMMenuAlignment;
+
 
 
 struct __submenu_tracking_event {
@@ -67,7 +69,7 @@ typedef struct __submenu_tracking_event tracking_event_t;
 /*
  * Private class declarations
  */
-@interface CMMenu ()
+@interface CMMenu () <CMMenuKeyEventInterpreterDelegate>
 {
 	CMWindowController *_underlyingWindowController;
 	
@@ -75,21 +77,21 @@ typedef struct __submenu_tracking_event tracking_event_t;
 	BOOL _isActive;
 	CMMenu *_activeSubmenu;
 	BOOL _isTrackingSubmenu;
-	
-	CMMenuAlignment _menuHorizontalAlignment;
-	CMMenuAlignment _menuVerticalAlignment;
-	
+		
 	BOOL _displayedFirstTime;
 	BOOL _needsUpdating;
 	
+	CMMenuAlignment _menuHorizontalAlignment;
+	CMMenuAlignment _menuVerticalAlignment;
 	CGFloat _minimumWidth;
 	NSSize _size;
+	CGFloat _borderRadius;
 	
 /* this block of vartiables servers for storing one custom view that's to be used for all menu items */
 	NSString *_itemsViewNibName;
-	NSString *_itemsViewIdentifier;
+//	NSString *_itemsViewIdentifier;
 	NSArray *_itemsViewPropertyNames;
-	NSNib *_itemsViewRegisteredNib;
+//	NSNib *_itemsViewRegisteredNib;
 
 /* this block of variables servers for storing custom views that certain menu items wish to use */
 //	NSMutableArray *_itemViewNibNames;
@@ -97,7 +99,9 @@ typedef struct __submenu_tracking_event tracking_event_t;
 	int _registeredCustomNibs;
 	
 	tracking_event_t *_tracking_event;
+	CMMenuKeyEventInterpreter *_keyEventInterpreter;
 }
+
 
 - (CMMenuAlignment)horizontalAlignment;
 - (CMMenuAlignment)verticalAlignment;
@@ -116,7 +120,11 @@ typedef struct __submenu_tracking_event tracking_event_t;
  */
 - (NSRect)getBestFrameForMenuWindow;
 
-//- (void)setSupermenu:(CMMenu *)aMenu;
+- (void)selectPreviousItemAndShowSubmenu:(BOOL)showSubmenu;
+- (void)selectNextItemAndShowSubmenu:(BOOL)showSubmenu;
+- (void)selectFirstItemAndShowSubmenu:(BOOL)showSubmenu;
+- (void)selectLastItemAndShowSubmenu:(BOOL)showSubmenu;
+
 //- (void)orderFront;
 //- (NSInteger)windowNumber;	// may not be needed
 //- (void)showMenuAsSubmenuOf:(CMMenuItem *)menuItem; // may not be needed
@@ -136,6 +144,8 @@ typedef struct __submenu_tracking_event tracking_event_t;
 		_menuVerticalAlignment = CMMenuAlignedTop;
 		_menuItems = [[NSMutableArray alloc] init];
 //		_registeredCustomNibs = 0;
+		
+		_borderRadius = 5.0;
 			
 		// maks: might need to be elaborated: only submenus of menu should be of higher level
 		static int level = 0;
@@ -163,7 +173,7 @@ typedef struct __submenu_tracking_event tracking_event_t;
 //	if (_itemsViewRegisteredNib) {
 //		[_itemsViewRegisteredNib release];
 		[_itemsViewNibName release];
-		[_itemsViewIdentifier release];
+//		[_itemsViewIdentifier release];
 		[_itemsViewPropertyNames release];
 //	}
 	
@@ -243,8 +253,8 @@ typedef struct __submenu_tracking_event tracking_event_t;
 }
 
 
-- (void)setDefaultViewForItemsFromNibNamed:(NSString *)nibName withIdentifier:(NSString *)identifier andPropertyNames:(NSArray *)propertyNames {
-	if (nibName == nil || [nibName isEqualToString:@""] || identifier == nil || [identifier isEqualToString:@""] || propertyNames == nil)
+- (void)setDefaultViewForItemsFromNibNamed:(NSString *)nibName andPropertyNames:(NSArray *)propertyNames {
+	if (nibName == nil || [nibName isEqualToString:@""] || propertyNames == nil)
 		[NSException raise:NSInvalidArgumentException format:@"Bad arguments provided in -%@", NSStringFromSelector(_cmd)];
 
 //	_itemsViewRegisteredNib = [[NSNib alloc] initWithNibNamed:nibName bundle:[NSBundle mainBundle]];
@@ -252,7 +262,7 @@ typedef struct __submenu_tracking_event tracking_event_t;
 //		return;
 	
 	_itemsViewNibName = [nibName copy];
-	_itemsViewIdentifier = [identifier copy];
+//	_itemsViewIdentifier = [identifier copy];
 	_itemsViewPropertyNames = [propertyNames copy];
 
 //	[_menuTableView registerNib:_itemsViewRegisteredNib forIdentifier:identifier];
@@ -311,6 +321,14 @@ typedef struct __submenu_tracking_event tracking_event_t;
 	[_underlyingWindowController displayInFrame:frame];
 	_isActive = YES;
 	
+	/* Only the root menu receives interpreted actions and then routes them to according menu.
+		Root menu doesn't have supermenu. */
+	if (! _supermenu) {
+		if (! _keyEventInterpreter)
+			_keyEventInterpreter = [[CMMenuKeyEventInterpreter alloc] initWithTarget:self];
+		[_keyEventInterpreter start];
+	}
+	
 	
 //	if (_needsUpdating) {
 //		[self update];
@@ -368,6 +386,19 @@ typedef struct __submenu_tracking_event tracking_event_t;
 		[_parentItem deselect];
 //		_parentItem = nil;
 	}
+	
+	if (! _supermenu)
+		[_keyEventInterpreter stop];
+}
+
+
+- (CMMenuItem *)highlightedItem {
+	for (CMMenuItem *item in _menuItems) {
+		if ([item isSelected])
+			return item;
+	}
+	
+	return nil;
 }
 
 
@@ -383,6 +414,16 @@ typedef struct __submenu_tracking_event tracking_event_t;
 
 - (NSSize)size {
 	return (_underlyingWindowController) ? _underlyingWindowController.window.frame.size : NSMakeSize(0, 0);
+}
+
+
+- (CGFloat)borderRadius {
+	return _borderRadius;
+}
+
+
+- (void)setBorderRadius:(CGFloat)radius {
+	_borderRadius = radius;
 }
 
 
@@ -415,7 +456,7 @@ typedef struct __submenu_tracking_event tracking_event_t;
 		frame.origin = NSMakePoint(100, 200);
 		frame.size.width = intrinsicSize.width;
 		frame.size.height = (intrinsicSize.height > 817) ? 825 : intrinsicSize.height;
-//		frame.size.height = 67;
+//		frame.size.height = 65;
 		return frame;
 	}
 	
@@ -627,9 +668,10 @@ typedef struct __submenu_tracking_event tracking_event_t;
 }
 
 
-//- (void)setmenuVerticalAlignment:(CMMenuAlignment)aligning {
-//	_menuVerticalAlignment = aligning;
-//}
+- (NSInteger)windowLevel {
+	return (_underlyingWindowController) ? _underlyingWindowController.window.level : 0;
+}
+
 
 
 #pragma mark -
@@ -661,7 +703,6 @@ typedef struct __submenu_tracking_event tracking_event_t;
 					[[_activeSubmenu activeSubmenu] cancelTrackingWithoutAnimation];
 			} else
 				[_activeSubmenu cancelTrackingWithoutAnimation];		// 1.b.
-				// TODO: Highlight new item
 		} else if (_supermenu && [_supermenu isTrackingSubmenu]) {		// 2.
 			[_supermenu stopTrackingSubmenuReasonSuccess:YES];
 		}
@@ -672,7 +713,6 @@ typedef struct __submenu_tracking_event tracking_event_t;
 
 
 - (void)startTrackingSubmenu:(CMMenu *)submenu forItem:(CMMenuItem *)item {
-	NSTimeInterval interval = 0.07;
 	_isTrackingSubmenu = YES;
 	
 	_tracking_event = (tracking_event_t *)malloc(sizeof(tracking_event_t));
@@ -725,7 +765,7 @@ typedef struct __submenu_tracking_event tracking_event_t;
 	_tracking_event->averageDeltaX = 0;
 	_tracking_event->timeLeftMenuBounds = 0;
 	
-	
+	NSTimeInterval interval = 0.07;
 	_tracking_event->timer = [[NSTimer scheduledTimerWithTimeInterval:interval
 															 target:self
 														   selector:@selector(trackingLoop:)
@@ -760,7 +800,7 @@ typedef struct __submenu_tracking_event tracking_event_t;
 		if (NSPointInRect([NSEvent mouseLocation], [self frame])) {
 			for (CMMenuItem *item in _menuItems)
 				if ([item mouseOver]) {
-					[item selectWithDelayForSubmenu:0.15];
+					[item selectWithDelayForSubmenu:SUBMENU_POPUP_DELAY_AFTER_TRACKING];
 					break;
 				}
 		}
@@ -968,11 +1008,97 @@ typedef struct __submenu_tracking_event tracking_event_t;
 //	return (_underlyingWindowController) ? [_underlyingWindowController.window windowNumber] : 0;
 //}
 
-- (NSInteger)windowLevel {
-	return (_underlyingWindowController) ? _underlyingWindowController.window.level : 0;
+
+#pragma mark -
+#pragma mark ****** Actions from Key Interpreter ******
+
+
+- (CMMenu *)menuToInterpretKeyEvent {
+	CMMenu *menu = self;
+	NSPoint mouseLocation = [NSEvent mouseLocation];
+	while (true) {
+		if (NSPointInRect(mouseLocation, [menu frame]))
+			break;
+		
+		if (! [menu activeSubmenu])
+			break;
+		
+		menu = [menu activeSubmenu];;
+	}
+	
+	return menu;
 }
 
 
+- (void)moveUp:(id)sender {
+	CMMenu *menu = [self menuToInterpretKeyEvent];
+	NSLog(@"MOVE UP!!");
+	[menu selectPreviousItemAndShowSubmenu:NO];
+}
+
+
+- (void)moveDown:(id)sender {
+	
+}
+
+
+- (void)selectPreviousItemAndShowSubmenu:(BOOL)showSubmenu {
+	CMMenuItem *previousItem = nil;
+	CMMenuItem *selectedItem = nil;
+	for (CMMenuItem *item in _menuItems) {
+		if ([item isSelected]) {
+			selectedItem = item;
+			break;
+		}
+			
+		if (! [item isSeparatorItem])
+			previousItem = item;
+	}
+	
+	if (! previousItem) {
+//		[self selectLastItemAndShowSubmenu:NO];
+		return;
+	}
+	
+	[selectedItem deselect];
+	
+	if (showSubmenu)
+		[previousItem selectWithDelayForSubmenu:SUBMENU_POPUP_DELAY_DEFAULT];
+	else
+		[previousItem select];
+}
+
+
+- (void)selectNextItemAndShowSubmenu:(BOOL)showSubmenu {
+	
+}
+
+
+- (void)selectFirstItemAndShowSubmenu:(BOOL)showSubmenu {
+	
+}
+
+
+- (void)selectLastItemAndShowSubmenu:(BOOL)showSubmenu {
+	
+}
+
+
+
+
+- (NSString *)description {
+	NSMutableString *description = [[NSMutableString alloc] initWithString:[super description]];
+	
+	[description appendString:@"\n\tItems \t(\n"];
+	for (CMMenuItem *item in _menuItems) {
+		[description appendString:@"\t"];
+		[description appendString:[item description]];
+		[description appendString:@"\n"];
+	}
+	[description appendString:@")"];
+	
+	return [description autorelease];
+}
 
 
 @end

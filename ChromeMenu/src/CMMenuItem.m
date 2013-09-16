@@ -21,7 +21,7 @@
 {
 	BOOL _isSelected;
 	BOOL _mouseOver;						// this doesn't mean the item is selected (e.g. during submenu tracking)
-	int _submenuIntervalIsSetToPopup;
+	BOOL _submenuIntervalIsSetToPopup;
 	NSViewController *_representedViewController;
 }
 
@@ -219,8 +219,8 @@
 				_isSelected = YES;
 				
 				if ([self hasSubmenu]) {
-					[self performSelector:@selector(showItemSubmenu) withObject:nil afterDelay:0.2];
-					_submenuIntervalIsSetToPopup = 1;
+					[self performSelector:@selector(showItemSubmenu) withObject:nil afterDelay:SUBMENU_POPUP_DELAY_DEFAULT];
+					_submenuIntervalIsSetToPopup = YES;
 				}
 			}
 		}
@@ -253,7 +253,7 @@
 
 
 - (void)showItemSubmenu {
-	_submenuIntervalIsSetToPopup = 0;
+	_submenuIntervalIsSetToPopup = NO;
 //	[_submenu showMenu];
 	[_submenu showMenuAsSubmenuOf:self];
 }
@@ -293,9 +293,18 @@
 	return [_menu convertRectToScreen:frame];
 }
 
+- (BOOL)isSelected {
+	return _isSelected;
+}
 
 - (BOOL)mouseOver {
 	return _mouseOver;
+}
+
+
+- (void)select {
+	_isSelected = YES;
+	[(CMMenuItemView *)[_representedViewController view] setSelected:YES];	
 }
 
 
@@ -306,7 +315,7 @@
 //	NSLog(@"res: %d", res);
 	if ([self hasSubmenu]) {
 		[self performSelector:@selector(showItemSubmenu) withObject:nil afterDelay:delay];
-		_submenuIntervalIsSetToPopup = 1;
+		_submenuIntervalIsSetToPopup = YES;
 	}
 }
 
@@ -338,10 +347,12 @@
 		[description appendFormat:@"\n\ticon: %@", _icon];
 	}
 	 */
+	if (_isSeparatorItem)
+		[description appendFormat:@" -----"];
+	else
+		[description appendFormat:@" %@", _title];
 	
-	[description appendFormat:@"\n\tTitle: %@", _title];
-	
-	return description;
+	return [description autorelease];
 }
 
 

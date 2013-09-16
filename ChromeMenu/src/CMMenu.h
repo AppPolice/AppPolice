@@ -6,15 +6,18 @@
 //  Copyright (c) 2013 Maksym Stefanchuk. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
+//#import <Foundation/Foundation.h>
 //#import "CMMenuItem.h"
 
+
 //@class ChromeMenuUnderlyingWindow, ChromeMenuUnderlyingView, CMTableCellView;
+@class NSString, NSArray, NSIndexSet;
 @class CMMenuItem;
+
 
 @interface CMMenu : NSObject
 {
-@private
+	@private
 	CMMenu *_supermenu;
 //	IBOutlet ChromeMenuUnderlyingWindow *_underlyingWindow;
 //	IBOutlet ChromeMenuUnderlyingView *_underlyingView;
@@ -33,7 +36,7 @@
 
 - (void)addItem:(CMMenuItem *)newItem;
 
-- (void)setDefaultViewForItemsFromNibNamed:(NSString *)nibName withIdentifier:(NSString *)identifier andPropertyNames:(NSArray *)propertyNames;
+- (void)setDefaultViewForItemsFromNibNamed:(NSString *)nibName andPropertyNames:(NSArray *)propertyNames;
 
 /* Same as [anItem setSubmenu:aMenu].  anItem may not be nil. */
 - (void)setSubmenu:(CMMenu *)aMenu forItem:(CMMenuItem *)anItem;
@@ -76,6 +79,8 @@
 /* Dismisses the menu immediately, without any fade or other effect, and ends all menu tracking */
 - (void)cancelTrackingWithoutAnimation;
 
+/* Returns the highlighted item in the menu, or nil if no item in the menu is highlighted */
+- (CMMenuItem *)highlightedItem;
 
 /* Set the minimum width of the menu, in screen coordinates. The menu will prefer to not draw smaller than its minimum width, but may draw larger if it needs more space. The default value is 0.
  */
@@ -86,11 +91,9 @@
  */
 - (NSSize)size;
 
+/* Returns Menu border radius */
+- (CGFloat)borderRadius;
+- (void)setBorderRadius:(CGFloat)radius;
 
-
-
-
-
-//- (IBAction)buttonClick:(id)sender;
 
 @end

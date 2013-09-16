@@ -219,11 +219,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "ChromeMenu/src/CMMenu.m"
-            timestampString = "396267158.400696"
+            timestampString = "401035587.749336"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "145"
-            endingLineNumber = "145"
+            startingLineNumber = "152"
+            endingLineNumber = "152"
             landmarkName = "-init"
             landmarkType = "5">
          </BreakpointContent>
@@ -235,11 +235,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "ChromeMenu/src/CMWindowController.m"
-            timestampString = "400248903.808006"
+            timestampString = "401027536.193061"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "328"
-            endingLineNumber = "328"
+            startingLineNumber = "360"
+            endingLineNumber = "360"
             landmarkName = "@implementation CMWindowController"
             landmarkType = "3">
             <Locations>
@@ -281,13 +281,13 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "ChromeMenu/src/CMMenu.m"
-            timestampString = "396267158.400696"
+            timestampString = "401035587.749336"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "380"
-            endingLineNumber = "380"
-            landmarkName = "-setMinimumWidth:"
-            landmarkType = "5">
+            startingLineNumber = "408"
+            endingLineNumber = "408"
+            landmarkName = "@implementation CMMenu"
+            landmarkType = "3">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -297,11 +297,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "ChromeMenu/src/CMMenu.m"
-            timestampString = "400432559.969523"
+            timestampString = "401035587.749336"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "575"
-            endingLineNumber = "575"
+            startingLineNumber = "603"
+            endingLineNumber = "603"
             landmarkName = "-reloadData"
             landmarkType = "5">
          </BreakpointContent>
@@ -313,12 +313,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "ChromeMenu/src/CMMenu.m"
-            timestampString = "400432559.969523"
+            timestampString = "401035587.749336"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "674"
-            endingLineNumber = "674"
-            landmarkName = "-startTrackingSubmenu:forItem:"
+            startingLineNumber = "703"
+            endingLineNumber = "703"
+            landmarkName = "-mouseEvent:"
             landmarkType = "5">
             <Locations>
                <Location
@@ -373,11 +373,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "ChromeMenu/src/CMMenu.m"
-            timestampString = "400432559.969523"
+            timestampString = "401035587.749336"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "428"
-            endingLineNumber = "428"
+            startingLineNumber = "456"
+            endingLineNumber = "456"
             landmarkName = "-getBestFrameForMenuWindow"
             landmarkType = "5">
          </BreakpointContent>
@@ -389,11 +389,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "ChromeMenu/src/CMWindowController.m"
-            timestampString = "400248903.808006"
+            timestampString = "401027536.193061"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "265"
-            endingLineNumber = "265"
+            startingLineNumber = "297"
+            endingLineNumber = "297"
             landmarkName = "-layoutViews:"
             landmarkType = "5">
          </BreakpointContent>
@@ -405,11 +405,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "ChromeMenu/src/CMWindowController.m"
-            timestampString = "400432559.969523"
+            timestampString = "401027536.193061"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "377"
-            endingLineNumber = "377"
+            startingLineNumber = "409"
+            endingLineNumber = "409"
             landmarkName = "-updateMenuScrollers"
             landmarkType = "5">
          </BreakpointContent>
@@ -421,13 +421,13 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "ChromeMenu/src/CMWindowController.m"
-            timestampString = "400248903.808006"
+            timestampString = "401027536.193061"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "298"
-            endingLineNumber = "298"
-            landmarkName = "-updateViews"
-            landmarkType = "5">
+            startingLineNumber = "330"
+            endingLineNumber = "330"
+            landmarkName = "@implementation CMWindowController"
+            landmarkType = "3">
             <Locations>
                <Location
                   shouldBeEnabled = "No"

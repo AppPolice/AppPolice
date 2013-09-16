@@ -51,7 +51,7 @@ const short down = 1;
 }
 
 
-- (void)scrollBottomByAmount:(CGFloat)amount {
+- (void)scrollDownByAmount:(CGFloat)amount {
 	[self scrollInDirection:down byAmount:amount];
 }
 
@@ -74,6 +74,5 @@ const short down = 1;
 	
 	[[self documentView] scrollPoint:NSMakePoint(0, yOrigin)];
 }
-
 
 @end

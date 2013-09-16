@@ -534,6 +534,7 @@ static NSString *tableData[] = {
 	
 	
 	submenu = [[CMMenu alloc] init];
+	[submenu setBorderRadius:0.0];
 	submenuItem1 = [[CMMenuItem alloc] initWithTitle:@"one"];
 	[submenu addItem:submenuItem1];
 	[submenuItem1 release];
@@ -596,7 +597,7 @@ static NSString *tableData[] = {
 //	[menu update];
 	
 //	NSLog(@"Should create menu with items: %@", items);
-	NSLog(@"menu: %@", menu);
+//	NSLog(@"menu: %@", menu);
 //	[items release];
 }
 

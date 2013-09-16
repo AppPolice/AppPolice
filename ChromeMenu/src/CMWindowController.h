@@ -6,13 +6,16 @@
 //  Copyright (c) 2013 Maksym Stefanchuk. All rights reserved.
 //
 
-#import <Cocoa/Cocoa.h>
+//#import <Cocoa/Cocoa.h>
+
+@class NSWindowController, NSViewController, NSMutableArray;
+@class CMMenu;
 
 @interface CMWindowController : NSWindowController
 
 
 /* The designated initializer. This window controller creates its own custom suggestions window. */
-- (id)initWithOwner:(id)owner;
+- (id)initWithOwner:(CMMenu *)owner;
 
 - (void)layoutViews:(NSMutableArray *)viewControllers;
 
