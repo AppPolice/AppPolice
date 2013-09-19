@@ -9,7 +9,7 @@
 //#import <Cocoa/Cocoa.h>
 
 @class NSWindowController, NSViewController, NSMutableArray;
-@class CMMenu;
+@class CMMenu, CMMenuScroller;
 
 @interface CMWindowController : NSWindowController
 
@@ -20,7 +20,7 @@
 - (void)layoutViews:(NSMutableArray *)viewControllers;
 
 //- (void)display;
-- (void)displayInFrame:(NSRect)frame;
+- (void)displayInFrame:(NSRect)frame ignoreMouse:(BOOL)ignoreMouse;
 - (void)hide;
 
 - (NSSize)intrinsicContentSize;
@@ -34,9 +34,18 @@
 /**
  * @function viewController:
  * @abastract Returns the view controller at a given point.
- * @discussion Point should be in Window coordinates.
- * @param aPoint Point in NSWindow coordinates.
+ * @discussion Point should be coordinates relative to Menu.
+ * @param aPoint Point in NSWindow (Menu) coordinates.
  */
-- (NSViewController *)viewControllerAtPoint:(NSPoint)aPoint;
+- (NSViewController *)viewAtPoint:(NSPoint)aPoint;
+
+
+- (CMMenuScroller *)scrollerAtPoint:(NSPoint)aPoint;
+- (void)scrollWithActiveScroller:(CMMenuScroller *)scroller;
+
+
+- (void)moveVisibleRectToRect:(NSRect)rect ignoreMouse:(BOOL)ignoreMouse;
+
+- (void)updateContentViewTrackingAreaTrackMouseMoved:(BOOL)trackMouseMoved;
 
 @end

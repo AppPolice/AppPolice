@@ -8,6 +8,18 @@
 
 //#include "CMMenuEventTypes.h"
 
+enum {
+	CMMenuOptionDefault = 0x000,
+	CMMenuOptionIgnoreMouse = 0x001,
+	CMMenuOptionTrackMouseMoved = 0x002
+};
+
+typedef NSUInteger CMMenuOptions;
+
+
+
+@class CMMenuItem, CMMenuScroller;
+
 @interface CMMenu (CMMenuInternalMethods)
 
 - (void)setSupermenu:(CMMenu *)aMenu;
@@ -21,13 +33,24 @@
 - (void)startTrackingSubmenu:(CMMenu *)submenu forItem:(CMMenuItem *)item;
 - (void)stopTrackingSubmenuReasonSuccess:(BOOL)reasonSuccess;
 //- (void)startTrackingActiveSubmenu;
+- (void)updateTrackingAreaWithOptions:(CMMenuOptions)options;
 
 - (void)mouseEvent:(NSEvent *)theEvent;
 
-- (void)showMenuAsSubmenuOf:(CMMenuItem *)menuItem;	// may not be needed
+/**
+ * @abstract Show menu as submenu of a certain item
+ * @discussion All submenus must be started using this method and never call -showMenuWithOptions: directly.
+ * @param menuItem Supermenu's item which has the target menu set as a submenu.
+ */
+- (void)showMenuAsSubmenuOf:(CMMenuItem *)menuItem withOptions:(CMMenuOptions)options;	// may not be needed
 //- (void)orderFront;
 - (NSInteger)windowLevel;
 
 - (NSRect)convertRectToScreen:(NSRect)aRect;
+- (NSPoint)convertPointToScreen:(NSPoint)aPoint;
+- (NSPoint)convertPointFromScreen:(NSPoint)aPoint;
+
+- (CMMenuScroller *)scrollerAtPoint:(NSPoint)aPoint;
+- (void)scrollWithActiveScroller:(CMMenuScroller *)scroller;
 
 @end

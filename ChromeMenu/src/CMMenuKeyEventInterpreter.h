@@ -33,5 +33,7 @@
 
 - (void)moveUp:(id)sender;
 - (void)moveDown:(id)sender;
+- (void)moveLeft:(id)sender;
+- (void)moveRight:(id)sender;
 
 @end

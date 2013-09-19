@@ -139,7 +139,7 @@
 		A063797D17492AF0006F2347 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/MainMenu.xib; sourceTree = "<group>"; };
 		A063798517492D19006F2347 /* clevel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = clevel.h; path = C/clevel.h; sourceTree = "<group>"; };
 		A063798617492D42006F2347 /* clevel.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = clevel.c; path = C/clevel.c; sourceTree = "<group>"; };
-		A071B69317D8812500D3866E /* Ishimura Tests.xctest */ = {isa = PBXFileReference; explicitFileType = folder; includeInIndex = 0; path = "Ishimura Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		A071B69317D8812500D3866E /* Ishimura Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Ishimura Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		A071B69417D8812500D3866E /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
 		A071B69817D8812500D3866E /* Ishimura Tests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Ishimura Tests-Info.plist"; sourceTree = "<group>"; };
 		A071B69A17D8812500D3866E /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };

@@ -17,12 +17,13 @@
 
 @interface CMMenuItem (CMMenuItemInternalMethods)
 
+- (NSViewController *)representedViewController;
 /* not copied, not retained */
 - (void)setRepresentedViewController:(NSViewController *)viewController;
 
 - (void)setMenu:(CMMenu *)aMenu;
 
-//- (void)mouseEventOfTypes:(CMMenuEventType)eventTypes;
+
 - (BOOL)shouldChangeItemSelectionStatusForEvent:(CMMenuEventType)eventType;
 
 - (NSRect)frame;

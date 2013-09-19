@@ -100,6 +100,7 @@ typedef struct __submenu_tracking_event tracking_event_t;
 	
 	tracking_event_t *_tracking_event;
 	CMMenuKeyEventInterpreter *_keyEventInterpreter;
+	id _localMouseMoveEventMonitor;
 }
 
 
@@ -109,7 +110,7 @@ typedef struct __submenu_tracking_event tracking_event_t;
 - (NSRect)frame;
 //- (NSRect)frameOfItemRelativeToScreen:(CMMenuItem *)item;
 - (void)reloadData;
-- (void)showMenu;
+- (void)showMenuWithOptions:(CMMenuOptions)options;
 
 /**
  * @function getBestFrameForMenuWindow
@@ -122,8 +123,9 @@ typedef struct __submenu_tracking_event tracking_event_t;
 
 - (void)selectPreviousItemAndShowSubmenu:(BOOL)showSubmenu;
 - (void)selectNextItemAndShowSubmenu:(BOOL)showSubmenu;
-- (void)selectFirstItemAndShowSubmenu:(BOOL)showSubmenu;
-- (void)selectLastItemAndShowSubmenu:(BOOL)showSubmenu;
+//- (void)selectFirstItemAndShowSubmenu:(BOOL)showSubmenu;
+//- (void)selectLastItemAndShowSubmenu:(BOOL)showSubmenu;
+- (void)installLocalMonitorForMouseMovedEvent;
 
 //- (void)orderFront;
 //- (NSInteger)windowNumber;	// may not be needed
@@ -208,14 +210,18 @@ typedef struct __submenu_tracking_event tracking_event_t;
 
 
 - (CMMenuItem *)itemAtIndex:(NSInteger)index {
-	if (index < 0 || index >= [_menuItems count])
-		[NSException raise:NSRangeException format:@"No item for -itemAtIndex: %ld", index];
+	if ( !_menuItems || index < 0 || index >= [_menuItems count])
+		return nil;
+	
+//	if (index < 0 || index >= [_menuItems count])
+//		[NSException raise:NSRangeException format:@"No item for -itemAtIndex: %ld", index];
 	return [_menuItems objectAtIndex:index];
 }
 
 
 - (CMMenuItem *)itemAtPoint:(NSPoint)aPoint {
-	NSViewController *viewController = [_underlyingWindowController viewControllerAtPoint:aPoint];
+	aPoint = [self convertPointFromScreen:aPoint];
+	NSViewController *viewController = [_underlyingWindowController viewAtPoint:aPoint];
 	if (viewController)
 		return [viewController representedObject];
 	else
@@ -303,22 +309,20 @@ typedef struct __submenu_tracking_event tracking_event_t;
 
 - (void)startMenu {
 	
-	[self showMenu];
+	[self showMenuWithOptions:CMMenuOptionDefault];
 
 }
 
 
-- (void)showMenu {
+- (void)showMenuWithOptions:(CMMenuOptions)options {
 	if (!_underlyingWindowController) {
 		_underlyingWindowController = [[CMWindowController alloc] initWithOwner:self];
 		[self reloadData];
 	}
 	
-
+	BOOL ignoreMouse = (options & CMMenuOptionIgnoreMouse);
 	NSRect frame = [self getBestFrameForMenuWindow];
-
-	
-	[_underlyingWindowController displayInFrame:frame];
+	[_underlyingWindowController displayInFrame:frame ignoreMouse:ignoreMouse];
 	_isActive = YES;
 	
 	/* Only the root menu receives interpreted actions and then routes them to according menu.
@@ -328,37 +332,16 @@ typedef struct __submenu_tracking_event tracking_event_t;
 			_keyEventInterpreter = [[CMMenuKeyEventInterpreter alloc] initWithTarget:self];
 		[_keyEventInterpreter start];
 	}
-	
-	
-//	if (_needsUpdating) {
-//		[self update];
-//		_needsUpdating = 0;
-//	}
-
-	/* when _underlyingView is initially set to Hidden and instantiating a Menu OSX will NOT draw tableView.
-	 Otherwise it will, even if we are not going to show menu yet.
-	 First time Menu is displayed we redraw shadows. Otherwise Menu appears without shadows when we use
-	 _underlyingView set to Hidden.
-	 */
-//	if (_displayedFirstTime == 0) {
-//		[_underlyingView setHidden:NO];
-//		[_underlyingWindow display];
-//		[_underlyingWindow setHasShadow:NO];
-//		[_underlyingWindow setHasShadow:YES];
-//
-//		[_underlyingWindow orderFront:self];
-//
-//	} else
-//		[_underlyingWindow orderFront:self];
-//	
-//	_displayedFirstTime = 1;
 }
 
 
-- (void)showMenuAsSubmenuOf:(CMMenuItem *)menuItem {
+/*
+ *
+ */
+- (void)showMenuAsSubmenuOf:(CMMenuItem *)menuItem withOptions:(CMMenuOptions)options {
 	[[menuItem menu] setActiveSubmenu:self];
 //	_parentItem = menuItem;
-	[self showMenu];
+	[self showMenuWithOptions:options];
 }
 
 
@@ -380,6 +363,10 @@ typedef struct __submenu_tracking_event tracking_event_t;
 //	[_underlyingWindow orderOut:self];
 	[_underlyingWindowController hide];
 	_isActive = NO;
+	
+	CMMenuItem *selectedItem = [self highlightedItem];
+	if (selectedItem)
+		[selectedItem deselect];
 	
 	if (_supermenu) {
 		[_supermenu setActiveSubmenu:nil];
@@ -440,6 +427,16 @@ typedef struct __submenu_tracking_event tracking_event_t;
 
 - (NSRect)convertRectToScreen:(NSRect)aRect {
 	return [[_underlyingWindowController window] convertRectToScreen:aRect];
+}
+
+
+- (NSPoint)convertPointToScreen:(NSPoint)aPoint {
+	return [[_underlyingWindowController window] convertBaseToScreen:aPoint];
+}
+
+
+- (NSPoint)convertPointFromScreen:(NSPoint)aPoint {
+	return [[_underlyingWindowController window] convertScreenToBase:aPoint];
 }
 
 
@@ -673,6 +670,17 @@ typedef struct __submenu_tracking_event tracking_event_t;
 }
 
 
+- (CMMenuScroller *)scrollerAtPoint:(NSPoint)aPoint {
+	aPoint = [self convertPointFromScreen:aPoint];
+	return [_underlyingWindowController scrollerAtPoint:aPoint];
+}
+
+
+- (void)scrollWithActiveScroller:(CMMenuScroller *)scroller {
+	[_underlyingWindowController scrollWithActiveScroller:scroller];
+}
+
+
 
 #pragma mark -
 #pragma mark ***** Menu Tracking *****
@@ -685,26 +693,31 @@ typedef struct __submenu_tracking_event tracking_event_t;
 
 - (void)mouseEvent:(NSEvent *)theEvent {
 	NSUInteger eventType = [theEvent type];
-	NSPoint mouseLocatoin = [theEvent locationInWindow];
-	
+	NSPoint mouseLocation = [theEvent locationInWindow];	// relative to menu's window
+	mouseLocation = [self convertPointToScreen:mouseLocation];
+
 	/*
 	 * Possible Events:
 	 * 1. Mouse entered a menu when it is showing a submenu:
-	 *		a. mouse hovered submenu's parent item;
+	 *		a. mouse hovered submenu's parent item (returned from submenu);
 	 *		b. mouse hovered other area;
 	 * 2. Mouse entered submenu when it was being tracked by the supermenu.
 	 */
 	
 	if (eventType == NSMouseEntered) {
+		CMMenuItem *mousedItem = [self itemAtPoint:mouseLocation];
 		if (_activeSubmenu) {				// 1.
-			CMMenuItem *menuItem = [self itemAtPoint:mouseLocatoin];
-			if (menuItem && menuItem == [_activeSubmenu parentItem]) {	// 1.a
+			if (mousedItem && mousedItem == [_activeSubmenu parentItem]) {	// 1.a
 				if ([_activeSubmenu activeSubmenu])						// if submenu has active submenus -- close them
 					[[_activeSubmenu activeSubmenu] cancelTrackingWithoutAnimation];
 			} else
 				[_activeSubmenu cancelTrackingWithoutAnimation];		// 1.b.
 		} else if (_supermenu && [_supermenu isTrackingSubmenu]) {		// 2.
 			[_supermenu stopTrackingSubmenuReasonSuccess:YES];
+		} else {
+			CMMenuItem *selectedItem = [self highlightedItem];
+			if (selectedItem != mousedItem)
+				[selectedItem deselect];
 		}
 	} else {
 		
@@ -994,6 +1007,11 @@ typedef struct __submenu_tracking_event tracking_event_t;
 }
 
 
+- (void)updateTrackingAreaWithOptions:(CMMenuOptions)options {
+	[_underlyingWindowController updateContentViewTrackingAreaTrackMouseMoved:(options & CMMenuOptionTrackMouseMoved)];
+}
+
+
 //- (void)startTrackingActiveSubmenu {
 //	CMMenu *activeSubmenu = _activeSubmenu;
 //	CMMenuItem *selectedItem = _parentItem;
@@ -1013,12 +1031,12 @@ typedef struct __submenu_tracking_event tracking_event_t;
 #pragma mark ****** Actions from Key Interpreter ******
 
 
-- (CMMenu *)menuToInterpretKeyEvent {
+- (CMMenu *)menuToReceiveKeyEvent {
 	CMMenu *menu = self;
-	NSPoint mouseLocation = [NSEvent mouseLocation];
+//	NSPoint mouseLocation = [NSEvent mouseLocation];
 	while (true) {
-		if (NSPointInRect(mouseLocation, [menu frame]))
-			break;
+//		if (NSPointInRect(mouseLocation, [menu frame]))
+//			break;
 		
 		if (! [menu activeSubmenu])
 			break;
@@ -1031,14 +1049,49 @@ typedef struct __submenu_tracking_event tracking_event_t;
 
 
 - (void)moveUp:(id)sender {
-	CMMenu *menu = [self menuToInterpretKeyEvent];
+	CMMenu *menu = [self menuToReceiveKeyEvent];
 	NSLog(@"MOVE UP!!");
+	[self installLocalMonitorForMouseMovedEvent];
 	[menu selectPreviousItemAndShowSubmenu:NO];
 }
 
 
 - (void)moveDown:(id)sender {
-	
+	CMMenu *menu = [self menuToReceiveKeyEvent];
+	NSLog(@"MOVE DOWN!!");
+	[self installLocalMonitorForMouseMovedEvent];
+	[menu selectNextItemAndShowSubmenu:NO];
+}
+
+
+- (void)moveLeft:(id)sender {
+	CMMenu *menu = [self menuToReceiveKeyEvent];
+	if ([menu supermenu]) {
+//		CMMenuItem *selectedItem = [menu highlightedItem];
+		CMMenuItem *parentItem = [[menu supermenu] highlightedItem];
+		[menu cancelTrackingWithoutAnimation];
+		// Cancel tracking also deseclect submenu parent item. Let us select it back
+		[parentItem select];
+//		if (selectedItem)
+//			[selectedItem deselect];
+		
+		[self installLocalMonitorForMouseMovedEvent];
+	}
+}
+
+
+- (void)moveRight:(id)sender {
+	CMMenu *menu = [self menuToReceiveKeyEvent];
+	CMMenuItem *selectedItem = [menu highlightedItem];
+	if ([selectedItem hasSubmenu]) {
+		[[selectedItem submenu] showMenuAsSubmenuOf:selectedItem withOptions:CMMenuOptionIgnoreMouse];
+		[[selectedItem submenu] updateTrackingAreaWithOptions:CMMenuOptionTrackMouseMoved];
+		CMMenuItem *firstItem = [[selectedItem submenu] itemAtIndex:0];
+		if (firstItem)
+			[firstItem select];
+		
+		[self installLocalMonitorForMouseMovedEvent];
+	}
 }
 
 
@@ -1055,33 +1108,185 @@ typedef struct __submenu_tracking_event tracking_event_t;
 			previousItem = item;
 	}
 	
-	if (! previousItem) {
-//		[self selectLastItemAndShowSubmenu:NO];
+	if (! previousItem)
 		return;
-	}
-	
-	[selectedItem deselect];
-	
+
 	if (showSubmenu)
 		[previousItem selectWithDelayForSubmenu:SUBMENU_POPUP_DELAY_DEFAULT];
 	else
 		[previousItem select];
+//	[selectedItem deselect];
+	[_underlyingWindowController moveVisibleRectToRect:[previousItem frame] ignoreMouse:YES];
 }
 
 
 - (void)selectNextItemAndShowSubmenu:(BOOL)showSubmenu {
+	CMMenuItem *previousItem = nil;
+	CMMenuItem *selectedItem = nil;
+	for (CMMenuItem *item in [_menuItems reverseObjectEnumerator]) {
+		if ([item isSelected]) {
+			selectedItem = item;
+			break;
+		}
+		
+		if (! [item isSeparatorItem])
+			previousItem = item;
+	}
 	
+	if (! previousItem)
+		return;
+	
+	NSLog(@"deselecting selected item: %@ and selecting: %@", selectedItem, previousItem);
+//	[selectedItem deselect];
+	if (showSubmenu)
+		[previousItem selectWithDelayForSubmenu:SUBMENU_POPUP_DELAY_DEFAULT];
+	else
+		[previousItem select];
+	[_underlyingWindowController moveVisibleRectToRect:[previousItem frame] ignoreMouse:YES];
 }
 
 
-- (void)selectFirstItemAndShowSubmenu:(BOOL)showSubmenu {
-	
+//- (void)selectFirstItemAndShowSubmenu:(BOOL)showSubmenu {
+//	
+//}
+//
+//
+//- (void)selectLastItemAndShowSubmenu:(BOOL)showSubmenu {
+//	
+//}
+
+
+- (void)installLocalMonitorForMouseMovedEvent {
+	if (! _localMouseMoveEventMonitor) {
+		CMMenu *menu = self;
+		while (menu) {
+			[menu updateTrackingAreaWithOptions:CMMenuOptionTrackMouseMoved];
+			menu = [menu activeSubmenu];
+		}
+		
+		
+		_localMouseMoveEventMonitor = [NSEvent addLocalMonitorForEventsMatchingMask:NSMouseMovedMask handler:^(NSEvent *theEvent) {
+			[NSEvent removeMonitor:_localMouseMoveEventMonitor];
+			_localMouseMoveEventMonitor = nil;
+			CMMenu *menu = self;
+			while (menu) {
+				[menu updateTrackingAreaWithOptions:CMMenuOptionDefault];
+				menu = [menu activeSubmenu];
+			}
+			
+			
+//			[self returnFocusToMouseWithEvent:theEvent];
+			
+			NSLog(@"MONITOR :: mouse moved event: %@, location: %@", theEvent, NSStringFromPoint([theEvent locationInWindow]));
+			
+			NSPoint mouseLocation = [theEvent locationInWindow];
+			//			NSPoint mouseLocationInScreen = [self convertPointToScreen:mouseLocation];
+			NSPoint mouseLocationInScreen = [[theEvent window] convertBaseToScreen:mouseLocation];
+//			CMMenu *menu = self;
+			menu = self;
+			
+			NSLog(@"root menu frame: %@,\nwin: %@, \nlocationInWin: %@, \nlocationinScreen: %@",
+				  NSStringFromRect([menu frame]),
+				  [theEvent window],
+				  NSStringFromPoint(mouseLocation),
+				  NSStringFromPoint(mouseLocationInScreen));
+			
+			while (menu) {
+				if (NSPointInRect(mouseLocationInScreen, [menu frame])) {
+					CMMenuItem *selectedItem = [menu highlightedItem];
+					NSLog(@"selected item: %@", selectedItem);
+					CMMenuItem *mousedItem = [menu itemAtPoint:mouseLocationInScreen];
+					
+//					CMMenu *activeSubmenu = [menu activeSubmenu];
+//					while (activeSubmenu) {
+//						CMMenuItem *activeSubmenuSelectedItem = [activeSubmenu highlightedItem];
+//						if (activeSubmenuSelectedItem)
+//							[activeSubmenuSelectedItem deselect];
+//						[activeSubmenu cancelTrackingWithoutAnimation];
+//						activeSubmenu = [activeSubmenu activeSubmenu];
+//					}
+
+					if (mousedItem)
+						NSLog(@"gottcha moused item: %@, selected item: %@", mousedItem, selectedItem);
+
+					
+					if ([menu activeSubmenu]) {
+						if (mousedItem == [[menu activeSubmenu] parentItem]) {
+							CMMenu *activeSubmenuOfSubmenu = [[menu activeSubmenu] activeSubmenu];
+							if (activeSubmenuOfSubmenu) {
+								[activeSubmenuOfSubmenu cancelTrackingWithoutAnimation];
+							} else {
+								CMMenuItem *item = [[menu activeSubmenu] highlightedItem];
+								if (item)
+									[item deselect];
+							}
+						} else {
+							[[menu activeSubmenu] cancelTrackingWithoutAnimation];
+							if (mousedItem != selectedItem)
+								[mousedItem selectWithDelayForSubmenu:SUBMENU_POPUP_DELAY_DEFAULT];
+						}
+					} else {
+						if (mousedItem)
+							[mousedItem selectWithDelayForSubmenu:SUBMENU_POPUP_DELAY_DEFAULT];
+						else
+							[selectedItem deselect];
+					}
+					
+					if (! mousedItem) {
+						CMMenuScroller *scroller = [menu scrollerAtPoint:mouseLocationInScreen];
+						if (scroller)
+							[menu scrollWithActiveScroller:scroller];
+					}
+					
+					break;
+				}
+				
+				menu = [menu activeSubmenu];
+			}
+			
+			return theEvent;
+		}];
+		
+	}
 }
 
 
-- (void)selectLastItemAndShowSubmenu:(BOOL)showSubmenu {
-	
-}
+//- (void)returnFocusToMouseWithEvent:(NSEvent *)theEvent {
+//	NSLog(@"MONITOR :: mouse moved event: %@, location: %@", theEvent, NSStringFromPoint([theEvent locationInWindow]));
+//	
+//	NSPoint mouseLocation = [theEvent locationInWindow];
+//	//			NSPoint mouseLocationInScreen = [self convertPointToScreen:mouseLocation];
+//	NSPoint mouseLocationInScreen = [[theEvent window] convertBaseToScreen:mouseLocation];
+//	CMMenu *menu = self;
+//	
+//	NSLog(@"root menu frame: %@,\nwin: %@, \nlocationInWin: %@, \nlocationinScreen: %@",
+//		  NSStringFromRect([menu frame]),
+//		  [theEvent window],
+//		  NSStringFromPoint(mouseLocation),
+//		  NSStringFromPoint(mouseLocationInScreen));
+//	
+//	while (menu) {
+//		if (NSPointInRect(mouseLocationInScreen, [menu frame])) {
+//			CMMenuItem *selectedItem = [menu highlightedItem];
+//			CMMenuItem *item = [menu itemAtPoint:mouseLocationInScreen];
+//			if (selectedItem != item)
+//				[selectedItem deselect];
+//			if (item)
+//				[item selectWithDelayForSubmenu:SUBMENU_POPUP_DELAY_DEFAULT];
+//			break;
+//		}
+//		
+//		menu = [menu activeSubmenu];
+//	}
+//	
+//}
+
+
+
+//NSEvent *(^myBlock)(NSEvent *) = ^(NSEvent *theEvent) {
+//	
+//	return theEvent;
+//};
 
 
 

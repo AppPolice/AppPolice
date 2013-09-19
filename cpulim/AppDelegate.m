@@ -37,7 +37,6 @@
 	[statusbarMenuController linkStatusbarItemWithMenu];
 }
 
-
 - (void)awakeFromNib {
 	NSLog(@"%@ awakeFromNib", [self className]);
 }

@@ -37,7 +37,7 @@
 
 
 - (void)start {
-	if (! _target)
+	if (! _target || _localEventMonitor)
 		return;
 	
 	_localEventMonitor = [NSEvent addLocalMonitorForEventsMatchingMask:(NSKeyDownMask | NSFlagsChangedMask) handler:^(NSEvent *theEvent) {
@@ -47,7 +47,7 @@
 		
 		if (eventType == NSKeyDown) {
 			unsigned short keyCode = [theEvent keyCode];
-			NSLog(@"key code: %d", keyCode);
+//			NSLog(@"key code: %d", keyCode);
 			
 			SEL action = nil;
 			
@@ -75,7 +75,7 @@
 			if (action && [_target respondsToSelector:action])
 				[_target performSelector:action withObject:self];
 			
-			
+			theEvent = nil;
 			
 		} else if (eventType == NSFlagsChanged) {
 			NSUInteger modifierFlags = [theEvent modifierFlags];

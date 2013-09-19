@@ -20,4 +20,5 @@
  */
 - (id)initWithFrame:(NSRect)frameRect borderRadius:(NSArray *)radius;
 
+
 @end

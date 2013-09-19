@@ -248,6 +248,22 @@
 		}
 	}
 	
+	/* This block usually handles cases with keyboard item selection:
+		mouse movements and keyboard selection could go in opposite directions, as a result two items 
+		get selected. */
+	if (_isSelected && changeStatus) {
+		NSArray *items = [_menu itemArray];
+		for (CMMenuItem *item in items) {
+			if ([item isSelected] && item != self) {
+				NSLog(@"TRACKINGAREA DE-select item: %@", item);
+				[item deselect];
+			}
+		}
+	}
+	
+	if (_isSelected && changeStatus)
+		NSLog(@"TRACKINGAREA select item: %@", self);
+	
 	return changeStatus;
 }
 
@@ -255,7 +271,7 @@
 - (void)showItemSubmenu {
 	_submenuIntervalIsSetToPopup = NO;
 //	[_submenu showMenu];
-	[_submenu showMenuAsSubmenuOf:self];
+	[_submenu showMenuAsSubmenuOf:self withOptions:CMMenuOptionDefault];
 }
 
 
@@ -265,6 +281,9 @@
 #pragma mark -
 #pragma mark ***** CMMenuItem Internal Methods *****
 
+- (NSViewController *)representedViewController {
+	return _representedViewController;
+}
 
 - (void)setRepresentedViewController:(NSViewController *)viewController {
 	_representedViewController = viewController;
@@ -303,16 +322,32 @@
 
 
 - (void)select {
+	if (_isSelected || _isSeparatorItem)
+		return;
+	
+	NSArray *items = [_menu itemArray];
+	for (CMMenuItem *item in items) {
+		if (self != item && [item isSelected]) {
+			NSLog(@"BEFORE SELECTING, DESELECT: %@", item);
+			[item deselect];
+		}
+	}
+	
 	_isSelected = YES;
+	NSLog(@"AND NOW SELECTED: %@", self);
 	[(CMMenuItemView *)[_representedViewController view] setSelected:YES];	
 }
 
 
 - (void)selectWithDelayForSubmenu:(NSTimeInterval)delay {
-	_isSelected = YES;
-	[(CMMenuItemView *)[_representedViewController view] setSelected:YES];
-//	BOOL res = [self shouldChangeItemSelectionStatusForEvent:CMMenuEventMouseEnteredItem];
-//	NSLog(@"res: %d", res);
+	if (_isSeparatorItem)
+		return;
+
+	//	_isSelected = YES;
+//	[(CMMenuItemView *)[_representedViewController view] setSelected:YES];
+	
+	[self select];
+
 	if ([self hasSubmenu]) {
 		[self performSelector:@selector(showItemSubmenu) withObject:nil afterDelay:delay];
 		_submenuIntervalIsSetToPopup = YES;
@@ -321,7 +356,11 @@
 
 
 - (void)deselect {
+	if (! _isSelected)
+		return;
+	
 	_isSelected = NO;
+	NSLog(@"ITEM DESELECTED: %@", self);
 	[(CMMenuItemView *)[_representedViewController view] setSelected:NO];
 }
 
