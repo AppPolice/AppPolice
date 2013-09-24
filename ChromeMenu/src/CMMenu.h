@@ -15,6 +15,14 @@
 @class CMMenuItem;
 
 
+enum {
+	CMMenuAnimationEffectNone = 0x0,
+	CMMenuAnimationEffectFade = 0x01
+};
+typedef NSUInteger CMMenuAnimationOptions;
+
+
+
 @interface CMMenu : NSObject
 {
 	@private
@@ -70,7 +78,7 @@
 /* this is an actual table reload, scary thing. must be taken care of */
 //- (void)update;
 
-- (void)startMenu;
+- (void)start;
 //- (void)showMenu;
 
 /* Dismisses the menu and ends all menu tracking */

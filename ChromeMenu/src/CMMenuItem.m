@@ -219,7 +219,8 @@
 				_isSelected = YES;
 				
 				if ([self hasSubmenu]) {
-					[self performSelector:@selector(showItemSubmenu) withObject:nil afterDelay:SUBMENU_POPUP_DELAY_DEFAULT];
+//					[self performSelector:@selector(showItemSubmenu) withObject:nil afterDelay:SUBMENU_POPUP_DELAY_DEFAULT];
+					[self performSelector:@selector(showItemSubmenu) withObject:nil afterDelay:SUBMENU_POPUP_DELAY_DEFAULT inModes:[NSArray arrayWithObject:NSEventTrackingRunLoopMode]];
 					_submenuIntervalIsSetToPopup = YES;
 				}
 			}
@@ -271,7 +272,7 @@
 - (void)showItemSubmenu {
 	_submenuIntervalIsSetToPopup = NO;
 //	[_submenu showMenu];
-	[_submenu showMenuAsSubmenuOf:self withOptions:CMMenuOptionDefault];
+	[_submenu showAsSubmenuOf:self withOptions:CMMenuOptionDefault];
 }
 
 

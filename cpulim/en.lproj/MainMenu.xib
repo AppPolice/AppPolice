@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="4457.6" systemVersion="12E55" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="4510" systemVersion="12F37" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment defaultVersion="1070" identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="4457.6"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="4510"/>
     </dependencies>
     <objects>
         <customObject id="-2" userLabel="File's Owner">
             <connections>
-                <action selector="terminate:" destination="718" id="725"/>
                 <outlet property="delegate" destination="494" id="495"/>
             </connections>
         </customObject>
@@ -68,6 +67,9 @@
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="system"/>
                         </buttonCell>
+                        <connections>
+                            <action selector="setPidLimit:" target="583" id="589"/>
+                        </connections>
                     </button>
                     <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="560">
                         <rect key="frame" x="457" y="324" width="98" height="32"/>
@@ -76,6 +78,9 @@
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="system"/>
                         </buttonCell>
+                        <connections>
+                            <action selector="deletePid:" target="583" id="587"/>
+                        </connections>
                     </button>
                     <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="578">
                         <rect key="frame" x="324" y="212" width="98" height="32"/>
@@ -87,6 +92,9 @@
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="system"/>
                         </buttonCell>
+                        <connections>
+                            <action selector="printStats:" target="583" id="588"/>
+                        </connections>
                     </button>
                     <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="590">
                         <rect key="frame" x="34" y="13" width="92" height="32"/>
@@ -98,6 +106,9 @@
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="system"/>
                         </buttonCell>
+                        <connections>
+                            <action selector="exitApp:" target="583" id="609"/>
+                        </connections>
                     </button>
                     <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="647">
                         <rect key="frame" x="324" y="278" width="113" height="32"/>
@@ -106,6 +117,9 @@
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="system"/>
                         </buttonCell>
+                        <connections>
+                            <action selector="procCPULimiterResume:" target="583" id="687"/>
+                        </connections>
                     </button>
                     <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="688">
                         <rect key="frame" x="324" y="245" width="113" height="32"/>
@@ -114,6 +128,9 @@
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="system"/>
                         </buttonCell>
+                        <connections>
+                            <action selector="procCPULimiterSuspend:" target="583" id="703"/>
+                        </connections>
                     </button>
                     <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="1673">
                         <rect key="frame" x="376" y="81" width="113" height="32"/>
@@ -122,6 +139,9 @@
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="system"/>
                         </buttonCell>
+                        <connections>
+                            <action selector="showmenu:" target="728" id="1677"/>
+                        </connections>
                     </button>
                     <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="OrV-Re-ju5">
                         <rect key="frame" x="192" y="151" width="82" height="32"/>
@@ -130,6 +150,9 @@
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="system"/>
                         </buttonCell>
+                        <connections>
+                            <action selector="activateOtherApp:" target="583" id="col-wp-Oex"/>
+                        </connections>
                     </button>
                     <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1ya-Cp-hLn">
                         <rect key="frame" x="126" y="157" width="64" height="22"/>
@@ -147,6 +170,9 @@
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="system"/>
                         </buttonCell>
+                        <connections>
+                            <action selector="addMenu:" target="728" id="SkA-a2-IXK"/>
+                        </connections>
                     </button>
                     <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="fGA-lt-rbg">
                         <rect key="frame" x="376" y="20" width="128" height="32"/>
@@ -155,19 +181,22 @@
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="system"/>
                         </buttonCell>
+                        <connections>
+                            <action selector="changeMenu:" target="728" id="stX-OZ-UBF"/>
+                        </connections>
                     </button>
-                    <customView autoresizesSubviews="NO" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="3aM-PP-Jf8" customClass="MySubmenuView">
+                    <customView autoresizesSubviews="NO" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="3aM-PP-Jf8" customClass="MySubmenuView">
                         <rect key="frame" x="20" y="245" width="277" height="100"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <subviews>
-                            <scrollView ambiguous="YES" borderType="none" autohidesScrollers="YES" horizontalLineScroll="19" horizontalPageScroll="10" verticalLineScroll="19" verticalPageScroll="10" hasHorizontalScroller="NO" hasVerticalScroller="NO" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="LuN-rv-ixa">
+                            <scrollView ambiguous="YES" misplaced="YES" borderType="none" autohidesScrollers="YES" horizontalLineScroll="17" horizontalPageScroll="10" verticalLineScroll="17" verticalPageScroll="10" hasHorizontalScroller="NO" hasVerticalScroller="NO" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="LuN-rv-ixa">
                                 <rect key="frame" x="0.0" y="0.0" width="277" height="100"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                <clipView key="contentView" ambiguous="YES" drawsBackground="NO" copiesOnScroll="NO" id="fi3-bA-cGx">
+                                <clipView key="contentView" ambiguous="YES" misplaced="YES" drawsBackground="NO" copiesOnScroll="NO" id="fi3-bA-cGx">
                                     <rect key="frame" x="0.0" y="0.0" width="277" height="100"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
-                                        <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnReordering="NO" columnResizing="NO" multipleSelection="NO" autosaveColumns="NO" typeSelect="NO" rowHeight="19" rowSizeStyle="automatic" viewBased="YES" id="NME-ZP-Mgt" customClass="MyTableView">
+                                        <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnReordering="NO" columnResizing="NO" multipleSelection="NO" autosaveColumns="NO" typeSelect="NO" rowSizeStyle="automatic" viewBased="YES" id="NME-ZP-Mgt" customClass="MyTableView">
                                             <rect key="frame" x="0.0" y="0.0" width="277" height="100"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <size key="intercellSpacing" width="3" height="0.0"/>
@@ -191,13 +220,13 @@
                                                             <rect key="frame" x="1" y="0.0" width="236" height="17"/>
                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                             <subviews>
-                                                                <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="FvD-Y6-g0K" customClass="MyImageView">
+                                                                <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="FvD-Y6-g0K" customClass="MyImageView">
                                                                     <rect key="frame" x="14" y="1" width="15" height="15"/>
                                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                                     <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="NSActionTemplate" id="BdX-XC-id5"/>
                                                                 </imageView>
-                                                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="YD4-4i-3Yn">
-                                                                    <rect key="frame" x="34" y="0.0" width="205" height="17"/>
+                                                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="YD4-4i-3Yn">
+                                                                    <rect key="frame" x="34" y="-1" width="205" height="17"/>
                                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                                                     <textFieldCell key="cell" lineBreakMode="truncatingTail" refusesFirstResponder="YES" sendsActionOnEndEditing="YES" title="Table View Cell" id="tcc-vp-CeP">
                                                                         <font key="font" size="14" name="LucidaGrande"/>
@@ -259,16 +288,33 @@
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <buttonCell key="cell" type="roundRect" title="Add Small Menu" bezelStyle="roundedRect" alignment="center" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="nJY-a1-9CH">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                            <font key="font" metaFont="controlContent"/>
+                            <font key="font" metaFont="cellTitle"/>
                         </buttonCell>
+                        <connections>
+                            <action selector="addSmallMenu:" target="728" id="ZHG-m0-bAX"/>
+                        </connections>
                     </button>
                     <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Mrz-h2-cuW">
                         <rect key="frame" x="223" y="31" width="134" height="19"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <buttonCell key="cell" type="roundRect" title="Toggle Small Menu" bezelStyle="roundedRect" alignment="center" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="zQ0-54-Zhv">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                            <font key="font" metaFont="controlContent"/>
+                            <font key="font" metaFont="cellTitle"/>
                         </buttonCell>
+                        <connections>
+                            <action selector="toggleSmallMenu:" target="728" id="Ikx-MT-awc"/>
+                        </connections>
+                    </button>
+                    <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ud3-N7-ysx">
+                        <rect key="frame" x="332" y="133" width="82" height="32"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <buttonCell key="cell" type="push" title="nslog" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="OzH-hq-mTj">
+                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                            <font key="font" metaFont="system"/>
+                        </buttonCell>
+                        <connections>
+                            <action selector="someAction:" target="494" id="8Oq-Yy-COU"/>
+                        </connections>
                     </button>
                 </subviews>
                 <constraints>
@@ -307,6 +353,9 @@
                 <menuItem title="Set manually..." id="706">
                     <attributedString key="attributedTitle"/>
                     <modifierMask key="keyEquivalentModifierMask"/>
+                    <connections>
+                        <action selector="someAction2:" target="728" id="1667"/>
+                    </connections>
                 </menuItem>
                 <menuItem title="Pause Ishimura" enabled="NO" id="707">
                     <modifierMask key="keyEquivalentModifierMask"/>
@@ -809,6 +858,9 @@ ThBTQ2hhdFRoZWF0cmVUZW1wbGF0ZQ
                 </menuItem>
                 <menuItem title="About" id="716">
                     <modifierMask key="keyEquivalentModifierMask"/>
+                    <connections>
+                        <action selector="updateMenu:" target="494" id="afN-u9-y6G"/>
+                    </connections>
                 </menuItem>
                 <menuItem isSeparatorItem="YES" id="723"/>
                 <menuItem title="Preferences..." id="717">
@@ -816,6 +868,9 @@ ThBTQ2hhdFRoZWF0cmVUZW1wbGF0ZQ
                 </menuItem>
                 <menuItem title="Quit Ishimura" id="718">
                     <modifierMask key="keyEquivalentModifierMask"/>
+                    <connections>
+                        <action selector="terminate:" target="-2" id="725"/>
+                    </connections>
                 </menuItem>
             </items>
             <connections>
@@ -830,13 +885,6 @@ ThBTQ2hhdFRoZWF0cmVUZW1wbGF0ZQ
         </customObject>
         <customObject id="583" userLabel="AppsInspector" customClass="AppsInspector">
             <connections>
-                <action selector="activateOtherApp:" destination="OrV-Re-ju5" id="col-wp-Oex"/>
-                <action selector="deletePid:" destination="560" id="587"/>
-                <action selector="exitApp:" destination="590" id="609"/>
-                <action selector="printStats:" destination="578" id="588"/>
-                <action selector="procCPULimiterResume:" destination="647" id="687"/>
-                <action selector="procCPULimiterSuspend:" destination="688" id="703"/>
-                <action selector="setPidLimit:" destination="556" id="589"/>
                 <outlet property="activateAppTextField" destination="1ya-Cp-hLn" id="cSg-pa-L0g"/>
                 <outlet property="limTF" destination="541" id="584"/>
                 <outlet property="pidDeleteTF" destination="546" id="585"/>
@@ -845,13 +893,6 @@ ThBTQ2hhdFRoZWF0cmVUZW1wbGF0ZQ
         </customObject>
         <customObject id="728" customClass="StatusbarMenuController">
             <connections>
-                <action selector="activateSelf:" destination="1668" id="oII-AU-j4o"/>
-                <action selector="addMenu:" destination="ZC4-jI-ScC" id="SkA-a2-IXK"/>
-                <action selector="addSmallMenu:" destination="vNu-T7-NkF" id="ZHG-m0-bAX"/>
-                <action selector="changeMenu:" destination="fGA-lt-rbg" id="stX-OZ-UBF"/>
-                <action selector="showmenu:" destination="1673" id="1677"/>
-                <action selector="someAction2:" destination="706" id="1667"/>
-                <action selector="toggleSmallMenu:" destination="Mrz-h2-cuW" id="Ikx-MT-awc"/>
                 <outlet property="appListTableView" destination="ZUz-G4-Kcv" id="Ihv-2U-xvK"/>
                 <outlet property="appSubmenuView" destination="1764" id="tIi-je-ui7"/>
                 <outlet property="secondSubmenuView" destination="1620" id="1666"/>
@@ -872,6 +913,9 @@ ThBTQ2hhdFRoZWF0cmVUZW1wbGF0ZQ
                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                         <font key="font" metaFont="system"/>
                     </buttonCell>
+                    <connections>
+                        <action selector="activateSelf:" target="728" id="oII-AU-j4o"/>
+                    </connections>
                 </button>
                 <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="1730">
                     <rect key="frame" x="30" y="11" width="96" height="22"/>
@@ -897,14 +941,14 @@ ThBTQ2hhdFRoZWF0cmVUZW1wbGF0ZQ
             <rect key="frame" x="0.0" y="0.0" width="277" height="100"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
             <subviews>
-                <scrollView borderType="none" autohidesScrollers="YES" horizontalLineScroll="19" horizontalPageScroll="10" verticalLineScroll="19" verticalPageScroll="10" hasHorizontalScroller="NO" hasVerticalScroller="NO" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ekz-cS-hTX">
+                <scrollView borderType="none" autohidesScrollers="YES" horizontalLineScroll="17" horizontalPageScroll="10" verticalLineScroll="17" verticalPageScroll="10" hasHorizontalScroller="NO" hasVerticalScroller="NO" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ekz-cS-hTX">
                     <rect key="frame" x="0.0" y="0.0" width="277" height="100"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <clipView key="contentView" drawsBackground="NO" copiesOnScroll="NO" id="FpF-MU-xkC">
                         <rect key="frame" x="0.0" y="0.0" width="277" height="100"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnReordering="NO" columnResizing="NO" multipleSelection="NO" autosaveColumns="NO" typeSelect="NO" rowHeight="19" rowSizeStyle="automatic" viewBased="YES" id="ZUz-G4-Kcv" customClass="MyTableView">
+                            <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnReordering="NO" columnResizing="NO" multipleSelection="NO" autosaveColumns="NO" typeSelect="NO" rowSizeStyle="automatic" viewBased="YES" id="ZUz-G4-Kcv" customClass="MyTableView">
                                 <rect key="frame" x="0.0" y="0.0" width="277" height="100"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <size key="intercellSpacing" width="3" height="0.0"/>

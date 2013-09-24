@@ -39,10 +39,10 @@ typedef NSUInteger CMMenuOptions;
 
 /**
  * @abstract Show menu as submenu of a certain item
- * @discussion All submenus must be started using this method and never call -showMenuWithOptions: directly.
+ * @discussion All submenus must be started using this method and never call -showWithOptions: directly.
  * @param menuItem Supermenu's item which has the target menu set as a submenu.
  */
-- (void)showMenuAsSubmenuOf:(CMMenuItem *)menuItem withOptions:(CMMenuOptions)options;	// may not be needed
+- (void)showAsSubmenuOf:(CMMenuItem *)menuItem withOptions:(CMMenuOptions)options;	// may not be needed
 //- (void)orderFront;
 - (NSInteger)windowLevel;
 

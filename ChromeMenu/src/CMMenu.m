@@ -110,7 +110,7 @@ typedef struct __submenu_tracking_event tracking_event_t;
 - (NSRect)frame;
 //- (NSRect)frameOfItemRelativeToScreen:(CMMenuItem *)item;
 - (void)reloadData;
-- (void)showMenuWithOptions:(CMMenuOptions)options;
+- (void)showWithOptions:(CMMenuOptions)options;
 
 /**
  * @function getBestFrameForMenuWindow
@@ -307,14 +307,14 @@ typedef struct __submenu_tracking_event tracking_event_t;
 //}
 
 
-- (void)startMenu {
+- (void)start {
 	
-	[self showMenuWithOptions:CMMenuOptionDefault];
+	[self showWithOptions:CMMenuOptionDefault];
 
 }
 
 
-- (void)showMenuWithOptions:(CMMenuOptions)options {
+- (void)showWithOptions:(CMMenuOptions)options {
 	if (!_underlyingWindowController) {
 		_underlyingWindowController = [[CMWindowController alloc] initWithOwner:self];
 		[self reloadData];
@@ -331,17 +331,47 @@ typedef struct __submenu_tracking_event tracking_event_t;
 		if (! _keyEventInterpreter)
 			_keyEventInterpreter = [[CMMenuKeyEventInterpreter alloc] initWithTarget:self];
 		[_keyEventInterpreter start];
+		
+
+		id monitor = [NSEvent addLocalMonitorForEventsMatchingMask:NSLeftMouseDownMask | NSLeftMouseUpMask handler:^(NSEvent *theEvent) {
+			NSEventType eventType = [theEvent type];
+			if (eventType == NSLeftMouseDown) {
+				NSLog(@"monitored left mouse DOWN click");
+			} else {
+				NSLog(@"monitored left mouse UP click");
+				theEvent = nil;
+			}
+			return theEvent;
+		}];
+		
+//		[self startEventTracking];
+//		NSLog(@"window is key: %d", [[_underlyingWindowController window] isKeyWindow]);
 	}
 }
+
+
+//- (void)startEventTracking {
+//	BOOL keepOn = true;
+//	NSUInteger eventMask = NSSystemDefinedMask | NSApplicationDefinedMask | NSAppKitDefinedMask |
+//		NSMouseEnteredMask | NSMouseExitedMask | NSLeftMouseDownMask | NSLeftMouseUpMask | NSScrollWheelMask;
+//	
+//	NSLog(@"starting tracking");
+//	while (keepOn) {
+//		NSEvent *event = [NSApp nextEventMatchingMask:eventMask untilDate:[NSDate dateWithTimeIntervalSinceNow:5] inMode:NSEventTrackingRunLoopMode dequeue:YES];
+//		NSLog(@"track event: %@", event);
+//		if (event)
+//			[[_underlyingWindowController window] sendEvent:event];
+//	}
+//}
 
 
 /*
  *
  */
-- (void)showMenuAsSubmenuOf:(CMMenuItem *)menuItem withOptions:(CMMenuOptions)options {
+- (void)showAsSubmenuOf:(CMMenuItem *)menuItem withOptions:(CMMenuOptions)options {
 	[[menuItem menu] setActiveSubmenu:self];
 //	_parentItem = menuItem;
-	[self showMenuWithOptions:options];
+	[self showWithOptions:options];
 }
 
 
@@ -1084,7 +1114,7 @@ typedef struct __submenu_tracking_event tracking_event_t;
 	CMMenu *menu = [self menuToReceiveKeyEvent];
 	CMMenuItem *selectedItem = [menu highlightedItem];
 	if ([selectedItem hasSubmenu]) {
-		[[selectedItem submenu] showMenuAsSubmenuOf:selectedItem withOptions:CMMenuOptionIgnoreMouse];
+		[[selectedItem submenu] showAsSubmenuOf:selectedItem withOptions:CMMenuOptionIgnoreMouse];
 		[[selectedItem submenu] updateTrackingAreaWithOptions:CMMenuOptionTrackMouseMoved];
 		CMMenuItem *firstItem = [[selectedItem submenu] itemAtIndex:0];
 		if (firstItem)

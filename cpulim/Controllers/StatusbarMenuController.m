@@ -128,6 +128,19 @@ static NSString *tableData[] = {
 	// now populate it with running applications
 	[self populateMenuWithRunningApplications];
 
+	
+//	[self performSelector:@selector(addLocalMonitor) withObject:nil afterDelay:1.0 inModes:[NSArray arrayWithObject:NSRunLoopCommonModes]];
+}
+
+
+- (void)addLocalMonitor {
+	NSLog(@"installing local monitor");
+	[NSEvent addLocalMonitorForEventsMatchingMask:NSLeftMouseDownMask handler:^(NSEvent *theEvent) {
+		NSLog(@"left mouse down: %@", theEvent);
+		
+		//		theEvent = nil;
+		return theEvent;
+	}];
 }
 
 
@@ -165,6 +178,12 @@ static NSString *tableData[] = {
 	//	NSLog(@"Action: %s", sel_getName([[statusbarMenu itemAtIndex:0] action]));
 	//	[[statusbarMenu itemAtIndex:0] setSubmenu:appsSubmenu];
 	
+//	NSMenuItem *item = [statusbarMenu itemAtIndex:4];
+//	NSMenu *aMenu = [item submenu];
+//	[self performSelector:@selector(updateMenuFunc:) withObject:[statusbarMenuController statusbarMenu] afterDelay:4.0 inModes:[NSArray arrayWithObject:NSRunLoopCommonModes]];
+//	[self performSelector:@selector(updateMenu:) withObject:aMenu afterDelay:4.0];
+
+	
 	
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(notificationDeliver:) name:NSMenuWillSendActionNotification object:statusbarMenu];
 	
@@ -183,6 +202,16 @@ static NSString *tableData[] = {
 	
 	NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
 	[notificationCenter addObserver:self selector:@selector(statusbarItemClick:) name:@"StatusbarItemLMouseClick" object:nil];
+}
+
+
+- (void)updateMenu:(NSMenu *)theMenu {
+	NSLog(@"inserting new menu item");
+	NSLog(@"current run mode: %@", [[NSRunLoop currentRunLoop] currentMode]);
+	//	NSMenu *menu = [statusbarMenuController statusbarMenu];
+	NSMenuItem *newItem = [[NSMenuItem alloc] initWithTitle:@"New Item" action:NULL keyEquivalent:@""];
+	[theMenu insertItem:newItem atIndex:1];
+	[theMenu update];
 }
 
 
@@ -620,7 +649,7 @@ static NSString *tableData[] = {
 	
 	static int i = 0;
 	if ((i % 2) == 0)
-		[menu startMenu];
+		[menu start];
 	else
 		[menu cancelTrackingWithoutAnimation];
 	
@@ -646,7 +675,7 @@ static NSString *tableData[] = {
 - (IBAction)toggleSmallMenu:(id)sender {
 	static int i = 0;
 	if ((i % 2) == 0)
-		[smallMenu startMenu];
+		[smallMenu start];
 	else
 		[smallMenu cancelTrackingWithoutAnimation];
 	

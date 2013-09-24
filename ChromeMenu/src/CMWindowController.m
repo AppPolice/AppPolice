@@ -208,13 +208,18 @@
 	if (ignoreMouse)
 		_ignoreMouse = YES;
 	
-	[self updateTrackingAreasForVisibleRect:[[_scrollView contentView] bounds]];
+//	[self updateTrackingAreasForVisibleRect:[[_scrollView contentView] bounds]];
+	[self updateTrackingAreasForVisibleRect:[NSValue valueWithRect:[[_scrollView contentView] bounds]]];
+	
 //	[self updateTrackingAreasForVisibleRect_2:[[_scrollView contentView] bounds]];
 	[self updateContentViewTrackingAreaTrackMouseMoved:NO];
 	
 	_ignoreMouse = NO;
 	
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(scrollViewContentViewBoundsDidChange:) name:NSViewBoundsDidChangeNotification object:[_scrollView contentView]];
+	
+	// add to a run loop queue so the tracking areas are installed
+	[self performSelector:@selector(startEventTracking) withObject:nil afterDelay:0];
 }
 
 
@@ -249,7 +254,10 @@
 - (void)scrollViewContentViewBoundsDidChange:(NSNotification *)notification {
 	NSLog(@"Scroll notification: %@, new bounds: %@", notification, NSStringFromRect([[_scrollView contentView] bounds]));
 	[self updateMenuScrollers];
-	[self updateTrackingAreasForVisibleRect:[[_scrollView contentView] bounds]];
+//	[self updateTrackingAreasForVisibleRect:[[_scrollView contentView] bounds]];
+	
+	[self updateTrackingAreasForVisibleRect:[NSValue valueWithRect:[[_scrollView contentView] bounds]]];
+//	[self performSelector:@selector(updateTrackingAreasForVisibleRect:) withObject:[NSValue valueWithRect:[[_scrollView contentView] bounds]] afterDelay:0.0 inModes:[NSArray arrayWithObject:NSEventTrackingRunLoopMode]];
 	
 	/* When scroll event is fired we upate Tracking Areas. During this time user can move the mouse as well.
 	 Tracking areas are not yet active and working. As a result there might be double-selection of
@@ -372,7 +380,7 @@
 			
 			if (_scrollTimer && [_scrollTimer isValid]) {
 				[_scrollTimer invalidate];
-				[_scrollTimer release];
+//				[_scrollTimer release];
 				_scrollTimer = nil;
 			}
 		}
@@ -442,7 +450,7 @@
 		
 		if (_scrollTimer && [_scrollTimer isValid]) {
 			[_scrollTimer invalidate];
-			[_scrollTimer release];
+//			[_scrollTimer release];
 			_scrollTimer = nil;
 		}
 	}
@@ -548,12 +556,18 @@
 /*
  *
  */
-- (void)updateTrackingAreasForVisibleRect:(NSRect)visibleRect {
-	NSView *documentView = [_scrollView documentView];
+//- (void)updateTrackingAreasForVisibleRect:(NSRect)visibleRect {
+- (void)updateTrackingAreasForVisibleRect:(id)rectValue {
+	NSRect visibleRect = [rectValue rectValue];
 	
+	NSView *documentView = [_scrollView documentView];
+	NSLog(@"updating tracking areas");
+	NSLog(@"current runloop: %@", [[NSRunLoop currentRunLoop] currentMode]);
 	if (_trackingAreas) {
 		for (NSTrackingArea *trackingArea in _trackingAreas) {
 			[documentView removeTrackingArea:trackingArea];
+//			[[NSRunLoop currentRunLoop] performSelector:@selector(removeTrackingArea:) target:documentView argument:trackingArea order:0 modes:[NSArray arrayWithObject:NSRunLoopCommonModes]];
+			
 			/* We remove highlighting of the previously selected view */
 //			CMMenuItemView *view = [(NSDictionary *)[trackingArea userInfo] objectForKey:kTrackingAreaViewControllerKey];
 			NSViewController *viewController = [(NSDictionary *)[trackingArea userInfo] objectForKey:kTrackingAreaViewControllerKey];
@@ -610,6 +624,8 @@
 		
 		NSTrackingArea *trackingArea = [self trackingAreaForItemView:viewController inRect:rect];
 		[documentView addTrackingArea:trackingArea];
+//		[[NSRunLoop currentRunLoop] performSelector:@selector(addTrackingArea:) target:documentView argument:trackingArea order:0 modes:[NSArray arrayWithObject:NSRunLoopCommonModes]];
+
 		[_trackingAreas addObject:trackingArea];
 		
 //		if (NSPointInRect(mouseLocation, [view frame]))
@@ -642,6 +658,10 @@
 //	NSLog(@"first index: %ld, last: %ld, location: %@, tracking_areas_count:%ld", firstIndex, i, NSStringFromPoint(afterLocation),
 //		  [[[_scrollView documentView] trackingAreas] count]);
 
+//	[[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.1]];
+	
+	CFRunLoopRunInMode(kCFRunLoopDefaultMode, 0, NO);
+	
 }
 
 
@@ -857,6 +877,7 @@
 /*
  *
  */
+/*
 - (void)mouseEntered:(NSEvent *)theEvent {
 //	NSLog(@"Mouse Entered %@", theEvent);
 	
@@ -872,11 +893,11 @@
 
 	if (eventType & CMMenuEventMouseItem) {		// mouse entered menu item view
 		NSViewController *viewController = [(NSDictionary *)[theEvent userData] objectForKey:kTrackingAreaViewControllerKey];
-		/* debuggin */
+		// debuggin
 //		CMMenuItem *item = [viewController representedObject];
 //		fputs("\n", stdout);
 //		NSLog(@"Mouse Enter MENU ITEM: %@", item);
-		/* debuggin */
+		// debuggin
 		[self mouseEventOnItemView:viewController eventType:CMMenuEventMouseEnteredItem];
 	} else if (eventType & CMMenuEventMouseScroller) {
 		CMMenuScroller *scroller = [userData objectForKey:kUserDataScrollerViewKey];
@@ -890,47 +911,48 @@
 	}
 
 }
-
+*/
 
 /*
  *
  */
-- (void)mouseExited:(NSEvent *)theEvent {
-//	NSLog(@"Mouse Exited %@", theEvent);
-	
-//	CMMenuItemView *view = [(NSDictionary *)[theEvent userData] objectForKey:kTrackingAreaViewControllerKey];
-//	NSViewController *viewController = [(NSDictionary *)[theEvent userData] objectForKey:kTrackingAreaViewControllerKey];
-//	[self mouseEventOnItemView:viewController eventType:CMMenuEventMouseExitedItem];
-//	[(CMMenuItemView *)[viewController view] setSelected:NO];
-	
-	
-	NSDictionary *userData = [theEvent userData];
-	CMMenuEventType eventType = [(NSNumber *)[userData objectForKey:kUserDataEventTypeKey] unsignedIntegerValue];
-
-	
-	if (eventType & CMMenuEventMouseItem) {
-		/* debuggin */
-//		NSViewController *viewController = [(NSDictionary *)[theEvent userData] objectForKey:kTrackingAreaViewControllerKey];
-//		CMMenuItem *item = [viewController representedObject];
-//		NSLog(@"Mouse Exit MENU ITEM: %@", item);
-		/* debuggin */
-		
-		/*
-		 * We want to redraw currently selected item after newly hovered item has background.
-		 * This technic is used to solve the blinking problem when moving mouse swiftly through the menu items.
-		 */
-		[self performSelector:@selector(delayedMouseExitedEvent:) withObject:theEvent afterDelay:0.0];
-//		NSViewController *viewController = [(NSDictionary *)[theEvent userData] objectForKey:kTrackingAreaViewControllerKey];
-//		[self mouseEventOnItemView:viewController eventType:CMMenuEventMouseExitedItem];
-	} else if (eventType & CMMenuEventMouseScroller) {
-		[_scrollTimer invalidate];
-		[_scrollTimer release];
-		_scrollTimer = nil;
-	} else if (eventType & CMMenuEventMouseMenu) {
-		CMMenu *menu = (CMMenu *)_owner;
-		[menu mouseEvent:theEvent];
-	}
-}
+//- (void)mouseExited:(NSEvent *)theEvent {
+////	NSLog(@"Mouse Exited %@", theEvent);
+//	
+////	CMMenuItemView *view = [(NSDictionary *)[theEvent userData] objectForKey:kTrackingAreaViewControllerKey];
+////	NSViewController *viewController = [(NSDictionary *)[theEvent userData] objectForKey:kTrackingAreaViewControllerKey];
+////	[self mouseEventOnItemView:viewController eventType:CMMenuEventMouseExitedItem];
+////	[(CMMenuItemView *)[viewController view] setSelected:NO];
+//	
+//	
+//	NSDictionary *userData = [theEvent userData];
+//	CMMenuEventType eventType = [(NSNumber *)[userData objectForKey:kUserDataEventTypeKey] unsignedIntegerValue];
+//
+//	
+//	if (eventType & CMMenuEventMouseItem) {
+//		// debuggin
+////		NSViewController *viewController = [(NSDictionary *)[theEvent userData] objectForKey:kTrackingAreaViewControllerKey];
+////		CMMenuItem *item = [viewController representedObject];
+////		NSLog(@"Mouse Exit MENU ITEM: %@", item);
+//		// debuggin //
+//		
+//		/*
+//		 * We want to redraw currently selected item after newly hovered item has background.
+//		 * This technic is used to solve the blinking problem when moving mouse swiftly through the menu items.
+//		 */
+////		[self performSelector:@selector(delayedMouseExitedEvent:) withObject:theEvent afterDelay:0.0];
+//		[self performSelector:@selector(delayedMouseExitedEvent:) withObject:theEvent afterDelay:0 inModes:[NSArray arrayWithObject:NSEventTrackingRunLoopMode]];
+////		NSViewController *viewController = [(NSDictionary *)[theEvent userData] objectForKey:kTrackingAreaViewControllerKey];
+////		[self mouseEventOnItemView:viewController eventType:CMMenuEventMouseExitedItem];
+//	} else if (eventType & CMMenuEventMouseScroller) {
+//		[_scrollTimer invalidate];
+////		[_scrollTimer release];
+//		_scrollTimer = nil;
+//	} else if (eventType & CMMenuEventMouseMenu) {
+//		CMMenu *menu = (CMMenu *)_owner;
+//		[menu mouseEvent:theEvent];
+//	}
+//}
 
 
 /*
@@ -949,6 +971,89 @@
 		  //		  NSStringFromSize([_scrollView contentSize])
 		  );
 
+//	NSLog(@"window is key: %d", [[self window] isKeyWindow]);
+//	[self startEventTracking];
+	
+}
+
+
+- (void)startEventTracking {
+	BOOL keepOn = YES;
+//	BOOL restart = NO;
+	// NSSystemDefinedMask | NSApplicationDefinedMask | NSAppKitDefinedMask |
+	NSUInteger eventMask = NSMouseEnteredMask | NSMouseExitedMask | NSLeftMouseDownMask | NSLeftMouseUpMask | NSScrollWheelMask | NSKeyDownMask;
+
+	NSLog(@"starting runloop event tracking");
+	while (keepOn) {
+		NSEvent *theEvent = [NSApp nextEventMatchingMask:eventMask untilDate:[NSDate distantFuture] inMode:NSEventTrackingRunLoopMode dequeue:YES];
+		NSLog(@"track event: %@", theEvent);
+			
+		NSEventType eventType = [theEvent type];
+		if (eventType == NSMouseEntered) {
+			NSDictionary *userData = [theEvent userData];
+			CMMenuEventType menuEventType = [(NSNumber *)[userData objectForKey:kUserDataEventTypeKey] unsignedIntegerValue];
+			
+			if (menuEventType & CMMenuEventMouseItem) {
+				NSViewController *viewController = [(NSDictionary *)[theEvent userData] objectForKey:kTrackingAreaViewControllerKey];
+				[self mouseEventOnItemView:viewController eventType:CMMenuEventMouseEnteredItem];
+			} else if (menuEventType & CMMenuEventMouseScroller) {
+				CMMenuScroller *scroller = [userData objectForKey:kUserDataScrollerViewKey];
+				[self scrollWithActiveScroller:scroller];
+			} else if (menuEventType & CMMenuEventMouseMenu) {
+				CMMenu *menu = (CMMenu *)_owner;
+				[menu mouseEvent:theEvent];
+			}
+				
+		} else if (eventType == NSMouseExited) {
+			NSDictionary *userData = [theEvent userData];
+			CMMenuEventType eventType = [(NSNumber *)[userData objectForKey:kUserDataEventTypeKey] unsignedIntegerValue];
+			
+			
+			if (eventType & CMMenuEventMouseItem) {
+				/*
+				 * We want to redraw currently selected item after newly hovered item has background.
+				 * This technic is used to solve the blinking problem when moving mouse swiftly through the menu items.
+				 */
+//				[self performSelector:@selector(delayedMouseExitedEvent:) withObject:theEvent afterDelay:0.0];
+				[self performSelector:@selector(delayedMouseExitedEvent:) withObject:theEvent afterDelay:0 inModes:[NSArray arrayWithObject:NSEventTrackingRunLoopMode]];
+			} else if (eventType & CMMenuEventMouseScroller) {
+				if (_scrollTimer) {
+					[_scrollTimer invalidate];
+					//		[_scrollTimer release];
+					_scrollTimer = nil;
+				}
+			} else if (eventType & CMMenuEventMouseMenu) {
+				CMMenu *menu = (CMMenu *)_owner;
+				[menu mouseEvent:theEvent];
+			}
+		
+		} else if (eventType == NSScrollWheel) {
+//			[_scrollView scrollWheel:event];
+//			[[self window] sendEvent:theEvent];
+//			CFRunLoopRunInMode(kCFRunLoopDefaultMode, 0, NO);
+
+
+//			restart = YES;
+//			break;
+		} else if (eventType == NSLeftMouseDown) {
+			NSPoint mouseLocation = [theEvent locationInWindow];
+			NSLog(@"mouse loc: %@", NSStringFromPoint(mouseLocation));
+			NSWindow *window = [theEvent window];
+			if (window != [self window]) {
+				NSLog(@"outside of event. stop event tracking");
+				break;
+			}
+		}
+	
+		[[self window] sendEvent:theEvent];
+		
+	}
+	
+//	NSLog(@"finish tracking");
+//	if (restart) {
+//		NSLog(@"restarting tracking");
+//		[self performSelector:@selector(startEventTracking) withObject:nil afterDelay:0.0];
+//	}
 }
 
 
@@ -965,6 +1070,20 @@
  *
  */
 - (void)delayedMouseExitedEvent:(NSEvent *)theEvent {
+	NSTrackingArea *trackingArea = [theEvent trackingArea];
+	if (! trackingArea) {
+		NSLog(@"ACHTUNG! event doesn't have userData: %@", theEvent);
+		[NSException raise:NSGenericException format:@"Event doesn't have userData"];
+	}
+
+//	NSDictionary *userData = [theEvent userData];
+//	NSInteger trackingNumber = [theEvent trackingNumber];
+//	NSLog(@"delayed exit\nevent: %@,\nloopmode: %@,\ntrackingNumber: %ld\ntracking area: %@",
+//		  theEvent,
+//		  [[NSRunLoop currentRunLoop] currentMode],
+//		  trackingNumber,
+//		  trackingArea);
+	
 	NSViewController *viewController = [(NSDictionary *)[theEvent userData] objectForKey:kTrackingAreaViewControllerKey];
 	[self mouseEventOnItemView:viewController eventType:CMMenuEventMouseExitedItem];
 }
@@ -1012,7 +1131,10 @@
 - (void)scrollWithActiveScroller:(CMMenuScroller *)scroller {
 //	CMMenuScroller *scroller = [userData objectForKey:kUserDataScrollerViewKey];
 	NSDictionary *userData = [NSDictionary dictionaryWithObjectsAndKeys:scroller, kUserDataScrollerViewKey, nil];
-	_scrollTimer = [[NSTimer scheduledTimerWithTimeInterval:SCROLL_TIMER_INTERVAL target:self selector:@selector(scrollTimerEvent:) userInfo:userData repeats:YES] retain];
+//	_scrollTimer = [[NSTimer scheduledTimerWithTimeInterval:SCROLL_TIMER_INTERVAL target:self selector:@selector(scrollTimerEvent:) userInfo:userData repeats:YES] retain];
+	
+	_scrollTimer = [NSTimer timerWithTimeInterval:SCROLL_TIMER_INTERVAL target:self selector:@selector(scrollTimerEvent:) userInfo:userData repeats:YES];
+	[[NSRunLoop currentRunLoop] addTimer:_scrollTimer forMode:NSRunLoopCommonModes];
 }
 
 
@@ -1027,6 +1149,8 @@
 	} else {
 		[_scrollView scrollDownByAmount:19.0];
 	}
+	
+//	CFRunLoopRunInMode(kCFRunLoopDefaultMode, 0, NO);
 }
 
 

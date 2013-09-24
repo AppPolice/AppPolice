@@ -35,6 +35,15 @@
 
 
 	[statusbarMenuController linkStatusbarItemWithMenu];
+	
+//	NSLog(@"!!!!!starting delay for menu update");
+//	[self performSelector:@selector(updateMenu:) withObject:nil afterDelay:4.0];
+//	[[NSRunLoop currentRunLoop] performSelector:@selector(delayAndUpdateMenu:) target:self argument:[statusbarMenuController statusbarMenu] order:0 modes:[NSArray arrayWithObject:NSEventTrackingRunLoopMode]];
+	
+//	NSLog(@"current run mode: %@", [[NSRunLoop currentRunLoop] currentMode]);
+//	[self performSelector:@selector(updateMenuFunc:) withObject:[statusbarMenuController statusbarMenu] afterDelay:4.0 inModes:[NSArray arrayWithObject:NSRunLoopCommonModes]];
+//	[self performSelector:@selector(updateMenuFunc:) withObject:[statusbarMenuController statusbarMenu] afterDelay:4.0];
+
 }
 
 - (void)awakeFromNib {
@@ -66,10 +75,47 @@ extern void proc_cpulim_suspend_wait(void);		/* function returns only after limi
 	[statusbarItem setMenu: [statusbarMenuController statusbarMenu]];
 }
 
+
+- (IBAction)updateMenu:(id)sender {
+
+}
+
+
+- (void)delayAndUpdateMenu:(NSMenu *)menu {
+	NSLog(@"delaying");
+//	[[NSRunLoop currentRunLoop] performSelector:@selector(updateMenuFunc:) target:self argument:menu order:0 modes:[NSArray arrayWithObject:NSEventTrackingRunLoopMode]];
+
+	[self performSelector:@selector(updateMenuFunc:) withObject:menu afterDelay:2.0 inModes:[NSArray arrayWithObject:NSRunLoopCommonModes]];
+//	[self performSelector:@selector(updateMenuFunc:) withObject:menu afterDelay:2.0];
+	
+
+}
+
+
+- (void)updateMenuFunc:(NSMenu *)menu {
+	NSLog(@"inserting new menu item");
+	NSLog(@"current run mode: %@", [[NSRunLoop currentRunLoop] currentMode]);
+//	NSMenu *menu = [statusbarMenuController statusbarMenu];
+	NSMenuItem *newItem = [[NSMenuItem alloc] initWithTitle:@"New Item" action:NULL keyEquivalent:@""];
+	[menu insertItem:newItem atIndex:1];
+	[menu update];
+}
+
 - (void)statusbarItemAction {
 	NSLog(@"clicked statusbar item");
 //	[statusbarItem popUpStatusItemMenu:[statusbarMenuController dummyMenu]];
 
 }
+
+
+- (IBAction)someAction:(id)sender {
+//	[self performSelector:@selector(delayedNSlog) withObject:nil afterDelay:5.0 inModes:[NSArray arrayWithObject:NSRunLoopCommonModes]];
+	[self performSelector:@selector(delayedNSlog) withObject:nil afterDelay:10.0];
+}
+
+- (void)delayedNSlog {
+	NSLog(@"delayed nslog button click!!");
+}
+
 
 @end
