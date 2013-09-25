@@ -114,7 +114,7 @@ extern void proc_cpulim_suspend_wait(void);		/* function returns only after limi
 }
 
 - (void)delayedNSlog {
-	NSLog(@"delayed nslog button click!!");
+	NSLog(@"\n\n\n!!!!!!!!!!!!!!!!!!!!!!! delayed nslog button click!!\n\n");
 }
 
 

@@ -35,7 +35,11 @@ typedef NSUInteger CMMenuOptions;
 //- (void)startTrackingActiveSubmenu;
 - (void)updateTrackingAreaWithOptions:(CMMenuOptions)options;
 
+- (BOOL)receiveMouseMovedEvents;
+- (void)setReceiveMouseMovedEvents:(BOOL)receiveEvents;
+
 - (void)mouseEvent:(NSEvent *)theEvent;
+//- (void)mouseMoved:(NSEvent *)theEvent;
 
 /**
  * @abstract Show menu as submenu of a certain item
@@ -44,6 +48,8 @@ typedef NSUInteger CMMenuOptions;
  */
 - (void)showAsSubmenuOf:(CMMenuItem *)menuItem withOptions:(CMMenuOptions)options;	// may not be needed
 //- (void)orderFront;
+
+//- (NSWindow *)underlyingWindow;
 - (NSInteger)windowLevel;
 
 - (NSRect)convertRectToScreen:(NSRect)aRect;

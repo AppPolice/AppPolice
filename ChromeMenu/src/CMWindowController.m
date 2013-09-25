@@ -17,10 +17,12 @@
 #import "CMMenu.h"
 #import "CMMenu+InternalMethods.h"
 #import "CMMenuScroller.h"
+#import "CMMenuKeyEventInterpreter.h"
 
 
 #define kTrackingAreaViewControllerKey @"viewController"
 #define kUserDataScrollerViewKey @"scroller"
+#define kUserDataRepresentedObjectKey @"representedObj"
 #define kUserDataEventTypeKey @"eventType"
 #define VERTICAL_SPACING 0		// between menu items
 #define MENU_SCROLLER_HEIGHT 15.0
@@ -47,9 +49,11 @@
 	NSMutableArray *_trackingAreas;
 	NSTrackingArea *_contentViewTrackingArea;
 	
+	BOOL _keepTracking;
 	BOOL _ignoreMouse;
 //	BOOL _ignoreMouseDuringScrollContentViewBoundsChange;
 //	id _localEventMonitor;
+	CMMenuKeyEventInterpreter *_keyEventInterpreter;
 }
 
 @property (assign) BOOL needsLayoutUpdate;
@@ -162,6 +166,7 @@
 	[_viewControllers release];
 	[_trackingAreas release];
 	[_scrollView release];
+	[_keyEventInterpreter release];
 	
 	[super dealloc];
 }
@@ -217,9 +222,19 @@
 	_ignoreMouse = NO;
 	
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(scrollViewContentViewBoundsDidChange:) name:NSViewBoundsDidChangeNotification object:[_scrollView contentView]];
-	
-	// add to a run loop queue so the tracking areas are installed
-	[self performSelector:@selector(startEventTracking) withObject:nil afterDelay:0];
+}
+
+
+- (void)beginEventTracking {
+	_keepTracking = YES;
+	// Add to a run loop queue so that tracking begins in another loop, after
+	// tracking areas are properly installed by Cocoa
+	[self performSelector:@selector(_beginEventTracking) withObject:nil afterDelay:0];
+}
+
+
+- (void)endEventTracking {
+	_keepTracking = NO;
 }
 
 
@@ -661,7 +676,6 @@
 //	[[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.1]];
 	
 	CFRunLoopRunInMode(kCFRunLoopDefaultMode, 0, NO);
-	
 }
 
 
@@ -866,10 +880,13 @@
 		trackingOptions |= NSTrackingMouseMoved;
 	
 	NSDictionary *trackingData = [NSDictionary dictionaryWithObjectsAndKeys:
+								  _owner, kUserDataRepresentedObjectKey,
 								  [NSNumber numberWithUnsignedInteger:CMMenuEventMouseMenu], kUserDataEventTypeKey, nil];
 	NSTrackingArea *trackingArea = [[NSTrackingArea alloc] initWithRect:trackingRect options:trackingOptions owner:self userInfo:trackingData];
 	[contentView addTrackingArea:trackingArea];
 	_contentViewTrackingArea = trackingArea;
+	
+	CFRunLoopRunInMode(kCFRunLoopDefaultMode, 0, NO);
 }
 
 
@@ -977,22 +994,24 @@
 }
 
 
-- (void)startEventTracking {
-	BOOL keepOn = YES;
+- (void)_beginEventTracking {
+//	BOOL keepOn = YES;
 //	BOOL restart = NO;
 	// NSSystemDefinedMask | NSApplicationDefinedMask | NSAppKitDefinedMask |
 	NSUInteger eventMask = NSMouseEnteredMask | NSMouseExitedMask | NSLeftMouseDownMask | NSLeftMouseUpMask | NSScrollWheelMask | NSKeyDownMask;
 
 	NSLog(@"starting runloop event tracking");
-	while (keepOn) {
+	while (_keepTracking) {
 		NSEvent *theEvent = [NSApp nextEventMatchingMask:eventMask untilDate:[NSDate distantFuture] inMode:NSEventTrackingRunLoopMode dequeue:YES];
 		NSLog(@"track event: %@", theEvent);
-			
+		
+		NSWindow *eventWindow = [theEvent window];
 		NSEventType eventType = [theEvent type];
+		
+		
 		if (eventType == NSMouseEntered) {
 			NSDictionary *userData = [theEvent userData];
 			CMMenuEventType menuEventType = [(NSNumber *)[userData objectForKey:kUserDataEventTypeKey] unsignedIntegerValue];
-			
 			if (menuEventType & CMMenuEventMouseItem) {
 				NSViewController *viewController = [(NSDictionary *)[theEvent userData] objectForKey:kTrackingAreaViewControllerKey];
 				[self mouseEventOnItemView:viewController eventType:CMMenuEventMouseEnteredItem];
@@ -1000,15 +1019,17 @@
 				CMMenuScroller *scroller = [userData objectForKey:kUserDataScrollerViewKey];
 				[self scrollWithActiveScroller:scroller];
 			} else if (menuEventType & CMMenuEventMouseMenu) {
-				CMMenu *menu = (CMMenu *)_owner;
+//				CMMenu *menu = (CMMenu *)_owner;
+//				CMMenu *menu = [self menuToReciveEventWithWindow:eventWindow];
+				CMMenu *menu = [(NSDictionary *)[theEvent userData] objectForKey:kUserDataRepresentedObjectKey];
 				[menu mouseEvent:theEvent];
 			}
-				
+		
+			
+		
 		} else if (eventType == NSMouseExited) {
 			NSDictionary *userData = [theEvent userData];
 			CMMenuEventType eventType = [(NSNumber *)[userData objectForKey:kUserDataEventTypeKey] unsignedIntegerValue];
-			
-			
 			if (eventType & CMMenuEventMouseItem) {
 				/*
 				 * We want to redraw currently selected item after newly hovered item has background.
@@ -1023,18 +1044,14 @@
 					_scrollTimer = nil;
 				}
 			} else if (eventType & CMMenuEventMouseMenu) {
-				CMMenu *menu = (CMMenu *)_owner;
+//				CMMenu *menu = (CMMenu *)_owner;
+//				CMMenu *menu = [self menuToReciveEventWithWindow:eventWindow];
+				CMMenu *menu = [(NSDictionary *)[theEvent userData] objectForKey:kUserDataRepresentedObjectKey];
 				[menu mouseEvent:theEvent];
 			}
 		
-		} else if (eventType == NSScrollWheel) {
-//			[_scrollView scrollWheel:event];
-//			[[self window] sendEvent:theEvent];
-//			CFRunLoopRunInMode(kCFRunLoopDefaultMode, 0, NO);
+			
 
-
-//			restart = YES;
-//			break;
 		} else if (eventType == NSLeftMouseDown) {
 			NSPoint mouseLocation = [theEvent locationInWindow];
 			NSLog(@"mouse loc: %@", NSStringFromPoint(mouseLocation));
@@ -1043,9 +1060,63 @@
 				NSLog(@"outside of event. stop event tracking");
 				break;
 			}
+			
+			
+			
+		} else if (eventType == NSLeftMouseUp) {
+//			if (eventMask & NSMouseMovedMask) {
+//				eventMask ^= NSMouseMovedMask;
+//			} else
+//				eventMask |= NSMouseMovedMask;
+		
+		
+		
+		} else if (eventType == NSScrollWheel) {
+			//			[_scrollView scrollWheel:event];
+			//			[[self window] sendEvent:theEvent];
+			//			CFRunLoopRunInMode(kCFRunLoopDefaultMode, 0, NO);
+			
+			//			[NSApp discardEventsMatchingMask:NSPeriodicMask beforeEvent:theEvent];
+			
+			if (eventWindow) {
+				NSLog(@"receiving window with rect: %@", NSStringFromRect([eventWindow frame]));
+				[eventWindow sendEvent:theEvent];
+			}
+		
+		
+		} else if (eventType == NSKeyDown) {
+			// Don't forget that events are being processed only by the root menu, _owner in this case.
+			if (! _keyEventInterpreter)
+				_keyEventInterpreter = [[CMMenuKeyEventInterpreter alloc] initWithDelegate:_owner];
+			
+			[_keyEventInterpreter interpretEvent:theEvent];
+
+		
+		} else if (eventType == NSMouseMoved) {
+			NSWindow *window = [theEvent window];
+			NSLog(@"moved in window: %@ with rect: %@", window, NSStringFromRect([window frame]));
+			
+			[_owner mouseEvent:theEvent];
 		}
+		
+		
+		if ([_owner receiveMouseMovedEvents]) {
+			if (! (eventMask & NSMouseMovedMask)) {
+				// Before we start tracking mouse moved events remove any pending events of this
+				// type in queue. Otherwise faux moved events generated previously will disrupt.
+				[NSApp discardEventsMatchingMask:NSMouseMovedMask beforeEvent:theEvent];
+				eventMask |= NSMouseMovedMask;
+			}
+		} else if (eventMask & NSMouseMovedMask) {
+			eventMask &= ~NSMouseMovedMask;
+		}
+			
+		
+//		NSLog(@"event loop, and we track mouse: %d", ((eventMask & NSMouseMovedMask) != 0));
+		
 	
-		[[self window] sendEvent:theEvent];
+//		[[self window] sendEvent:theEvent];
+
 		
 	}
 	
@@ -1055,6 +1126,18 @@
 //		[self performSelector:@selector(startEventTracking) withObject:nil afterDelay:0.0];
 //	}
 }
+
+
+//- (CMMenu *)menuToReciveEventWithWindow:(NSWindow *)window {
+//	CMMenu *menu = _owner;
+//	while (menu) {
+//		if ([menu underlyingWindow] == window)
+//			return menu;
+//		menu = [menu activeSubmenu];
+//	}
+//	
+//	return nil;
+//}
 
 
 - (void)mouseMoved:(NSEvent *)theEvent {
@@ -1134,7 +1217,7 @@
 //	_scrollTimer = [[NSTimer scheduledTimerWithTimeInterval:SCROLL_TIMER_INTERVAL target:self selector:@selector(scrollTimerEvent:) userInfo:userData repeats:YES] retain];
 	
 	_scrollTimer = [NSTimer timerWithTimeInterval:SCROLL_TIMER_INTERVAL target:self selector:@selector(scrollTimerEvent:) userInfo:userData repeats:YES];
-	[[NSRunLoop currentRunLoop] addTimer:_scrollTimer forMode:NSRunLoopCommonModes];
+	[[NSRunLoop currentRunLoop] addTimer:_scrollTimer forMode:NSEventTrackingRunLoopMode];
 }
 
 

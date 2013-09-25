@@ -256,14 +256,14 @@
 		NSArray *items = [_menu itemArray];
 		for (CMMenuItem *item in items) {
 			if ([item isSelected] && item != self) {
-				NSLog(@"TRACKINGAREA DE-select item: %@", item);
+//				NSLog(@"TRACKINGAREA DE-select item: %@", item);
 				[item deselect];
 			}
 		}
 	}
 	
-	if (_isSelected && changeStatus)
-		NSLog(@"TRACKINGAREA select item: %@", self);
+//	if (_isSelected && changeStatus)
+//		NSLog(@"TRACKINGAREA select item: %@", self);
 	
 	return changeStatus;
 }
@@ -329,14 +329,14 @@
 	NSArray *items = [_menu itemArray];
 	for (CMMenuItem *item in items) {
 		if (self != item && [item isSelected]) {
-			NSLog(@"BEFORE SELECTING, DESELECT: %@", item);
+//			NSLog(@"BEFORE SELECTING, DESELECT: %@", item);
 			[item deselect];
 		}
 	}
 	
 	_isSelected = YES;
-	NSLog(@"AND NOW SELECTED: %@", self);
-	[(CMMenuItemView *)[_representedViewController view] setSelected:YES];	
+//	NSLog(@"AND NOW SELECTED: %@", self);
+	[(CMMenuItemView *)[_representedViewController view] setSelected:YES];
 }
 
 
@@ -350,7 +350,8 @@
 	[self select];
 
 	if ([self hasSubmenu]) {
-		[self performSelector:@selector(showItemSubmenu) withObject:nil afterDelay:delay];
+//		[self performSelector:@selector(showItemSubmenu) withObject:nil afterDelay:delay];
+		[self performSelector:@selector(showItemSubmenu) withObject:nil afterDelay:delay inModes:[NSArray arrayWithObject:NSEventTrackingRunLoopMode]];
 		_submenuIntervalIsSetToPopup = YES;
 	}
 }
@@ -361,7 +362,7 @@
 		return;
 	
 	_isSelected = NO;
-	NSLog(@"ITEM DESELECTED: %@", self);
+//	NSLog(@"ITEM DESELECTED: %@", self);
 	[(CMMenuItemView *)[_representedViewController view] setSelected:NO];
 }
 

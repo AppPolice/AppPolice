@@ -42,16 +42,13 @@ typedef NSUInteger CMMenuAnimationOptions;
 - (CMMenu *)supermenu;
 
 
-- (void)addItem:(CMMenuItem *)newItem;
+//- (void)addItem:(CMMenuItem *)newItem;
 
 - (void)setDefaultViewForItemsFromNibNamed:(NSString *)nibName andPropertyNames:(NSArray *)propertyNames;
 
 /* Same as [anItem setSubmenu:aMenu].  anItem may not be nil. */
 - (void)setSubmenu:(CMMenu *)aMenu forItem:(CMMenuItem *)anItem;
 
-
-/* Returns an item of supermenu */
-- (CMMenuItem *)parentItem;
 
 /* Returns an array containing the receiver's menu items. */
 - (NSArray *)itemArray;
@@ -69,7 +66,13 @@ typedef NSUInteger CMMenuAnimationOptions;
 - (CMMenuItem *)itemAtPoint:(NSPoint)aPoint;
 
 /* Returns item of a supermenu the menu belongs to. Otherwise returns nil */
-//- (CMMenuItem *)parentItem;
+- (CMMenuItem *)parentItem;
+
+/* Inserts a menu item at the given index, which must be at least zero and no more than the receiver's item count.  If newItem is nil, this raises an exception. */
+- (void)insertItem:(CMMenuItem *)newItem atIndex:(NSUInteger)index;
+
+/* Appends an item to the end of the menu.  A nil item will raise an exception. */
+- (void)addItem:(CMMenuItem *)newItem;
 
 
 /* Update only particular menu items */

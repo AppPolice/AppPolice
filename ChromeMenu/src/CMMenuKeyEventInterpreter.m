@@ -10,12 +10,12 @@
 
 @implementation CMMenuKeyEventInterpreter
 
-- (id)initWithTarget:(id)target {
+- (id)initWithDelegate:(id <CMMenuKeyEventInterpreterDelegate>)delegate {
 	self = [super init];
 	if (self) {
-		if (target == nil)
+		if (delegate == nil)
 			[NSException raise:NSInvalidArgumentException format:@"Menu key events interpreter target cannot be nil."];
-		_target = target;
+		_delegate = delegate;
 	}
 	
 	return self;
@@ -23,25 +23,26 @@
 
 
 - (void)dealloc {
-	[NSEvent removeMonitor:_localEventMonitor];
+//	[NSEvent removeMonitor:_localEventMonitor];
 	
 	[super dealloc];
 }
 
 
-- (void)setTarget:(id)target {
-	if (_target != target) {
-		_target = target;
+- (void)setDelegate:(id <CMMenuKeyEventInterpreterDelegate>)delegate {
+	if (_delegate != delegate) {
+		_delegate = delegate;
 	}
 }
 
 
-- (void)start {
-	if (! _target || _localEventMonitor)
+//- (void)start {
+- (void)interpretEvent:(NSEvent *)theEvent {
+	if (! _delegate)
 		return;
 	
-	_localEventMonitor = [NSEvent addLocalMonitorForEventsMatchingMask:(NSKeyDownMask | NSFlagsChangedMask) handler:^(NSEvent *theEvent) {
-		NSLog(@"key event: %@", theEvent);
+//	_localEventMonitor = [NSEvent addLocalMonitorForEventsMatchingMask:(NSKeyDownMask | NSFlagsChangedMask) handler:^(NSEvent *theEvent) {
+		NSLog(@"key event to interpret: %@", theEvent);
 		
 		NSEventType eventType = [theEvent type];
 		
@@ -72,10 +73,10 @@
 					break;
 			}
 			
-			if (action && [_target respondsToSelector:action])
-				[_target performSelector:action withObject:self];
+			if (action && [_delegate respondsToSelector:action])
+				[_delegate performSelector:action withObject:self];
 			
-			theEvent = nil;
+//			theEvent = nil;
 			
 		} else if (eventType == NSFlagsChanged) {
 			NSUInteger modifierFlags = [theEvent modifierFlags];
@@ -84,21 +85,17 @@
 		
 	
 
-		
-		
-	
-		
-		return theEvent;
-	}];
+//		return theEvent;
+//	}];
 }
 
 
-- (void)stop {
-	if (! _localEventMonitor)
-		return;
-	
-	[NSEvent removeMonitor:_localEventMonitor];
-	_localEventMonitor = nil;
-}
+//- (void)stop {
+//	if (! _localEventMonitor)
+//		return;
+//	
+//	[NSEvent removeMonitor:_localEventMonitor];
+//	_localEventMonitor = nil;
+//}
 
 @end

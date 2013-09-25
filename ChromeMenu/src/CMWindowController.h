@@ -19,9 +19,20 @@
 
 - (void)layoutViews:(NSMutableArray *)viewControllers;
 
-//- (void)display;
+/**
+ * @function displayInFrame: ignoreMouse:
+ * @abstract Show underlying window in frame.
+ * @param frame Rect in which to show a menu.
+ * @param ignoreMouse When menu is first displayed, tracking areas for its menu items are being created.
+ *	This option regulates whether we will capture the current mouse position and highlight according menu item
+ *	underneath it. In some situations, for example when use keyboard navigation and open submenu with right arrow,
+ *	you do not expect a menu item underneath mouse to be selected. It will get selected if mouse moves however.
+ */
 - (void)displayInFrame:(NSRect)frame ignoreMouse:(BOOL)ignoreMouse;
 - (void)hide;
+
+- (void)beginEventTracking;
+- (void)endEventTracking;
 
 - (NSSize)intrinsicContentSize;
 
