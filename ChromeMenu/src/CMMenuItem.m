@@ -282,18 +282,23 @@
 #pragma mark -
 #pragma mark ***** CMMenuItem Internal Methods *****
 
-- (NSViewController *)representedViewController {
+- (NSViewController *)representedView {
 	return _representedViewController;
 }
 
-- (void)setRepresentedViewController:(NSViewController *)viewController {
+- (void)setRepresentedView:(NSViewController *)viewController {
 	_representedViewController = viewController;
 }
 
 
 - (void)setMenu:(CMMenu *)aMenu {
-	if (_menu != aMenu)
-		_menu = aMenu;
+//	if (_menu != aMenu)
+//		_menu = aMenu;
+	// If item is already assigned to some menu and aMenu is not nil
+	if (_menu && aMenu)
+		[NSException raise:NSInvalidArgumentException format:@"Item to be added to menu already is in another menu"];
+	
+	_menu = aMenu;
 }
 
 

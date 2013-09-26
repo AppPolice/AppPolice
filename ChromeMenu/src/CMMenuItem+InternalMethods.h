@@ -17,9 +17,9 @@
 
 @interface CMMenuItem (CMMenuItemInternalMethods)
 
-- (NSViewController *)representedViewController;
+- (NSViewController *)representedView;
 /* not copied, not retained */
-- (void)setRepresentedViewController:(NSViewController *)viewController;
+- (void)setRepresentedView:(NSViewController *)viewController;
 
 - (void)setMenu:(CMMenu *)aMenu;
 

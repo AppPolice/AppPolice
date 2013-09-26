@@ -213,22 +213,48 @@
 	if (ignoreMouse)
 		_ignoreMouse = YES;
 	
-//	[self updateTrackingAreasForVisibleRect:[[_scrollView contentView] bounds]];
-	[self updateTrackingAreasForVisibleRect:[NSValue valueWithRect:[[_scrollView contentView] bounds]]];
+	[self updateTrackingAreasForVisibleRect:[[_scrollView contentView] bounds]];
+//	[self updateTrackingAreasForVisibleRect:[NSValue valueWithRect:[[_scrollView contentView] bounds]]];
 	
 //	[self updateTrackingAreasForVisibleRect_2:[[_scrollView contentView] bounds]];
 	[self updateContentViewTrackingAreaTrackMouseMoved:NO];
 	
+	// Flag is set back to NO. Whoever needs it must provide value each time.
 	_ignoreMouse = NO;
 	
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(scrollViewContentViewBoundsDidChange:) name:NSViewBoundsDidChangeNotification object:[_scrollView contentView]];
 }
 
 
+
+/*
+ *
+ */
+- (void)updateFrame:(NSRect)frame ignoreMouse:(BOOL)ignoreMouse {
+	
+	NSLog(@"window prev. frame: %@, new frame: %@", NSStringFromRect([[self window] frame]), NSStringFromRect(frame));
+	
+	[self.window setFrame:frame display:NO animate:NO];
+	// Scroll view frame includes the menu top and bottom paddings
+	[_scrollView setFrame:NSMakeRect(0, _verticalPadding, frame.size.width, frame.size.height - 2 * _verticalPadding)];
+	
+	[self updateMenuScrollers];
+	
+	if (ignoreMouse)
+		_ignoreMouse = YES;
+	
+	[self updateTrackingAreasForVisibleRect:[[_scrollView contentView] bounds]];
+	[self updateContentViewTrackingAreaTrackMouseMoved:NO];
+	
+	// Flag is set back to NO. Whoever needs it must provide value each time.
+	_ignoreMouse = NO;
+}
+
+
 - (void)beginEventTracking {
 	_keepTracking = YES;
-	// Add to a run loop queue so that tracking begins in another loop, after
-	// tracking areas are properly installed by Cocoa
+	// Add to a run loop queue so that Cocoa finishes its preparations on the main thread in current loop.
+	// Tracking begins in another loop, for example, after tracking areas are properly installed by Cocoa.
 	[self performSelector:@selector(_beginEventTracking) withObject:nil afterDelay:0];
 }
 
@@ -244,7 +270,7 @@
  */
 - (void)setFrame:(NSRect)frame {
 	[self.window setFrame:frame display:NO];
-	// scroll view frame includes the menu top and bottom paddings
+	// Scroll view frame includes the menu top and bottom paddings
 	[_scrollView setFrame:NSMakeRect(0, _verticalPadding, frame.size.width, frame.size.height - 2 * _verticalPadding)];
 }
 
@@ -269,9 +295,9 @@
 - (void)scrollViewContentViewBoundsDidChange:(NSNotification *)notification {
 	NSLog(@"Scroll notification: %@, new bounds: %@", notification, NSStringFromRect([[_scrollView contentView] bounds]));
 	[self updateMenuScrollers];
-//	[self updateTrackingAreasForVisibleRect:[[_scrollView contentView] bounds]];
+	[self updateTrackingAreasForVisibleRect:[[_scrollView contentView] bounds]];
 	
-	[self updateTrackingAreasForVisibleRect:[NSValue valueWithRect:[[_scrollView contentView] bounds]]];
+//	[self updateTrackingAreasForVisibleRect:[NSValue valueWithRect:[[_scrollView contentView] bounds]]];
 //	[self performSelector:@selector(updateTrackingAreasForVisibleRect:) withObject:[NSValue valueWithRect:[[_scrollView contentView] bounds]] afterDelay:0.0 inModes:[NSArray arrayWithObject:NSEventTrackingRunLoopMode]];
 	
 	/* When scroll event is fired we upate Tracking Areas. During this time user can move the mouse as well.
@@ -279,12 +305,13 @@
 	 different menu items at the same time. We run a finilizing function from another Run Loop
 	 after tracking areas are completely set-up. */
 //	if (! _ignoreMouseDuringScrollContentViewBoundsChange)
-	if (! _ignoreMouse)
-		[self performSelector:@selector(finishScrollEventAfterTrackingAreasUpdated) withObject:nil afterDelay:0.0];
+//	if (! _ignoreMouse)
+//		[self performSelector:@selector(finishScrollEventAfterTrackingAreasUpdated) withObject:nil afterDelay:0.0];
 
 //	[self updateTrackingAreasForVisibleRect_2:[[_scrollView contentView] bounds]];
 	
 //	_ignoreMouseDuringScrollContentViewBoundsChange = NO;
+	// At the end of event we set variable back. Whoever wants mouse to be ignored must provide a flag each time.
 	_ignoreMouse = NO;
 }
 
@@ -293,7 +320,7 @@
  *
  */
 - (void)layoutViews:(NSMutableArray *)viewControllers {
-	if (!viewControllers)
+	if (! viewControllers)
 		return;
 	
 	
@@ -343,7 +370,7 @@
 	for (NSViewController *viewController in [viewControllers reverseObjectEnumerator]) {
 		CMMenuItem *menuItem = [viewController representedObject];
 		NSView *view = [viewController view];
-		CGRect frame;
+		NSRect frame;
 		CGFloat height = ([menuItem isSeparatorItem]) ? separatorViewHeight : viewHeight;
 		frame.size = NSMakeSize(width, height);
 		offset -= height + VERTICAL_SPACING;
@@ -354,6 +381,68 @@
 
 	[documentView setFrame:NSMakeRect(0, 0, width, -1 * offset)];
 }
+
+
+/*
+ *
+ */
+- (void)insertView:(NSViewController *)viewController atIndex:(NSUInteger)index {
+	NSView *view = [viewController view];
+	NSSize size = [view fittingSize];
+	NSView *documentView = [_scrollView documentView];
+	NSRect documentRect = [documentView bounds];
+	
+	NSLog(@"original document rect: %@, new element size: %@", NSStringFromRect(documentRect), NSStringFromSize(size));
+	
+	if (index == 0) {
+		NSView *relativeView = [(NSViewController *)[_viewControllers objectAtIndex:0] view];
+		[documentView addSubview:view positioned:NSWindowAbove relativeTo:relativeView];
+	} else {
+		NSView *relativeView = [(NSViewController *)[_viewControllers objectAtIndex:(index - 1)] view];
+		[documentView addSubview:view positioned:NSWindowBelow relativeTo:relativeView];
+	}
+	
+	BOOL updateSubviewsWidth = NO;
+	CGFloat subviewsWidth = documentRect.size.width;
+//	documentRect.size.height += size.height;
+	if (size.width > documentRect.size.width) {
+//		documentRect.size.width = size.width;
+		subviewsWidth = size.width;
+		updateSubviewsWidth = YES;
+	}
+//	else
+//		size.width = documentRect.size.width;
+	
+	[documentView setFrame:NSMakeRect(0, 0, subviewsWidth, documentRect.size.height + size.height)];
+	
+	CGFloat offset = size.height;
+	CGFloat yOrigin = 0.0;
+	for (NSView *subview in [documentView subviews]) {
+		if (subview == view) {
+			[view setFrame:NSMakeRect(0, yOrigin, subviewsWidth, size.height)];
+			if (updateSubviewsWidth)
+				offset = 0;
+			else
+				break;
+		} else {
+			NSRect frame = [subview frame];
+			[subview setFrame:NSMakeRect(0, frame.origin.y - offset, subviewsWidth, frame.size.height)];
+		}
+	}
+	
+	[_viewControllers insertObject:viewController atIndex:index];
+	
+	NSLog(@"new document frame: %@", NSStringFromRect(documentRect));
+}
+
+
+/*
+ *
+ */
+- (void)addView:(NSViewController *)viewController {
+	[self insertView:viewController atIndex:[_viewControllers count]];
+}
+
 
 
 /**
@@ -571,13 +660,15 @@
 /*
  *
  */
-//- (void)updateTrackingAreasForVisibleRect:(NSRect)visibleRect {
-- (void)updateTrackingAreasForVisibleRect:(id)rectValue {
-	NSRect visibleRect = [rectValue rectValue];
-	
-	NSView *documentView = [_scrollView documentView];
+- (void)updateTrackingAreasForVisibleRect:(NSRect)visibleRect {
+//- (void)updateTrackingAreasForVisibleRect:(id)rectValue {
+//	NSRect visibleRect = [rectValue rectValue];
+
 	NSLog(@"updating tracking areas");
 	NSLog(@"current runloop: %@", [[NSRunLoop currentRunLoop] currentMode]);
+
+	
+	NSView *documentView = [_scrollView documentView];
 	if (_trackingAreas) {
 		for (NSTrackingArea *trackingArea in _trackingAreas) {
 			[documentView removeTrackingArea:trackingArea];
@@ -1053,23 +1144,36 @@
 			
 
 		} else if (eventType == NSLeftMouseDown) {
-			NSPoint mouseLocation = [theEvent locationInWindow];
-			NSLog(@"mouse loc: %@", NSStringFromPoint(mouseLocation));
-			NSWindow *window = [theEvent window];
-			if (window != [self window]) {
-				NSLog(@"outside of event. stop event tracking");
+//			NSPoint mouseLocation = [theEvent locationInWindow];
+//			NSLog(@"mouse loc: %@", NSStringFromPoint(mouseLocation));
+//			NSWindow *window = [theEvent window];
+//			if (window != [self window]) {
+//				NSLog(@"outside of event. stop event tracking");
+//				break;
+//			}
+			
+			CMMenu *menu = [self menuToReciveEventWithWindow:[theEvent window]];
+			if (! menu) {
+				NSLog(@"Mouse down outside of menus. Stop tracking");
 				break;
 			}
 			
 			
 			
 		} else if (eventType == NSLeftMouseUp) {
-//			if (eventMask & NSMouseMovedMask) {
-//				eventMask ^= NSMouseMovedMask;
-//			} else
-//				eventMask |= NSMouseMovedMask;
-		
-		
+			CMMenu *menu = [self menuToReciveEventWithWindow:[theEvent window]];
+			if (menu) {
+				CMMenuItem *item = [[CMMenuItem alloc] initWithTitle:@"New Item"];
+				[menu addItem:item];
+				NSLog(@"Added new item: %@ to menu: %@", item, menu);
+				
+				
+//				NSWindow *window = [menu underlyingWindow];
+//				NSRect frame = [window frame];
+//				NSRect newFrame = NSMakeRect(frame.origin.x, frame.origin.y - 19, frame.size.width + 20, frame.size.height + 19);
+////				[[window animator] setFrame:newFrame display:NO];
+//				[window setFrame:newFrame display:YES animate:YES];
+			}
 		
 		} else if (eventType == NSScrollWheel) {
 			//			[_scrollView scrollWheel:event];
@@ -1128,16 +1232,17 @@
 }
 
 
-//- (CMMenu *)menuToReciveEventWithWindow:(NSWindow *)window {
-//	CMMenu *menu = _owner;
-//	while (menu) {
-//		if ([menu underlyingWindow] == window)
-//			return menu;
-//		menu = [menu activeSubmenu];
-//	}
-//	
-//	return nil;
-//}
+// TODO: this is temp method
+- (CMMenu *)menuToReciveEventWithWindow:(NSWindow *)window {
+	CMMenu *menu = _owner;
+	while (menu) {
+		if ([menu underlyingWindow] == window)
+			return menu;
+		menu = [menu activeSubmenu];
+	}
+	
+	return nil;
+}
 
 
 - (void)mouseMoved:(NSEvent *)theEvent {

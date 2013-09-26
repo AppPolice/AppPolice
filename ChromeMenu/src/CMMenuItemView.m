@@ -50,7 +50,7 @@
 
 - (void)drawRect:(NSRect)dirtyRect {
 //	NSLog(@"Cell View draw rect called. Cell subviews: %@", [self subviews]);
-//	NSLog(@"DRAW ItemView");
+	NSLog(@"DRAW ItemView with rect: %@", NSStringFromRect([self frame]));
 //	NSLog(@"frame: %@", NSStringFromRect([self frame]));
 	
 
@@ -286,6 +286,7 @@
 
 - (NSString *)description {
 	NSMutableString *description = [[NSMutableString alloc] initWithString:[super description]];
+	[description appendString:@" Properties: ("];
 	
 	id currentClass = [self class];
 	NSString *propertyName;
@@ -294,15 +295,17 @@
 	for (i = 0; i < outCount; ++i) {
 		objc_property_t property = properties[i];
 		propertyName = [NSString stringWithCString:property_getName(property) encoding:NSASCIIStringEncoding];
-		[description appendFormat:@"\n\t%@: %@", propertyName, [self valueForKey:propertyName]];
+		[description appendFormat:@"\n\t%@:  %@", propertyName, [self valueForKey:propertyName]];
     }
 	free(properties);
 	
 	// if object was subclassed, let's print parent's properties
-	if (![[self className] isEqualToString:@"CMTableCellView"]) {
+	if (! [[self className] isEqualToString:@"CMMenuItemView"]) {
 		[description appendFormat:@"\n\ticon: %@", _icon];
 		[description appendFormat:@"\n\ttitle: %@", _title];
 	}
+	
+	[description appendString:@")"];
 	
 	return description;
 }

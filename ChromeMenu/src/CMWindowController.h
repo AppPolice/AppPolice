@@ -29,7 +29,11 @@
  *	you do not expect a menu item underneath mouse to be selected. It will get selected if mouse moves however.
  */
 - (void)displayInFrame:(NSRect)frame ignoreMouse:(BOOL)ignoreMouse;
+- (void)updateFrame:(NSRect)frame ignoreMouse:(BOOL)ignoreMouse;
 - (void)hide;
+
+- (void)insertView:(NSViewController *)viewController atIndex:(NSUInteger)index;
+- (void)addView:(NSViewController *)viewController;
 
 - (void)beginEventTracking;
 - (void)endEventTracking;

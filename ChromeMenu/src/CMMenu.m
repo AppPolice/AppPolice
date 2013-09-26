@@ -78,8 +78,8 @@ typedef struct __submenu_tracking_event tracking_event_t;
 	CMMenu *_activeSubmenu;
 	BOOL _isTrackingSubmenu;
 		
-	BOOL _displayedFirstTime;
-	BOOL _needsUpdating;
+//	BOOL _displayedFirstTime;
+	BOOL _needsUpdate;		// flag used in context of full menu update.
 	
 	CMMenuAlignment _menuHorizontalAlignment;
 	CMMenuAlignment _menuVerticalAlignment;
@@ -139,8 +139,8 @@ typedef struct __submenu_tracking_event tracking_event_t;
 - (id)init {
 	if (self = [super init]) {
 		[NSBundle loadNibNamed:[self className] owner:self];
-		_displayedFirstTime = NO;
-		_needsUpdating = YES;
+//		_displayedFirstTime = NO;
+		_needsUpdate = YES;
 		_minimumWidth = 0;
 		_menuHorizontalAlignment = CMMenuAlignedLeft;
 		_menuVerticalAlignment = CMMenuAlignedTop;
@@ -258,6 +258,16 @@ typedef struct __submenu_tracking_event tracking_event_t;
 	
 	[_menuItems addObject:newItem];
 	[newItem setMenu:self];
+	
+	// Menu will update our newly added item itself
+	if (_needsUpdate)
+		return;
+	
+	// ..otherwise, we need to update it ourselves.
+	NSViewController *viewController = [self viewForItem:newItem];
+	[_underlyingWindowController addView:viewController];
+//	NSRect frame = [self getBestFrameForMenuWindow];
+//	[_underlyingWindowController updateFrame:frame ignoreMouse:NO];
 }
 
 
@@ -331,6 +341,7 @@ typedef struct __submenu_tracking_event tracking_event_t;
 	if (!_underlyingWindowController) {
 		_underlyingWindowController = [[CMWindowController alloc] initWithOwner:self];
 		[self reloadData];
+		_needsUpdate = NO;
 	}
 	
 	BOOL isRootMenu = !_supermenu;
@@ -496,7 +507,7 @@ typedef struct __submenu_tracking_event tracking_event_t;
 	
 	// top menu
 	if (!_parentItem) {
-		frame.origin = NSMakePoint(100, 200);
+		frame.origin = NSMakePoint(70, 200);
 		frame.size.width = intrinsicSize.width;
 		frame.size.height = (intrinsicSize.height > 817) ? 825 : intrinsicSize.height;
 //		frame.size.height = 65;
@@ -580,88 +591,94 @@ typedef struct __submenu_tracking_event tracking_event_t;
  * Based on Menu Items we create View Controllers and give them for drawing to Window Controller
  */
 - (void)reloadData {
-	//	NSUInteger i;
-	//	NSUInteger count = [_menuItems count];
 	NSMutableArray *viewControllers = [NSMutableArray array];
 	
 	for (CMMenuItem *menuItem in _menuItems) {
-		
-		/* menu item has individual view */
-		if ([menuItem viewNibName]) {
-			NSViewController *viewController = [[NSViewController alloc] initWithNibName:[menuItem viewNibName] bundle:nil];
-			id view = viewController.view;
-			
-//			NSEnumerator *enumerator = [[menuItem viewPropertyNames] objectEnumerator];
-//			NSString *propertyName;
-//			while ((propertyName = [enumerator nextObject])) {
-			for (NSString *propertyName in [menuItem viewPropertyNames]) {
-				SEL propertySetter = NSSelectorFromString([NSString stringWithFormat:@"set%@Property:", [propertyName	stringByReplacingCharactersInRange:NSMakeRange(0, 1) withString:[[propertyName substringToIndex:1] capitalizedString]]]);
-				if ([view respondsToSelector:propertySetter])
-					[view performSelector:propertySetter withObject:[menuItem valueForKey:propertyName]];
-			}
-			
-//			NSLog(@"custom item cell view: %@", view);
-			
-			[menuItem setRepresentedViewController:viewController];
-			[viewController setRepresentedObject:menuItem];
-			[viewControllers addObject:viewController];
-			
-		} else if (_itemsViewNibName) { 		/* custom view for all items */
-			//			id cellView;
-			//			cellView = [tableView makeViewWithIdentifier:_itemsViewIdentifier owner:self];
-			
-			NSViewController *viewController = [[NSViewController alloc] initWithNibName:_itemsViewNibName bundle:nil];
-			id view = viewController.view;
-			
-//			NSEnumerator *enumerator = [_itemsViewPropertyNames objectEnumerator];
-//			NSString *propertyName;
-//			while ((propertyName = [enumerator nextObject])) {
-			for (NSString *propertyName in [menuItem viewPropertyNames]) {
-				SEL propertySetter = NSSelectorFromString([NSString stringWithFormat:@"set%@Property:", [propertyName	stringByReplacingCharactersInRange:NSMakeRange(0, 1) withString:[[propertyName substringToIndex:1] capitalizedString]]]);
-				if ([view respondsToSelector:propertySetter])
-					[view performSelector:propertySetter withObject:[menuItem valueForKey:propertyName]];
-			}
-			
-			//		NSLog(@"cell view: %@", cellView);
-			
-			[menuItem setRepresentedViewController:viewController];
-			[viewController setRepresentedObject:menuItem];
-			[viewControllers addObject:viewController];
-			
-		} else {
-			NSViewController *viewController;
-			
-			if ([menuItem isSeparatorItem]) {
-				viewController = [[NSViewController alloc] initWithNibName:@"CMMenuItemSeparatorView" bundle:nil];
-//				CMMenuItemSeparatorView *view =
-			} else {
-			
-				CMMenuItemView *view;
-				
-				if ([menuItem icon]) {
-					viewController = [[NSViewController alloc] initWithNibName:@"CMMenuItemIconView" bundle:nil];
-					view = (CMMenuItemView *)viewController.view;
-					[[view icon] setImage:[menuItem icon]];
-				} else {
-					viewController = [[NSViewController alloc] initWithNibName:@"CMMenuItemView" bundle:nil];
-					view = (CMMenuItemView *)viewController.view;
-				}
-				
-				[[view title] setStringValue:[menuItem title]];
-				
-				if ([menuItem hasSubmenu])
-					[view setHasSubmenuIcon:YES];
-			}
-			
+		NSViewController *viewController = [self viewForItem:menuItem];
+		[menuItem setRepresentedView:viewController];
+		[viewController setRepresentedObject:menuItem];
+		[viewControllers addObject:viewController];
 
-			[menuItem setRepresentedViewController:viewController];
-			[viewController setRepresentedObject:menuItem];
-			[viewControllers addObject:viewController];
-		}
 	}
 	
 	[_underlyingWindowController layoutViews:viewControllers];
+}
+
+
+- (NSViewController *)viewForItem:(CMMenuItem *)menuItem {
+	NSViewController *viewController;
 	
+	/* menu item has individual view */
+	if ([menuItem viewNibName]) {
+		viewController = [[NSViewController alloc] initWithNibName:[menuItem viewNibName] bundle:nil];
+		id view = viewController.view;
+		
+		//			NSEnumerator *enumerator = [[menuItem viewPropertyNames] objectEnumerator];
+		//			NSString *propertyName;
+		//			while ((propertyName = [enumerator nextObject])) {
+		for (NSString *propertyName in [menuItem viewPropertyNames]) {
+			SEL propertySetter = NSSelectorFromString([NSString stringWithFormat:@"set%@Property:", [propertyName	stringByReplacingCharactersInRange:NSMakeRange(0, 1) withString:[[propertyName substringToIndex:1] capitalizedString]]]);
+			if ([view respondsToSelector:propertySetter])
+				[view performSelector:propertySetter withObject:[menuItem valueForKey:propertyName]];
+		}
+		
+		//			NSLog(@"custom item cell view: %@", view);
+		
+//		[menuItem setRepresentedViewController:viewController];
+//		[viewController setRepresentedObject:menuItem];
+//		[viewControllers addObject:viewController];
+		
+	} else if (_itemsViewNibName) { 		/* custom view for all items */
+		//			id cellView;
+		//			cellView = [tableView makeViewWithIdentifier:_itemsViewIdentifier owner:self];
+		
+		viewController = [[NSViewController alloc] initWithNibName:_itemsViewNibName bundle:nil];
+		id view = viewController.view;
+		
+		//			NSEnumerator *enumerator = [_itemsViewPropertyNames objectEnumerator];
+		//			NSString *propertyName;
+		//			while ((propertyName = [enumerator nextObject])) {
+		for (NSString *propertyName in [menuItem viewPropertyNames]) {
+			SEL propertySetter = NSSelectorFromString([NSString stringWithFormat:@"set%@Property:", [propertyName	stringByReplacingCharactersInRange:NSMakeRange(0, 1) withString:[[propertyName substringToIndex:1] capitalizedString]]]);
+			if ([view respondsToSelector:propertySetter])
+				[view performSelector:propertySetter withObject:[menuItem valueForKey:propertyName]];
+		}
+		
+		//		NSLog(@"cell view: %@", cellView);
+		
+//		[menuItem setRepresentedViewController:viewController];
+//		[viewController setRepresentedObject:menuItem];
+//		[viewControllers addObject:viewController];
+		
+	} else {
+		if ([menuItem isSeparatorItem]) {
+			viewController = [[NSViewController alloc] initWithNibName:@"CMMenuItemSeparatorView" bundle:nil];
+		} else {
+			
+			CMMenuItemView *view;
+			
+			if ([menuItem icon]) {
+				viewController = [[NSViewController alloc] initWithNibName:@"CMMenuItemIconView" bundle:nil];
+				view = (CMMenuItemView *)viewController.view;
+				[[view icon] setImage:[menuItem icon]];
+			} else {
+				viewController = [[NSViewController alloc] initWithNibName:@"CMMenuItemView" bundle:nil];
+				view = (CMMenuItemView *)viewController.view;
+			}
+			
+			[[view title] setStringValue:[menuItem title]];
+			
+			if ([menuItem hasSubmenu])
+				[view setHasSubmenuIcon:YES];
+		}
+		
+		
+//		[menuItem setRepresentedViewController:viewController];
+//		[viewController setRepresentedObject:menuItem];
+//		[viewControllers addObject:viewController];
+	}
+	
+	return viewController;
 }
 
 
@@ -711,9 +728,10 @@ typedef struct __submenu_tracking_event tracking_event_t;
 }
 
 
-//- (NSWindow *)underlyingWindow {
-//	return [_underlyingWindowController window];
-//}
+// TODO: temp method
+- (NSWindow *)underlyingWindow {
+	return [_underlyingWindowController window];
+}
 
 
 - (NSInteger)windowLevel {

@@ -49,7 +49,8 @@ typedef NSUInteger CMMenuOptions;
 - (void)showAsSubmenuOf:(CMMenuItem *)menuItem withOptions:(CMMenuOptions)options;	// may not be needed
 //- (void)orderFront;
 
-//- (NSWindow *)underlyingWindow;
+// TODO: this is temp method
+- (NSWindow *)underlyingWindow;
 - (NSInteger)windowLevel;
 
 - (NSRect)convertRectToScreen:(NSRect)aRect;

@@ -41,7 +41,7 @@
 //	[[NSRunLoop currentRunLoop] performSelector:@selector(delayAndUpdateMenu:) target:self argument:[statusbarMenuController statusbarMenu] order:0 modes:[NSArray arrayWithObject:NSEventTrackingRunLoopMode]];
 	
 //	NSLog(@"current run mode: %@", [[NSRunLoop currentRunLoop] currentMode]);
-//	[self performSelector:@selector(updateMenuFunc:) withObject:[statusbarMenuController statusbarMenu] afterDelay:4.0 inModes:[NSArray arrayWithObject:NSRunLoopCommonModes]];
+	[self performSelector:@selector(updateMenuFunc:) withObject:[statusbarMenuController statusbarMenu] afterDelay:4.0 inModes:[NSArray arrayWithObject:NSRunLoopCommonModes]];
 //	[self performSelector:@selector(updateMenuFunc:) withObject:[statusbarMenuController statusbarMenu] afterDelay:4.0];
 
 }
@@ -97,8 +97,15 @@ extern void proc_cpulim_suspend_wait(void);		/* function returns only after limi
 	NSLog(@"current run mode: %@", [[NSRunLoop currentRunLoop] currentMode]);
 //	NSMenu *menu = [statusbarMenuController statusbarMenu];
 	NSMenuItem *newItem = [[NSMenuItem alloc] initWithTitle:@"New Item" action:NULL keyEquivalent:@""];
+	NSMenuItem *newItem2 = [[NSMenuItem alloc] initWithTitle:@"New Item 2" action:NULL keyEquivalent:@""];
 	[menu insertItem:newItem atIndex:1];
-	[menu update];
+	[menu insertItem:newItem2 atIndex:2];
+	[newItem release];
+	[newItem2 release];
+	
+	NSMenuItem *item = [menu itemAtIndex:0];
+	[item setTitle:@"New Title"];
+//	[menu update];
 }
 
 - (void)statusbarItemAction {
