@@ -202,6 +202,11 @@
 			changeStatus = NO;
 			if ([[self menu] isTrackingSubmenu])
 				[[self menu] stopTrackingSubmenuReasonSuccess:YES];
+			else if ([self hasSubmenu]) {
+				[self performSelector:@selector(showItemSubmenu) withObject:nil afterDelay:SUBMENU_POPUP_DELAY_DEFAULT inModes:[NSArray arrayWithObject:NSEventTrackingRunLoopMode]];
+				_submenuIntervalIsSetToPopup = YES;
+			}
+				
 		} else {
 //			if ([[self menu] activeSubmenu]) {
 			if ([[self menu] activeSubmenu] && [[self menu] isTrackingSubmenu]) {

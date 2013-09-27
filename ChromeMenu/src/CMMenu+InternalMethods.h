@@ -7,20 +7,23 @@
 //
 
 //#include "CMMenuEventTypes.h"
+#import "CMMenu.h"
+#import "CMMenuKeyEventInterpreter.h"
 
 enum {
 	CMMenuOptionDefault = 0x000,
 	CMMenuOptionIgnoreMouse = 0x001,
 	CMMenuOptionTrackMouseMoved = 0x002
 };
-
 typedef NSUInteger CMMenuOptions;
 
 
 
 @class CMMenuItem, CMMenuScroller;
+//@protocol CMMenuKeyEventInterpreterDelegate;
 
-@interface CMMenu (CMMenuInternalMethods)
+
+@interface CMMenu (CMMenuInternalMethods) <CMMenuKeyEventInterpreterDelegate>
 
 - (void)setSupermenu:(CMMenu *)aMenu;
 - (void)setParentItem:(CMMenuItem *)anItem;
@@ -29,14 +32,31 @@ typedef NSUInteger CMMenuOptions;
 - (CMMenu *)activeSubmenu;
 - (void)setActiveSubmenu:(CMMenu *)submenu;
 
+//- (BOOL)isAncestorTo:(CMMenu *)menu;
+
+/**
+ * @discussion Returns YES if menu is currently in NSEventTrackingRunLoopMode, NO otherwise.
+ */
+- (BOOL)isTracking;
+
+/**
+ * @discussion Receiving menu begins tracking in NSEventTrackingRunLoopMode if it is not already.
+ */
+- (void)beginTrackingWithEvent:(NSEvent *)theEvent;
+
+/**
+ * @discussion End previously started tracking.
+ */
+- (void)endTracking;
+
 - (BOOL)isTrackingSubmenu;
 - (void)startTrackingSubmenu:(CMMenu *)submenu forItem:(CMMenuItem *)item;
 - (void)stopTrackingSubmenuReasonSuccess:(BOOL)reasonSuccess;
 //- (void)startTrackingActiveSubmenu;
 - (void)updateTrackingAreaWithOptions:(CMMenuOptions)options;
 
-- (BOOL)receiveMouseMovedEvents;
-- (void)setReceiveMouseMovedEvents:(BOOL)receiveEvents;
+- (BOOL)receivesMouseMovedEvents;
+- (void)setReceivesMouseMovedEvents:(BOOL)receiveEvents;
 
 - (void)mouseEvent:(NSEvent *)theEvent;
 //- (void)mouseMoved:(NSEvent *)theEvent;

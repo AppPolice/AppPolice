@@ -136,7 +136,7 @@ extern void proc_cpulim_suspend_wait(void);		/* function returns only after limi
 	}
 
 	while (keepRunning) {
-		NSEvent *theEvent = [NSApp nextEventMatchingMask:NSMouseEnteredMask | NSLeftMouseDownMask untilDate:[NSDate distantFuture] inMode:NSEventTrackingRunLoopMode dequeue:YES];
+		NSEvent *theEvent = [NSApp nextEventMatchingMask:NSMouseEnteredMask | NSLeftMouseDownMask | NSLeftMouseUpMask untilDate:[NSDate distantFuture] inMode:NSEventTrackingRunLoopMode dequeue:YES];
 		
 		NSLog(@"run loop 1 event: %@", theEvent);
 		[[theEvent window] sendEvent:theEvent];

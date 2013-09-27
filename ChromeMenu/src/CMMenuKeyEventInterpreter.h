@@ -35,9 +35,9 @@
 @protocol CMMenuKeyEventInterpreterDelegate <NSObject>
 @optional
 
-- (void)moveUp:(id)sender;
-- (void)moveDown:(id)sender;
-- (void)moveLeft:(id)sender;
-- (void)moveRight:(id)sender;
+- (void)moveUp:(NSEvent *)originalEvent;
+- (void)moveDown:(NSEvent *)originalEvent;
+- (void)moveLeft:(NSEvent *)originalEvent;
+- (void)moveRight:(NSEvent *)originalEvent;
 
 @end

@@ -22,7 +22,6 @@ enum {
 typedef NSUInteger CMMenuAnimationOptions;
 
 
-
 @interface CMMenu : NSObject
 {
 	@private

@@ -74,7 +74,7 @@
 			}
 			
 			if (action && [_delegate respondsToSelector:action])
-				[_delegate performSelector:action withObject:self];
+				[_delegate performSelector:action withObject:theEvent];
 			
 //			theEvent = nil;
 			

@@ -7,6 +7,7 @@
 //
 
 //#import <Cocoa/Cocoa.h>
+#import "CMMenu+InternalMethods.h"
 
 @class NSWindowController, NSViewController, NSMutableArray;
 @class CMMenu, CMMenuScroller;
@@ -28,15 +29,18 @@
  *	underneath it. In some situations, for example when use keyboard navigation and open submenu with right arrow,
  *	you do not expect a menu item underneath mouse to be selected. It will get selected if mouse moves however.
  */
-- (void)displayInFrame:(NSRect)frame ignoreMouse:(BOOL)ignoreMouse;
-- (void)updateFrame:(NSRect)frame ignoreMouse:(BOOL)ignoreMouse;
+//- (void)displayInFrame:(NSRect)frame ignoreMouse:(BOOL)ignoreMouse;
+- (void)displayInFrame:(NSRect)frame options:(CMMenuOptions)options;
+//- (void)updateFrame:(NSRect)frame ignoreMouse:(BOOL)ignoreMouse;
+- (void)updateFrame:(NSRect)frame options:(CMMenuOptions)options;
 - (void)hide;
 
 - (void)insertView:(NSViewController *)viewController atIndex:(NSUInteger)index;
 - (void)addView:(NSViewController *)viewController;
 
-- (void)beginEventTracking;
-- (void)endEventTracking;
+- (BOOL)isTracking;
+- (void)beginTrackingWithEvent:(NSEvent *)event;
+- (void)endTracking;
 
 - (NSSize)intrinsicContentSize;
 

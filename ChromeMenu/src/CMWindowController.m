@@ -31,7 +31,7 @@
 
 @interface CMWindowController ()
 {
-	id _owner;
+	CMMenu *_owner;
 	CMScrollView *_scrollView;
 	CGFloat _verticalPadding;
 //	CMScrollDocumentView *_scrollDocumentView;
@@ -150,6 +150,7 @@
 		
 		_separatorViewHeight = 12.0;
 		_verticalPadding = 4.0;
+		_keepTracking = NO;
 		_ignoreMouse = NO;
 //		_ignoreMouseDuringScrollContentViewBoundsChange = NO;
 		
@@ -198,7 +199,8 @@
 /*
  *
  */
-- (void)displayInFrame:(NSRect)frame ignoreMouse:(BOOL)ignoreMouse {
+//- (void)displayInFrame:(NSRect)frame ignoreMouse:(BOOL)ignoreMouse {
+- (void)displayInFrame:(NSRect)frame options:(CMMenuOptions)options {
 //	[self.window setFrameOrigin:origin];
 
 	[self setFrame:frame];
@@ -210,14 +212,17 @@
 		in the menu */
 	[self updateMenuScrollers];
 	
-	if (ignoreMouse)
+//	if (ignoreMouse)
+//		_ignoreMouse = YES;
+	if (options & CMMenuOptionIgnoreMouse)
 		_ignoreMouse = YES;
 	
 	[self updateTrackingAreasForVisibleRect:[[_scrollView contentView] bounds]];
 //	[self updateTrackingAreasForVisibleRect:[NSValue valueWithRect:[[_scrollView contentView] bounds]]];
 	
 //	[self updateTrackingAreasForVisibleRect_2:[[_scrollView contentView] bounds]];
-	[self updateContentViewTrackingAreaTrackMouseMoved:NO];
+	BOOL trackMouseMoved = (options & CMMenuOptionTrackMouseMoved);
+	[self updateContentViewTrackingAreaTrackMouseMoved:trackMouseMoved];
 	
 	// Flag is set back to NO. Whoever needs it must provide value each time.
 	_ignoreMouse = NO;
@@ -230,7 +235,8 @@
 /*
  *
  */
-- (void)updateFrame:(NSRect)frame ignoreMouse:(BOOL)ignoreMouse {
+//- (void)updateFrame:(NSRect)frame ignoreMouse:(BOOL)ignoreMouse {
+- (void)updateFrame:(NSRect)frame options:(CMMenuOptions)options {
 	// TODO: window quickjump!
 //	NSLog(@"window prev. frame: %@, new frame: %@", NSStringFromRect([[self window] frame]), NSStringFromRect(frame));
 	
@@ -253,26 +259,45 @@
 	
 	[self updateMenuScrollers];
 	
-	if (ignoreMouse)
+//	if (ignoreMouse)
+//		_ignoreMouse = YES;
+	if (options & CMMenuOptionIgnoreMouse)
 		_ignoreMouse = YES;
 	
 	[self updateTrackingAreasForVisibleRect:[[_scrollView contentView] bounds]];
-	[self updateContentViewTrackingAreaTrackMouseMoved:NO];
+	BOOL trackMouseMoved = (options & CMMenuOptionTrackMouseMoved);
+	[self updateContentViewTrackingAreaTrackMouseMoved:trackMouseMoved];
 
 	// Flag is set back to NO. Whoever needs it must provide value each time.
 	_ignoreMouse = NO;
 }
 
 
-- (void)beginEventTracking {
-	_keepTracking = YES;
-	// Add to a run loop queue so that Cocoa finishes its preparations on the main thread in current loop.
-	// Tracking begins in another loop, for example, after tracking areas are properly installed by Cocoa.
-	[self performSelector:@selector(_beginEventTracking) withObject:nil afterDelay:0];
+- (BOOL)isTracking {
+	return _keepTracking;
 }
 
 
-- (void)endEventTracking {
+- (void)beginTrackingWithEvent:(NSEvent *)event {
+	if (_keepTracking)
+		return;
+	
+	_keepTracking = YES;
+	// Add to a run loop queue so that Cocoa finishes its preparations on the main thread in current loop.
+	// Tracking begins in another loop, for example, after tracking areas are properly installed by Cocoa.
+//	[self performSelector:@selector(_beginEventTracking) withObject:nil afterDelay:0];
+	[self performSelector:@selector(_beginTrackingWithEvent:) withObject:event afterDelay:0 inModes:[NSArray arrayWithObject:NSRunLoopCommonModes]];
+//	[self _beginEventTracking];
+}
+
+
+- (void)endTracking {
+	NSLog(@"\n\n \
+	--------------------------------------------------------\n \
+	 END tracking runloop mode on menu with frame: %@\n \
+	--------------------------------------------------------\n",
+	NSStringFromRect([[self window] frame]));
+
 	_keepTracking = NO;
 }
 
@@ -306,7 +331,7 @@
  *
  */
 - (void)scrollViewContentViewBoundsDidChange:(NSNotification *)notification {
-//	NSLog(@"Scroll notification: %@, new bounds: %@", notification, NSStringFromRect([[_scrollView contentView] bounds]));
+	NSLog(@"Scroll notification: %@, new bounds: %@", notification, NSStringFromRect([[_scrollView contentView] bounds]));
 	[self updateMenuScrollers];
 	[self updateTrackingAreasForVisibleRect:[[_scrollView contentView] bounds]];
 	
@@ -673,6 +698,7 @@
 	if (scrollAmount != 0) {
 		_ignoreMouse = ignoreMouse;
 		[contentView setBounds:NSMakeRect(0, contentRect.origin.y + scrollAmount, contentRect.size.width, contentRect.size.height)];
+		NSLog(@"Moved Visible rect new bounds: %@", NSStringFromRect(NSMakeRect(0, contentRect.origin.y + scrollAmount, contentRect.size.width, contentRect.size.height)));
 	}
 }
 
@@ -986,6 +1012,8 @@
 - (void)updateContentViewTrackingAreaTrackMouseMoved:(BOOL)trackMouseMoved {
 	NSView *contentView = self.window.contentView;
 	
+	NSLog(@"Updating content area tracking area for frame: %@, track mouse moved: %d", NSStringFromRect([[self window] frame]), trackMouseMoved);
+	
 	if (_contentViewTrackingArea) {
 		[contentView removeTrackingArea:_contentViewTrackingArea];
 		[_contentViewTrackingArea release];
@@ -1111,16 +1139,30 @@
 }
 
 
-- (void)_beginEventTracking {
+- (void)_beginTrackingWithEvent:(NSEvent *)event {
 //	BOOL keepOn = YES;
 //	BOOL restart = NO;
 	// NSSystemDefinedMask | NSApplicationDefinedMask | NSAppKitDefinedMask |
 	NSUInteger eventMask = NSMouseEnteredMask | NSMouseExitedMask | NSLeftMouseDownMask | NSLeftMouseUpMask | NSScrollWheelMask | NSKeyDownMask;
+	
+	if ([_owner receivesMouseMovedEvents]) {
+		[NSApp discardEventsMatchingMask:NSMouseMovedMask beforeEvent:event];
+		eventMask |= NSMouseMovedMask;
+	}
 
-	NSLog(@"starting runloop event tracking");
+	NSLog(@"\n\n \
+	--------------------------------------------------------\n \
+	 Starting tracking runloop mode on menu with frame: %@\n \
+	--------------------------------------------------------\n",
+		  NSStringFromRect([[self window] frame]));
+	
 	while (_keepTracking) {
 		NSEvent *theEvent = [NSApp nextEventMatchingMask:eventMask untilDate:[NSDate distantFuture] inMode:NSEventTrackingRunLoopMode dequeue:YES];
-//		NSLog(@"track event: %@", theEvent);
+
+		NSLog(@"New track event:\n\tEvent: %@\n\tMenu frame owning RunLoop: %@,\n\tMenu frame of occurred event: %@",
+			  theEvent,
+			  NSStringFromRect([[self window] frame]),
+			  NSStringFromRect([[theEvent window] frame]));
 		
 		NSWindow *eventWindow = [theEvent window];
 		NSEventType eventType = [theEvent type];
@@ -1140,9 +1182,17 @@
 //				CMMenu *menu = [(NSDictionary *)[theEvent userData] objectForKey:kUserDataMenuKey];
 				[self scrollWithActiveScroller:scroller];
 			} else if (menuEventType & CMMenuEventMouseMenu) {
+				CMMenu *menu = [(NSDictionary *)[theEvent userData] objectForKey:kUserDataMenuKey];
+				NSPoint mouseLocation = [theEvent locationInWindow];
+				mouseLocation = [eventWindow convertBaseToScreen:mouseLocation];
+				if (! NSPointInRect(mouseLocation, [[self window] frame])) {
+					if ([_owner supermenu] == menu)
+						[_owner endTracking];
+					[menu beginTrackingWithEvent:theEvent];
+				}
 //				CMMenu *menu = (CMMenu *)_owner;
 //				CMMenu *menu = [self menuToReciveEventWithWindow:eventWindow];
-				CMMenu *menu = [(NSDictionary *)[theEvent userData] objectForKey:kUserDataMenuKey];
+
 				[menu mouseEvent:theEvent];
 			}
 		
@@ -1185,23 +1235,28 @@
 			CMMenu *menu = [self menuToReciveEventWithWindow:[theEvent window]];
 			if (! menu) {
 				NSLog(@"Mouse down outside of menus. Stop tracking");
-				break;
+//				break;
+				[self endTracking];
 			}
 			
 			
 #pragma mark LeftMouseUp
 		} else if (eventType == NSLeftMouseUp) {
-			CMMenu *menu = [self menuToReciveEventWithWindow:[theEvent window]];
-			if (menu) {
+//			CMMenu *menu = [self menuToReciveEventWithWindow:[theEvent window]];
+//			if (menu) {
+			NSPoint mouseLocation = [theEvent locationInWindow];
+			mouseLocation = [eventWindow convertBaseToScreen:mouseLocation];
+			if (NSPointInRect(mouseLocation, [[self window] frame])) {
 				int i;
 				int lim = 10;
 				for (i = 0; i < lim; ++i) {
 //					CMMenuItem *item = [[CMMenuItem alloc] initWithTitle:@"New Item"];
 					CMMenuItem *item  = [[CMMenuItem alloc] initWithTitle:@"New Item With Image" andIcon:[NSImage imageNamed:NSImageNameBluetoothTemplate]];
 //					[menu addItem:item];
-					[menu insertItem:item atIndex:1];
+					[_owner insertItem:item atIndex:1];
 					[item release];
 				}
+			
 //				NSLog(@"Added new item: %@ to menu: %@", item, menu);
 				
 				
@@ -1210,6 +1265,7 @@
 //				NSRect newFrame = NSMakeRect(frame.origin.x, frame.origin.y - 19, frame.size.width + 20, frame.size.height + 19);
 ////				[[window animator] setFrame:newFrame display:NO];
 //				[window setFrame:newFrame display:YES animate:YES];
+//			}
 			}
 
 #pragma mark ScrollWheel
@@ -1242,8 +1298,8 @@
 		}
 		
 		
-		if ([_owner receiveMouseMovedEvents]) {
-			if (! (eventMask & NSMouseMovedMask)) {
+		if ([_owner receivesMouseMovedEvents]) {
+			if (! (eventMask & NSMouseMovedMask)) {		// if mask is not already set
 				// Before we start tracking mouse moved events remove any pending events of this
 				// type in queue. Otherwise faux moved events generated previously will disrupt.
 				[NSApp discardEventsMatchingMask:NSMouseMovedMask beforeEvent:theEvent];
@@ -1254,7 +1310,7 @@
 		}
 			
 		
-//		NSLog(@"event loop, and we track mouse: %d", ((eventMask & NSMouseMovedMask) != 0));
+		NSLog(@"event loop, and we track mouse moved: %d", ((eventMask & NSMouseMovedMask) != 0));
 		
 	
 //		[[self window] sendEvent:theEvent];
