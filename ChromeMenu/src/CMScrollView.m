@@ -14,6 +14,10 @@ const short down = 1;
 
 @implementation CMScrollView
 
+//- (void)drawRect:(NSRect)dirtyRect {
+//	[[NSColor greenColor] set];
+//	NSFrameRect([self bounds]);
+//}
 
 - (void)scrollWheel:(NSEvent *)theEvent {
 	CGFloat deltaY = theEvent.deltaY;

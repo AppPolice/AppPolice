@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="4457.6" systemVersion="12E55" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="4510" systemVersion="12F37" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment defaultVersion="1070" identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="4457.6"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="4510"/>
     </dependencies>
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="NSViewController">
@@ -26,7 +26,7 @@
                     <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="NSActionTemplate" id="lso-sP-BpT"/>
                 </imageView>
                 <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="A4C-9G-kSL">
-                    <rect key="frame" x="43" y="2" width="144" height="18"/>
+                    <rect key="frame" x="43" y="1" width="144" height="18"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Icon Menu Item Text" id="uLR-cz-qyV">
                         <font key="font" size="14" name="LucidaGrande"/>
@@ -36,7 +36,8 @@
                 </textField>
             </subviews>
             <constraints>
-                <constraint firstAttribute="centerY" secondItem="A4C-9G-kSL" secondAttribute="centerY" constant="1" id="1L2-lg-YUy"/>
+                <constraint firstAttribute="bottom" secondItem="A4C-9G-kSL" secondAttribute="bottom" constant="1" id="0GQ-CA-q1n"/>
+                <constraint firstItem="A4C-9G-kSL" firstAttribute="top" secondItem="bRu-6g-Rx1" secondAttribute="top" id="4DZ-dF-FzD"/>
                 <constraint firstItem="A4C-9G-kSL" firstAttribute="leading" secondItem="thr-du-n7f" secondAttribute="trailing" constant="10" id="FY3-jy-D8B"/>
                 <constraint firstItem="thr-du-n7f" firstAttribute="leading" secondItem="bRu-6g-Rx1" secondAttribute="leading" constant="21" id="e73-Zl-3IG"/>
                 <constraint firstAttribute="trailing" secondItem="A4C-9G-kSL" secondAttribute="trailing" priority="750" constant="24" id="jeA-KV-lE0"/>

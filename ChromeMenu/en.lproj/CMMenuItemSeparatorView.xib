@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="4457.6" systemVersion="12E55" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="4510" systemVersion="12F37" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment defaultVersion="1070" identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="4457.6"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="4510"/>
     </dependencies>
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="NSViewController">
@@ -15,11 +15,21 @@
         <customView id="qWO-cz-KF6" customClass="CMMenuItemSeparatorView">
             <rect key="frame" x="0.0" y="0.0" width="179" height="12"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+            <subviews>
+                <customView translatesAutoresizingMaskIntoConstraints="NO" id="dHH-fb-iTG">
+                    <rect key="frame" x="0.0" y="0.0" width="179" height="12"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="12" id="sFU-ys-ct9"/>
+                    </constraints>
+                </customView>
+            </subviews>
+            <constraints>
+                <constraint firstAttribute="trailing" secondItem="dHH-fb-iTG" secondAttribute="trailing" id="70q-m7-mqX"/>
+                <constraint firstItem="dHH-fb-iTG" firstAttribute="top" secondItem="qWO-cz-KF6" secondAttribute="top" id="OaF-iN-b7D"/>
+                <constraint firstAttribute="bottom" secondItem="dHH-fb-iTG" secondAttribute="bottom" id="a5f-Vh-idE"/>
+                <constraint firstItem="dHH-fb-iTG" firstAttribute="leading" secondItem="qWO-cz-KF6" secondAttribute="leading" id="g18-NS-3fB"/>
+            </constraints>
         </customView>
     </objects>
-    <classes>
-        <class className="CMMenuItemSeparatorView" superclassName="NSView">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/CMMenuItemSeparatorView.h"/>
-        </class>
-    </classes>
 </document>

@@ -125,4 +125,43 @@ extern void proc_cpulim_suspend_wait(void);		/* function returns only after limi
 }
 
 
+- (IBAction)startRunLoop1:(id)sender {
+	static BOOL keepRunning = false;
+	if (! keepRunning) {
+		keepRunning = true;
+		NSLog(@"Starting run loop 1");
+	} else {
+		keepRunning = false;
+		NSLog(@"Stopping run loop 1");
+	}
+
+	while (keepRunning) {
+		NSEvent *theEvent = [NSApp nextEventMatchingMask:NSMouseEnteredMask | NSLeftMouseDownMask untilDate:[NSDate distantFuture] inMode:NSEventTrackingRunLoopMode dequeue:YES];
+		
+		NSLog(@"run loop 1 event: %@", theEvent);
+		[[theEvent window] sendEvent:theEvent];
+	}
+}
+
+
+- (IBAction)startRunLoop2:(id)sender {
+	static BOOL keepRunning = false;
+	
+	if (! keepRunning) {
+		keepRunning = true;
+		NSLog(@"Starting run loop 2");
+	} else {
+		keepRunning = false;
+		NSLog(@"Stopping run loop 2");
+	}
+	while (keepRunning) {
+		NSEvent *theEvent = [NSApp nextEventMatchingMask:NSMouseEnteredMask | NSLeftMouseDownMask untilDate:[NSDate distantFuture] inMode:NSEventTrackingRunLoopMode dequeue:YES];
+		
+		NSLog(@"run loop 2 event: %@", theEvent);
+		[[theEvent window] sendEvent:theEvent];
+	}
+
+}
+
+
 @end

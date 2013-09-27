@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="4457.6" systemVersion="12E55" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="4510" systemVersion="12F37" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment defaultVersion="1070" identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="4457.6"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="4510"/>
     </dependencies>
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="CMMenu"/>
@@ -12,13 +12,13 @@
             <rect key="frame" x="0.0" y="0.0" width="251" height="21"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
             <subviews>
-                <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Aa3-6e-Het">
-                    <rect key="frame" x="216" y="3" width="15" height="15"/>
+                <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Aa3-6e-Het">
+                    <rect key="frame" x="0.0" y="5" width="8" height="8"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="NSAddTemplate" id="duM-TG-ryj"/>
                 </imageView>
-                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="vNp-Ty-cSW">
-                    <rect key="frame" x="17" y="2" width="194" height="17"/>
+                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="vNp-Ty-cSW">
+                    <rect key="frame" x="47" y="0.0" width="38" height="17"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Label" id="GQM-Af-yrk">
                         <font key="font" metaFont="system"/>
@@ -27,6 +27,12 @@
                     </textFieldCell>
                 </textField>
             </subviews>
+            <constraints>
+                <constraint firstItem="Aa3-6e-Het" firstAttribute="leading" secondItem="Pmz-6a-h98" secondAttribute="leading" id="i8Z-3z-png"/>
+                <constraint firstAttribute="bottom" secondItem="vNp-Ty-cSW" secondAttribute="bottom" id="iaW-uf-xpf"/>
+                <constraint firstItem="Aa3-6e-Het" firstAttribute="top" secondItem="Pmz-6a-h98" secondAttribute="top" constant="8" id="nvO-5y-WfD"/>
+                <constraint firstItem="vNp-Ty-cSW" firstAttribute="leading" secondItem="Aa3-6e-Het" secondAttribute="trailing" constant="42" id="oJK-zK-mIP"/>
+            </constraints>
             <connections>
                 <outlet property="icon" destination="Aa3-6e-Het" id="TS6-0x-UN4"/>
                 <outlet property="title" destination="vNp-Ty-cSW" id="0VY-KH-hN9"/>

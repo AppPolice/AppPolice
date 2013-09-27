@@ -50,7 +50,7 @@
 
 - (void)drawRect:(NSRect)dirtyRect {
 //	NSLog(@"Cell View draw rect called. Cell subviews: %@", [self subviews]);
-	NSLog(@"DRAW ItemView with rect: %@", NSStringFromRect([self frame]));
+//	NSLog(@"DRAW ItemView with rect: %@", NSStringFromRect([self frame]));
 //	NSLog(@"frame: %@", NSStringFromRect([self frame]));
 	
 
@@ -173,20 +173,20 @@
 //}
 
 
-- (void)mouseDown:(NSEvent *)theEvent {
-//	NSLog(@"View mouse down");
-//	NSLog(@"contstraints: %@", [self constraints]);
-//	NSLog(@"subview: %@", [self subviews]);
-//	NSView *documentView = [self superview];
-//	NSSize size = [documentView frame].size;
-//	[[documentView animator] setFrame:NSMakeRect(0, 0, size.width, size.height - 19)];
-	
-	[super mouseDown:theEvent];
-}
+//- (void)mouseDown:(NSEvent *)theEvent {
+////	NSLog(@"View mouse down");
+////	NSLog(@"contstraints: %@", [self constraints]);
+////	NSLog(@"subview: %@", [self subviews]);
+////	NSView *documentView = [self superview];
+////	NSSize size = [documentView frame].size;
+////	[[documentView animator] setFrame:NSMakeRect(0, 0, size.width, size.height - 19)];
+//	
+//	[super mouseDown:theEvent];
+//}
 
-- (void)rightMouseDown:(NSEvent *)theEvent {
-	NSLog(@"View right mouse down");
-}
+//- (void)rightMouseDown:(NSEvent *)theEvent {
+//	NSLog(@"View right mouse down");
+//}
 
 
 //- (void)updateTrackingAreas {
@@ -280,6 +280,20 @@
 	
 	[self addConstraints:constraints];
 	_submenuIconConstraints = [constraints retain];
+}
+
+
+- (void)fadeIn {
+	NSArray *subviews = [self subviews];
+//	NSLog(@"fade these subviews: %@", subviews);
+	
+	[NSAnimationContext beginGrouping];
+	[[NSAnimationContext currentContext] setDuration:0.3];
+	for (NSView *view in subviews) {
+		[view setAlphaValue:0.0];
+		[[view animator] setAlphaValue:1.0];
+	}
+	[NSAnimationContext endGrouping];
 }
 
 

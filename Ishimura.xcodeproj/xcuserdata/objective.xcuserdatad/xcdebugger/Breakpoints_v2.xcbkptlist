@@ -219,11 +219,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "ChromeMenu/src/CMMenu.m"
-            timestampString = "401305568.934355"
+            timestampString = "401908987.487927"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "153"
-            endingLineNumber = "153"
+            startingLineNumber = "162"
+            endingLineNumber = "162"
             landmarkName = "-init"
             landmarkType = "5">
          </BreakpointContent>
@@ -234,58 +234,12 @@
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "ChromeMenu/src/CMWindowController.m"
-            timestampString = "401793959.537049"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "391"
-            endingLineNumber = "391"
-            landmarkName = "-updateMenuScrollers"
-            landmarkType = "5">
-            <Locations>
-               <Location
-                  shouldBeEnabled = "No"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "-[CMWindowController updateTrackingAreasForVisibleRect:]"
-                  moduleName = "Ishimura"
-                  urlString = "file://localhost/Users/objective/Documents/Developer/Dev/cpulimX5.2/ChromeMenu/src/CMWindowController.m"
-                  timestampString = "395581607.163035"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "273"
-                  endingLineNumber = "273"
-                  offsetFromSymbolStart = "1180">
-               </Location>
-               <Location
-                  shouldBeEnabled = "No"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "-[CMWindowController updateTrackingAreasForVisibleRect:]"
-                  moduleName = "Ishimura"
-                  urlString = "file://localhost/Users/objective/Documents/Developer/Dev/cpulimX5.2/ChromeMenu/src/CMWindowController.m"
-                  timestampString = "395581607.163532"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "273"
-                  endingLineNumber = "273"
-                  offsetFromSymbolStart = "1584">
-               </Location>
-            </Locations>
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
             filePath = "ChromeMenu/src/CMMenu.m"
-            timestampString = "401793959.537049"
+            timestampString = "401908987.487927"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "499"
-            endingLineNumber = "499"
+            startingLineNumber = "529"
+            endingLineNumber = "529"
             landmarkName = "@implementation CMMenu"
             landmarkType = "3">
          </BreakpointContent>
@@ -297,59 +251,13 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "ChromeMenu/src/CMWindowController.m"
-            timestampString = "401793959.537049"
+            timestampString = "401896223.652153"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "328"
-            endingLineNumber = "328"
+            startingLineNumber = "368"
+            endingLineNumber = "368"
             landmarkName = "-layoutViews:"
             landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "ChromeMenu/src/CMWindowController.m"
-            timestampString = "401793959.537049"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "361"
-            endingLineNumber = "361"
-            landmarkName = "@implementation CMWindowController"
-            landmarkType = "3">
-            <Locations>
-               <Location
-                  shouldBeEnabled = "No"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "-[CMWindowController updateViews]"
-                  moduleName = "Ishimura"
-                  urlString = "file://localhost/Users/objective/Documents/Developer/Dev/cpulimX5.2/ChromeMenu/src/CMWindowController.m"
-                  timestampString = "396199296.460437"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "296"
-                  endingLineNumber = "296"
-                  offsetFromSymbolStart = "1051">
-               </Location>
-               <Location
-                  shouldBeEnabled = "No"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "-[CMWindowController updateViews]"
-                  moduleName = "Ishimura"
-                  urlString = "file://localhost/Users/objective/Documents/Developer/Dev/cpulimX5.2/ChromeMenu/src/CMWindowController.m"
-                  timestampString = "396199296.46101"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "296"
-                  endingLineNumber = "296"
-                  offsetFromSymbolStart = "1192">
-               </Location>
-            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -360,6 +268,22 @@
             continueAfterRunningActions = "No"
             symbolName = "malloc_error_break"
             moduleName = "">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "ChromeMenu/src/CMWindowController.m"
+            timestampString = "401909425.459701"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "647"
+            endingLineNumber = "647"
+            landmarkName = "-moveVisibleRectToRect:ignoreMouse:"
+            landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

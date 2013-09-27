@@ -21,7 +21,8 @@
 //}
 
 //- (void)drawRect:(NSRect)dirtyRect {
-//    // Drawing code here.
+//	[[NSColor blueColor] set];
+//	NSFrameRect([self bounds]);
 //}
 
 

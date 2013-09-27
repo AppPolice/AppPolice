@@ -27,6 +27,8 @@
 - (BOOL)isSelected;
 - (void)setSelected:(BOOL)selected;
 
+- (void)fadeIn;
+
 /**
  * @function needsTracking
  * @abstract Tells whether a view will have a tracking area created.

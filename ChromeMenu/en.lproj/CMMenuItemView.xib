@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="4457.6" systemVersion="12E55" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="4510" systemVersion="12F37" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment defaultVersion="1070" identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="4457.6"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="4510"/>
     </dependencies>
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="NSViewController">
@@ -17,8 +17,11 @@
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
             <subviews>
                 <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="rrg-Oi-Ai9">
-                    <rect key="frame" x="18" y="2" width="157" height="18"/>
+                    <rect key="frame" x="18" y="1" width="157" height="18"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="18" id="bzX-Fj-xX3"/>
+                    </constraints>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Menu Item Title" id="0FO-Mu-GEX">
                         <font key="font" size="14" name="LucidaGrande"/>
                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -27,25 +30,14 @@
                 </textField>
             </subviews>
             <constraints>
+                <constraint firstAttribute="bottom" secondItem="rrg-Oi-Ai9" secondAttribute="bottom" constant="1" id="E2o-ra-VbK"/>
+                <constraint firstItem="rrg-Oi-Ai9" firstAttribute="top" secondItem="awL-YU-2wg" secondAttribute="top" id="MKe-dw-9lR"/>
                 <constraint firstAttribute="trailing" secondItem="rrg-Oi-Ai9" secondAttribute="trailing" priority="750" constant="24" id="aPC-RD-VTU"/>
                 <constraint firstItem="rrg-Oi-Ai9" firstAttribute="leading" secondItem="awL-YU-2wg" secondAttribute="leading" constant="21" id="c4J-M1-v5b"/>
-                <constraint firstAttribute="centerY" secondItem="rrg-Oi-Ai9" secondAttribute="centerY" constant="1" id="qRk-bd-dMK"/>
             </constraints>
             <connections>
                 <outlet property="title" destination="rrg-Oi-Ai9" id="wi0-d1-w9g"/>
             </connections>
         </customView>
     </objects>
-    <classes>
-        <class className="CMMenuItemView" superclassName="NSView">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/CMMenuItemView.h"/>
-            <relationships>
-                <relationship kind="outlet" name="icon" candidateClass="NSImageView"/>
-                <relationship kind="outlet" name="title" candidateClass="NSTextField"/>
-            </relationships>
-        </class>
-        <class className="NSLayoutConstraint" superclassName="NSObject">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/NSLayoutConstraint.h"/>
-        </class>
-    </classes>
 </document>

@@ -121,6 +121,15 @@ typedef struct __submenu_tracking_event tracking_event_t;
  */
 - (NSRect)getBestFrameForMenuWindow;
 
+/**
+ * @discussion If provided item is not in menu's visible area, move it so the item becomes completely visible.
+ * @param item Menu item to make visible.
+ * @param ignoreMouse When menu visible area is moved into new position this option defines whether the item
+ *	currently lying underneath mouse cursor should be selected. More info on this option is in
+ *	[CMWindownController moveVisibleRectToRect:ignoreMouse:].
+ */
+- (void)moveVisibleAreaToDisplayItem:(CMMenuItem *)item ignoreMouse:(BOOL)ignoreMouse;
+
 - (void)selectPreviousItemAndShowSubmenu:(BOOL)showSubmenu;
 - (void)selectNextItemAndShowSubmenu:(BOOL)showSubmenu;
 - (void)selectFirstItemAndShowSubmenu:(BOOL)showSubmenu;
@@ -249,15 +258,6 @@ typedef struct __submenu_tracking_event tracking_event_t;
 	
 	[_menuItems insertObject:newItem atIndex:index];
 	[newItem setMenu:self];
-}
-
-
-- (void)addItem:(CMMenuItem *)newItem {
-	if (newItem == nil)
-		[NSException raise:NSInvalidArgumentException format:@"nil provided as Menu Item object."];
-	
-	[_menuItems addObject:newItem];
-	[newItem setMenu:self];
 	
 	// Menu will update our newly added item itself
 	if (_needsUpdate)
@@ -265,7 +265,34 @@ typedef struct __submenu_tracking_event tracking_event_t;
 	
 	// ..otherwise, we need to update it ourselves.
 	NSViewController *viewController = [self viewForItem:newItem];
-	[_underlyingWindowController addView:viewController];
+	[newItem setRepresentedView:viewController];
+	[viewController setRepresentedObject:newItem];
+	
+	[_underlyingWindowController insertView:viewController atIndex:index];
+	NSRect frame = [self getBestFrameForMenuWindow];
+	[_underlyingWindowController updateFrame:frame ignoreMouse:NO];
+}
+
+
+- (void)addItem:(CMMenuItem *)newItem {
+	if (newItem == nil)
+		[NSException raise:NSInvalidArgumentException format:@"nil provided as Menu Item object."];
+
+	[self insertItem:newItem atIndex:[_menuItems count]];
+	
+//	[_menuItems addObject:newItem];
+//	[newItem setMenu:self];
+//	
+//	// Menu will update our newly added item itself
+//	if (_needsUpdate)
+//		return;
+//	
+//	// ..otherwise, we need to update it ourselves.
+//	NSViewController *viewController = [self viewForItem:newItem];
+//	[newItem setRepresentedView:viewController];
+//	[viewController setRepresentedObject:newItem];
+//
+//	[_underlyingWindowController addView:viewController];
 //	NSRect frame = [self getBestFrameForMenuWindow];
 //	[_underlyingWindowController updateFrame:frame ignoreMouse:NO];
 }
@@ -504,6 +531,8 @@ typedef struct __submenu_tracking_event tracking_event_t;
 - (NSRect)getBestFrameForMenuWindow {
 	NSRect frame;
 	NSSize intrinsicSize = [_underlyingWindowController intrinsicContentSize];
+	
+	NSLog(@"intrinsic size: %@", NSStringFromSize(intrinsicSize));
 	
 	// top menu
 	if (!_parentItem) {
@@ -747,6 +776,11 @@ typedef struct __submenu_tracking_event tracking_event_t;
 
 - (void)scrollWithActiveScroller:(CMMenuScroller *)scroller {
 	[_underlyingWindowController scrollWithActiveScroller:scroller];
+}
+
+
+- (void)moveVisibleAreaToDisplayItem:(CMMenuItem *)item ignoreMouse:(BOOL)ignoreMouse {
+	[_underlyingWindowController moveVisibleRectToRect:[item frame] ignoreMouse:ignoreMouse];
 }
 
 
@@ -1242,8 +1276,10 @@ typedef struct __submenu_tracking_event tracking_event_t;
 			[[selectedItem submenu] showAsSubmenuOf:selectedItem withOptions:CMMenuOptionIgnoreMouse];
 			[[selectedItem submenu] updateTrackingAreaWithOptions:CMMenuOptionTrackMouseMoved];
 			CMMenuItem *firstItem = [[selectedItem submenu] itemAtIndex:0];
-			if (firstItem)
+			if (firstItem) {
 				[firstItem select];
+				[[selectedItem submenu] moveVisibleAreaToDisplayItem:firstItem ignoreMouse:YES];
+			}
 			
 	//		[self installLocalMonitorForMouseMovedEvent];
 			[self setReceiveMouseMovedEvents:YES];
@@ -1279,7 +1315,8 @@ typedef struct __submenu_tracking_event tracking_event_t;
 	else
 		[previousItem select];
 //	[selectedItem deselect];
-	[_underlyingWindowController moveVisibleRectToRect:[previousItem frame] ignoreMouse:YES];
+//	[_underlyingWindowController moveVisibleRectToRect:[previousItem frame] ignoreMouse:YES];
+	[self moveVisibleAreaToDisplayItem:previousItem ignoreMouse:YES];
 }
 
 
@@ -1305,7 +1342,8 @@ typedef struct __submenu_tracking_event tracking_event_t;
 		[previousItem selectWithDelayForSubmenu:SUBMENU_POPUP_DELAY_DEFAULT];
 	else
 		[previousItem select];
-	[_underlyingWindowController moveVisibleRectToRect:[previousItem frame] ignoreMouse:YES];
+//	[_underlyingWindowController moveVisibleRectToRect:[previousItem frame] ignoreMouse:YES];
+	[self moveVisibleAreaToDisplayItem:previousItem ignoreMouse:YES];
 }
 
 
