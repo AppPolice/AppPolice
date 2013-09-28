@@ -20,6 +20,8 @@ const short down = 1;
 //}
 
 - (void)scrollWheel:(NSEvent *)theEvent {
+//	NSLog(@"event: %@", theEvent);
+	
 	CGFloat deltaY = theEvent.deltaY;
 	CGFloat lineHeight = [self lineScroll];
 //	CGFloat yOrigin = NSMinY([[self contentView] bounds]);

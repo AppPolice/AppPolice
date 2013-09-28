@@ -25,6 +25,7 @@ typedef NSUInteger CMMenuAnimationOptions;
 @interface CMMenu : NSObject
 {
 	@private
+	NSString *_title;
 	CMMenu *_supermenu;
 //	IBOutlet ChromeMenuUnderlyingWindow *_underlyingWindow;
 //	IBOutlet ChromeMenuUnderlyingView *_underlyingView;
@@ -33,7 +34,14 @@ typedef NSUInteger CMMenuAnimationOptions;
 	NSMutableArray *_menuItems;
 }
 
-//- (id)initWithItems:(NSArray *)items;
+
+/* Designated initializer.  If this menu is used as a submenu of an item in the application's main menu, then the title is what appears in the menu bar.  Otherwise, the title is ignored.  Do not pass nil (an exception will result), but you may pass an empty string.
+ */
+- (id)initWithTitle:(NSString *)aTitle;
+
+/* Set and get the menu's title.  The titles of the submenus of the application's main menu items appear in the menu bar. */
+- (void)setTitle:(NSString *)aString;
+- (NSString *)title;
 
 
 
@@ -72,6 +80,13 @@ typedef NSUInteger CMMenuAnimationOptions;
 
 /* Appends an item to the end of the menu.  A nil item will raise an exception. */
 - (void)addItem:(CMMenuItem *)newItem;
+
+
+/* Removes the item at the given index, which must be at least zero and less than the number of items.  All subsequent items will shift down one index. */
+- (void)removeItemAtIndex:(NSInteger)index;
+
+/* Removes the item from the menu.  If the item is nil, or is not present in the receiver, an exception will be raised. */
+- (void)removeItem:(CMMenuItem *)item;
 
 
 /* Update only particular menu items */

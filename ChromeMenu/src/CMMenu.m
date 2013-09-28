@@ -17,6 +17,7 @@
 #import "CMMenuItemView+InternalMethods.h"
 #import "CMWindowController.h"
 #import "CMMenuKeyEventInterpreter.h"
+#import "CMDebug.h"
 //#import "CMMenuItemBackgroundView.h"
 //#import "ChromeMenuUnderlyingWindow.h"
 //#import "ChromeMenuUnderlyingView.h"
@@ -146,10 +147,17 @@ typedef struct __submenu_tracking_event tracking_event_t;
 
 @implementation CMMenu
 
-- (id)init {
-	if (self = [super init]) {
-		[NSBundle loadNibNamed:[self className] owner:self];
+- (id)initWithTitle:(NSString *)aTitle {
+	if (aTitle == nil) {
+		[NSException raise:NSInvalidArgumentException format:@"nil provided as title for menu."];
+		return nil;
+	}
+	
+	self = [super init];
+	if (self) {
+//		[NSBundle loadNibNamed:[self className] owner:self];
 //		_displayedFirstTime = NO;
+		_title = [aTitle copy];
 		_needsUpdate = YES;
 		_minimumWidth = 0;
 		_menuHorizontalAlignment = CMMenuAlignedLeft;
@@ -173,6 +181,11 @@ typedef struct __submenu_tracking_event tracking_event_t;
 	return self;
 }
 
+
+- (id)init {
+	return [self initWithTitle:@""];
+}
+
 //- (id)initWithItems:(NSArray *)items {
 //	if (self = [super init]) {
 //		[NSBundle loadNibNamed:[self className] owner:self];
@@ -184,6 +197,7 @@ typedef struct __submenu_tracking_event tracking_event_t;
 //}
 
 - (void)dealloc {
+	[_title release];
 	[_menuItems release];
 //	if (_itemsViewRegisteredNib) {
 //		[_itemsViewRegisteredNib release];
@@ -201,9 +215,19 @@ typedef struct __submenu_tracking_event tracking_event_t;
 }
 
 - (void)awakeFromNib {
-	NSLog(@"%@ awakeFromNib", [self className]);
+	XLog3("%@ awakeFromNib", [self className]);
 }
 
+
+
+- (NSString *)title {
+	return _title;
+}
+
+
+- (void)setTitle:(NSString *)aString {
+	_title = [aString copy];
+}
 
 
 - (CMMenu *)supermenu {
@@ -298,6 +322,45 @@ typedef struct __submenu_tracking_event tracking_event_t;
 //	[_underlyingWindowController addView:viewController];
 //	NSRect frame = [self getBestFrameForMenuWindow];
 //	[_underlyingWindowController updateFrame:frame ignoreMouse:NO];
+}
+
+
+- (void)removeItemAtIndex:(NSInteger)index {
+	if (index >= [_menuItems count] || index < 0) {
+		[NSException raise:NSInvalidArgumentException format:@"Provided index out of bounds for Menu's -removeItemAtIndex:"];
+		return;
+	}
+	
+	[_menuItems removeObjectAtIndex:index];
+	
+	// Menu will update items itself
+	if (_needsUpdate)
+		return;
+
+	[_underlyingWindowController removeViewAtIndex:index];
+	NSRect frame = [self getBestFrameForMenuWindow];
+	[_underlyingWindowController updateFrame:frame options:CMMenuOptionDefault];
+}
+
+
+- (void)removeItem:(CMMenuItem *)item {
+	if (! item) {
+		[NSException raise:NSInvalidArgumentException format:@"nil provided for Menu -removeItem:"];
+		return;
+	}
+	
+	NSUInteger i;
+	NSUInteger count = [_menuItems count];
+	
+	if (! count)
+		return;
+	
+	for (i = 0; i < count; ++i) {
+		if (item == [_menuItems objectAtIndex:i]) {
+			[self removeItemAtIndex:i];
+			break;
+		}
+	}
 }
 
 
@@ -842,13 +905,13 @@ typedef struct __submenu_tracking_event tracking_event_t;
 
 
 - (void)mouseEvent:(NSEvent *)theEvent {
-//	NSLog(@"mouse enter menu: %@", theEvent);
 	NSUInteger eventType = [theEvent type];
 	NSPoint mouseLocation = [theEvent locationInWindow];	// relative to menu's window
 	mouseLocation = [self convertPointToScreen:mouseLocation];
 
 	
 	if (eventType == NSMouseEntered) {
+		NSLog(@"mouse ENTER menu: %@", theEvent);
 		
 		/*
 		 * Possible Events:
@@ -861,7 +924,7 @@ typedef struct __submenu_tracking_event tracking_event_t;
 		CMMenuItem *mousedItem = [self itemAtPoint:mouseLocation];
 		if (_activeSubmenu) {				// 1.
 			if (mousedItem && mousedItem == [_activeSubmenu parentItem]) {	// 1.a
-				if ([_activeSubmenu activeSubmenu])						// if submenu has active submenus -- close them
+				if ([_activeSubmenu activeSubmenu])							// if submenu has active submenus -- close them
 					[[_activeSubmenu activeSubmenu] cancelTrackingWithoutAnimation];
 			} else
 				[_activeSubmenu cancelTrackingWithoutAnimation];		// 1.b.
@@ -898,56 +961,49 @@ typedef struct __submenu_tracking_event tracking_event_t;
 
 //		CMMenu *menu = self;
 		
-		NSLog(@"Mouse MOVED event:\n\tMenu frame that captured event: %@,\n\tMenu frame that has mouse: %@, \n\tlocationInWin: %@, \n\tlocationinScreen: %@",
+		XLog3("Mouse MOVED in menu:\n\tMenu frame that owns RunLoop: %@,\n\tMenu frame with mouse: %@, \n\tMouse location: %@, \n\tMouse location on screen: %@",
 			  NSStringFromRect([self frame]),
 			  NSStringFromRect([menu frame]),
 			  NSStringFromPoint(mouseLocation),
 			  NSStringFromPoint(mouseLocationOnScreen));
 		
-//		while (menu) {
-//			if (NSPointInRect(mouseLocationInScreen, [menu frame])) {
-				CMMenuItem *selectedItem = [menu highlightedItem];
-				NSLog(@"selected item: %@", selectedItem);
-				CMMenuItem *mousedItem = [menu itemAtPoint:mouseLocationOnScreen];
-							
-				if (mousedItem)
-					NSLog(@"gottcha moused item: %@, selected item: %@", mousedItem, selectedItem);
-				
-				
-				if ([menu activeSubmenu]) {
-					if (mousedItem == [[menu activeSubmenu] parentItem]) {
-						CMMenu *activeSubmenuOfSubmenu = [[menu activeSubmenu] activeSubmenu];
-						if (activeSubmenuOfSubmenu) {
-							[activeSubmenuOfSubmenu cancelTrackingWithoutAnimation];
-						} else {
-							CMMenuItem *item = [[menu activeSubmenu] highlightedItem];
-							if (item)
-								[item deselect];
-						}
-						[[menu activeSubmenu] endTracking];
-					} else {
-						[[menu activeSubmenu] cancelTrackingWithoutAnimation];
-						if (mousedItem != selectedItem)
-							[mousedItem selectWithDelayForSubmenu:SUBMENU_POPUP_DELAY_DEFAULT];
-					}
+		CMMenuItem *selectedItem = [menu highlightedItem];
+		XLog3("Currently selected item: %@", selectedItem);
+		CMMenuItem *mousedItem = [menu itemAtPoint:mouseLocationOnScreen];
+					
+		if (mousedItem)
+			XLog3("Moused item: %@", mousedItem);
+		
+		
+		if ([menu activeSubmenu]) {
+			if (mousedItem == [[menu activeSubmenu] parentItem]) {
+				CMMenu *activeSubmenuOfSubmenu = [[menu activeSubmenu] activeSubmenu];
+				if (activeSubmenuOfSubmenu) {
+					[activeSubmenuOfSubmenu cancelTrackingWithoutAnimation];
 				} else {
-					if (mousedItem && ![mousedItem isSeparatorItem])
-						[mousedItem selectWithDelayForSubmenu:SUBMENU_POPUP_DELAY_DEFAULT];
-					else
-						[selectedItem deselect];
+					CMMenuItem *item = [[menu activeSubmenu] highlightedItem];
+					if (item)
+						[item deselect];
 				}
+				[[menu activeSubmenu] endTracking];
+			} else {
+				[[menu activeSubmenu] cancelTrackingWithoutAnimation];
+				if (mousedItem != selectedItem)
+					[mousedItem selectWithDelayForSubmenu:SUBMENU_POPUP_DELAY_DEFAULT];
+			}
+		} else {
+			if (mousedItem && ![mousedItem isSeparatorItem])
+				[mousedItem selectWithDelayForSubmenu:SUBMENU_POPUP_DELAY_DEFAULT];
+			else
+				[selectedItem deselect];
+		}
+		
+		if (! mousedItem) {
+			CMMenuScroller *scroller = [menu scrollerAtPoint:mouseLocationOnScreen];
+			if (scroller)
+				[menu scrollWithActiveScroller:scroller];
+		}
 				
-				if (! mousedItem) {
-					CMMenuScroller *scroller = [menu scrollerAtPoint:mouseLocationOnScreen];
-					if (scroller)
-						[menu scrollWithActiveScroller:scroller];
-				}
-				
-//				break;
-//			}
-			
-//			menu = [menu activeSubmenu];
-//		}
 	}
 }
 
@@ -1068,13 +1124,13 @@ typedef struct __submenu_tracking_event tracking_event_t;
 	/* Mouse moved in the opposite direction to the submenu */
 	if (event->menu_horizontal_alignment == CMMenuAlignedLeft) {
 		if (mouseLocation.x < event->event_origin.x) {
+			XLog2("Stop submenu tracking, reason: opposite direction");
 			[self stopTrackingSubmenuReasonSuccess:NO];
-			NSLog(@"Stop tracking, reason: opposite direction");
 			return;
 		}
 	} else if (mouseLocation.x > event->event_origin.x) {
+		XLog2("Stop submenu tracking, reason: opposite direction");
 		[self stopTrackingSubmenuReasonSuccess:NO];
-		NSLog(@"Stop tracking, reason: opposite direction");
 		return;
 	}
 	
@@ -1087,8 +1143,8 @@ typedef struct __submenu_tracking_event tracking_event_t;
 	/* when mouse is moving too slowly */
 	event->averageVelocity = (event->averageVelocity + mouseVelocity) / 2;
 	if (event->averageVelocity < 60) {
+		XLog2("Stop submenu tracking, reason: slow veloctiy");
 		[self stopTrackingSubmenuReasonSuccess:NO];
-		NSLog(@"Stop tracking, reason: slow veloctiy");
 		return;
 	}
 	
@@ -1116,8 +1172,8 @@ typedef struct __submenu_tracking_event tracking_event_t;
 				}
 				
 				if (((NSMinY(event->item_rect) - mouseLocation.y) / widthLeg) > event->tanAlpha) {
+					XLog2("Stop submenu tracking, reason: bottom left hypotenuse crossed at loc.: %@", NSStringFromPoint(mouseLocation));
 					[self stopTrackingSubmenuReasonSuccess:NO];
-					NSLog(@"Stop tracking, reason: bottom left hypotenuse crossed at loc.: %@", NSStringFromPoint(mouseLocation));
 					return;
 				}
 				
@@ -1127,8 +1183,8 @@ typedef struct __submenu_tracking_event tracking_event_t;
 				CGFloat targetVector = event->averageVelocity * event->averageDeltaX * multiplier;
 //				NSLog(@"Val: %f, deltaX: %f, close to submenu: %d", targetVector, event->averageDeltaX, mouseCloseToSubmenu);
 				if (ABS(targetVector) < 1000) {
+					XLog2("Stop submenu tracking, reason: moving not enough fast * correct direction.");
 					[self stopTrackingSubmenuReasonSuccess:NO];
-					NSLog(@"Stop tracking, reason: moving not enough fast * correct direction.");
 					return;
 				}
 
@@ -1144,16 +1200,16 @@ typedef struct __submenu_tracking_event tracking_event_t;
 				}
 				
 				if ((mouseLocation.y  - NSMaxY(event->item_rect)) / widthLeg > event->tanBeta) {
+					XLog2("Stop submenu tracking, reason: top left hypotenuse crossed at loc.: %@", NSStringFromPoint(mouseLocation));
 					[self stopTrackingSubmenuReasonSuccess:NO];
-					NSLog(@"Stop tracking, reason: top left hypotenuse crossed at loc.: %@", NSStringFromPoint(mouseLocation));
 					return;
 				}
 				
 				CGFloat targetVector = event->averageVelocity * event->averageDeltaX;
 //				NSLog(@"Val: %f, deltaX: %f", targetVector, averageDeltaX);
 				if (ABS(targetVector) < 4000) {
+					XLog2("Stop submenu tracking, reason: top direction moving not enough fast * correct direction.");
 					[self stopTrackingSubmenuReasonSuccess:NO];
-					NSLog(@"Stop tracking, reason: top direction moving not enough fast * correct direction.");
 					return;
 				}
 			}
@@ -1183,8 +1239,8 @@ typedef struct __submenu_tracking_event tracking_event_t;
 				mouseCrossedHypotenuse = (((mouseLocation.y - NSMaxY(event->item_rect)) / widthLeg) > event->tanBeta);
 			}
 			if (mouseCrossedHypotenuse) {
+				XLog2("Stop submenu tracking, reason: (menu aligned BOTTOM) hypotenuse crossed at loc.: %@", NSStringFromPoint(mouseLocation));
 				[self stopTrackingSubmenuReasonSuccess:NO];
-				NSLog(@"Stop tracking, reason: (menu aligned BOTTOM) hypotenuse crossed at loc.: %@", NSStringFromPoint(mouseLocation));
 				return;
 			}
 			
@@ -1194,8 +1250,8 @@ typedef struct __submenu_tracking_event tracking_event_t;
 			CGFloat targetVector = event->averageVelocity * event->averageDeltaX * multiplier;
 //				NSLog(@"Val: %f, deltaX: %f, close to submenu: %d", targetVector, event->averageDeltaX, mouseCloseToSubmenu);
 			if (ABS(targetVector) < 1000) {
+				XLog2("Stop submenu tracking, reason: (menu aligned BOTTOM) moving not enough fast * correct direction.");
 				[self stopTrackingSubmenuReasonSuccess:NO];
-				NSLog(@"Stop tracking, reason: (menu aligned BOTTOM) moving not enough fast * correct direction.");
 				return;
 			}
 
@@ -1206,8 +1262,8 @@ typedef struct __submenu_tracking_event tracking_event_t;
 		
 //		if (event->submenu_vertical_alignment == CMMenuAlignedTop) {
 			if (mouseLocation.y - NSMaxY(event->submenu_rect) > 60 || NSMinY(event->submenu_rect) - mouseLocation.y > 60) {
+				XLog2("Stop submenu tracking, reason: mouse went vertically too far");
 				[self stopTrackingSubmenuReasonSuccess:NO];
-				NSLog(@"Stop tracking, reason: mouse went vertically too far");
 				return;
 			}
 //		} else {
@@ -1217,8 +1273,8 @@ typedef struct __submenu_tracking_event tracking_event_t;
 		if (event->timeLeftMenuBounds == 0)
 			event->timeLeftMenuBounds = timestamp;
 		else if (timestamp - event->timeLeftMenuBounds > 0.5) {
+			XLog2("Stop submenu tracking, reason: time elapsed while out of menu bounds.");
 			[self stopTrackingSubmenuReasonSuccess:NO];
-			NSLog(@"Stop tracking, reason: time elapsed while out of menu bounds.");
 			return;
 		}
 	}
@@ -1236,7 +1292,10 @@ typedef struct __submenu_tracking_event tracking_event_t;
 		
 //	NSLog(@"time: %f", timestamp - submenu_event->timestamp);
 //	NSLog(@"origin: %@", NSStringFromPoint(submenu_event->event_origin));
-	NSLog(@"mouse location: %@, velocity: %f, average velocity: %f", NSStringFromPoint(mouseLocation), mouseVelocity, event->averageVelocity);
+	XLog3("Submenu tracking loop stats:\n\tMouse location: %@\n\tVelocity: %f\n\tAverage velocity: %f",
+		  NSStringFromPoint(mouseLocation),
+		  mouseVelocity,
+		  event->averageVelocity);
 	
 	event->timestamp = timestamp;
 	event->last_mouse_location = mouseLocation;
@@ -1289,7 +1348,7 @@ typedef struct __submenu_tracking_event tracking_event_t;
  */
 - (void)moveUp:(NSEvent *)originalEvent {
 //	CMMenu *menu = [self menuToReceiveKeyEvent];
-	NSLog(@"MOVE UP!!");
+//	NSLog(@"MOVE UP!!");
 //	[self installLocalMonitorForMouseMovedEvent];
 	[self setReceivesMouseMovedEvents:YES];
 //	[menu selectPreviousItemAndShowSubmenu:NO];
@@ -1308,7 +1367,7 @@ typedef struct __submenu_tracking_event tracking_event_t;
 //- (void)moveDown:(id)sender {
 - (void)moveDown:(NSEvent *)originalEvent {
 //	CMMenu *menu = [self menuToReceiveKeyEvent];
-	NSLog(@"MOVE DOWN!!");
+//	NSLog(@"MOVE DOWN!!");
 //	[self installLocalMonitorForMouseMovedEvent];
 	[self setReceivesMouseMovedEvents:YES];
 //	[menu selectNextItemAndShowSubmenu:NO];
@@ -1420,7 +1479,7 @@ typedef struct __submenu_tracking_event tracking_event_t;
 	if (! previousItem)
 		return;
 	
-	NSLog(@"deselecting selected item: %@ and selecting: %@", selectedItem, previousItem);
+//	NSLog(@"deselecting selected item: %@ and selecting: %@", selectedItem, previousItem);
 //	[selectedItem deselect];
 	if (showSubmenu)
 		[previousItem selectWithDelayForSubmenu:SUBMENU_POPUP_DELAY_DEFAULT];
@@ -1490,146 +1549,6 @@ typedef struct __submenu_tracking_event tracking_event_t;
 	
 //	_receiveMouseMovedEvents = receiveEvents;
 }
-
-
-//- (void)mouseMoved:(NSEvent *)theEvent {
-//	
-//}
-/*
-
-- (void)installLocalMonitorForMouseMovedEvent {
-	if (! _localMouseMoveEventMonitor) {
-		CMMenu *menu = self;
-		while (menu) {
-			[menu updateTrackingAreaWithOptions:CMMenuOptionTrackMouseMoved];
-			menu = [menu activeSubmenu];
-		}
-		
-		
-		_localMouseMoveEventMonitor = [NSEvent addLocalMonitorForEventsMatchingMask:NSMouseMovedMask handler:^(NSEvent *theEvent) {
-			[NSEvent removeMonitor:_localMouseMoveEventMonitor];
-			_localMouseMoveEventMonitor = nil;
-			CMMenu *menu = self;
-			while (menu) {
-				[menu updateTrackingAreaWithOptions:CMMenuOptionDefault];
-				menu = [menu activeSubmenu];
-			}
-			
-			
-//			[self returnFocusToMouseWithEvent:theEvent];
-			
-			NSLog(@"MONITOR :: mouse moved event: %@, location: %@", theEvent, NSStringFromPoint([theEvent locationInWindow]));
-			
-			NSPoint mouseLocation = [theEvent locationInWindow];
-			//			NSPoint mouseLocationInScreen = [self convertPointToScreen:mouseLocation];
-			NSPoint mouseLocationInScreen = [[theEvent window] convertBaseToScreen:mouseLocation];
-//			CMMenu *menu = self;
-			menu = self;
-			
-			NSLog(@"root menu frame: %@,\nwin: %@, \nlocationInWin: %@, \nlocationinScreen: %@",
-				  NSStringFromRect([menu frame]),
-				  [theEvent window],
-				  NSStringFromPoint(mouseLocation),
-				  NSStringFromPoint(mouseLocationInScreen));
-			
-			while (menu) {
-				if (NSPointInRect(mouseLocationInScreen, [menu frame])) {
-					CMMenuItem *selectedItem = [menu highlightedItem];
-					NSLog(@"selected item: %@", selectedItem);
-					CMMenuItem *mousedItem = [menu itemAtPoint:mouseLocationInScreen];
-					
-//					CMMenu *activeSubmenu = [menu activeSubmenu];
-//					while (activeSubmenu) {
-//						CMMenuItem *activeSubmenuSelectedItem = [activeSubmenu highlightedItem];
-//						if (activeSubmenuSelectedItem)
-//							[activeSubmenuSelectedItem deselect];
-//						[activeSubmenu cancelTrackingWithoutAnimation];
-//						activeSubmenu = [activeSubmenu activeSubmenu];
-//					}
-
-					if (mousedItem)
-						NSLog(@"gottcha moused item: %@, selected item: %@", mousedItem, selectedItem);
-
-					
-					if ([menu activeSubmenu]) {
-						if (mousedItem == [[menu activeSubmenu] parentItem]) {
-							CMMenu *activeSubmenuOfSubmenu = [[menu activeSubmenu] activeSubmenu];
-							if (activeSubmenuOfSubmenu) {
-								[activeSubmenuOfSubmenu cancelTrackingWithoutAnimation];
-							} else {
-								CMMenuItem *item = [[menu activeSubmenu] highlightedItem];
-								if (item)
-									[item deselect];
-							}
-						} else {
-							[[menu activeSubmenu] cancelTrackingWithoutAnimation];
-							if (mousedItem != selectedItem)
-								[mousedItem selectWithDelayForSubmenu:SUBMENU_POPUP_DELAY_DEFAULT];
-						}
-					} else {
-						if (mousedItem)
-							[mousedItem selectWithDelayForSubmenu:SUBMENU_POPUP_DELAY_DEFAULT];
-						else
-							[selectedItem deselect];
-					}
-					
-					if (! mousedItem) {
-						CMMenuScroller *scroller = [menu scrollerAtPoint:mouseLocationInScreen];
-						if (scroller)
-							[menu scrollWithActiveScroller:scroller];
-					}
-					
-					break;
-				}
-				
-				menu = [menu activeSubmenu];
-			}
-			
-			return theEvent;
-		}];
-		
-	}
-}
-*/
-
-//- (void)returnFocusToMouseWithEvent:(NSEvent *)theEvent {
-//	NSLog(@"MONITOR :: mouse moved event: %@, location: %@", theEvent, NSStringFromPoint([theEvent locationInWindow]));
-//	
-//	NSPoint mouseLocation = [theEvent locationInWindow];
-//	//			NSPoint mouseLocationInScreen = [self convertPointToScreen:mouseLocation];
-//	NSPoint mouseLocationInScreen = [[theEvent window] convertBaseToScreen:mouseLocation];
-//	CMMenu *menu = self;
-//	
-//	NSLog(@"root menu frame: %@,\nwin: %@, \nlocationInWin: %@, \nlocationinScreen: %@",
-//		  NSStringFromRect([menu frame]),
-//		  [theEvent window],
-//		  NSStringFromPoint(mouseLocation),
-//		  NSStringFromPoint(mouseLocationInScreen));
-//	
-//	while (menu) {
-//		if (NSPointInRect(mouseLocationInScreen, [menu frame])) {
-//			CMMenuItem *selectedItem = [menu highlightedItem];
-//			CMMenuItem *item = [menu itemAtPoint:mouseLocationInScreen];
-//			if (selectedItem != item)
-//				[selectedItem deselect];
-//			if (item)
-//				[item selectWithDelayForSubmenu:SUBMENU_POPUP_DELAY_DEFAULT];
-//			break;
-//		}
-//		
-//		menu = [menu activeSubmenu];
-//	}
-//	
-//}
-
-
-
-//NSEvent *(^myBlock)(NSEvent *) = ^(NSEvent *theEvent) {
-//	
-//	return theEvent;
-//};
-
-
 
 
 - (NSString *)description {

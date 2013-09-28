@@ -37,6 +37,7 @@
 
 - (void)insertView:(NSViewController *)viewController atIndex:(NSUInteger)index;
 - (void)addView:(NSViewController *)viewController;
+- (void)removeViewAtIndex:(NSUInteger)index;
 
 - (BOOL)isTracking;
 - (void)beginTrackingWithEvent:(NSEvent *)event;

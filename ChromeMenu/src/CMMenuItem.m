@@ -11,6 +11,7 @@
 #import "CMMenuItemView.h"
 #import "CMMenu+InternalMethods.h"
 #import "CMMenuItem+InternalMethods.h"
+#import "CMDebug.h"
 #import <objc/runtime.h>
 
 
@@ -200,11 +201,25 @@
 		
 		if (_isSelected) {
 			changeStatus = NO;
-			if ([[self menu] isTrackingSubmenu])
-				[[self menu] stopTrackingSubmenuReasonSuccess:YES];
-			else if ([self hasSubmenu]) {
-				[self performSelector:@selector(showItemSubmenu) withObject:nil afterDelay:SUBMENU_POPUP_DELAY_DEFAULT inModes:[NSArray arrayWithObject:NSEventTrackingRunLoopMode]];
-				_submenuIntervalIsSetToPopup = YES;
+//			if ([[self menu] isTrackingSubmenu]) {		// while tracking submenu, mouse returned to parent item
+//				[[self menu] stopTrackingSubmenuReasonSuccess:YES];
+//			} else if ([self hasSubmenu]) {
+//				BOOL alreadyShowingSubmenu = ([[self menu] activeSubmenu] && [[self menu] activeSubmenu] == _submenu);
+//					XLog("please show us submenu");
+//				[self performSelector:@selector(showItemSubmenu) withObject:nil afterDelay:SUBMENU_POPUP_DELAY_DEFAULT inModes:[NSArray arrayWithObject:NSEventTrackingRunLoopMode]];
+//				_submenuIntervalIsSetToPopup = YES;
+//			}
+			
+			if ([self hasSubmenu]) {
+				if ([[self menu] isTrackingSubmenu]) {		// while tracking submenu, mouse returned to parent item
+					[[self menu] stopTrackingSubmenuReasonSuccess:YES];
+				} else {
+					CMMenu *activeSubmenu = [[self menu] activeSubmenu];
+					if ( !activeSubmenu && activeSubmenu != _submenu) {
+						[self performSelector:@selector(showItemSubmenu) withObject:nil afterDelay:SUBMENU_POPUP_DELAY_DEFAULT inModes:[NSArray arrayWithObject:NSEventTrackingRunLoopMode]];
+						_submenuIntervalIsSetToPopup = YES;
+					}
+				}
 			}
 				
 		} else {

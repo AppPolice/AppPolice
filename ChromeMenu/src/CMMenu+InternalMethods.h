@@ -52,10 +52,22 @@ typedef NSUInteger CMMenuOptions;
 - (BOOL)isTrackingSubmenu;
 - (void)startTrackingSubmenu:(CMMenu *)submenu forItem:(CMMenuItem *)item;
 - (void)stopTrackingSubmenuReasonSuccess:(BOOL)reasonSuccess;
-//- (void)startTrackingActiveSubmenu;
 - (void)updateTrackingAreaWithOptions:(CMMenuOptions)options;
 
+/**
+ * @abstract Returns YES if menu wants to receive Mouse Moved events. This value is checked on RunLoop
+ *	to decide whether Moved events will be captured and sent to menu.
+ */
 - (BOOL)receivesMouseMovedEvents;
+
+/**
+ * @abstract Set whether menu will receive Mouse Moved events.
+ * @discussion With current implementation of this method it doesn't mean menu will necesseraly begin
+ *	receiving moved events. If receiving menu's supermenu is not set to receive moved events, and mouse
+ *	is not inside receiving menu's frame the method will simply return. If receiving menu's supermenu is
+ *	set to receive moved events and mouse is not withing the menu's frame, menu will receive moved events
+ *	but it will not update its tracking area to generate moved events within itself.
+ */
 - (void)setReceivesMouseMovedEvents:(BOOL)receiveEvents;
 
 - (void)mouseEvent:(NSEvent *)theEvent;

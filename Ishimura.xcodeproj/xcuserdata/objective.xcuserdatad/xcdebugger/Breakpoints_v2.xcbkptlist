@@ -219,27 +219,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "ChromeMenu/src/CMMenu.m"
-            timestampString = "401998958.027678"
+            timestampString = "402070754.407623"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "163"
-            endingLineNumber = "163"
-            landmarkName = "-init"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "ChromeMenu/src/CMMenu.m"
-            timestampString = "401998958.027678"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "548"
-            endingLineNumber = "548"
+            startingLineNumber = "611"
+            endingLineNumber = "611"
             landmarkName = "@implementation CMMenu"
             landmarkType = "3">
          </BreakpointContent>
@@ -251,11 +235,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "ChromeMenu/src/CMWindowController.m"
-            timestampString = "401998958.027678"
+            timestampString = "402070754.407623"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "393"
-            endingLineNumber = "393"
+            startingLineNumber = "398"
+            endingLineNumber = "398"
             landmarkName = "-layoutViews:"
             landmarkType = "5">
          </BreakpointContent>
@@ -277,12 +261,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "ChromeMenu/src/CMMenu.m"
-            timestampString = "401999062.158574"
+            timestampString = "402070745.327316"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1353"
-            endingLineNumber = "1353"
-            landmarkName = "-moveRight:"
+            startingLineNumber = "329"
+            endingLineNumber = "329"
+            landmarkName = "-removeItemAtIndex:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -292,13 +276,13 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "ChromeMenu/src/CMMenu.m"
-            timestampString = "401999628.008093"
+            filePath = "ChromeMenu/src/CMWindowController.m"
+            timestampString = "402080300.967993"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "891"
-            endingLineNumber = "891"
-            landmarkName = "-mouseEvent:"
+            startingLineNumber = "1257"
+            endingLineNumber = "1257"
+            landmarkName = "-_beginTrackingWithEvent:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -308,13 +292,13 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "ChromeMenu/src/CMMenu.m"
-            timestampString = "401999696.401379"
+            filePath = "ChromeMenu/src/CMMenuItem.m"
+            timestampString = "402081374.232036"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1457"
-            endingLineNumber = "1457"
-            landmarkName = "-setReceivesMouseMovedEvents:"
+            startingLineNumber = "197"
+            endingLineNumber = "197"
+            landmarkName = "-shouldChangeItemSelectionStatusForEvent:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>

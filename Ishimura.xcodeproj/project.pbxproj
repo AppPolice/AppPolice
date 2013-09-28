@@ -69,6 +69,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		A005E2AC17F6B5D000B4FDB2 /* CMDebug.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = CMDebug.h; path = ChromeMenu/src/CMDebug.h; sourceTree = SOURCE_ROOT; };
 		A007EAEE1786B0DA00A7FE8D /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/MenuItemView.xib; sourceTree = "<group>"; };
 		A007EAEF1786B45A00A7FE8D /* CMTableCellVewOverride.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = CMTableCellVewOverride.h; path = Controllers/CMTableCellVewOverride.h; sourceTree = "<group>"; };
 		A007EAF01786B45A00A7FE8D /* CMTableCellVewOverride.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = CMTableCellVewOverride.m; path = Controllers/CMTableCellVewOverride.m; sourceTree = "<group>"; };
@@ -209,6 +210,7 @@
 				A0ED1244179016A900244C3D /* CMMenuItem+InternalMethods.h */,
 				A0F03057179A96FC000C767D /* CMMenuItemView+InternalMethods.h */,
 				A0FD2889179BE92900740A12 /* CMMenuEventTypes.h */,
+				A005E2AC17F6B5D000B4FDB2 /* CMDebug.h */,
 				A0ED123E179004D800244C3D /* CMWindowController.h */,
 				A0ED123F179004D800244C3D /* CMWindowController.m */,
 				A010F33E17847361003A9E92 /* ChromeMenuUnderlyingWindow.h */,

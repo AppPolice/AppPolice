@@ -7,14 +7,33 @@
 //
 
 #import "CMTableView.h"
-#import "CMMenuItemBackgroundView.h"
+//#import "CMMenuItemBackgroundView.h"
+#include "CMDebug.h"
+
+
 
 @implementation CMTableView
 
 
+- (void)someFunc {
+	int i = 3;
+	XLog("hello : %d", i);
+	XLog("this is string");
+	
+	XLog2("level 2");
+	XLog2("level 2, :%@", NSStringFromRect(NSMakeRect(0, 0, 100, 100)));
+	
+	XLog3("level 3, :%@", [NSString stringWithFormat:@"asdf %d", i]);
+	
+	
+	assert(33);
+}
+
 //- (void)drawRect:(NSRect)dirtyRect {
 //    // Drawing code here.
 //}
+
+/*
 
 - (void)mouseDown:(NSEvent *)theEvent {
 	[super mouseDown:theEvent];
@@ -50,7 +69,7 @@
 	NSLog(@"table view key down");
 }
 
-
+*/
 //- (BOOL)acceptsFirstMouse:(NSEvent *)theEvent {
 //	return YES;
 //}

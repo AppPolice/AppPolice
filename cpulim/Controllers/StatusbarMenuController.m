@@ -483,7 +483,7 @@ static NSString *tableData[] = {
 //					  [NSImage imageNamed:@"NSActionTemplate"], @"Icon",
 //					  @"Action Template", @"Text", nil]];
 
-	menu = [[CMMenu alloc] init];
+	menu = [[CMMenu alloc] initWithTitle:@"Root menu"];
 	
 //	CMMenuItem *item1 = [[CMMenuItem alloc] initWithTitle:@"Chat Template"];
 //	[item1 setIcon:[NSImage imageNamed:@"NSIChatTheaterTemplate"]];
@@ -550,7 +550,7 @@ static NSString *tableData[] = {
 	[viewProperties release];
 	
 
-	CMMenu *submenu = [[CMMenu alloc] init];
+	CMMenu *submenu = [[CMMenu alloc] initWithTitle:@"Submenu 1"];
 	CMMenuItem *submenuItem1 = [[CMMenuItem alloc] initWithTitle:@"ViewTemplate"];
 	[submenu addItem:submenuItem1];
 	[submenuItem1 release];
@@ -562,7 +562,7 @@ static NSString *tableData[] = {
 	[submenu release];
 	
 	
-	submenu = [[CMMenu alloc] init];
+	submenu = [[CMMenu alloc] initWithTitle:@"Submenu 2"];
 	[submenu setBorderRadius:0.0];
 	submenuItem1 = [[CMMenuItem alloc] initWithTitle:@"one"];
 	[submenu addItem:submenuItem1];
@@ -575,7 +575,7 @@ static NSString *tableData[] = {
 	[submenu release];
 	
 	
-	CMMenu *submenuOfSubmenu = [[CMMenu alloc] init];
+	CMMenu *submenuOfSubmenu = [[CMMenu alloc] initWithTitle:@"Submenu of submenu"];
 	submenuItem1 = [[CMMenuItem alloc] initWithTitle:@"one"];
 	[submenuOfSubmenu addItem:submenuItem1];
 	[submenuItem1 release];
@@ -589,7 +589,7 @@ static NSString *tableData[] = {
 
 	
 	
-	submenu = [[CMMenu alloc] init];
+	submenu = [[CMMenu alloc] initWithTitle:@"Submenu 3"];
 	submenuItem1 = [[CMMenuItem alloc] initWithTitle:@"three"];
 	[submenu addItem:submenuItem1];
 	[submenuItem1 release];
@@ -658,7 +658,7 @@ static NSString *tableData[] = {
 
 
 - (IBAction)addSmallMenu:(id)sender {
-	smallMenu = [[CMMenu alloc] init];
+	smallMenu = [[CMMenu alloc] initWithTitle:@"Small menu"];
 	
 	int i;
 	int count = 4;
