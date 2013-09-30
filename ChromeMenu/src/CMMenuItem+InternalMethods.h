@@ -11,8 +11,8 @@
 
 #include "CMMenuEventTypes.h"
 
-#define SUBMENU_POPUP_DELAY_DEFAULT 0.2
-#define SUBMENU_POPUP_DELAY_AFTER_TRACKING 0.15
+//#define SUBMENU_POPUP_DELAY_DEFAULT 0.2
+//#define SUBMENU_POPUP_DELAY_AFTER_TRACKING 0.15
 
 
 @interface CMMenuItem (CMMenuItemInternalMethods)
@@ -22,7 +22,6 @@
 - (void)setRepresentedView:(NSViewController *)viewController;
 
 - (void)setMenu:(CMMenu *)aMenu;
-
 
 - (BOOL)shouldChangeItemSelectionStatusForEvent:(CMMenuEventType)eventType;
 
@@ -43,6 +42,8 @@
  */
 - (void)selectWithDelayForSubmenu:(NSTimeInterval)delay;
 - (void)deselect;
+
+- (void)performAction;
 
 @end
 

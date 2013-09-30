@@ -41,6 +41,8 @@
 	if (! _delegate)
 		return;
 	
+	
+	
 //	_localEventMonitor = [NSEvent addLocalMonitorForEventsMatchingMask:(NSKeyDownMask | NSFlagsChangedMask) handler:^(NSEvent *theEvent) {
 		NSLog(@"key event to interpret: %@", theEvent);
 		

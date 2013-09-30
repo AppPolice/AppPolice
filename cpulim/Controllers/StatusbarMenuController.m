@@ -143,6 +143,9 @@ static NSString *tableData[] = {
 	}];
 }
 
+- (void)actionForItem2 {
+	NSLog(@"Item 2 pressed");
+}
 
 /*
  *
@@ -178,10 +181,14 @@ static NSString *tableData[] = {
 	//	NSLog(@"Action: %s", sel_getName([[statusbarMenu itemAtIndex:0] action]));
 	//	[[statusbarMenu itemAtIndex:0] setSubmenu:appsSubmenu];
 	
-//	NSMenuItem *item = [statusbarMenu itemAtIndex:4];
-//	NSMenu *aMenu = [item submenu];
+	NSMenuItem *item = [statusbarMenu itemAtIndex:4];
+	NSMenu *aMenu = [item submenu];
 //	[self performSelector:@selector(updateMenuFunc:) withObject:[statusbarMenuController statusbarMenu] afterDelay:4.0 inModes:[NSArray arrayWithObject:NSRunLoopCommonModes]];
 //	[self performSelector:@selector(updateMenu:) withObject:aMenu afterDelay:4.0];
+	NSMenuItem *newItem = [[NSMenuItem alloc] initWithTitle:@"Item with actions" action:@selector(actionForItem2) keyEquivalent:@""];
+	[newItem setTarget:self];
+	[aMenu insertItem:newItem atIndex:1];
+	
 
 	
 	
@@ -209,7 +216,7 @@ static NSString *tableData[] = {
 	NSLog(@"inserting new menu item");
 	NSLog(@"current run mode: %@", [[NSRunLoop currentRunLoop] currentMode]);
 	//	NSMenu *menu = [statusbarMenuController statusbarMenu];
-	NSMenuItem *newItem = [[NSMenuItem alloc] initWithTitle:@"New Item" action:NULL keyEquivalent:@""];
+	NSMenuItem *newItem = [[NSMenuItem alloc] initWithTitle:@"New Item" action:@selector(actionForItem2) keyEquivalent:@""];
 	[theMenu insertItem:newItem atIndex:1];
 	[theMenu update];
 }
@@ -453,7 +460,7 @@ static NSString *tableData[] = {
 
 
 - (IBAction)someAction:(NSMenuItem *)sender {
-	NSLog(@"clicked menu item: %@", sender);
+//	NSLog(@"clicked menu item: %@", sendepr);
 }
 
 
@@ -580,6 +587,9 @@ static NSString *tableData[] = {
 	[submenuOfSubmenu addItem:submenuItem1];
 	[submenuItem1 release];
 	submenuItem2 = [[CMMenuItem alloc] initWithTitle:@"two"];
+	CMMenuItem *item3 = [[CMMenuItem alloc] initWithTitle:@"three"];
+	[submenuOfSubmenu addItem:item3];
+	[item3 release];
 	[submenuOfSubmenu addItem:submenuItem2];
 	[submenuItem2 release];
 	
@@ -769,7 +779,7 @@ int flag = 0;
 
 
 - (void)notificationDeliver:(NSNotification *)notification {
-	NSLog(@"notification: %@", notification);
+//	NSLog(@"notification: %@", notification);
 	
 }
 

@@ -67,7 +67,7 @@ typedef NSUInteger CMMenuAnimationOptions;
 - (id)itemAtIndex:(NSInteger)index;
 
 /* Returns the index of the item in the menu, or -1 if the item is not present in the menu */
-- (NSInteger)indexOfItem:(CMMenuItem *)index;
+- (NSInteger)indexOfItem:(CMMenuItem *)item;
 
 /* Returns the item at given point */
 - (CMMenuItem *)itemAtPoint:(NSPoint)aPoint;
@@ -76,21 +76,19 @@ typedef NSUInteger CMMenuAnimationOptions;
 - (CMMenuItem *)parentItem;
 
 /* Inserts a menu item at the given index, which must be at least zero and no more than the receiver's item count.  If newItem is nil, this raises an exception. */
-- (void)insertItem:(CMMenuItem *)newItem atIndex:(NSUInteger)index;
+- (void)insertItem:(CMMenuItem *)newItem atIndex:(NSUInteger)index animate:(BOOL)animate;
 
 /* Appends an item to the end of the menu.  A nil item will raise an exception. */
 - (void)addItem:(CMMenuItem *)newItem;
+- (void)addItem:(CMMenuItem *)newItem animate:(BOOL)animate;
 
 
 /* Removes the item at the given index, which must be at least zero and less than the number of items.  All subsequent items will shift down one index. */
-- (void)removeItemAtIndex:(NSInteger)index;
+- (void)removeItemAtIndex:(NSInteger)index animate:(BOOL)animate;
 
 /* Removes the item from the menu.  If the item is nil, or is not present in the receiver, an exception will be raised. */
-- (void)removeItem:(CMMenuItem *)item;
+- (void)removeItem:(CMMenuItem *)item animate:(BOOL)animate;
 
-
-/* Update only particular menu items */
-- (void)updateItemsAtIndexes:(NSIndexSet *)indexes;
 
 /* this is an actual table reload, scary thing. must be taken care of */
 //- (void)update;

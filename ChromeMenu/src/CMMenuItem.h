@@ -19,6 +19,9 @@
 	CMMenu *_submenu;
 	BOOL _isSeparatorItem;
 	
+	id _target;
+    SEL _action;
+	
 	NSString *_viewNibName;
 //	NSString *_viewIdentifier;
 	NSArray *_viewPropertyNames;
@@ -30,8 +33,8 @@
 
 + (CMMenuItem *)separatorItem;
 
-- (id)initWithTitle:(NSString *)aTitle;
-- (id)initWithTitle:(NSString *)aTitle andIcon:(NSImage *)anImage;
+- (id)initWithTitle:(NSString *)aTitle action:(SEL)aSelector;
+- (id)initWithTitle:(NSString *)aTitle icon:(NSImage *)anImage action:(SEL)aSelector;
 
 /* returns menu to which item belongs */
 - (CMMenu *)menu;
@@ -48,5 +51,10 @@
 - (void)setIcon:(NSImage *)anImage;
 - (NSImage *)icon;
 - (BOOL)isSeparatorItem;
+
+- (void)setTarget:(id)anObject;
+- (id)target;
+- (void)setAction:(SEL)aSelector;
+- (SEL)action;
 
 @end

@@ -26,6 +26,11 @@
 	XLog3("level 3, :%@", [NSString stringWithFormat:@"asdf %d", i]);
 	
 	
+	EVAL_IF_DEBUG({
+		NSRunLoop *currentLoop = [NSRunLoop currentRunLoop];
+		XLog3("Hello from debug");
+	});
+	
 	assert(33);
 }
 

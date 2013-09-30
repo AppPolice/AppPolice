@@ -50,7 +50,7 @@
 
 - (void)drawRect:(NSRect)dirtyRect {
 //	NSLog(@"Cell View draw rect called. Cell subviews: %@", [self subviews]);
-//	NSLog(@"DRAW ItemView with rect: %@", NSStringFromRect([self frame]));
+	NSLog(@"DRAW ItemView with rect: %@", NSStringFromRect([self frame]));
 //	NSLog(@"frame: %@", NSStringFromRect([self frame]));
 	
 
@@ -292,6 +292,20 @@
 	for (NSView *view in subviews) {
 		[view setAlphaValue:0.0];
 		[[view animator] setAlphaValue:1.0];
+	}
+	[NSAnimationContext endGrouping];
+}
+
+
+- (void)fadeOutWithComplitionHandler:(void (^)(void))handler {
+	NSArray *subviews = [self subviews];
+	
+	[NSAnimationContext beginGrouping];
+	[[NSAnimationContext currentContext] setDuration:0.3];
+	[[NSAnimationContext currentContext] setCompletionHandler:handler];
+	for (NSView *view in subviews) {
+//		[view setAlphaValue:0.0];
+		[[view animator] setAlphaValue:0.0];
 	}
 	[NSAnimationContext endGrouping];
 }

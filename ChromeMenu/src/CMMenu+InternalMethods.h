@@ -6,9 +6,18 @@
 //  Copyright (c) 2013 Maksym Stefanchuk. All rights reserved.
 //
 
+
+#ifndef CMMenu_InternalMethods
+#define CMMenu_InternalMethods
+
 //#include "CMMenuEventTypes.h"
 #import "CMMenu.h"
 #import "CMMenuKeyEventInterpreter.h"
+
+
+#define SUBMENU_POPUP_DELAY_DEFAULT 0.2
+#define SUBMENU_POPUP_DELAY_AFTER_TRACKING 0.15
+
 
 enum {
 	CMMenuOptionDefault = 0x000,
@@ -25,12 +34,19 @@ typedef NSUInteger CMMenuOptions;
 
 @interface CMMenu (CMMenuInternalMethods) <CMMenuKeyEventInterpreterDelegate>
 
+- (void)setNeedsDisplay:(BOOL)needsDisplay;
+- (BOOL)needsDisplay;
 - (void)setSupermenu:(CMMenu *)aMenu;
 - (void)setParentItem:(CMMenuItem *)anItem;
 - (BOOL)isActive;
 - (void)setIsActive:(BOOL)isActive;
 - (CMMenu *)activeSubmenu;
 - (void)setActiveSubmenu:(CMMenu *)submenu;
+
+/* Update only particular menu items */
+//- (void)updateItemsAtIndexes:(NSIndexSet *)indexes;
+//- (void)updateFrame;
+- (void)setFrame:(NSRect)frameRect options:(CMMenuOptions)options display:(BOOL)display;
 
 //- (BOOL)isAncestorTo:(CMMenu *)menu;
 
@@ -93,3 +109,5 @@ typedef NSUInteger CMMenuOptions;
 - (void)scrollWithActiveScroller:(CMMenuScroller *)scroller;
 
 @end
+
+#endif

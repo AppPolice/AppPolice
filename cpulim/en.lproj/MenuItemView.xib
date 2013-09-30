@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="4457.6" systemVersion="12E55" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="4510" systemVersion="12F37" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment defaultVersion="1070" identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="4457.6"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="4510"/>
     </dependencies>
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="NSViewController">
@@ -33,6 +33,9 @@
                 <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="S0x-zd-dGG">
                     <rect key="frame" x="77" y="1" width="178" height="18"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="18" id="ksC-n7-Heh"/>
+                    </constraints>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Custom View" id="pJV-kp-Hxb">
                         <font key="font" size="14" name="LucidaGrande"/>
                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -42,12 +45,13 @@
             </subviews>
             <constraints>
                 <constraint firstAttribute="centerY" secondItem="oIG-VU-Lhj" secondAttribute="centerY" id="2Y6-5m-2Qo"/>
+                <constraint firstAttribute="bottom" secondItem="S0x-zd-dGG" secondAttribute="bottom" constant="1" id="3PT-xK-dYm"/>
+                <constraint firstItem="S0x-zd-dGG" firstAttribute="top" secondItem="eLX-ty-ncE" secondAttribute="top" id="42d-QU-gVF"/>
                 <constraint firstItem="oIG-VU-Lhj" firstAttribute="leading" secondItem="eLX-ty-ncE" secondAttribute="leading" constant="37" id="G6j-Xp-IeA"/>
                 <constraint firstAttribute="centerY" secondItem="Gbs-hI-eVb" secondAttribute="centerY" id="loe-KP-TYj"/>
                 <constraint firstAttribute="trailing" secondItem="S0x-zd-dGG" secondAttribute="trailing" constant="10" id="rtv-YT-N67"/>
                 <constraint firstItem="S0x-zd-dGG" firstAttribute="leading" secondItem="eLX-ty-ncE" secondAttribute="leading" constant="80" id="vcr-sY-w4j"/>
                 <constraint firstItem="Gbs-hI-eVb" firstAttribute="leading" secondItem="eLX-ty-ncE" secondAttribute="leading" constant="10" id="wTG-uS-eNb"/>
-                <constraint firstAttribute="centerY" secondItem="S0x-zd-dGG" secondAttribute="centerY" id="xe1-tx-Rd6"/>
             </constraints>
             <connections>
                 <outlet property="icon" destination="oIG-VU-Lhj" id="SAm-vl-YEW"/>
@@ -60,22 +64,4 @@
         <image name="NSActionTemplate" width="15" height="15"/>
         <image name="NSStatusNone" width="16" height="16"/>
     </resources>
-    <classes>
-        <class className="CMMenuItemView" superclassName="NSView">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/CMMenuItemView.h"/>
-            <relationships>
-                <relationship kind="outlet" name="icon" candidateClass="NSImageView"/>
-                <relationship kind="outlet" name="title" candidateClass="NSTextField"/>
-            </relationships>
-        </class>
-        <class className="CMTableCellVewOverride" superclassName="CMMenuItemView">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/CMTableCellVewOverride.h"/>
-            <relationships>
-                <relationship kind="outlet" name="statusIcon" candidateClass="NSImageView"/>
-            </relationships>
-        </class>
-        <class className="NSLayoutConstraint" superclassName="NSObject">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/NSLayoutConstraint.h"/>
-        </class>
-    </classes>
 </document>

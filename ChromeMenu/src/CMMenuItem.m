@@ -44,16 +44,17 @@
 
 
 
-- (id)initWithTitle:(NSString *)aTitle {
+- (id)initWithTitle:(NSString *)aTitle action:(SEL)aSelector {
 	if (self = [super init]) {
 		[self setTitle:aTitle];
 		_isSeparatorItem = NO;
+		_action = aSelector;
 	}
 	return self;
 }
 
-- (id)initWithTitle:(NSString *)aTitle andIcon:(NSImage *)anImage {
-	self = [self initWithTitle:aTitle];
+- (id)initWithTitle:(NSString *)aTitle icon:(NSImage *)anImage action:(SEL)aSelector {
+	self = [self initWithTitle:aTitle action:aSelector];
 	if (self) {
 		[self setIcon:anImage];
 	}
@@ -75,6 +76,9 @@
 }
 
 
+/*
+ *
+ */
 + (CMMenuItem *)separatorItem {
 	CMMenuItem *instance = [[self alloc] init];
 	if (instance) {
@@ -84,29 +88,68 @@
 }
 
 
+/*
+ *
+ */
 - (CMMenu *)menu {
 	return _menu;
 }
 
 
+/*
+ *
+ */
 - (void)setTitle:(NSString *)aTitle {
+	if (! aTitle) {
+		[NSException raise:NSInvalidArgumentException format:@"No title provided for a menu item -setTitle:"];
+		return;
+	}
+	
+	if (_title == aTitle)
+		return;
+	
+	if (_title)
+		[_title release];
 	_title = [aTitle copy];
+	if (_representedViewController)
+		[[(CMMenuItemView *)[_representedViewController view] title] setStringValue:aTitle];
+	
+	if ([_menu needsDisplay])	// menu will update item's title itself, no more actions are required.
+		return;
+	
+//	[_menu setFrame:NSZeroRect options:CMMenuOptionDefault display:YES];
+	[_menu setNeedsDisplay:YES];
 }
 
+
+/*
+ *
+ */
 - (NSString *)title {
 	return _title;
 }
 
+
+/*
+ *
+ */
 - (void)setIcon:(NSImage *)anImage {
 //	[anImage retain];
 	_icon = [anImage copy];
 }
 
+
+/*
+ *
+ */
 - (NSImage *)icon {
 	return _icon;
 }
 
 
+/*
+ *
+ */
 - (void)setSubmenu:(CMMenu *)submenu {
 //	if (submenu == nil)
 //		[NSException raise:NSInvalidArgumentException format:@"Bad argument provided in -%@", NSStringFromSelector(_cmd)];
@@ -128,27 +171,33 @@
 }
 
 
+/*
+ *
+ */
 - (CMMenu *)submenu {
 	return _submenu;
 }
 
+
+/*
+ *
+ */
 - (BOOL)hasSubmenu {
 	return (_submenu) ? YES : NO;
 }
 
 
-
-
-
-
-
-
-
-
+/*
+ *
+ */
 - (BOOL)isSeparatorItem {
 	return _isSeparatorItem;
 }
 
+
+/*
+ *
+ */
 //- (void)setViewFromNibNamed:(NSString *)nibName withIdentifier:(NSString *)identifier andPropertyNames:(NSArray *)propertyNames {
 - (void)setViewFromNibNamed:(NSString *)nibName andPropertyNames:(NSArray *)propertyNames {
 //	if (nibName == nil || [nibName isEqualToString:@""] || identifier == nil || [identifier isEqualToString:@""] || propertyNames == nil)
@@ -157,6 +206,43 @@
 	_viewNibName = [nibName retain];
 //	_viewIdentifier = [identifier retain];
 	_viewPropertyNames = [propertyNames retain];
+}
+
+
+/*
+ *
+ */
+- (void)setTarget:(id)anObject {
+	_target = anObject;	// not retained?
+}
+
+
+/*
+ *
+ */
+- (id)target {
+	return  _target;
+}
+
+
+/*
+ *
+ */
+- (void)setAction:(SEL)aSelector {
+	_action =  aSelector;
+}
+
+
+/*
+ *
+ */
+- (SEL)action {
+	return _action;
+}
+
+
+- (void)performAction {
+	
 }
 
 
@@ -289,6 +375,9 @@
 }
 
 
+/*
+ *
+ */
 - (void)showItemSubmenu {
 	_submenuIntervalIsSetToPopup = NO;
 //	[_submenu showMenu];

@@ -96,8 +96,8 @@ extern void proc_cpulim_suspend_wait(void);		/* function returns only after limi
 	NSLog(@"inserting new menu item");
 	NSLog(@"current run mode: %@", [[NSRunLoop currentRunLoop] currentMode]);
 //	NSMenu *menu = [statusbarMenuController statusbarMenu];
-	NSMenuItem *newItem = [[NSMenuItem alloc] initWithTitle:@"New Item" action:NULL keyEquivalent:@""];
-	NSMenuItem *newItem2 = [[NSMenuItem alloc] initWithTitle:@"New Item 2" action:NULL keyEquivalent:@""];
+	NSMenuItem *newItem = [[NSMenuItem alloc] initWithTitle:@"New Item" action:@selector(actionForMenuItem) keyEquivalent:@""];
+	NSMenuItem *newItem2 = [[NSMenuItem alloc] initWithTitle:@"New Item 2" action:@selector(actionForItem2) keyEquivalent:@""];
 	[menu insertItem:newItem atIndex:1];
 	[menu insertItem:newItem2 atIndex:2];
 	[newItem release];
@@ -114,6 +114,10 @@ extern void proc_cpulim_suspend_wait(void);		/* function returns only after limi
 
 }
 
+
+- (void)actionForMenuItem {
+	NSLog(@"item pressed");
+}
 
 - (IBAction)someAction:(id)sender {
 //	[self performSelector:@selector(delayedNSlog) withObject:nil afterDelay:5.0 inModes:[NSArray arrayWithObject:NSRunLoopCommonModes]];

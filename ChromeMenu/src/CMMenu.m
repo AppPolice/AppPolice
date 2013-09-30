@@ -80,7 +80,7 @@ typedef struct __submenu_tracking_event tracking_event_t;
 	BOOL _isTrackingSubmenu;
 		
 //	BOOL _displayedFirstTime;
-	BOOL _needsUpdate;		// flag used in context of full menu update.
+	BOOL _needsDisplay;		// flag used in context of full menu update.
 	
 	CMMenuAlignment _menuHorizontalAlignment;
 	CMMenuAlignment _menuVerticalAlignment;
@@ -158,7 +158,7 @@ typedef struct __submenu_tracking_event tracking_event_t;
 //		[NSBundle loadNibNamed:[self className] owner:self];
 //		_displayedFirstTime = NO;
 		_title = [aTitle copy];
-		_needsUpdate = YES;
+		_needsDisplay = YES;
 		_minimumWidth = 0;
 		_menuHorizontalAlignment = CMMenuAlignedLeft;
 		_menuVerticalAlignment = CMMenuAlignedTop;
@@ -269,13 +269,30 @@ typedef struct __submenu_tracking_event tracking_event_t;
 	return (_parentItem) ? _parentItem : nil;
 }
 
-- (NSInteger)indexOfItem:(CMMenuItem *)index {
-	// TODO: need implement
-	return 0;
+- (NSInteger)indexOfItem:(CMMenuItem *)item {
+	if (! item)
+		return -1;
+	
+	NSUInteger i;
+	NSUInteger count = [_menuItems count];
+	
+	if (! count)
+		return -1;
+	
+	for (i = 0; i < count; ++i) {
+		if (item == [_menuItems objectAtIndex:i]) {
+			return i;
+		}
+	}
+	
+	return -1;
 }
 
 
-- (void)insertItem:(CMMenuItem *)newItem atIndex:(NSUInteger)index {
+/*
+ *
+ */
+- (void)insertItem:(CMMenuItem *)newItem atIndex:(NSUInteger)index animate:(BOOL)animate {
 	if (newItem == nil)
 		[NSException raise:NSInvalidArgumentException format:@"nil provided as Menu Item object."];
 
@@ -286,7 +303,7 @@ typedef struct __submenu_tracking_event tracking_event_t;
 	[newItem setMenu:self];
 	
 	// Menu will update our newly added item itself
-	if (_needsUpdate)
+	if (_needsDisplay)
 		return;
 	
 	// ..otherwise, we need to update it ourselves.
@@ -294,56 +311,98 @@ typedef struct __submenu_tracking_event tracking_event_t;
 	[newItem setRepresentedView:viewController];
 	[viewController setRepresentedObject:newItem];
 	
-	[_underlyingWindowController insertView:viewController atIndex:index];
-	NSRect frame = [self getBestFrameForMenuWindow];
-//	[_underlyingWindowController updateFrame:frame ignoreMouse:NO];
-	[_underlyingWindowController updateFrame:frame options:CMMenuOptionDefault];
+	if (! _isActive)
+		animate = NO;
+	
+	[_underlyingWindowController insertView:viewController atIndex:index animate:animate];
+//	NSRect frame = [self getBestFrameForMenuWindow];
+//	[_underlyingWindowController updateFrame:frame options:CMMenuOptionDefault];
+	if (_isActive)
+		[self setFrame:NSZeroRect options:CMMenuOptionDefault display:NO];
 }
 
 
+/*
+ *
+ */
 - (void)addItem:(CMMenuItem *)newItem {
 	if (newItem == nil)
 		[NSException raise:NSInvalidArgumentException format:@"nil provided as Menu Item object."];
-
-	[self insertItem:newItem atIndex:[_menuItems count]];
 	
-//	[_menuItems addObject:newItem];
-//	[newItem setMenu:self];
-//	
-//	// Menu will update our newly added item itself
-//	if (_needsUpdate)
-//		return;
-//	
-//	// ..otherwise, we need to update it ourselves.
-//	NSViewController *viewController = [self viewForItem:newItem];
-//	[newItem setRepresentedView:viewController];
-//	[viewController setRepresentedObject:newItem];
-//
-//	[_underlyingWindowController addView:viewController];
-//	NSRect frame = [self getBestFrameForMenuWindow];
-//	[_underlyingWindowController updateFrame:frame ignoreMouse:NO];
+	[self insertItem:newItem atIndex:[_menuItems count] animate:NO];
 }
 
 
-- (void)removeItemAtIndex:(NSInteger)index {
-	if (index >= [_menuItems count] || index < 0) {
+/*
+ *
+ */
+- (void)addItem:(CMMenuItem *)newItem animate:(BOOL)animate {
+	if (newItem == nil)
+		[NSException raise:NSInvalidArgumentException format:@"nil provided as Menu Item object."];
+
+	[self insertItem:newItem atIndex:[_menuItems count] animate:animate];
+}
+
+
+/*
+ *
+ */
+- (void)removeItemAtIndex:(NSInteger)index animate:(BOOL)animate {
+	NSUInteger itemsCount = [_menuItems count];
+	if (index >= itemsCount || index < 0) {
 		[NSException raise:NSInvalidArgumentException format:@"Provided index out of bounds for Menu's -removeItemAtIndex:"];
 		return;
 	}
 	
+	CMMenuItem *item = [_menuItems objectAtIndex:index];
+	if ([item hasSubmenu]) {
+		if ([[item submenu] isActive])
+			[[item submenu] cancelTrackingWithoutAnimation];
+		[item setSubmenu:nil];
+	}
+	XLog3("Removing menu item: %@", item);
 	[_menuItems removeObjectAtIndex:index];
+	--itemsCount;
 	
 	// Menu will update items itself
-	if (_needsUpdate)
+	if (_needsDisplay)
 		return;
 
-	[_underlyingWindowController removeViewAtIndex:index];
-	NSRect frame = [self getBestFrameForMenuWindow];
-	[_underlyingWindowController updateFrame:frame options:CMMenuOptionDefault];
+	if (animate && !_isActive) {
+		[_underlyingWindowController removeViewAtIndex:index animate:YES complitionHandler:^(void) {
+//			NSLog(@"---- complition handler of CMMenu -removeItem..");
+			if (! itemsCount) {
+//				NSLog(@"no items left in menu. hide menu");
+				[self cancelTrackingWithoutAnimation];
+			} else {
+//				NSRect frame = [self getBestFrameForMenuWindow];
+//				[_underlyingWindowController updateFrame:frame options:CMMenuOptionDefault];
+				if (_isActive)
+					[self setFrame:NSZeroRect options:CMMenuOptionDefault display:NO];
+			}
+		}];
+	} else {
+		[_underlyingWindowController removeViewAtIndex:index];
+		if (_isActive) {
+			if (! itemsCount) {
+				[self cancelTrackingWithoutAnimation];
+			} else {
+	//			NSRect frame = [self getBestFrameForMenuWindow];
+	//			[_underlyingWindowController updateFrame:frame options:CMMenuOptionDefault];
+				if (_isActive)
+					[self setFrame:NSZeroRect options:CMMenuOptionDefault display:NO];
+			}
+		}
+
+	}
+
 }
 
 
-- (void)removeItem:(CMMenuItem *)item {
+/*
+ *
+ */
+- (void)removeItem:(CMMenuItem *)item animate:(BOOL)animate {
 	if (! item) {
 		[NSException raise:NSInvalidArgumentException format:@"nil provided for Menu -removeItem:"];
 		return;
@@ -357,14 +416,16 @@ typedef struct __submenu_tracking_event tracking_event_t;
 	
 	for (i = 0; i < count; ++i) {
 		if (item == [_menuItems objectAtIndex:i]) {
-			[self removeItemAtIndex:i];
+			[self removeItemAtIndex:i animate:animate];
 			break;
 		}
 	}
 }
 
 
-
+/*
+ *
+ */
 - (void)setSubmenu:(CMMenu *)aMenu forItem:(CMMenuItem *)anItem {
 //	if (aMenu == nil || anItem == nil)
 	if (anItem == nil)
@@ -375,6 +436,9 @@ typedef struct __submenu_tracking_event tracking_event_t;
 }
 
 
+/*
+ *
+ */
 - (void)setDefaultViewForItemsFromNibNamed:(NSString *)nibName andPropertyNames:(NSArray *)propertyNames {
 	if (nibName == nil || [nibName isEqualToString:@""] || propertyNames == nil)
 		[NSException raise:NSInvalidArgumentException format:@"Bad arguments provided in -%@", NSStringFromSelector(_cmd)];
@@ -413,35 +477,35 @@ typedef struct __submenu_tracking_event tracking_event_t;
 //}
 
 
-- (void)updateItemsAtIndexes:(NSIndexSet *)indexes {
-//	[_menuTableView reloadDataForRowIndexes:indexes columnIndexes:[NSIndexSet indexSetWithIndex:0]];
-}
-
 
 //- (void)update {
 //	[_menuTableView reloadData];
 //}
 
 
+/*
+ *
+ */
 - (void)start {
-	
 	[self showWithOptions:CMMenuOptionDefault];
-
 }
 
 
+/*
+ *
+ */
 - (void)showWithOptions:(CMMenuOptions)options {
 	if (!_underlyingWindowController) {
 		_underlyingWindowController = [[CMWindowController alloc] initWithOwner:self];
 		[self reloadData];
-		_needsUpdate = NO;
+		_needsDisplay = NO;
 	}
 	
 //	BOOL isRootMenu = !_supermenu;
 //	BOOL ignoreMouse = (options & CMMenuOptionIgnoreMouse);
-	NSRect frame = [self getBestFrameForMenuWindow];
-//	[_underlyingWindowController displayInFrame:frame ignoreMouse:ignoreMouse];
-	[_underlyingWindowController displayInFrame:frame options:options];
+//	NSRect frame = [self getBestFrameForMenuWindow];
+//	[_underlyingWindowController displayInFrame:frame options:options];
+	[self setFrame:NSZeroRect options:options display:NO];
 	
 	// Root menu begins tracking itself.
 	// Root menu doesn't have supermenu.
@@ -508,11 +572,17 @@ typedef struct __submenu_tracking_event tracking_event_t;
 //}
 
 
+/*
+ *
+ */
 - (void)cancelTracking {
 	[self cancelTrackingWithoutAnimation];
 }
 
 
+/*
+ *
+ */
 - (void)cancelTrackingWithoutAnimation {
 	if (_activeSubmenu) {
 		[_activeSubmenu cancelTrackingWithoutAnimation];
@@ -545,6 +615,9 @@ typedef struct __submenu_tracking_event tracking_event_t;
 }
 
 
+/*
+ *
+ */
 - (CMMenuItem *)highlightedItem {
 	for (CMMenuItem *item in _menuItems) {
 		if ([item isSelected])
@@ -555,31 +628,49 @@ typedef struct __submenu_tracking_event tracking_event_t;
 }
 
 
+/*
+ *
+ */
 - (CGFloat)minimumWidth {
 	return _minimumWidth;
 }
 
 
+/*
+ *
+ */
 - (void)setMinimumWidth:(CGFloat)width {
 	_minimumWidth = width;
 }
 
 
+/*
+ *
+ */
 - (NSSize)size {
 	return (_underlyingWindowController) ? _underlyingWindowController.window.frame.size : NSMakeSize(0, 0);
 }
 
 
+/*
+ *
+ */
 - (CGFloat)borderRadius {
 	return _borderRadius;
 }
 
 
+/*
+ *
+ */
 - (void)setBorderRadius:(CGFloat)radius {
 	_borderRadius = radius;
 }
 
 
+/*
+ *
+ */
 - (NSRect)frame {
 	return (_underlyingWindowController) ? _underlyingWindowController.window.frame : NSMakeRect(0, 0, 10, 10);
 }
@@ -591,16 +682,25 @@ typedef struct __submenu_tracking_event tracking_event_t;
 //}
 
 
+/*
+ *
+ */
 - (NSRect)convertRectToScreen:(NSRect)aRect {
 	return [[_underlyingWindowController window] convertRectToScreen:aRect];
 }
 
 
+/*
+ *
+ */
 - (NSPoint)convertPointToScreen:(NSPoint)aPoint {
 	return [[_underlyingWindowController window] convertBaseToScreen:aPoint];
 }
 
 
+/*
+ *
+ */
 - (NSPoint)convertPointFromScreen:(NSPoint)aPoint {
 	return [[_underlyingWindowController window] convertScreenToBase:aPoint];
 }
@@ -716,6 +816,9 @@ typedef struct __submenu_tracking_event tracking_event_t;
 }
 
 
+/*
+ *
+ */
 - (NSViewController *)viewForItem:(CMMenuItem *)menuItem {
 	NSViewController *viewController;
 	
@@ -799,6 +902,20 @@ typedef struct __submenu_tracking_event tracking_event_t;
 #pragma mark ***** CMMenu Internal Methods *****
 
 
+- (void)setNeedsDisplay:(BOOL)needsDisplay {
+	if (_needsDisplay == needsDisplay)
+		return;
+		
+	if (needsDisplay && _isActive)
+		[self setFrame:NSZeroRect options:CMMenuOptionDefault display:YES];
+}
+
+
+- (BOOL)needsDisplay {
+	return _needsDisplay;
+}
+
+
 - (void)setSupermenu:(CMMenu *)aMenu {
 	_supermenu = aMenu;
 }
@@ -828,6 +945,47 @@ typedef struct __submenu_tracking_event tracking_event_t;
 	_activeSubmenu = submenu;
 }
 
+
+- (void)setFrame:(NSRect)frameRect options:(CMMenuOptions)options display:(BOOL)display {
+	if (display || _needsDisplay) {
+		[_underlyingWindowController updateDocumentView];
+		_needsDisplay = NO;
+	}
+	
+	if (NSEqualRects(frameRect, NSZeroRect)) {
+//		if (_isActive) {
+			NSRect frame = [self getBestFrameForMenuWindow];
+//			[_underlyingWindowController updateFrame:frame options:options];
+			[_underlyingWindowController displayInFrame:frame options:options];
+//		}
+	} else {
+//		if(_isActive) {
+//			[_underlyingWindowController updateFrame:frameRect options:options];
+			[_underlyingWindowController displayInFrame:frameRect options:options];
+//		}
+	}
+	
+	if ([self activeSubmenu])
+		[[self activeSubmenu] setFrame:NSZeroRect options:CMMenuOptionDefault display:NO];
+}
+
+
+/*
+ *
+ */
+//- (void)updateItemsAtIndexes:(NSIndexSet *)indexes {
+//	[_underlyingWindowController updateViewsAtIndexes:indexes];
+//	// This will update views itself. If during this update the documentView bounds change
+//	//	-updateViewsAtIndexes: will call menu's -updateFrame method.
+//}
+//
+//
+//- (void)updateFrame {
+//	if (! _isActive) {
+//		NSRect frame = [self getBestFrameForMenuWindow];
+//		[_underlyingWindowController updateFrame:frame options:CMMenuOptionDefault];
+//	}
+//}
 
 //- (BOOL)isAncestorTo:(CMMenu *)menu {
 //	CMMenu *supermenu = [menu supermenu];

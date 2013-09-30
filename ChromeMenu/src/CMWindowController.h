@@ -32,12 +32,16 @@
 //- (void)displayInFrame:(NSRect)frame ignoreMouse:(BOOL)ignoreMouse;
 - (void)displayInFrame:(NSRect)frame options:(CMMenuOptions)options;
 //- (void)updateFrame:(NSRect)frame ignoreMouse:(BOOL)ignoreMouse;
-- (void)updateFrame:(NSRect)frame options:(CMMenuOptions)options;
+//- (void)updateFrame:(NSRect)frame options:(CMMenuOptions)options;
 - (void)hide;
 
-- (void)insertView:(NSViewController *)viewController atIndex:(NSUInteger)index;
-- (void)addView:(NSViewController *)viewController;
+- (void)insertView:(NSViewController *)viewController atIndex:(NSUInteger)index animate:(BOOL)animate;
+- (void)addView:(NSViewController *)viewController animate:(BOOL)animate;
 - (void)removeViewAtIndex:(NSUInteger)index;
+- (void)removeViewAtIndex:(NSUInteger)index animate:(BOOL)animate complitionHandler:(void (^)(void))handler;
+
+//- (void)updateViewsAtIndexes:(NSIndexSet *)indexes;
+- (void)updateDocumentView;
 
 - (BOOL)isTracking;
 - (void)beginTrackingWithEvent:(NSEvent *)event;

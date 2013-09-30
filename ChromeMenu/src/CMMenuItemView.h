@@ -28,6 +28,7 @@
 - (void)setSelected:(BOOL)selected;
 
 - (void)fadeIn;
+- (void)fadeOutWithComplitionHandler:(void (^)(void))handler;
 
 /**
  * @function needsTracking

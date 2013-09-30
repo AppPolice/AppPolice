@@ -32,6 +32,12 @@
 #endif
 
 
+#ifdef CM_DEBUG_ON
+# define EVAL_IF_DEBUG(code) do code while(0)
+#else
+# define EVAL_IF_DEBUG(code) ((void)0)
+#endif
+
 
 /*
 #if CM_DEBUG == 1 && (CM_DEBUG_LEVEL == 1 || CM_DEBUG_LEVEL == 2 || CM_DEBUG_LEVEL == 3)

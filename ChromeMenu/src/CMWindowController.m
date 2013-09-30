@@ -37,7 +37,7 @@
 	CGFloat _verticalPadding;
 //	CMScrollDocumentView *_scrollDocumentView;
 	
-	BOOL _needsLayoutUpdate;
+//	BOOL _needsLayoutUpdate;
 	CGFloat _maximumViewWidth;
 	CGFloat _viewHeight;
 	CGFloat _separatorViewHeight;
@@ -57,7 +57,7 @@
 	CMMenuKeyEventInterpreter *_keyEventInterpreter;
 }
 
-@property (assign) BOOL needsLayoutUpdate;
+//@property (assign) BOOL needsLayoutUpdate;
 
 - (void)setFrame:(NSRect)frame;
 - (void)updateMenuScrollers;
@@ -71,14 +71,14 @@
 
 - (NSTrackingArea *)trackingAreaForScrollerView:(CMMenuScroller *)scroller inRect:(NSRect)trackingRect;
 
-- (void)finishScrollEventAfterTrackingAreasUpdated;
+//- (void)finishScrollEventAfterTrackingAreasUpdated;
 - (void)mouseEventOnItemView:(NSViewController *)viewController eventType:(CMMenuEventType)eventType;
 
 @end
 
 @implementation CMWindowController
 
-@synthesize needsLayoutUpdate = _needsLayoutUpdate;
+//@synthesize needsLayoutUpdate = _needsLayoutUpdate;
 
 
 /*
@@ -155,7 +155,7 @@
 		_ignoreMouse = NO;
 //		_ignoreMouseDuringScrollContentViewBoundsChange = NO;
 		
-		[self setNeedsLayoutUpdate:YES];
+//		[self setNeedsLayoutUpdate:YES];
 	}
 	
 	[window release];
@@ -188,55 +188,77 @@
 
 
 - (NSSize)intrinsicContentSize {
-	return NSMakeSize(_maximumViewWidth, [[[_scrollView documentView] subviews] count] * (_viewHeight + VERTICAL_SPACING) + 2 * _verticalPadding);
+//	return NSMakeSize(_maximumViewWidth, [[[_scrollView documentView] subviews] count] * (_viewHeight + VERTICAL_SPACING) + 2 * _verticalPadding);
+	NSSize documentSize = [[_scrollView documentView] bounds].size;
+	return NSMakeSize(documentSize.width, documentSize.height + 2 * _verticalPadding);
 }
-
-
-//- (void)display {
-//	[self displayInFrame:NSMakeRect(100, 200, 200, 200)];
-//}
 
 
 /*
  *
  */
-//- (void)displayInFrame:(NSRect)frame ignoreMouse:(BOOL)ignoreMouse {
 - (void)displayInFrame:(NSRect)frame options:(CMMenuOptions)options {
-//	[self.window setFrameOrigin:origin];
+	BOOL isVisible = [[self window] isVisible];
+	BOOL updateOriginOnly = NO;
+//	[[self window] setIgnoresMouseEvents:YES];
+	
+	if (! isVisible) {
+		[[self window] setFrame:frame display:NO];
+		// Scroll view frame includes the menu top and bottom paddings
+		[_scrollView setFrame:NSMakeRect(0, _verticalPadding, frame.size.width, frame.size.height - 2 * _verticalPadding)];
+//	[self setFrame:frame];
+		[[self window] orderFront:self];
+	} else {
+		updateOriginOnly = (NSEqualSizes([[self window] frame].size, frame.size));
+		[[self window] disableScreenUpdatesUntilFlush];
+//		[[self window] disableFlushWindow];
+//		[[[self window] contentView] setNeedsDisplay:YES];
+//		[[self window] enableFlushWindow];
+		if (updateOriginOnly) {
+			[[self window] setFrameOrigin:NSMakePoint(frame.origin.x, frame.origin.y)];
+			[[self window] flushWindow];
+		} else {
+			[[self window] setFrame:frame display:NO animate:NO];
+			// Scroll view frame includes the menu top and bottom paddings
+			[_scrollView setFrame:NSMakeRect(0, _verticalPadding, frame.size.width, frame.size.height - 2 * _verticalPadding)];
+			[[self window] flushWindowIfNeeded];
+		}
+		NSLog(@"new frame for window: %@", NSStringFromRect(frame));
+	}
+	
 
-	[self setFrame:frame];
-	[self.window orderFront:self];
-	
-	/* We already knew documentView size, that is the size of all menu items.
-		Now we know the actual size of menu (since it depends on the area it is being shown on).
-		Let's see whether we need to show top and bottom Scrollers if the content doesn't fit
-		in the menu */
-	[self updateMenuScrollers];
-	
-//	if (ignoreMouse)
-//		_ignoreMouse = YES;
-	if (options & CMMenuOptionIgnoreMouse)
-		_ignoreMouse = YES;
-	
-	[self updateTrackingAreasForVisibleRect:[[_scrollView contentView] bounds]];
-//	[self updateTrackingAreasForVisibleRect:[NSValue valueWithRect:[[_scrollView contentView] bounds]]];
-	
-//	[self updateTrackingAreasForVisibleRect_2:[[_scrollView contentView] bounds]];
-	BOOL trackMouseMoved = (options & CMMenuOptionTrackMouseMoved);
-	[self updateContentViewTrackingAreaTrackMouseMoved:trackMouseMoved];
-	
-	// Flag is set back to NO. Whoever needs it must provide value each time.
-	_ignoreMouse = NO;
-	
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(scrollViewContentViewBoundsDidChange:) name:NSViewBoundsDidChangeNotification object:[_scrollView contentView]];
+	if (! updateOriginOnly) {
+		/* We already knew documentView size, that is the size of all menu items.
+			Now we know the actual size of menu (since it depends on the area it is being shown on).
+			Let's see whether we need to show top and bottom Scrollers if the content doesn't fit
+			in the menu */
+		[self updateMenuScrollers];
+		
+	//	if (ignoreMouse)
+	//		_ignoreMouse = YES;
+		if (options & CMMenuOptionIgnoreMouse)
+			_ignoreMouse = YES;
+		
+		[self updateTrackingAreasForVisibleRect:[[_scrollView contentView] bounds]];
+	//	[self updateTrackingAreasForVisibleRect:[NSValue valueWithRect:[[_scrollView contentView] bounds]]];
+		
+	//	[self updateTrackingAreasForVisibleRect_2:[[_scrollView contentView] bounds]];
+		BOOL trackMouseMoved = (options & CMMenuOptionTrackMouseMoved);
+		[self updateContentViewTrackingAreaTrackMouseMoved:trackMouseMoved];
+		
+		// Flag is set back to NO. Whoever needs it must provide value each time.
+		_ignoreMouse = NO;
+		
+		if (! isVisible) {
+			[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(scrollViewContentViewBoundsDidChange:) name:NSViewBoundsDidChangeNotification object:[_scrollView contentView]];
+		}
+	}
 }
-
 
 
 /*
  *
- */
-//- (void)updateFrame:(NSRect)frame ignoreMouse:(BOOL)ignoreMouse {
+ */ /*
 - (void)updateFrame:(NSRect)frame options:(CMMenuOptions)options {
 	// TODO: window quickjump!
 //	NSLog(@"window prev. frame: %@, new frame: %@", NSStringFromRect([[self window] frame]), NSStringFromRect(frame));
@@ -272,7 +294,7 @@
 	// Flag is set back to NO. Whoever needs it must provide value each time.
 	_ignoreMouse = NO;
 }
-
+*/
 
 - (BOOL)isTracking {
 	return _keepTracking;
@@ -323,7 +345,6 @@
  */
 - (void)hide {
 	[self.window orderOut:self];
-
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
 
 //	[NSEvent removeMonitor:_localEventMonitor];
@@ -400,7 +421,7 @@
 
 
 /*
- *
+ * TODO: don't like this function
  */
 - (void)updateViews {
 	NSArray *viewControllers = _viewControllers;
@@ -429,21 +450,36 @@
 /*
  *
  */
-- (void)insertView:(NSViewController *)viewController atIndex:(NSUInteger)index {
+- (void)updateDocumentView {
+	NSView *documentView = [_scrollView documentView];
+	NSRect documentRect = [documentView bounds];
+	CGFloat subviewsWidth = 0;
+	
+	for (NSView *view in [documentView subviews]) {
+		NSSize size = [view fittingSize];
+		if (size.width > subviewsWidth)
+			subviewsWidth = size.width;
+	}
+	
+	if (documentRect.size.width != subviewsWidth) {
+		for (NSView *view in [documentView subviews]) {
+			NSRect frame = [view frame];
+			[view setFrame:NSMakeRect(0, frame.origin.y, subviewsWidth, frame.size.height)];
+		}
+		
+		[documentView setFrame:NSMakeRect(0, 0, subviewsWidth, documentRect.size.height)];
+	}
+}
+
+
+/*
+ *
+ */
+- (void)insertView:(NSViewController *)viewController atIndex:(NSUInteger)index animate:(BOOL)animate {
 	NSView *view = [viewController view];
 	NSSize size = [view fittingSize];
 	NSView *documentView = [_scrollView documentView];
 	NSRect documentRect = [documentView bounds];
-	
-//	NSLog(@"original document rect: %@, new element size: %@", NSStringFromRect(documentRect), NSStringFromSize(size));
-//	[view setAlphaValue:0.0];
-//	[NSAnimationContext beginGrouping];
-//	[[NSAnimationContext currentContext] setDuration:0.2];
-//	[[view animator] setAlphaValue:1.0];
-//	[NSAnimationContext endGrouping];
-	
-	[(CMMenuItemView *)view fadeIn];
-
 	
 	if (index == 0) {
 		NSView *relativeView = [(NSViewController *)[_viewControllers objectAtIndex:0] view];
@@ -452,6 +488,9 @@
 		NSView *relativeView = [(NSViewController *)[_viewControllers objectAtIndex:(index - 1)] view];
 		[documentView addSubview:view positioned:NSWindowAbove relativeTo:relativeView];
 	}
+	
+	if (animate)
+		[(CMMenuItemView *)view fadeIn];
 	
 	BOOL updateSubviewsWidth = NO;
 	CGFloat subviewsWidth = documentRect.size.width;
@@ -488,8 +527,8 @@
 /*
  *
  */
-- (void)addView:(NSViewController *)viewController {
-	[self insertView:viewController atIndex:[_viewControllers count]];
+- (void)addView:(NSViewController *)viewController animate:(BOOL)animate {
+	[self insertView:viewController atIndex:[_viewControllers count] animate:animate];
 }
 
 
@@ -522,6 +561,12 @@
 		_maximumViewWidth = subviewsWidth;
 	}
 	
+	// Issue warning if the view has zero height.
+	// This is prone to visual defects, like menu items will not move up to take the space
+	// previusly occupied by the old item.
+	if (size.height == 0)
+		NSLog(@"Warning: the being removed menu item has zero height.");
+	
 	CGFloat offset = size.height;
 	for (NSView *subview in [documentView subviews]) {
 		if (view == subview) {
@@ -541,6 +586,25 @@
 }
 
 
+/*
+ *
+ */
+- (void)removeViewAtIndex:(NSUInteger)index animate:(BOOL)animate complitionHandler:(void (^)(void))handler {
+	if (! animate) {
+		[self removeViewAtIndex:index];
+		return;
+	}
+	
+	NSView *view = [[_viewControllers objectAtIndex:index] view];
+	[(CMMenuItemView *)view fadeOutWithComplitionHandler:^(void) {
+//		NSLog(@"animation finished, now remove");
+		[self removeViewAtIndex:index];
+		if (handler)
+			handler();
+	}];
+}
+
+
 
 /**
  * Update top and/or bottom menu scrollers. If needed -- create them, if not -- hide.
@@ -549,8 +613,12 @@
 	NSRect documentRect = [[_scrollView documentView] bounds];
 	NSRect visibleRect = [_scrollView documentVisibleRect];
 	
-	// Menu does not need to be scrolled
-	if (documentRect.size.height == visibleRect.size.height)
+	// Return from the function if:
+	//	1. visible rect is the same as document rect; AND
+	//	2. none of the scrollers are already showing (because if they are, we may want to remove them).
+	if (documentRect.size.height == visibleRect.size.height
+		&& !( (_topScroller && [_topScroller superview]) || (_bottomScroller && [_bottomScroller superview]) )
+		)
 		return;
 	
 	// We will adjust the Scroll frame to provide area for top/bottom scrollers
@@ -766,7 +834,7 @@
 //- (void)updateTrackingAreasForVisibleRect:(id)rectValue {
 //	NSRect visibleRect = [rectValue rectValue];
 
-//	NSLog(@"updating tracking areas for visible rect: %@", NSStringFromRect(visibleRect));
+	NSLog(@"updating tracking areas for visible rect: %@", NSStringFromRect(visibleRect));
 //	NSLog(@"current runloop: %@", [[NSRunLoop currentRunLoop] currentMode]);
 
 	
@@ -966,6 +1034,7 @@
 }
 */
 
+/*	// do not delete so easily, it might be needed
 - (void)finishScrollEventAfterTrackingAreasUpdated {
 //	NSLog(@"finish, areas count: %ld", [[[_scrollView documentView] trackingAreas] count]);
 
@@ -989,6 +1058,7 @@
 	}
 
 }
+*/
 
 //- (void)shouldUpdateTrackingAreas {
 ////	NSArray *controllers = _viewControllers;
@@ -1263,9 +1333,9 @@
 				 * This technic is used to solve the blinking problem when moving mouse swiftly through the menu items.
 				 */
 //				[self performSelector:@selector(delayedMouseExitedEvent:) withObject:theEvent afterDelay:0.0];
-				[self performSelector:@selector(delayedMouseExitedEvent:) withObject:theEvent afterDelay:0 inModes:[NSArray arrayWithObject:NSEventTrackingRunLoopMode]];
-//				NSViewController *viewController = [(NSDictionary *)[theEvent userData] objectForKey:kTrackingAreaViewControllerKey];
-//				[self mouseEventOnItemView:viewController eventType:CMMenuEventMouseExitedItem];
+//				[self performSelector:@selector(delayedMouseExitedEvent:) withObject:theEvent afterDelay:0.1 inModes:[NSArray arrayWithObject:NSEventTrackingRunLoopMode]];
+				NSViewController *viewController = [(NSDictionary *)[theEvent userData] objectForKey:kTrackingAreaViewControllerKey];
+				[self mouseEventOnItemView:viewController eventType:CMMenuEventMouseExitedItem];
 			} else if (eventType & CMMenuEventMouseScroller) {
 				if (_scrollTimer) {
 					[_scrollTimer invalidate];
@@ -1303,14 +1373,32 @@
 			NSPoint mouseLocation = [theEvent locationInWindow];
 			mouseLocation = [eventWindow convertBaseToScreen:mouseLocation];
 			if (NSPointInRect(mouseLocation, [[self window] frame])) {
-				int i;
-				int lim = 10;
-				for (i = 0; i < lim; ++i) {
-//					CMMenuItem *item = [[CMMenuItem alloc] initWithTitle:@"New Item"];
-					CMMenuItem *item  = [[CMMenuItem alloc] initWithTitle:@"New Item With Image" andIcon:[NSImage imageNamed:NSImageNameBluetoothTemplate]];
-//					[menu addItem:item];
-					[_owner insertItem:item atIndex:1];
-					[item release];
+				
+				NSUInteger modifierFlags = [theEvent modifierFlags];
+				if (modifierFlags & NSShiftKeyMask) {
+					int i;
+					int lim = 15;
+					for (i = 0; i < lim; ++i) {
+	//					CMMenuItem *item = [[CMMenuItem alloc] initWithTitle:@"New Item"];
+						CMMenuItem *item  = [[CMMenuItem alloc] initWithTitle:@"New Item With Image" andIcon:[NSImage imageNamed:NSImageNameBluetoothTemplate]];
+	//					[menu addItem:item];
+						[_owner insertItem:item atIndex:1 animate:YES];
+						[item release];
+					}
+				} else if (modifierFlags & NSControlKeyMask) {
+					CMMenuItem *item = [_owner itemAtPoint:mouseLocation];
+					if (item) {
+						[item setTitle:@"New title for item and quite longer.."];
+					}
+
+				} else if (modifierFlags & NSAlternateKeyMask) {
+					CMMenuItem *item = [_owner itemAtPoint:mouseLocation];
+					if (item) {
+						[_owner removeItem:item animate:YES];
+					}
+
+				} else if (modifierFlags & NSCommandKeyMask) {
+					
 				}
 			
 //				NSLog(@"Added new item: %@ to menu: %@", item, menu);
@@ -1323,7 +1411,10 @@
 			mouseLocation = [eventWindow convertBaseToScreen:mouseLocation];
 			CMMenuItem *item = [_owner itemAtPoint:mouseLocation];
 			if (item) {
-				[_owner removeItem:item];
+				if ([item submenu]) {
+					CMMenuItem *firstItem = [[item submenu] itemAtIndex:0];
+					[firstItem setTitle:@"New title changed while hidden"];
+				}
 			}
 		
 
@@ -1410,6 +1501,7 @@
 /*
  *
  */
+/*
 - (void)delayedMouseExitedEvent:(NSEvent *)theEvent {
 	NSTrackingArea *trackingArea = [theEvent trackingArea];
 	if (! trackingArea) {
@@ -1428,6 +1520,7 @@
 	NSViewController *viewController = [(NSDictionary *)[theEvent userData] objectForKey:kTrackingAreaViewControllerKey];
 	[self mouseEventOnItemView:viewController eventType:CMMenuEventMouseExitedItem];
 }
+*/
 
 
 /*
@@ -1448,23 +1541,32 @@
 	BOOL changeSelectionStatus = [menuItem shouldChangeItemSelectionStatusForEvent:eventType];
 	
 //	NSLog(@"should change: %d", changeSelectionStatus);
+	CMMenuItemView *view = (CMMenuItemView *)[viewController view];
 	
 	if (eventType & CMMenuEventDuringScroll) {
 		selected = (eventType & CMMenuEventMouseEnteredItem) ? YES : NO;
-		[(CMMenuItemView *)[viewController view] setSelected:selected];
+		[view setSelected:selected];
 	} else {
-		// we must calculate wheather item wants to lose Selected status
-		if (eventType & CMMenuEventMouseEnteredItem) {
-			selected = YES;
-		} else {
-			selected = NO;
+		
+		if (changeSelectionStatus) {
+			if (eventType & CMMenuEventMouseEnteredItem) {
+	//			selected = YES;
+				[view setSelected:YES];
+			} else {
+	//			selected = NO;
+				[self performSelector:@selector(delayedViewDeselection:) withObject:view afterDelay:0 inModes:[NSArray arrayWithObject:NSEventTrackingRunLoopMode]];
+			}
 		}
 		
 //		if (changeSelectionStatus && selected == YES)
-		if (changeSelectionStatus)
-			[(CMMenuItemView *)[viewController view] setSelected:selected];
+//		if (changeSelectionStatus)
+//			[(CMMenuItemView *)[viewController view] setSelected:selected];
 	}
-
+}
+	
+	
+- (void)delayedViewDeselection:(CMMenuItemView *)view {
+	[view setSelected:NO];
 }
 
 
