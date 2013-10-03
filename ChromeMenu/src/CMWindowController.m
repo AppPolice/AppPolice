@@ -1318,15 +1318,22 @@
 			  NSStringFromRect([[self window] frame]),
 			  NSStringFromRect([[theEvent window] frame]));
 		
+		
+		
 		NSWindow *eventWindow = [theEvent window];
 		NSEventType eventType = [theEvent type];
+		NSEventMask eventMask = 1 << eventType;
+		NSEventMask blockingMask = [_owner eventBlockingMask];
 		
 		if (eventType == NSSystemDefined)
 			continue;
 		
+//		BOOL eventWindowBelongsToMenu = [self eventWindowBelongsToMenu:theEvent];
+		BOOL eventWindowBelongsToMenu = YES;
+		
 		
 #pragma mark MouseEntered
-		if (eventType == NSMouseEntered) {
+		if (eventType == NSMouseEntered /*&& eventWindowBelongsToMenu && !(eventMask & blockingMask)*/) {
 			NSDictionary *userData = [theEvent userData];
 			CMMenuEventType menuEventType = [(NSNumber *)[userData objectForKey:kUserDataEventTypeKey] unsignedIntegerValue];
 			
@@ -1357,7 +1364,7 @@
 		
 			
 #pragma mark MouseExited
-		} else if (eventType == NSMouseExited) {
+		} else if (eventType == NSMouseExited /*&& eventWindowBelongsToMenu && !(eventMask & blockingMask)*/) {
 			NSDictionary *userData = [theEvent userData];
 			CMMenuEventType eventType = [(NSNumber *)[userData objectForKey:kUserDataEventTypeKey] unsignedIntegerValue];
 			if (eventType & CMMenuEventMouseItem) {
@@ -1406,6 +1413,11 @@
 //				NSLog(@"key window: %d", [[self window] isKeyWindow]);
 //				[[self window] makeKeyWindow];
 //				NSLog(@"key window: %d", [[self window] isKeyWindow]);
+			} else {
+				if ([_owner cancelsTrackingOnMouseEventOutsideMenus] && ![self mouseInsideMenuTreeDuringEvent:theEvent]) {
+					NSLog(@"mouse is outside any menu during MOUSEDOWN!!!");
+					[[_owner rootMenu] cancelTracking];
+				}
 			}
 			
 			
@@ -1446,6 +1458,11 @@
 				}
 			
 //				NSLog(@"Added new item: %@ to menu: %@", item, menu);
+			} else {
+				if ([_owner cancelsTrackingOnMouseEventOutsideMenus] && ![self mouseInsideMenuTreeDuringEvent:theEvent]) {
+					NSLog(@"mouse is outside any menu during MOUSEUP!!!");
+					[[_owner rootMenu] cancelTracking];
+				}
 			}
 			
 
@@ -1465,7 +1482,7 @@
 		
 
 #pragma mark ScrollWheel
-		} else if (eventType == NSScrollWheel) {
+		} else if (eventType == NSScrollWheel /*&& eventWindowBelongsToMenu && !(eventMask & blockingMask)*/) {
 			//			[_scrollView scrollWheel:event];
 			//			[[self window] sendEvent:theEvent];
 			//			CFRunLoopRunInMode(kCFRunLoopDefaultMode, 0, NO);
@@ -1486,7 +1503,7 @@
 			[_keyEventInterpreter interpretEvent:theEvent];
 
 #pragma mark MouseMoved
-		} else if (eventType == NSMouseMoved) {
+		} else if (eventType == NSMouseMoved /* && eventWindowBelongsToMenu */) {
 //			NSWindow *window = [theEvent window];
 //			NSLog(@"moved in window: %@ with rect: %@", window, NSStringFromRect([window frame]));
 			
@@ -1510,6 +1527,7 @@
 		
 	
 //		[[self window] sendEvent:theEvent];
+//		if ( !eventWindowBelongsToMenu && [theEvent window])
 		if ([theEvent window])
 			[[theEvent window] sendEvent:theEvent];
 //		[[self window] resignKeyWindow];
@@ -1539,6 +1557,32 @@
 	}
 	
 	return nil;
+}
+
+
+- (BOOL)mouseInsideMenuTreeDuringEvent:(NSEvent *)theEvent {
+	NSPoint mouseLocation = [theEvent locationInWindow];
+	mouseLocation = [[theEvent window] convertBaseToScreen:mouseLocation];
+	CMMenu *menu = _owner;
+	do {
+		if (NSPointInRect(mouseLocation, [menu frame]))
+			return YES;
+	} while ((menu = [menu supermenu]));
+	
+	return NO;
+}
+
+
+- (BOOL)eventWindowBelongsToMenu:(NSEvent *)theEvent {
+	NSWindow *window = [theEvent window];
+	CMMenu *menu = ([_owner activeSubmenu]) ? [_owner activeSubmenu] : _owner;
+	while (menu) {
+		if ([menu underlyingWindow] == window)
+			return YES;
+		menu = [menu supermenu];
+	}
+
+	return NO;
 }
 
 

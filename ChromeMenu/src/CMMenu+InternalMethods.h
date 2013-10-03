@@ -34,6 +34,8 @@ typedef NSUInteger CMMenuOptions;
 
 @interface CMMenu (CMMenuInternalMethods) <CMMenuKeyEventInterpreterDelegate>
 
+- (CMMenu *)rootMenu;
+
 - (void)setNeedsDisplay:(BOOL)needsDisplay;
 - (BOOL)needsDisplay;
 - (void)setSupermenu:(CMMenu *)aMenu;
@@ -70,6 +72,10 @@ typedef NSUInteger CMMenuOptions;
 - (void)stopTrackingSubmenuReasonSuccess:(BOOL)reasonSuccess;
 - (void)updateTrackingAreaWithOptions:(CMMenuOptions)options;
 
+/* Default 0: no event's are blocked */
+- (NSEventMask)eventBlockingMask;
+- (void)blockEventsMatchingMask:(NSEventMask)mask;
+
 /**
  * @abstract Returns YES if menu wants to receive Mouse Moved events. This value is checked on RunLoop
  *	to decide whether Moved events will be captured and sent to menu.
@@ -96,6 +102,8 @@ typedef NSUInteger CMMenuOptions;
  */
 - (void)showAsSubmenuOf:(CMMenuItem *)menuItem withOptions:(CMMenuOptions)options;	// may not be needed
 //- (void)orderFront;
+
+- (NSRect)frame;
 
 // TODO: this is temp method
 - (NSWindow *)underlyingWindow;

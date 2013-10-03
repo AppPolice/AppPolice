@@ -261,10 +261,15 @@
 
 	
 	if ([[self menu] cancelsTrackingOnAction]) {
-		CMMenuItemView *view = (CMMenuItemView *)[[self representedView] view];
-		[view blink];
+		if (! _isSeparatorItem) {
+			CMMenuItemView *view = (CMMenuItemView *)[[self representedView] view];
+			[view blink];
+			[self performSelector:@selector(delayedCancelTracking) withObject:nil afterDelay:0.075 inModes:[NSArray arrayWithObject:NSRunLoopCommonModes]];
+		} else {
+			[self delayedCancelTracking];
+		}
 		
-		[self performSelector:@selector(delayedCancelTracking) withObject:nil afterDelay:0.075 inModes:[NSArray arrayWithObject:NSRunLoopCommonModes]];
+
 	}
 }
 

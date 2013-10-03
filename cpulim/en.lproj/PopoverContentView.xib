@@ -37,10 +37,15 @@
                     </connections>
                 </button>
                 <slider verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Bg4-V0-TsV">
-                    <rect key="frame" x="18" y="94" width="184" height="21"/>
+                    <rect key="frame" x="18" y="94" width="184" height="25"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                    <sliderCell key="cell" state="on" alignment="left" maxValue="100" doubleValue="50" tickMarkPosition="above" sliderType="linear" id="qcC-TO-TiU"/>
+                    <sliderCell key="cell" state="on" alignment="left" maxValue="100" doubleValue="51.724137931034477" tickMarkPosition="below" numberOfTickMarks="30" sliderType="linear" id="qcC-TO-TiU"/>
                 </slider>
+                <levelIndicator verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1fc-8w-npb">
+                    <rect key="frame" x="20" y="74" width="180" height="16"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                    <levelIndicatorCell key="cell" alignment="left" doubleValue="1" maxValue="10" warningValue="6" criticalValue="9" levelIndicatorStyle="continuousCapacity" id="82X-tI-IIi"/>
+                </levelIndicator>
             </subviews>
         </customView>
     </objects>

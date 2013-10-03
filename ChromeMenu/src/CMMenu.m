@@ -79,6 +79,8 @@ typedef struct __submenu_tracking_event tracking_event_t;
 	CMMenu *_activeSubmenu;
 	BOOL _isTrackingSubmenu;
 	BOOL _cancelsTrackingOnAction;
+	BOOL _cancelsTrackingOnMouseEventOutsideMenus;
+	NSUInteger _eventBlockingMask;
 		
 //	BOOL _displayedFirstTime;
 	BOOL _needsDisplay;		// flag used in context of full menu update.
@@ -113,7 +115,7 @@ typedef struct __submenu_tracking_event tracking_event_t;
 - (CMMenuAlignment)horizontalAlignment;
 - (CMMenuAlignment)verticalAlignment;
 //- (void)setmenuVerticalAlignment:(CMMenuAlignment)aligning;
-- (NSRect)frame;
+
 //- (NSRect)frameOfItemRelativeToScreen:(CMMenuItem *)item;
 - (void)reloadData;
 - (void)showWithOptions:(CMMenuOptions)options;
@@ -164,6 +166,8 @@ typedef struct __submenu_tracking_event tracking_event_t;
 		_title = [aTitle copy];
 		_needsDisplay = YES;
 		_cancelsTrackingOnAction = YES;
+		_cancelsTrackingOnMouseEventOutsideMenus = YES;
+		_eventBlockingMask = 0;
 		_minimumWidth = 0;
 		_menuHorizontalAlignment = CMMenuAlignedLeft;
 		_menuVerticalAlignment = CMMenuAlignedTop;
@@ -713,8 +717,62 @@ typedef struct __submenu_tracking_event tracking_event_t;
 }
 
 
+/*
+ *
+ */
 - (void)setCancelsTrackingOnAction:(BOOL)cancels {
 	_cancelsTrackingOnAction = cancels;
+}
+
+
+/*
+ *
+ */
+- (BOOL)cancelsTrackingOnMouseEventOutsideMenus {
+	return _cancelsTrackingOnMouseEventOutsideMenus;
+}
+
+
+/*
+ *
+ */
+- (void)setCancelsTrackingOnMouseEventOutsideMenus:(BOOL)cancels {
+	_cancelsTrackingOnMouseEventOutsideMenus = cancels;
+}
+
+
+/*
+ *
+ */
+- (BOOL)crystallizedSupermenus {
+	return ([self supermenu] && [[self supermenu] eventBlockingMask] != 0);
+}
+
+/*
+ *
+ */
+- (void)setCrystallizeSupermenus:(BOOL)crystallize {
+	[self blockEventsMatchingMask:0];
+	CMMenu *menu = [self supermenu];
+	while (menu) {
+		[menu blockEventsMatchingMask:NSMouseEnteredMask | NSMouseExitedMask | NSScrollWheelMask];
+		menu = [menu supermenu];
+	}
+}
+
+/*
+ *
+ */
+- (NSEventMask)eventBlockingMask {
+	return _eventBlockingMask;
+}
+
+
+/*
+ *
+ */
+- (void)blockEventsMatchingMask:(NSEventMask)mask {
+	_eventBlockingMask = mask;
 }
 
 
@@ -1037,6 +1095,16 @@ typedef struct __submenu_tracking_event tracking_event_t;
 
 #pragma mark -
 #pragma mark ***** CMMenu Internal Methods *****
+
+
+- (CMMenu *)rootMenu {
+	CMMenu *menu = self;
+	CMMenu *supermenu = menu;
+	while ((menu = [menu supermenu]))
+		supermenu = menu;
+	
+	return supermenu;
+}
 
 
 - (void)setNeedsDisplay:(BOOL)needsDisplay {

@@ -601,6 +601,7 @@ void cfnotificationCallback(CFNotificationCenterRef center, void *observer, CFSt
 
 	CMMenu *submenu = [[CMMenu alloc] initWithTitle:@"Submenu 1"];
 	[submenu setCancelsTrackingOnAction:NO];
+	[submenu setCancelsTrackingOnMouseEventOutsideMenus:NO];
 	CMMenuItem *submenuItem1 = [[CMMenuItem alloc] initWithTitle:@"ViewTemplate" action:@selector(someActionForOurCustomMenu:)];
 	[submenuItem1 setTarget:self];
 	[submenu addItem:submenuItem1];
