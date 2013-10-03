@@ -102,8 +102,16 @@ typedef NSUInteger CMMenuAnimationOptions;
 /* Dismisses the menu immediately, without any fade or other effect, and ends all menu tracking */
 - (void)cancelTrackingWithoutAnimation;
 
+/* Default YES */
+- (BOOL)cancelsTrackingOnAction;
+- (void)setCancelsTrackingOnAction:(BOOL)cancels;
+
 /* Returns the highlighted item in the menu, or nil if no item in the menu is highlighted */
 - (CMMenuItem *)highlightedItem;
+
+
+- (void)showPopover:(NSPopover *)popover forItem:(CMMenuItem *)item;
+
 
 /* Set the minimum width of the menu, in screen coordinates. The menu will prefer to not draw smaller than its minimum width, but may draw larger if it needs more space. The default value is 0.
  */

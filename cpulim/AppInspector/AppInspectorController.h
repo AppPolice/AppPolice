@@ -13,8 +13,13 @@
 	IBOutlet NSPopover *popover;
 	IBOutlet NSViewController *popoverViewController;
 	IBOutlet NSView *popoverView;
+	IBOutlet NSWindow *detachedWindow;
 }
 
 - (void)showAppDetailsPopoverRelativeTo:(NSView *)view;
+- (NSPopover *)popover;
+
+- (IBAction)asdf:(id)sender;
+
 
 @end

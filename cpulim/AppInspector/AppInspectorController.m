@@ -23,6 +23,7 @@
 - (void)awakeFromNib {
 	NSLog(@"%@ awakeFromNib", [self className]);
 	[popoverViewController setView:popoverView];
+	[detachedWindow setContentView:popoverView];
 }
 
 
@@ -35,5 +36,23 @@
 	NSLog(@"called show popover: %@", popoverViewController);
 	[popover showRelativeToRect:[view bounds] ofView:view preferredEdge:NSMaxXEdge];
 }
+
+
+- (NSPopover *)popover {
+	return popover;
+}
+
+- (IBAction)asdf:(id)sender {
+	NSLog(@"Popover button click");
+	[popover close];
+}
+
+
+- (NSWindow *)detachableWindowForPopover:(NSPopover *)popover {
+	[popover setAnimates:NO];
+	return detachedWindow;
+}
+
+
 
 @end

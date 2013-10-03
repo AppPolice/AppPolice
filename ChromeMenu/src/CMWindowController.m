@@ -256,6 +256,7 @@
 }
 
 
+
 /*
  *
  */ /*
@@ -310,7 +311,7 @@
 	// Tracking begins in another loop, for example, after tracking areas are properly installed by Cocoa.
 //	[self performSelector:@selector(_beginEventTracking) withObject:nil afterDelay:0];
 	[self performSelector:@selector(_beginTrackingWithEvent:) withObject:event afterDelay:0 inModes:[NSArray arrayWithObject:NSRunLoopCommonModes]];
-//	[self _beginEventTracking];
+//	[self _beginEventTracking];	
 }
 
 
@@ -326,6 +327,12 @@
 		  NSStringFromRect([[self window] frame]));
 
 	_keepTracking = NO;
+	// By posting another event we will effectively quit nextEventMatchingMask event tracking
+	//	since we set the _keepTracking to NO.
+	NSEvent *customEvent = [NSEvent otherEventWithType:NSSystemDefined location:NSMakePoint(1, 1) modifierFlags:0 timestamp:0 windowNumber:0 context:nil subtype:0 data1:0 data2:0];
+//	NSLog(@"resend last event: %@", [NSApp currentEvent]);
+	NSLog(@"resend last event: %@", customEvent);
+	[NSApp postEvent:customEvent atStart:YES];
 }
 
 
@@ -350,6 +357,20 @@
 //	[NSEvent removeMonitor:_localEventMonitor];
 //	_localEventMonitor = nil;
 
+}
+
+
+- (void)fadeOutWithComplitionHandler:(void (^)(void))handler {
+	NSView *contentView = [[self window] contentView];
+	[NSAnimationContext beginGrouping];
+	[[NSAnimationContext currentContext] setDuration:0.125];
+	[[NSAnimationContext currentContext] setCompletionHandler:^(void) {
+		[contentView setAlphaValue:1.0];
+		if (handler)
+			handler();
+	}];
+	[[contentView animator] setAlphaValue:0.3];
+	[NSAnimationContext endGrouping];
 }
 
 
@@ -834,7 +855,7 @@
 //- (void)updateTrackingAreasForVisibleRect:(id)rectValue {
 //	NSRect visibleRect = [rectValue rectValue];
 
-	NSLog(@"updating tracking areas for visible rect: %@", NSStringFromRect(visibleRect));
+//	NSLog(@"updating tracking areas for visible rect: %@", NSStringFromRect(visibleRect));
 //	NSLog(@"current runloop: %@", [[NSRunLoop currentRunLoop] currentMode]);
 
 	
@@ -1266,6 +1287,9 @@
 	// NSSystemDefinedMask | NSApplicationDefinedMask | NSAppKitDefinedMask |
 	NSUInteger eventMask = NSMouseEnteredMask | NSMouseExitedMask | NSLeftMouseDownMask | NSLeftMouseUpMask | NSScrollWheelMask | NSKeyDownMask | NSRightMouseUpMask;
 	
+//	eventMask |= NSAppKitDefinedMask | NSApplicationDefinedMask | NSSystemDefinedMask;
+	eventMask |= NSSystemDefinedMask;
+	
 	if ([_owner receivesMouseMovedEvents]) {
 		// Before we start tracking mouse moved events remove any pending events of this
 		// type in queue. Otherwise faux moved events generated previously will disrupt.
@@ -1282,7 +1306,12 @@
 	
 	while (_keepTracking) {
 		NSEvent *theEvent = [NSApp nextEventMatchingMask:eventMask untilDate:[NSDate distantFuture] inMode:NSEventTrackingRunLoopMode dequeue:YES];
-
+		
+		if (! _keepTracking) {
+			NSLog(@"a-ha, final event: %@", theEvent);
+			break;
+		}
+		
 		XLog3("New RunLoop event:\n\tEvent: %@\n\tMenu title: %@\n\tMenu frame owning RunLoop: %@\n\tMenu frame of occurred event: %@",
 			  theEvent,
 			  [_owner title],
@@ -1291,6 +1320,10 @@
 		
 		NSWindow *eventWindow = [theEvent window];
 		NSEventType eventType = [theEvent type];
+		
+		if (eventType == NSSystemDefined)
+			continue;
+		
 		
 #pragma mark MouseEntered
 		if (eventType == NSMouseEntered) {
@@ -1360,11 +1393,19 @@
 //				break;
 //			}
 			
-			CMMenu *menu = [self menuToReciveEventWithWindow:[theEvent window]];
-			if (! menu) {
-				NSLog(@"Mouse down outside of menus. Stop tracking");
-//				break;
-				[self endTracking];
+//			CMMenu *menu = [self menuToReciveEventWithWindow:[theEvent window]];
+//			if (! menu) {
+//				NSLog(@"Mouse down outside of menus. Stop tracking");
+//				[self endTracking];
+//			}
+			
+			
+			NSPoint mouseLocation = [theEvent locationInWindow];
+			mouseLocation = [eventWindow convertBaseToScreen:mouseLocation];
+			if (NSPointInRect(mouseLocation, [[self window] frame])) {
+//				NSLog(@"key window: %d", [[self window] isKeyWindow]);
+//				[[self window] makeKeyWindow];
+//				NSLog(@"key window: %d", [[self window] isKeyWindow]);
 			}
 			
 			
@@ -1373,6 +1414,9 @@
 			NSPoint mouseLocation = [theEvent locationInWindow];
 			mouseLocation = [eventWindow convertBaseToScreen:mouseLocation];
 			if (NSPointInRect(mouseLocation, [[self window] frame])) {
+				CMMenuItem *item = [_owner itemAtPoint:mouseLocation];
+				if (item)
+					[item performAction];
 				
 				NSUInteger modifierFlags = [theEvent modifierFlags];
 				if (modifierFlags & NSShiftKeyMask) {
@@ -1380,19 +1424,19 @@
 					int lim = 15;
 					for (i = 0; i < lim; ++i) {
 	//					CMMenuItem *item = [[CMMenuItem alloc] initWithTitle:@"New Item"];
-						CMMenuItem *item  = [[CMMenuItem alloc] initWithTitle:@"New Item With Image" andIcon:[NSImage imageNamed:NSImageNameBluetoothTemplate]];
+						CMMenuItem *item  = [[CMMenuItem alloc] initWithTitle:@"New Item With Image" icon:[NSImage imageNamed:NSImageNameBluetoothTemplate] action:NULL];
 	//					[menu addItem:item];
 						[_owner insertItem:item atIndex:1 animate:YES];
 						[item release];
 					}
 				} else if (modifierFlags & NSControlKeyMask) {
-					CMMenuItem *item = [_owner itemAtPoint:mouseLocation];
+					item = [_owner itemAtPoint:mouseLocation];
 					if (item) {
 						[item setTitle:@"New title for item and quite longer.."];
 					}
 
 				} else if (modifierFlags & NSAlternateKeyMask) {
-					CMMenuItem *item = [_owner itemAtPoint:mouseLocation];
+					item = [_owner itemAtPoint:mouseLocation];
 					if (item) {
 						[_owner removeItem:item animate:YES];
 					}
@@ -1416,6 +1460,8 @@
 					[firstItem setTitle:@"New title changed while hidden"];
 				}
 			}
+			
+//			[[self window] resignKeyWindow];
 		
 
 #pragma mark ScrollWheel
@@ -1464,7 +1510,14 @@
 		
 	
 //		[[self window] sendEvent:theEvent];
+		if ([theEvent window])
+			[[theEvent window] sendEvent:theEvent];
+//		[[self window] resignKeyWindow];
 
+		
+//		NSLog(@"current loop: %@", [[NSRunLoop currentRunLoop] currentMode]);
+//		[[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0]];
+//		CFRunLoopRunInMode(kCFRunLoopDefaultMode, 0, NO);
 		
 	}
 	
@@ -1554,7 +1607,8 @@
 				[view setSelected:YES];
 			} else {
 	//			selected = NO;
-				[self performSelector:@selector(delayedViewDeselection:) withObject:view afterDelay:0 inModes:[NSArray arrayWithObject:NSEventTrackingRunLoopMode]];
+//				[self performSelector:@selector(delayedViewDeselection:) withObject:view afterDelay:0 inModes:[NSArray arrayWithObject:NSEventTrackingRunLoopMode]];
+				[self performSelector:@selector(delayedViewDeselection:) withObject:view afterDelay:0 inModes:[NSArray arrayWithObject:NSRunLoopCommonModes]];
 			}
 		}
 		
@@ -1579,7 +1633,8 @@
 //	_scrollTimer = [[NSTimer scheduledTimerWithTimeInterval:SCROLL_TIMER_INTERVAL target:self selector:@selector(scrollTimerEvent:) userInfo:userData repeats:YES] retain];
 	
 	_scrollTimer = [NSTimer timerWithTimeInterval:SCROLL_TIMER_INTERVAL target:self selector:@selector(scrollTimerEvent:) userInfo:userData repeats:YES];
-	[[NSRunLoop currentRunLoop] addTimer:_scrollTimer forMode:NSEventTrackingRunLoopMode];
+//	[[NSRunLoop currentRunLoop] addTimer:_scrollTimer forMode:NSEventTrackingRunLoopMode];
+	[[NSRunLoop currentRunLoop] addTimer:_scrollTimer forMode:NSRunLoopCommonModes];
 }
 
 

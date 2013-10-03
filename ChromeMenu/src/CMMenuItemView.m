@@ -50,7 +50,7 @@
 
 - (void)drawRect:(NSRect)dirtyRect {
 //	NSLog(@"Cell View draw rect called. Cell subviews: %@", [self subviews]);
-	NSLog(@"DRAW ItemView with rect: %@", NSStringFromRect([self frame]));
+//	NSLog(@"DRAW ItemView with rect: %@", NSStringFromRect([self frame]));
 //	NSLog(@"frame: %@", NSStringFromRect([self frame]));
 	
 
@@ -203,7 +203,9 @@
 //}
 
 
-
+/*
+ *
+ */
 - (void)setHasSubmenuIcon:(BOOL)hasIcon {
 	if (hasIcon == NO) {
 		if (_submenuIconView) {
@@ -283,6 +285,9 @@
 }
 
 
+/*
+ *
+ */
 - (void)fadeIn {
 	NSArray *subviews = [self subviews];
 //	NSLog(@"fade these subviews: %@", subviews);
@@ -297,6 +302,9 @@
 }
 
 
+/*
+ *
+ */
 - (void)fadeOutWithComplitionHandler:(void (^)(void))handler {
 	NSArray *subviews = [self subviews];
 	
@@ -311,7 +319,22 @@
 }
 
 
+/*
+ *
+ */
+- (void)blink {
+	if (_selected) {
+		[self setSelected:NO];
+		[self performSelector:@selector(blink) withObject:nil afterDelay:0.05 inModes:[NSArray arrayWithObject:NSRunLoopCommonModes]];
+	} else {
+		[self setSelected:YES];
+	}
+}
 
+
+/*
+ *
+ */
 - (NSString *)description {
 	NSMutableString *description = [[NSMutableString alloc] initWithString:[super description]];
 	[description appendString:@" Properties: ("];

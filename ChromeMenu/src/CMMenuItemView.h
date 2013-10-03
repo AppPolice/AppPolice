@@ -29,6 +29,7 @@
 
 - (void)fadeIn;
 - (void)fadeOutWithComplitionHandler:(void (^)(void))handler;
+- (void)blink;
 
 /**
  * @function needsTracking

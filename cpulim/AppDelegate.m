@@ -121,7 +121,8 @@ extern void proc_cpulim_suspend_wait(void);		/* function returns only after limi
 
 - (IBAction)someAction:(id)sender {
 //	[self performSelector:@selector(delayedNSlog) withObject:nil afterDelay:5.0 inModes:[NSArray arrayWithObject:NSRunLoopCommonModes]];
-	[self performSelector:@selector(delayedNSlog) withObject:nil afterDelay:10.0];
+	NSLog(@"delay 5 sec before nslog");
+	[self performSelector:@selector(delayedNSlog) withObject:nil afterDelay:5.0];
 }
 
 - (void)delayedNSlog {
@@ -140,7 +141,7 @@ extern void proc_cpulim_suspend_wait(void);		/* function returns only after limi
 	}
 
 	while (keepRunning) {
-		NSEvent *theEvent = [NSApp nextEventMatchingMask:NSMouseEnteredMask | NSLeftMouseDownMask | NSLeftMouseUpMask untilDate:[NSDate distantFuture] inMode:NSEventTrackingRunLoopMode dequeue:YES];
+		NSEvent *theEvent = [NSApp nextEventMatchingMask:NSMouseEnteredMask | NSLeftMouseDownMask | NSLeftMouseUpMask untilDate:[NSDate distantFuture] inMode:NSDefaultRunLoopMode dequeue:YES];
 		
 		NSLog(@"run loop 1 event: %@", theEvent);
 		[[theEvent window] sendEvent:theEvent];

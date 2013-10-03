@@ -241,8 +241,41 @@
 }
 
 
+/*
+ *
+ */
 - (void)performAction {
+	if ([self hasSubmenu])
+		return;
 	
+	if (_action) {
+		id target = _target;
+		if (! target) {		// application delegate could be the one to handle it
+			target = [NSApp delegate];
+		}
+		
+		if ([target respondsToSelector:_action]) {
+			[target performSelector:_action withObject:self];
+		}
+	}
+
+	
+	if ([[self menu] cancelsTrackingOnAction]) {
+		CMMenuItemView *view = (CMMenuItemView *)[[self representedView] view];
+		[view blink];
+		
+		[self performSelector:@selector(delayedCancelTracking) withObject:nil afterDelay:0.075 inModes:[NSArray arrayWithObject:NSRunLoopCommonModes]];
+	}
+}
+
+
+- (void)delayedCancelTracking {
+	CMMenu *menu = [self menu];
+	CMMenu *supermenu = menu;
+	while ((menu = [menu supermenu]))
+		supermenu = menu;
+	
+	[supermenu cancelTracking];
 }
 
 
@@ -302,7 +335,8 @@
 				} else {
 					CMMenu *activeSubmenu = [[self menu] activeSubmenu];
 					if ( !activeSubmenu && activeSubmenu != _submenu) {
-						[self performSelector:@selector(showItemSubmenu) withObject:nil afterDelay:SUBMENU_POPUP_DELAY_DEFAULT inModes:[NSArray arrayWithObject:NSEventTrackingRunLoopMode]];
+//						[self performSelector:@selector(showItemSubmenu) withObject:nil afterDelay:SUBMENU_POPUP_DELAY_DEFAULT inModes:[NSArray arrayWithObject:NSEventTrackingRunLoopMode]];
+						[self performSelector:@selector(showItemSubmenu) withObject:nil afterDelay:SUBMENU_POPUP_DELAY_DEFAULT inModes:[NSArray arrayWithObject:NSRunLoopCommonModes]];
 						_submenuIntervalIsSetToPopup = YES;
 					}
 				}
@@ -326,7 +360,8 @@
 				
 				if ([self hasSubmenu]) {
 //					[self performSelector:@selector(showItemSubmenu) withObject:nil afterDelay:SUBMENU_POPUP_DELAY_DEFAULT];
-					[self performSelector:@selector(showItemSubmenu) withObject:nil afterDelay:SUBMENU_POPUP_DELAY_DEFAULT inModes:[NSArray arrayWithObject:NSEventTrackingRunLoopMode]];
+//					[self performSelector:@selector(showItemSubmenu) withObject:nil afterDelay:SUBMENU_POPUP_DELAY_DEFAULT inModes:[NSArray arrayWithObject:NSEventTrackingRunLoopMode]];
+					[self performSelector:@selector(showItemSubmenu) withObject:nil afterDelay:SUBMENU_POPUP_DELAY_DEFAULT inModes:[NSArray arrayWithObject:NSRunLoopCommonModes]];
 					_submenuIntervalIsSetToPopup = YES;
 				}
 			}
@@ -465,7 +500,8 @@
 
 	if ([self hasSubmenu]) {
 //		[self performSelector:@selector(showItemSubmenu) withObject:nil afterDelay:delay];
-		[self performSelector:@selector(showItemSubmenu) withObject:nil afterDelay:delay inModes:[NSArray arrayWithObject:NSEventTrackingRunLoopMode]];
+//		[self performSelector:@selector(showItemSubmenu) withObject:nil afterDelay:delay inModes:[NSArray arrayWithObject:NSEventTrackingRunLoopMode]];
+		[self performSelector:@selector(showItemSubmenu) withObject:nil afterDelay:delay inModes:[NSArray arrayWithObject:NSRunLoopCommonModes]];
 		_submenuIntervalIsSetToPopup = YES;
 	}
 }

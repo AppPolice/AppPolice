@@ -117,6 +117,10 @@ static NSString *tableData[] = {
 }
 
 
+void cfnotificationCallback(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo) {
+	NSLog(@"hello939393939");
+}
+
 /*
  *
  */
@@ -129,8 +133,40 @@ static NSString *tableData[] = {
 	[self populateMenuWithRunningApplications];
 
 	
+
+//
+//	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(tempObserver:) name:NSApplicationDidResignActiveNotification object:nil];
+//	
+//	CFNotificationCenterAddObserver(CFNotificationCenterGetLocalCenter(), NULL, cfnotificationCallback, (CFStringRef)NSApplicationDidResignActiveNotification, NULL, CFNotificationSuspensionBehaviorDeliverImmediately);
+//
+//	
+//	
+//	NSWorkspace *ws = [NSWorkspace sharedWorkspace];
+//	[[ws notificationCenter] addObserver:self selector:@selector(appDidDeactiveteNote:) name:NSWorkspaceDidDeactivateApplicationNotification object:nil];
+	
 //	[self performSelector:@selector(addLocalMonitor) withObject:nil afterDelay:1.0 inModes:[NSArray arrayWithObject:NSRunLoopCommonModes]];
 }
+
+
+
+- (void)tempObserver:(NSNotification *)notification {
+//	[self performSelector:@selector(log) withObject:nil afterDelay:0 inModes:[NSArray arrayWithObject:NSRunLoopCommonModes]];
+	NSLog(@"----- observer notification, app resigned active status");
+}
+
+- (void)log {
+	NSLog(@"lgogogogo");
+}
+
+- (void)appDidDeactiveteNote:(NSNotification *)note {
+	NSLog(@"app did deactivate: %@", note);
+	NSRunningApplication *app = [[note userInfo] objectForKey:NSWorkspaceApplicationKey];
+	NSLog(@"noteapp: %@, our app:%@", app, [NSRunningApplication currentApplication]);
+	if ([app isEqual:[NSRunningApplication currentApplication]]) {
+		NSLog(@"we hid our app");
+	}
+}
+
 
 
 - (void)addLocalMonitor {
@@ -192,9 +228,9 @@ static NSString *tableData[] = {
 
 	
 	
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(notificationDeliver:) name:NSMenuWillSendActionNotification object:statusbarMenu];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(notificationDeliver:) name:NSMenuWillSendActionNotification object:nil];
 	
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(notificationDeliver:) name:NSMenuDidEndTrackingNotification object:statusbarMenu];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(notificationDeliver:) name:NSMenuDidEndTrackingNotification object:nil];
 	
 	
 	
@@ -210,6 +246,12 @@ static NSString *tableData[] = {
 	NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
 	[notificationCenter addObserver:self selector:@selector(statusbarItemClick:) name:@"StatusbarItemLMouseClick" object:nil];
 }
+
+
+- (void)notificationDeliver:(NSNotification *)notification {
+	NSLog(@"notification: %@", notification);
+}
+
 
 
 - (void)updateMenu:(NSMenu *)theMenu {
@@ -532,12 +574,12 @@ static NSString *tableData[] = {
 		
 
 			if (i == 1 || i == 9) {
-				item = [[CMMenuItemOverride alloc] initWithTitle:name];
+				item = [[CMMenuItemOverride alloc] initWithTitle:name action:NULL];
 //				[item setViewFromNibNamed:@"MenuItemView" withIdentifier:@"CMTableCellViewIdOverride" andPropertyNames:viewProperties];
 				[item setViewFromNibNamed:@"MenuItemView" andPropertyNames:viewProperties];
 				[item setStatusIcon:[NSImage imageNamed:statusImageName]];
 			} else {
-				item = [[CMMenuItem alloc] initWithTitle:name];
+				item = [[CMMenuItem alloc] initWithTitle:name action:NULL];
 			}
 					
 			if (i > 3)
@@ -558,10 +600,13 @@ static NSString *tableData[] = {
 	
 
 	CMMenu *submenu = [[CMMenu alloc] initWithTitle:@"Submenu 1"];
-	CMMenuItem *submenuItem1 = [[CMMenuItem alloc] initWithTitle:@"ViewTemplate"];
+	[submenu setCancelsTrackingOnAction:NO];
+	CMMenuItem *submenuItem1 = [[CMMenuItem alloc] initWithTitle:@"ViewTemplate" action:@selector(someActionForOurCustomMenu:)];
+	[submenuItem1 setTarget:self];
 	[submenu addItem:submenuItem1];
 	[submenuItem1 release];
-	CMMenuItem *submenuItem2 = [[CMMenuItem alloc] initWithTitle:@"Item"];
+	CMMenuItem *submenuItem2 = [[CMMenuItem alloc] initWithTitle:@"Item" action:@selector(someActionForOurCustomMenu:)];
+	[submenuItem2 setTarget:self];
 	[submenu addItem:submenuItem2];
 	[submenuItem2 release];
 	
@@ -571,10 +616,10 @@ static NSString *tableData[] = {
 	
 	submenu = [[CMMenu alloc] initWithTitle:@"Submenu 2"];
 	[submenu setBorderRadius:0.0];
-	submenuItem1 = [[CMMenuItem alloc] initWithTitle:@"one"];
+	submenuItem1 = [[CMMenuItem alloc] initWithTitle:@"one" action:NULL];
 	[submenu addItem:submenuItem1];
 	[submenuItem1 release];
-	submenuItem2 = [[CMMenuItem alloc] initWithTitle:@"Item"];
+	submenuItem2 = [[CMMenuItem alloc] initWithTitle:@"Item" action:NULL];
 	[submenu addItem:submenuItem2];
 	[submenuItem2 release];
 	
@@ -583,11 +628,11 @@ static NSString *tableData[] = {
 	
 	
 	CMMenu *submenuOfSubmenu = [[CMMenu alloc] initWithTitle:@"Submenu of submenu"];
-	submenuItem1 = [[CMMenuItem alloc] initWithTitle:@"one"];
+	submenuItem1 = [[CMMenuItem alloc] initWithTitle:@"one" action:NULL];
 	[submenuOfSubmenu addItem:submenuItem1];
 	[submenuItem1 release];
-	submenuItem2 = [[CMMenuItem alloc] initWithTitle:@"two"];
-	CMMenuItem *item3 = [[CMMenuItem alloc] initWithTitle:@"three"];
+	submenuItem2 = [[CMMenuItem alloc] initWithTitle:@"two" action:NULL];
+	CMMenuItem *item3 = [[CMMenuItem alloc] initWithTitle:@"three" action:NULL];
 	[submenuOfSubmenu addItem:item3];
 	[item3 release];
 	[submenuOfSubmenu addItem:submenuItem2];
@@ -600,22 +645,22 @@ static NSString *tableData[] = {
 	
 	
 	submenu = [[CMMenu alloc] initWithTitle:@"Submenu 3"];
-	submenuItem1 = [[CMMenuItem alloc] initWithTitle:@"three"];
+	submenuItem1 = [[CMMenuItem alloc] initWithTitle:@"three" action:NULL];
 	[submenu addItem:submenuItem1];
 	[submenuItem1 release];
-	submenuItem2 = [[CMMenuItem alloc] initWithTitle:@"four"];
+	submenuItem2 = [[CMMenuItem alloc] initWithTitle:@"four" action:NULL];
 	[submenu addItem:submenuItem2];
 	[submenuItem2 release];
 	
-	CMMenuItem *submenuItem3 = [[CMMenuItem alloc] initWithTitle:@"five"];
+	CMMenuItem *submenuItem3 = [[CMMenuItem alloc] initWithTitle:@"five" action:NULL];
 	[submenu addItem:submenuItem3];
 	[submenuItem3 release];
 
-	CMMenuItem *submenuItem4 = [[CMMenuItem alloc] initWithTitle:@"six, little bit longer"];
+	CMMenuItem *submenuItem4 = [[CMMenuItem alloc] initWithTitle:@"six, little bit longer" action:NULL];
 	[submenu addItem:submenuItem4];
 	[submenuItem4 release];
 
-	CMMenuItem *submenuItem5 = [[CMMenuItem alloc] initWithTitle:@"seven"];
+	CMMenuItem *submenuItem5 = [[CMMenuItem alloc] initWithTitle:@"seven" action:NULL];
 	[submenu addItem:submenuItem5];
 	[submenuItem5 release];
 	
@@ -623,7 +668,7 @@ static NSString *tableData[] = {
 	i = 0;
 	int lim = 14;
 	for (i = 0; i < lim; ++i) {
-		CMMenuItem *submenuItemA = [[CMMenuItem alloc] initWithTitle:@"Automatically generated"];
+		CMMenuItem *submenuItemA = [[CMMenuItem alloc] initWithTitle:@"Automatically generated" action:NULL];
 		[submenu addItem:submenuItemA];
 		[submenuItemA release];
 	}
@@ -674,7 +719,7 @@ static NSString *tableData[] = {
 	int count = 4;
 	
 	for (i = 0; i < count; ++i) {
-		CMMenuItem *item  = [[CMMenuItem alloc] initWithTitle:[NSString stringWithFormat:@"Menu Item %d", (i + 1)]];
+		CMMenuItem *item  = [[CMMenuItem alloc] initWithTitle:[NSString stringWithFormat:@"Menu Item %d", (i + 1)] action:NULL];
 //		CMMenuItem *item  = [[CMMenuItem alloc] initWithTitle:@"Some title"];
 		[smallMenu addItem:item];
 		[item release];
@@ -693,6 +738,12 @@ static NSString *tableData[] = {
 }
 
 
+- (void)someActionForOurCustomMenu:(id)sender {
+	CMMenuItem *item = (CMMenuItem *)sender;
+	NSLog(@"custom menu action, sender: %@", item);
+	NSPopover *popover = [[self appInspectorController] popover];
+	[[item menu] showPopover:popover forItem:item];
+}
 
 
 - (IBAction)showmenu:(id)sender {
@@ -701,6 +752,10 @@ static NSString *tableData[] = {
 //	[statusbarMenu popUpMenuPositioningItem:nil atLocation:NSMakePoint(200, 200) inView:nil];
 }
 
+- (IBAction)showPopoverForButton:(id)sender {
+	NSButton *button = (NSButton *)sender;
+	[[self appInspectorController] showAppDetailsPopoverRelativeTo:button];
+}
 
 
 #pragma mark -
@@ -778,10 +833,7 @@ int flag = 0;
 }
 
 
-- (void)notificationDeliver:(NSNotification *)notification {
-//	NSLog(@"notification: %@", notification);
-	
-}
+
 
 
 

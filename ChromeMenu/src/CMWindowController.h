@@ -34,6 +34,7 @@
 //- (void)updateFrame:(NSRect)frame ignoreMouse:(BOOL)ignoreMouse;
 //- (void)updateFrame:(NSRect)frame options:(CMMenuOptions)options;
 - (void)hide;
+- (void)fadeOutWithComplitionHandler:(void (^)(void))handler;
 
 - (void)insertView:(NSViewController *)viewController atIndex:(NSUInteger)index animate:(BOOL)animate;
 - (void)addView:(NSViewController *)viewController animate:(BOOL)animate;

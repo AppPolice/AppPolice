@@ -78,6 +78,7 @@ typedef struct __submenu_tracking_event tracking_event_t;
 	BOOL _isActive;
 	CMMenu *_activeSubmenu;
 	BOOL _isTrackingSubmenu;
+	BOOL _cancelsTrackingOnAction;
 		
 //	BOOL _displayedFirstTime;
 	BOOL _needsDisplay;		// flag used in context of full menu update.
@@ -103,6 +104,9 @@ typedef struct __submenu_tracking_event tracking_event_t;
 	BOOL _receiveMouseMovedEvents;
 	BOOL _generateMouseMovedEvents;
 //	id _localMouseMoveEventMonitor;
+	id _globalEventMonitor;
+	
+	NSMutableArray *_popovers;
 }
 
 
@@ -159,6 +163,7 @@ typedef struct __submenu_tracking_event tracking_event_t;
 //		_displayedFirstTime = NO;
 		_title = [aTitle copy];
 		_needsDisplay = YES;
+		_cancelsTrackingOnAction = YES;
 		_minimumWidth = 0;
 		_menuHorizontalAlignment = CMMenuAlignedLeft;
 		_menuVerticalAlignment = CMMenuAlignedTop;
@@ -210,6 +215,11 @@ typedef struct __submenu_tracking_event tracking_event_t;
 //		[_itemViewRegesteredNibs release];
 	
 //	[_underlyingWindow release];
+	
+	if (_popovers) {
+		[_popovers removeAllObjects];
+		[_popovers release];
+	}
 	
 	[super dealloc];
 }
@@ -511,6 +521,18 @@ typedef struct __submenu_tracking_event tracking_event_t;
 	// Root menu doesn't have supermenu.
 	if (! _supermenu) {
 		[self beginTrackingWithEvent:nil];
+		
+		_globalEventMonitor = [NSEvent addGlobalMonitorForEventsMatchingMask:NSLeftMouseDownMask handler:^(NSEvent *theEvent) {
+			[self cancelTracking];
+		}];
+
+		// Use workspace to monitor if app gets deactived (e.g. by Command + Tab)
+		// Cannot use NSApplicationDidResignActiveNotification as it doesn't work in NSEventTRackingRunLoopMode
+		[[[NSWorkspace sharedWorkspace] notificationCenter] addObserver:self selector:@selector(didDeactivateApplicationNotificationHandler:) name:NSWorkspaceDidDeactivateApplicationNotification object:nil];
+
+		
+		
+//		[self performSelector:@selector(registerObserver) withObject:nil afterDelay:0 inModes:[NSArray arrayWithObject:NSEventTrackingRunLoopMode]];
 	}
 	
 	_isActive = YES;
@@ -540,6 +562,16 @@ typedef struct __submenu_tracking_event tracking_event_t;
 //		NSLog(@"window is key: %d", [[_underlyingWindowController window] isKeyWindow]);
 //	}
 }
+
+
+//- (void)tempObserver:(NSNotification *)notification {
+//	NSLog(@"----- observer notification, app resigned active status");
+//}
+//
+//- (void)registerObserver {
+//	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(tempObserver:) name:NSApplicationDidResignActiveNotification object:nil];
+//}
+
 
 
 //- (void)startEventTracking {
@@ -576,7 +608,47 @@ typedef struct __submenu_tracking_event tracking_event_t;
  *
  */
 - (void)cancelTracking {
-	[self cancelTrackingWithoutAnimation];
+	if (_activeSubmenu) {
+		[_activeSubmenu cancelTracking];
+	}
+	
+	[self endTracking];
+
+	
+	[_underlyingWindowController fadeOutWithComplitionHandler:^(void) {
+		if ([_menuItems count])
+			[self moveVisibleAreaToDisplayItem:[_menuItems objectAtIndex:0] ignoreMouse:YES];
+		
+		[_underlyingWindowController hide];
+		
+		CMMenuItem *selectedItem = [self highlightedItem];
+		if (selectedItem)
+			[selectedItem deselect];
+		
+		if (_supermenu) {
+			[_supermenu setActiveSubmenu:nil];
+			[_parentItem deselect];
+		}
+	}];
+
+	_isActive = NO;
+	
+	if (! _supermenu) {
+		if (_globalEventMonitor) {
+			[NSEvent removeMonitor:_globalEventMonitor];
+			_globalEventMonitor = nil;
+		}
+		
+		[[[NSWorkspace sharedWorkspace] notificationCenter] removeObserver:self name:NSWorkspaceDidDeactivateApplicationNotification object:self];
+	}
+	
+	if (_popovers) {
+		for (NSPopover *popover in _popovers) {
+			if ([popover isShown])
+				[popover close];
+		}
+		[_popovers removeAllObjects];
+	}
 }
 
 
@@ -587,14 +659,12 @@ typedef struct __submenu_tracking_event tracking_event_t;
 	if (_activeSubmenu) {
 		[_activeSubmenu cancelTrackingWithoutAnimation];
 	}
-
+	
 	[self endTracking];
 	
 	if ([_menuItems count])
 		[self moveVisibleAreaToDisplayItem:[_menuItems objectAtIndex:0] ignoreMouse:YES];
 
-	
-//	[_underlyingWindow orderOut:self];
 	[_underlyingWindowController hide];
 	_isActive = NO;
 	
@@ -608,10 +678,43 @@ typedef struct __submenu_tracking_event tracking_event_t;
 //		_parentItem = nil;
 	}
 	
-
+	if (! _supermenu) {
+		if (_globalEventMonitor) {
+			[NSEvent removeMonitor:_globalEventMonitor];
+			_globalEventMonitor = nil;
+		}
+		
+		[[[NSWorkspace sharedWorkspace] notificationCenter] removeObserver:self name:NSWorkspaceDidDeactivateApplicationNotification object:self];
+	}
 	
-//	if (! _supermenu)
-//		[_keyEventInterpreter stop];
+	if (_popovers) {
+		for (NSPopover *popover in _popovers) {
+			if ([popover isShown])
+				[popover close];
+		}
+		[_popovers removeAllObjects];
+	}
+}
+
+
+- (void)didDeactivateApplicationNotificationHandler:(NSNotification *)notification {
+	NSRunningApplication *deactivatedApp = [[notification userInfo] objectForKey:NSWorkspaceApplicationKey];
+	if ([[NSRunningApplication currentApplication] isEqual:deactivatedApp]) {
+		[self cancelTrackingWithoutAnimation];
+	}
+}
+
+
+/*
+ *
+ */
+- (BOOL)cancelsTrackingOnAction {
+	return _cancelsTrackingOnAction;
+}
+
+
+- (void)setCancelsTrackingOnAction:(BOOL)cancels {
+	_cancelsTrackingOnAction = cancels;
 }
 
 
@@ -625,6 +728,40 @@ typedef struct __submenu_tracking_event tracking_event_t;
 	}
 	
 	return nil;
+}
+
+
+/*
+ *
+ */
+- (void)showPopover:(NSPopover *)popover forItem:(CMMenuItem *)item {
+	if (! popover) {
+		[NSException raise:NSInvalidArgumentException format:@"nil provided for popover in -showPopover:forItem:"];
+		return;
+	}
+	if (! item) {
+		[NSException raise:NSInvalidArgumentException format:@"nil provided for item in -showPopover:forItem:"];
+		return;
+	}
+	if ([_menuItems indexOfObject:item] == NSNotFound) {
+		[NSException raise:NSInvalidArgumentException format:@"Provided item doesn't belong to the reciever's menu at -showPopover:forItem:"];
+		return;
+	}
+	
+//	if ([popover isShown]) {
+//		[popover close];
+//		return;
+//	}
+	
+	if (! _popovers) {
+		_popovers = [[NSMutableArray alloc] init];
+	}
+	
+	if ([_popovers indexOfObject:popover] == NSNotFound) {
+		[_popovers addObject:popover];
+	}
+	NSView *view = [(NSViewController *)[item representedView] view];
+	[popover showRelativeToRect:[view bounds] ofView:view preferredEdge:NSMaxXEdge];
 }
 
 
@@ -1227,7 +1364,8 @@ typedef struct __submenu_tracking_event tracking_event_t;
 //															repeats:YES] retain];
 	
 	_tracking_event->timer = [NSTimer timerWithTimeInterval:interval target:self selector:@selector(trackingLoop:) userInfo:nil repeats:YES];
-	[[NSRunLoop currentRunLoop] addTimer:_tracking_event->timer forMode:NSEventTrackingRunLoopMode];
+//	[[NSRunLoop currentRunLoop] addTimer:_tracking_event->timer forMode:NSEventTrackingRunLoopMode];
+	[[NSRunLoop currentRunLoop] addTimer:_tracking_event->timer forMode:NSRunLoopCommonModes];
 
 	
 //	NSLog(@"START tracking menu: %@, submenu: %@. Timer: %@", self, submenu,_tracking_event->timer);
