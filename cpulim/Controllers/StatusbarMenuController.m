@@ -741,9 +741,16 @@ void cfnotificationCallback(CFNotificationCenterRef center, void *observer, CFSt
 
 - (void)someActionForOurCustomMenu:(id)sender {
 	CMMenuItem *item = (CMMenuItem *)sender;
-	NSLog(@"custom menu action, sender: %@", item);
+//	NSLog(@"custom menu action, sender: %@", item);
 	NSPopover *popover = [[self appInspectorController] popover];
-	[[item menu] showPopover:popover forItem:item];
+	if ([popover isShown] && [item isEqual:[[self appInspectorController] relativeItem]]) {
+		[popover close];
+		[[item menu] setSuspendMenus:NO];
+	} else {
+		[[item menu] setSuspendMenus:YES];
+		[[item menu] showPopover:popover forItem:item];
+		[[self appInspectorController] setRelativeItem:item];
+	}
 }
 
 

@@ -109,8 +109,10 @@ typedef NSUInteger CMMenuAnimationOptions;
 - (BOOL)cancelsTrackingOnMouseEventOutsideMenus;
 - (void)setCancelsTrackingOnMouseEventOutsideMenus:(BOOL)cancels;
 /* Reciever's parent menus (supermenus) will stop tracking mouse, allowing to make mouse movements outside of menu withough closing its tracking. */
-- (BOOL)crystallizedSupermenus;
-- (void)setCrystallizeSupermenus:(BOOL)crystallize;
+//- (BOOL)crystallizedSupermenus;
+- (BOOL)menusSuspended;
+//- (void)setCrystallizeSupermenus:(BOOL)crystallize;
+- (void)setSuspendMenus:(BOOL)suspend;
 
 
 /* Returns the highlighted item in the menu, or nil if no item in the menu is highlighted */

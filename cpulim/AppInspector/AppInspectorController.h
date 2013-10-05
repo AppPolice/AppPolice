@@ -7,6 +7,8 @@
 //
 
 #import <AppKit/AppKit.h>
+//#import "ChromeMenu.h"
+@class CMMenuItem;
 
 @interface AppInspectorController : NSObject <NSPopoverDelegate>
 {
@@ -20,6 +22,8 @@
 - (NSPopover *)popover;
 
 - (IBAction)asdf:(id)sender;
+
+@property (assign) CMMenuItem *relativeItem;
 
 
 @end

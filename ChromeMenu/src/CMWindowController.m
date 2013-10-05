@@ -1282,19 +1282,17 @@
 
 
 - (void)_beginTrackingWithEvent:(NSEvent *)event {
-//	BOOL keepOn = YES;
-//	BOOL restart = NO;
-	// NSSystemDefinedMask | NSApplicationDefinedMask | NSAppKitDefinedMask |
-	NSUInteger eventMask = NSMouseEnteredMask | NSMouseExitedMask | NSLeftMouseDownMask | NSLeftMouseUpMask | NSScrollWheelMask | NSKeyDownMask | NSRightMouseUpMask;
+	BOOL mouseIsDown = NO;
+	NSUInteger runLoopEventMask = NSMouseEnteredMask | NSMouseExitedMask | NSLeftMouseDownMask | NSLeftMouseUpMask | NSRightMouseDownMask | NSRightMouseUpMask | NSOtherMouseDownMask | NSOtherMouseUpMask | NSScrollWheelMask | NSKeyDownMask;
 	
-//	eventMask |= NSAppKitDefinedMask | NSApplicationDefinedMask | NSSystemDefinedMask;
-	eventMask |= NSSystemDefinedMask;
+//	runLoopEventMask |= NSAppKitDefinedMask | NSApplicationDefinedMask | NSSystemDefinedMask;
+	runLoopEventMask |= NSSystemDefinedMask;
 	
 	if ([_owner receivesMouseMovedEvents]) {
 		// Before we start tracking mouse moved events remove any pending events of this
 		// type in queue. Otherwise faux moved events generated previously will disrupt.
 		[NSApp discardEventsMatchingMask:NSMouseMovedMask beforeEvent:event];
-		eventMask |= NSMouseMovedMask;
+		runLoopEventMask |= NSMouseMovedMask;
 	}
 
 	XLog2("\n \
@@ -1305,7 +1303,7 @@
 		  NSStringFromRect([[self window] frame]));
 	
 	while (_keepTracking) {
-		NSEvent *theEvent = [NSApp nextEventMatchingMask:eventMask untilDate:[NSDate distantFuture] inMode:NSEventTrackingRunLoopMode dequeue:YES];
+		NSEvent *theEvent = [NSApp nextEventMatchingMask:runLoopEventMask untilDate:[NSDate distantFuture] inMode:NSEventTrackingRunLoopMode dequeue:YES];
 		
 		if (! _keepTracking) {
 			NSLog(@"a-ha, final event: %@", theEvent);
@@ -1323,17 +1321,27 @@
 		NSWindow *eventWindow = [theEvent window];
 		NSEventType eventType = [theEvent type];
 		NSEventMask eventMask = 1 << eventType;
-		NSEventMask blockingMask = [_owner eventBlockingMask];
+//		NSEventMask blockingMask = [_owner eventBlockingMask];
+		
 		
 		if (eventType == NSSystemDefined)
 			continue;
 		
-//		BOOL eventWindowBelongsToMenu = [self eventWindowBelongsToMenu:theEvent];
-		BOOL eventWindowBelongsToMenu = YES;
+		BOOL eventWindowBelongsToAnyMenu = [self eventWindowBelongsToAnyMenu:theEvent];
+//		NSLog(@"event belongs to menu: %d, blocking mask: %llu", eventWindowBelongsToAnyMenu, blockingMask);
+		if (eventWindowBelongsToAnyMenu && ![[self window] isEqual:[theEvent window]]) {
+//			NSLog(@"SINCE event outside menu owning loop, find it");
+			CMMenu *menu = [self menuThatGeneratedEvent:theEvent];
+			if (menu && (eventMask & [menu eventBlockingMask])) {
+				NSLog(@"Event has been blocked. Conitnue.");
+				continue;
+			}
+		}
+
 		
 		
 #pragma mark MouseEntered
-		if (eventType == NSMouseEntered /*&& eventWindowBelongsToMenu && !(eventMask & blockingMask)*/) {
+		if (eventType == NSMouseEntered && eventWindowBelongsToAnyMenu) {
 			NSDictionary *userData = [theEvent userData];
 			CMMenuEventType menuEventType = [(NSNumber *)[userData objectForKey:kUserDataEventTypeKey] unsignedIntegerValue];
 			
@@ -1346,6 +1354,11 @@
 				[self scrollWithActiveScroller:scroller];
 			} else if (menuEventType & CMMenuEventMouseMenu) {
 				CMMenu *menu = [(NSDictionary *)[theEvent userData] objectForKey:kUserDataMenuKey];
+//				NSLog(@"event blocking masK: %llu", [menu eventBlockingMask]);
+//				if ([menu eventBlockingMask] & eventMask) {
+//					continue;
+//				}
+				
 				NSPoint mouseLocation = [theEvent locationInWindow];
 				mouseLocation = [eventWindow convertBaseToScreen:mouseLocation];
 				
@@ -1364,7 +1377,7 @@
 		
 			
 #pragma mark MouseExited
-		} else if (eventType == NSMouseExited /*&& eventWindowBelongsToMenu && !(eventMask & blockingMask)*/) {
+		} else if (eventType == NSMouseExited && eventWindowBelongsToAnyMenu) {
 			NSDictionary *userData = [theEvent userData];
 			CMMenuEventType eventType = [(NSNumber *)[userData objectForKey:kUserDataEventTypeKey] unsignedIntegerValue];
 			if (eventType & CMMenuEventMouseItem) {
@@ -1391,7 +1404,10 @@
 		
 			
 #pragma mark LeftMouseDown
-		} else if (eventType == NSLeftMouseDown) {
+#pragma mark RightMouseDown
+#pragma mark OtherMouseDown
+		} else if (eventType == NSLeftMouseDown || eventType == NSRightMouseDown || eventType == NSOtherMouseDown) {
+			mouseIsDown = YES;
 //			NSPoint mouseLocation = [theEvent locationInWindow];
 //			NSLog(@"mouse loc: %@", NSStringFromPoint(mouseLocation));
 //			NSWindow *window = [theEvent window];
@@ -1405,6 +1421,12 @@
 //				NSLog(@"Mouse down outside of menus. Stop tracking");
 //				[self endTracking];
 //			}
+			
+			
+			
+			if (eventWindowBelongsToAnyMenu) {
+				[_owner mouseEvent:theEvent];
+			}
 			
 			
 			NSPoint mouseLocation = [theEvent locationInWindow];
@@ -1422,7 +1444,19 @@
 			
 			
 #pragma mark LeftMouseUp
-		} else if (eventType == NSLeftMouseUp) {
+#pragma mark RightMouseUp
+#pragma mark OtherMouseUp
+		} else if (eventType == NSLeftMouseUp || eventType == NSRightMouseUp || eventType == NSOtherMouseUp) {
+			mouseIsDown = NO;
+			
+			if ([self mouseInsideMenuTreeDuringEvent:theEvent]) {
+				[_owner mouseEvent:theEvent];
+			} else if ([_owner cancelsTrackingOnMouseEventOutsideMenus]) {
+				NSLog(@"mouse is outside any menu during MOUSEUP!!!");
+				[[_owner rootMenu] cancelTracking];
+			}
+			
+			/*
 			NSPoint mouseLocation = [theEvent locationInWindow];
 			mouseLocation = [eventWindow convertBaseToScreen:mouseLocation];
 			if (NSPointInRect(mouseLocation, [[self window] frame])) {
@@ -1464,25 +1498,29 @@
 					[[_owner rootMenu] cancelTracking];
 				}
 			}
+			 */
 			
 
-#pragma mark RightMouseUp
-		} else if (eventType == NSRightMouseUp) {
-			NSPoint mouseLocation = [theEvent locationInWindow];
-			mouseLocation = [eventWindow convertBaseToScreen:mouseLocation];
-			CMMenuItem *item = [_owner itemAtPoint:mouseLocation];
-			if (item) {
-				if ([item submenu]) {
-					CMMenuItem *firstItem = [[item submenu] itemAtIndex:0];
-					[firstItem setTitle:@"New title changed while hidden"];
-				}
-			}
+//#pragma mark RightMouseDown
+//		} else if (eventType == NSRightMouseDown) {
+//
+//			
+//#pragma mark RightMouseUp
+//		} else if (eventType == NSRightMouseUp) {
+//			NSPoint mouseLocation = [theEvent locationInWindow];
+//			mouseLocation = [eventWindow convertBaseToScreen:mouseLocation];
+//			CMMenuItem *item = [_owner itemAtPoint:mouseLocation];
+//			if (item) {
+//				if ([item submenu]) {
+//					CMMenuItem *firstItem = [[item submenu] itemAtIndex:0];
+//					[firstItem setTitle:@"New title changed while hidden"];
+//				}
+//			}
 			
-//			[[self window] resignKeyWindow];
 		
 
 #pragma mark ScrollWheel
-		} else if (eventType == NSScrollWheel /*&& eventWindowBelongsToMenu && !(eventMask & blockingMask)*/) {
+		} else if (eventType == NSScrollWheel && eventWindowBelongsToAnyMenu) {
 			//			[_scrollView scrollWheel:event];
 			//			[[self window] sendEvent:theEvent];
 			//			CFRunLoopRunInMode(kCFRunLoopDefaultMode, 0, NO);
@@ -1495,15 +1533,15 @@
 			}
 		
 #pragma mark KeyDown
-		} else if (eventType == NSKeyDown) {
-			// Don't forget that events are being processed only by the root menu, _owner in this case.
+		} else if (eventType == NSKeyDown && !mouseIsDown) {
+			// Deprecated comment :: Don't forget that events are being processed only by the root menu, _owner in this case.
 			if (! _keyEventInterpreter)
 				_keyEventInterpreter = [[CMMenuKeyEventInterpreter alloc] initWithDelegate:_owner];
 			
 			[_keyEventInterpreter interpretEvent:theEvent];
 
 #pragma mark MouseMoved
-		} else if (eventType == NSMouseMoved /* && eventWindowBelongsToMenu */) {
+		} else if (eventType == NSMouseMoved && eventWindowBelongsToAnyMenu) {
 //			NSWindow *window = [theEvent window];
 //			NSLog(@"moved in window: %@ with rect: %@", window, NSStringFromRect([window frame]));
 			
@@ -1512,24 +1550,27 @@
 		
 		
 		if ([_owner receivesMouseMovedEvents]) {
-			if (! (eventMask & NSMouseMovedMask)) {		// if mask is not already set
+			if (! (runLoopEventMask & NSMouseMovedMask)) {		// if mask is not already set
 				// Before we start tracking mouse moved events remove any pending events of this
 				// type in queue. Otherwise faux moved events generated previously will disrupt.
 				[NSApp discardEventsMatchingMask:NSMouseMovedMask beforeEvent:theEvent];
-				eventMask |= NSMouseMovedMask;
+				runLoopEventMask |= NSMouseMovedMask;
 			}
-		} else if (eventMask & NSMouseMovedMask) {
-			eventMask &= ~NSMouseMovedMask;
+		} else if (runLoopEventMask & NSMouseMovedMask) {
+			runLoopEventMask &= ~NSMouseMovedMask;
 		}
 			
 		
 //		NSLog(@"event loop, and we track mouse moved: %d", ((eventMask & NSMouseMovedMask) != 0));
 		
 	
-//		[[self window] sendEvent:theEvent];
-//		if ( !eventWindowBelongsToMenu && [theEvent window])
-		if ([theEvent window])
-			[[theEvent window] sendEvent:theEvent];
+		if ( !eventWindowBelongsToAnyMenu && eventType != NSKeyDown && eventWindow && ![_owner cancelsTrackingOnMouseEventOutsideMenus]) {
+			//			NSLog(@"Sending event to non-menu window");
+			[NSApp discardEventsMatchingMask:NSAnyEventMask beforeEvent:theEvent];
+			[eventWindow sendEvent:theEvent];
+		}
+
+		
 //		[[self window] resignKeyWindow];
 
 		
@@ -1560,6 +1601,20 @@
 }
 
 
+- (CMMenu *)menuThatGeneratedEvent:(NSEvent *)theEvent {
+	NSWindow *window = [theEvent window];
+	if (! window)
+		return nil;
+
+	CMMenu *menu = _owner;
+	do {
+		if ([[menu underlyingWindow] isEqual:window])
+			return menu;
+	} while ((menu = [menu supermenu]));
+	
+	return nil;
+}
+
 - (BOOL)mouseInsideMenuTreeDuringEvent:(NSEvent *)theEvent {
 	NSPoint mouseLocation = [theEvent locationInWindow];
 	mouseLocation = [[theEvent window] convertBaseToScreen:mouseLocation];
@@ -1573,11 +1628,11 @@
 }
 
 
-- (BOOL)eventWindowBelongsToMenu:(NSEvent *)theEvent {
+- (BOOL)eventWindowBelongsToAnyMenu:(NSEvent *)theEvent {
 	NSWindow *window = [theEvent window];
 	CMMenu *menu = ([_owner activeSubmenu]) ? [_owner activeSubmenu] : _owner;
 	while (menu) {
-		if ([menu underlyingWindow] == window)
+		if ([[menu underlyingWindow] isEqual:window])
 			return YES;
 		menu = [menu supermenu];
 	}

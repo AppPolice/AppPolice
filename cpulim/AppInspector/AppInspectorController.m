@@ -7,9 +7,11 @@
 //
 
 #import "AppInspectorController.h"
+#import "ChromeMenu.h"
 
 @implementation AppInspectorController
 
+@synthesize relativeItem;
 
 - (id)init {
 	if (self = [super init]) {
@@ -48,8 +50,8 @@
 }
 
 
-- (NSWindow *)detachableWindowForPopover:(NSPopover *)popover {
-	[popover setAnimates:NO];
+- (NSWindow *)detachableWindowForPopover:(NSPopover *)thePopover {
+	[thePopover setAnimates:NO];
 	return detachedWindow;
 }
 

@@ -247,6 +247,8 @@
 - (void)performAction {
 	if ([self hasSubmenu])
 		return;
+
+	XLog2("Performing action on item: %@", self);
 	
 	if (_action) {
 		id target = _target;
@@ -284,37 +286,33 @@
 }
 
 
+- (id)representedObject {
+	return _representedObject;
+}
+
+
+- (void)setRepresentedObject:(id)anObject {
+	if (_representedObject == anObject)
+		return;
+	
+	if (_representedObject) {
+		[_representedObject release];
+		_representedObject = nil;
+	}
+	if (anObject)
+		_representedObject = [anObject retain];
+}
+
+
+- (BOOL)isHighlighted {
+	return _isSelected;
+}
+
+
+
+
 #pragma mark -
 #pragma mark ***** Events and Tracking methods *****
-
-
-
-//- (void)mouseEntered:(NSEvent *)theEvent {
-//	if (_submenu) {
-//		[self performSelector:@selector(showSubmenu) withObject:nil afterDelay:0.2];
-//		_submenuIntervalSetToPopup = 1;
-////		[_submenu showMenu];
-//	}
-//}
-//
-//
-//- (void)mouseExited:(NSEvent *)theEvent {
-//	if (_submenu) {
-//		if (_submenuIntervalSetToPopup)
-//			[NSObject cancelPreviousPerformRequestsWithTarget:self];
-//		else
-//			[_submenu cancelTrackingWithoutAnimation];
-//	}
-//}
-
-
-//- (void)mouseDown:(NSEvent *)theEvent {
-//	// submenu should always stay on top
-////	if (_submenu)
-////		[_submenu orderFront];
-//	
-//	NSLog(@"submenu window number: %ld, parnet menu WN: %ld", [_submenu windowLevel], [_menu windowLevel]);
-//}
 
 
 - (BOOL)shouldChangeItemSelectionStatusForEvent:(CMMenuEventType)eventType {

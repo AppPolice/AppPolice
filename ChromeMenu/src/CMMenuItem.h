@@ -6,8 +6,9 @@
 //  Copyright (c) 2013 Maksym Stefanchuk. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
+//#import <Foundation/Foundation.h>
 //#import "CMMenu.h"
+@class NSObject, NSImage, NSString, NSArray;
 @class CMMenu;
 
 @interface CMMenuItem : NSObject
@@ -17,6 +18,7 @@
 	NSImage *_icon;
 	NSString *_title;
 	CMMenu *_submenu;
+	id _representedObject;
 	BOOL _isSeparatorItem;
 	
 	id _target;
@@ -56,5 +58,12 @@
 - (id)target;
 - (void)setAction:(SEL)aSelector;
 - (SEL)action;
+
+- (void)setRepresentedObject:(id)anObject;
+- (id)representedObject;
+
+/* Indicates whether the menu item should be drawn highlighted or not. */
+- (BOOL)isHighlighted;
+
 
 @end
