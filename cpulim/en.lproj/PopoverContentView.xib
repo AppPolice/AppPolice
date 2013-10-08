@@ -82,7 +82,7 @@
                     </constraints>
                     <levelIndicatorCell key="cell" alignment="left" doubleValue="5" maxValue="10" warningValue="5" criticalValue="8" levelIndicatorStyle="continuousCapacity" id="82X-tI-IIi"/>
                 </levelIndicator>
-                <slider verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Bg4-V0-TsV" customClass="AppLimitSlider">
+                <slider verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Bg4-V0-TsV">
                     <rect key="frame" x="18" y="66" width="301" height="25"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <sliderCell key="cell" refusesFirstResponder="YES" state="on" alignment="left" maxValue="11" doubleValue="5" tickMarkPosition="below" numberOfTickMarks="12" sliderType="linear" id="qcC-TO-TiU" customClass="AppLimitSliderCell"/>

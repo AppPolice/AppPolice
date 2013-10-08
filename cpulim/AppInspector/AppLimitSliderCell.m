@@ -26,6 +26,10 @@
 //	[super drawBarInside:aRect flipped:flipped];
 //}
 
+//- (void)drawWithFrame:(NSRect)cellFrame inView:(NSView *)controlView {
+//	NSLog(@"frame: %@, view: %@", NSStringFromRect(cellFrame), controlView);
+//}
+
 
 //- (void)drawKnob:(NSRect)knobRect {
 //	[[NSColor blueColor] set];
@@ -35,20 +39,62 @@
 - (void)awakeFromNib {
 	_penultimateTickMark = [self numberOfTickMarks] - 2;
 	_penultimateTickMarkRect = [self rectOfTickMarkAtIndex:_penultimateTickMark];
-	NSLog(@"rect: %@", NSStringFromRect(_penultimateTickMarkRect));
+//	NSLog(@"rect: %@", NSStringFromRect(_penultimateTickMarkRect));
+//	CGFloat knobThickness = [self knobThickness];
+//	NSLog(@"thickness: %f", knobThickness);
+//	NSLog(@"image: %@", [self image]);
+}
+
+
+- (BOOL)startTrackingAt:(NSPoint)startPoint inView:(NSView *)controlView {
+//	CGFloat value = [self floatValue];
+//	CGFloat x = ([self doubleValue] - [self minValue]) / ([self maxValue] - [self minValue]) * ([self trackRect].size.width - [self knobThickness]);
+	
+	NSRect knobRect = [self knobRectFlipped:[controlView isFlipped]];
 	CGFloat knobThickness = [self knobThickness];
-	NSLog(@"thickness: %f", knobThickness);
-	NSLog(@"image: %@", [self image]);
+	_offsetFromKnobCenter = startPoint.x - knobRect.origin.x - knobThickness / 2;
+	if (ABS(_offsetFromKnobCenter) > knobThickness / 2)
+		_offsetFromKnobCenter = 0;
+	
+	return [super startTrackingAt:startPoint inView:controlView];
 }
 
 
 - (BOOL)continueTracking:(NSPoint)lastPoint at:(NSPoint)currentPoint inView:(NSView *)controlView {
-	NSLog(@"continue tracking: lastpoint: %@, current point: %@", NSStringFromPoint(lastPoint), NSStringFromPoint(currentPoint));
+//	BOOL stopOnTickMarks = [self allowsTickMarkValuesOnly];
+//	CGFloat value = [self floatValue];
+//	NSRect rect = _penultimateTickMarkRect;
 	
-	CGFloat value = [self floatValue];
-	if (value >= _penultimateTickMark) {
-		
+//	NSLog(@"value: %f\t last: %f\t current: %f \t delta: %f", value, lastPoint.x, currentPoint.x, _delta);
+	
+	if (currentPoint.x > _penultimateTickMarkRect.origin.x + _offsetFromKnobCenter) {
+		[self setAllowsTickMarkValuesOnly:YES];
+	} else if ([self allowsTickMarkValuesOnly]) {
+		[self setAllowsTickMarkValuesOnly:NO];
 	}
+	
+	/*
+	
+	if (value == _penultimateTickMark) {
+		if (currentPoint.x < rect.origin.x + _delta)
+			[self setAllowsTickMarkValuesOnly:NO];
+//		if (currentPoint.x > rect.origin.x) {
+//			[self setAllowsTickMarkValuesOnly:YES];
+//		} else {
+//			if (currentPoint.x < lastPoint.x) {
+//				[self setAllowsTickMarkValuesOnly:NO];
+//			} //else {
+////				[self setAllowsTickMarkValuesOnly:NO];
+////			}
+//		}
+//		if (currentPoint.x <= rect.origin.x)
+//			[self setAllowsTickMarkValuesOnly:NO];
+	} else if (value > _penultimateTickMark) {
+		[self setAllowsTickMarkValuesOnly:YES];
+	} else if (stopOnTickMarks) {
+		[self setAllowsTickMarkValuesOnly:NO];
+	}
+	 */
 	
 	return [super continueTracking:lastPoint at:currentPoint inView:controlView];
 }

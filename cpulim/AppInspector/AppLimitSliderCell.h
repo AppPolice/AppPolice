@@ -13,6 +13,7 @@
 {
 	NSInteger _penultimateTickMark;		// the next to last tick mark
 	NSRect _penultimateTickMarkRect;
+	CGFloat _offsetFromKnobCenter;
 }
 
 @end

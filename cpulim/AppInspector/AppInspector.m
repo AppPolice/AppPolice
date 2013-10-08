@@ -8,16 +8,16 @@
 
 #import "AppInspector.h"
 #import "ChromeMenu.h"
-#import "AppLimitSlider.h"
+//#import "AppLimitSlider.h"
 #import "AppLimitSliderCell.h"
 
 
-@interface AppInspector ()
-{
-	NSTimer *_sliderMouseTrackingTimer;
-}
-
-@end
+//@interface AppInspector ()
+//{
+//	NSTimer *_sliderMouseTrackingTimer;
+//}
+//
+//@end
 
 
 @implementation AppInspector
@@ -101,7 +101,7 @@
 	
 //	[_slider cell];
 	
-	NSLog(@"sliderh action: %f", value);
+//	NSLog(@"sliderh action: %f", value);
 //	NSLog(@"last before last rect: %@, mouse loca: %@", NSStringFromRect(rect), NSStringFromPoint(mouseLocation));
 
 	/*
@@ -134,7 +134,7 @@
 	[_levelIndicator setFloatValue:value];
 }
 
-
+/*
 - (void)sliderTrackingTimerEvent:(NSTimer *)timer {
 	NSDictionary *userInfo = [timer userInfo];
 	NSWindow *window = [userInfo objectForKey:@"window"];
@@ -152,6 +152,7 @@
 	}
 	
 }
+ */
 
 
 - (void)setPopverDidCloseHandler:(void (^)(void))handler {
