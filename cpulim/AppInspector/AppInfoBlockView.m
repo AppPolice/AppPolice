@@ -26,4 +26,10 @@
 	NSRectFill([self bounds]);
 }
 
+//- (NSSize)intrinsicContentSize {
+//	NSSize size = [super intrinsicContentSize];
+//	NSLog(@"intrinsic called: %@", NSStringFromSize(size));
+//	return size;
+//}
+
 @end

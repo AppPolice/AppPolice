@@ -37,8 +37,8 @@
 //}
 
 - (void)awakeFromNib {
-	_penultimateTickMark = [self numberOfTickMarks] - 2;
-	_penultimateTickMarkRect = [self rectOfTickMarkAtIndex:_penultimateTickMark];
+//	_penultimateTickMark = [self numberOfTickMarks] - 2;
+//	_penultimateTickMarkRect = [self rectOfTickMarkAtIndex:_penultimateTickMark];
 //	NSLog(@"rect: %@", NSStringFromRect(_penultimateTickMarkRect));
 //	CGFloat knobThickness = [self knobThickness];
 //	NSLog(@"thickness: %f", knobThickness);
@@ -49,6 +49,9 @@
 - (BOOL)startTrackingAt:(NSPoint)startPoint inView:(NSView *)controlView {
 //	CGFloat value = [self floatValue];
 //	CGFloat x = ([self doubleValue] - [self minValue]) / ([self maxValue] - [self minValue]) * ([self trackRect].size.width - [self knobThickness]);
+	
+	_penultimateTickMark = [self numberOfTickMarks] - 2;
+	_penultimateTickMarkRect = [self rectOfTickMarkAtIndex:_penultimateTickMark];
 	
 	NSRect knobRect = [self knobRectFlipped:[controlView isFlipped]];
 	CGFloat knobThickness = [self knobThickness];

@@ -41,14 +41,14 @@ struct proc_taskstats {
 
 static struct proc_taskstats *proc_taskstats;
 
-static void proc_cpulim_set_run(int pid, float newlim);
+static void proc_cpulim_set_queue(int pid, float newlim);
 static int limiter_running_ok = 0;
 static void proc_limiter_resume(void);
-static uint64_t sleep_loop_run(void);
+static uint64_t sleep_loop_queue(void);
 static int proc_tasks_calcsleeptime(void);
 static uint64_t proc_tasks_execsleeptime(void);
 static void proc_task_delete(pid_t pid);
-static void proc_task_delete_run(pid_t pid);
+static void proc_task_delete_queue(pid_t pid);
 
 static dispatch_queue_t *get_limiter_queue(void);
 static dispatch_queue_t *get_updtaskstats_queue(void);
@@ -72,14 +72,14 @@ int proc_cpulim_set(int pid, float newlim) {
 	/* safely add to the Serial Queue */
 	dispatch_queue_t *updtaskstats_queue_ptr = get_updtaskstats_queue();
 	dispatch_async(*updtaskstats_queue_ptr, ^{
-		proc_cpulim_set_run(pid, newlim);
+		proc_cpulim_set_queue(pid, newlim);
 	});
 	
 	return 0;
 }
 
 
-static void proc_cpulim_set_run(int pid, float newlim) {
+static void proc_cpulim_set_queue(int pid, float newlim) {
 	/* if there are no tasks yet */
 	if (proc_taskstats == NULL) {
 		if (newlim == 0)
@@ -153,7 +153,7 @@ static void proc_limiter_resume(void) {
 	updtaskstats_queue_ptr = get_updtaskstats_queue();
 	while (limiter_running_ok) {
 		dispatch_sync(*updtaskstats_queue_ptr, ^{
-			loop_slept = sleep_loop_run();
+			loop_slept = sleep_loop_queue();
 		});
 		
 		sleepns = osleep_interval - loop_slept;
@@ -168,7 +168,7 @@ static void proc_limiter_resume(void) {
 /*
  * Return total number of nanoseconds slept
  */
-static uint64_t sleep_loop_run(void) {
+static uint64_t sleep_loop_queue(void) {
 	uint proc_tasks_wlim_num;
 	uint64_t sleptns;
 	
@@ -280,7 +280,7 @@ static uint64_t proc_tasks_execsleeptime(void) {
 		}
 	}
 	
-	if (!there_are_proc_sleeping)
+	if (! there_are_proc_sleeping)
 		return sleptns;
 	
 	sleepspec = format_time(pt_sleep_min);
@@ -304,7 +304,7 @@ static uint64_t proc_tasks_execsleeptime(void) {
 			}
 		}
 		
-		if (!all_awake) {
+		if (! all_awake) {
 			sleepspec = format_time(pt_sleep_min - sleptns);
 			nanosleep(&sleepspec, NULL);
 			sleptns = pt_sleep_min;
@@ -364,12 +364,12 @@ void proc_cpulim_suspend_wait(void) {
 static void proc_task_delete(pid_t pid) {
 	dispatch_queue_t *updtaskstats_queue_ptr = get_updtaskstats_queue();
 	dispatch_async(*updtaskstats_queue_ptr, ^{
-		proc_task_delete_run(pid);
+		proc_task_delete_queue(pid);
 	});
 }
 
 
-static void proc_task_delete_run(pid_t pid) {
+static void proc_task_delete_queue(pid_t pid) {
 	struct proc_taskstats *task;
 	for (task = proc_taskstats; task != NULL; task = task->next) {
 		if (task->pid == pid) {

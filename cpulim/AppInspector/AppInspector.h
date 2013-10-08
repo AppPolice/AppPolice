@@ -19,6 +19,13 @@
 //	IBOutlet NSWindow *detachedWindow;
 	void (^_handler)(void);
 	
+	IBOutlet NSTextField *_applicationNameTextfield;
+	IBOutlet NSTextField *_applicationUserTextfield;
+	IBOutlet NSTextField *_cpuLoadTextfield;
+	IBOutlet NSTextField *_sliderTopTextfield;
+	IBOutlet NSTextField *_sliderLeftTextfield;
+	IBOutlet NSTextField *_sliderMiddleTextfield;
+	IBOutlet NSTextField *_sliderRightTextfield;
 	IBOutlet NSSlider *_slider;
 	IBOutlet NSLevelIndicator *_levelIndicator;
 }

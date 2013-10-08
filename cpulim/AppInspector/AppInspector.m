@@ -10,14 +10,30 @@
 #import "ChromeMenu.h"
 //#import "AppLimitSlider.h"
 #import "AppLimitSliderCell.h"
+#include <sys/sysctl.h>
+#include <unistd.h>
 
 
-//@interface AppInspector ()
-//{
-//	NSTimer *_sliderMouseTrackingTimer;
-//}
-//
-//@end
+/*
+ * Return number of CPUs in computer
+ */
+static int system_ncpu() {
+	static int ncpu = 0;
+	if (ncpu)
+		return ncpu;
+	
+#ifdef _SC_NPROCESSORS_ONLN
+	ncpu = (int)sysconf(_SC_NPROCESSORS_ONLN);
+#else
+	int mib[2];
+	mib[0] = CTL_HW;
+	mig[1] = HW_NCPU;
+	size_t len = sizeof(ncpu);
+	sysctl(mib, 2, &ncpu, &len, NULL, 0);
+#endif
+	return ncpu;
+}
+
 
 
 @implementation AppInspector
@@ -36,6 +52,7 @@
 
 - (void)awakeFromNib {
 //	NSLog(@"%@ awakeFromNib", [self className]);
+//	[_popoverView setTranslatesAutoresizingMaskIntoConstraints:NO];
 	[_popoverViewController setView:_popoverView];
 	
 //	NSLog(@"frame: %@", NSStringFromRect([_slider frame]));
@@ -56,6 +73,17 @@
 	[_levelIndicator setWarningValue:5];
 	[_levelIndicator setCriticalValue:7.5];
 //	[detachedWindow setContentView:popoverView];
+	
+	
+//	int mib[2];
+//	size_t len;
+//	int ncpu;
+//	int res;
+//	mib[0] = CTL_HW;
+//	mib[1] = HW_NCPU;
+//	len = sizeof(ncpu);
+//	res = sysctl(mib, 2, &ncpu, &len, NULL, 0);
+	NSLog(@"cpu's: %d", system_ncpu());
 }
 
 
@@ -132,6 +160,37 @@
 	}
 	*/
 	[_levelIndicator setFloatValue:value];
+	
+	if (value < 2) {
+		[_applicationNameTextfield setStringValue:@"New app"];
+	} else if (value < 4) {
+		[_applicationNameTextfield setStringValue:@"New app with some name"];
+	} else if (value < 6) {
+		[_applicationNameTextfield setStringValue:@"Little Snitch Configuration (1024)"];
+	} else {
+		[_applicationNameTextfield setStringValue:@"New app with some name longer then previous app."];
+	}
+
+	
+/*
+//	NSLog(@"subviews: %@", [_popoverView subviews]);
+//	[[[_popoverView subviews] objectAtIndex:0] invalidateIntrinsicContentSize];
+	
+	static int showingConstraints = 0;
+	if (! showingConstraints) {
+		NSEvent *theEvent = [NSApp currentEvent];
+		NSWindow *window = [theEvent window];
+//		NSArray *constraints = [_popoverView constraintsAffectingLayoutForOrientation:NSLayoutConstraintOrientationHorizontal];
+		NSMutableArray *constraints = [NSMutableArray new];
+		for (NSView *view in [_popoverView subviews]) {
+			[constraints addObjectsFromArray:[view constraintsAffectingLayoutForOrientation:NSLayoutConstraintOrientationHorizontal]];
+		}
+		NSLog(@"all constraints: %@", constraints);
+		[window visualizeConstraints:constraints];
+		showingConstraints = 1;
+	}
+ */
+	
 }
 
 /*

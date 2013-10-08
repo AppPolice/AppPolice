@@ -9,6 +9,9 @@
 
 #include "subroutines.h"
 
+// Clocks per second OSX uses for processes.
+// It could be a better option to use "sysctl hw.tbfrequency" (time base frequency)
+// to find out the value for different computers.
 #define NANOSEC_PER_SEC 1000000000
 
 

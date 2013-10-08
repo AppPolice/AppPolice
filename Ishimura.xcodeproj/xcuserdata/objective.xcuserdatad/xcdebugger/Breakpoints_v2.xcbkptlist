@@ -31,7 +31,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "181"
             endingLineNumber = "181"
-            landmarkName = "sleep_loop_run()"
+            landmarkName = "sleep_loop_queue()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -47,7 +47,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "180"
             endingLineNumber = "180"
-            landmarkName = "sleep_loop_run()"
+            landmarkName = "sleep_loop_queue()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
