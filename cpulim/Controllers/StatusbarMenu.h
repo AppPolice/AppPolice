@@ -8,16 +8,16 @@
 
 #import <Foundation/Foundation.h>
 
-@class MySubmenuView, MyTableView, AppInspectorController;
+@class MySubmenuView, MyTableView, AppInspector;
 
-@interface StatusbarMenuController : NSObject<NSTableViewDataSource, NSTableViewDelegate>
+@interface StatusbarMenu : NSObject<NSTableViewDataSource, NSTableViewDelegate>
 {
 	BOOL sortApplications; // it's temporary here
 @private
-	IBOutlet NSMenu *statusbarMenu;
+	IBOutlet NSMenu *_mainMenu;
 	IBOutlet NSView *statusbarItemView;
 	IBOutlet NSPanel *myPanel;
-	AppInspectorController *appInspectorController;
+	AppInspector *_appInspector;
 //	NSMenu *appsSubmenu;
 
 	IBOutlet MySubmenuView *appSubmenuView;
@@ -30,10 +30,10 @@
 	NSMutableArray *tableContents;
 }
 
-@property (assign) NSMenu *statusbarMenu;
+@property (assign) NSMenu *mainMenu;
 @property (assign) NSView *statusbarItemView;
 @property (assign) NSPanel *myPanel;
-@property (readonly) AppInspectorController *appInspectorController;
+@property (readonly) AppInspector *appInspector;
 
 - (void)linkStatusbarItemWithMenu;
 - (IBAction)activateSelf:(id)sender;

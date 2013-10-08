@@ -5,9 +5,9 @@
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="4510"/>
     </dependencies>
     <objects>
-        <customObject id="-2" userLabel="File's Owner">
+        <customObject id="-2" userLabel="File's Owner" customClass="NSApplication">
             <connections>
-                <outlet property="delegate" destination="494" id="495"/>
+                <outlet property="delegate" destination="494" id="ffY-Oa-tO8"/>
             </connections>
         </customObject>
         <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
@@ -139,9 +139,6 @@
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="system"/>
                         </buttonCell>
-                        <connections>
-                            <action selector="showmenu:" target="728" id="1677"/>
-                        </connections>
                     </button>
                     <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="OrV-Re-ju5">
                         <rect key="frame" x="391" y="213" width="82" height="32"/>
@@ -174,7 +171,7 @@
                             <font key="font" metaFont="system"/>
                         </buttonCell>
                         <connections>
-                            <action selector="addMenu:" target="728" id="SkA-a2-IXK"/>
+                            <action selector="addMenu:" target="CKn-Mw-7Oj" id="9Pl-ef-c9J"/>
                         </connections>
                     </button>
                     <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="fGA-lt-rbg">
@@ -185,7 +182,7 @@
                             <font key="font" metaFont="system"/>
                         </buttonCell>
                         <connections>
-                            <action selector="changeMenu:" target="728" id="stX-OZ-UBF"/>
+                            <action selector="changeMenu:" target="CKn-Mw-7Oj" id="sZe-yK-4PD"/>
                         </connections>
                     </button>
                     <customView autoresizesSubviews="NO" translatesAutoresizingMaskIntoConstraints="NO" id="3aM-PP-Jf8" customClass="MySubmenuView">
@@ -220,16 +217,16 @@
                                                     <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                     <prototypeCellViews>
                                                         <tableCellView identifier="AppCellViewId" id="J9S-BD-1Ul" customClass="MyTableCellView">
-                                                            <rect key="frame" x="1" y="0.0" width="236" height="18"/>
+                                                            <rect key="frame" x="1" y="0.0" width="236" height="17"/>
                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                             <subviews>
-                                                                <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="FvD-Y6-g0K" customClass="MyImageView">
+                                                                <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="FvD-Y6-g0K" customClass="MyImageView">
                                                                     <rect key="frame" x="14" y="1" width="15" height="15"/>
                                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                                     <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="NSActionTemplate" id="BdX-XC-id5"/>
                                                                 </imageView>
                                                                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="YD4-4i-3Yn">
-                                                                    <rect key="frame" x="34" y="0.0" width="205" height="17"/>
+                                                                    <rect key="frame" x="34" y="-1" width="205" height="17"/>
                                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                                                     <textFieldCell key="cell" lineBreakMode="truncatingTail" refusesFirstResponder="YES" sendsActionOnEndEditing="YES" title="Table View Cell" id="tcc-vp-CeP">
                                                                         <font key="font" size="14" name="LucidaGrande"/>
@@ -254,15 +251,13 @@
                                                             </connections>
                                                         </tableCellView>
                                                         <customView identifier="MyTableRowViewId" id="niF-K7-F82" customClass="MyTableRowView">
-                                                            <rect key="frame" x="1" y="18" width="236" height="19"/>
+                                                            <rect key="frame" x="1" y="17" width="236" height="19"/>
                                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                         </customView>
                                                     </prototypeCellViews>
                                                 </tableColumn>
                                             </tableColumns>
                                             <connections>
-                                                <outlet property="dataSource" destination="728" id="JoG-ek-0vX"/>
-                                                <outlet property="delegate" destination="728" id="xKa-32-GqU"/>
                                                 <outlet property="rowView" destination="niF-K7-F82" id="TyR-xr-I1R"/>
                                             </connections>
                                         </tableView>
@@ -296,9 +291,6 @@
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="cellTitle"/>
                         </buttonCell>
-                        <connections>
-                            <action selector="addSmallMenu:" target="728" id="ZHG-m0-bAX"/>
-                        </connections>
                     </button>
                     <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Mrz-h2-cuW">
                         <rect key="frame" x="223" y="31" width="134" height="19"/>
@@ -307,9 +299,6 @@
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="cellTitle"/>
                         </buttonCell>
-                        <connections>
-                            <action selector="toggleSmallMenu:" target="728" id="Ikx-MT-awc"/>
-                        </connections>
                     </button>
                     <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="ud3-N7-ysx">
                         <rect key="frame" x="376" y="114" width="82" height="32"/>
@@ -355,7 +344,7 @@
                             <font key="font" metaFont="system"/>
                         </buttonCell>
                         <connections>
-                            <action selector="showPopoverForButton:" target="728" id="5zZ-K3-YwM"/>
+                            <action selector="showPopoverForButton:" target="CKn-Mw-7Oj" id="w4a-2Y-UHd"/>
                         </connections>
                     </button>
                     <slider verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="5CL-4a-yO4">
@@ -426,9 +415,6 @@
                 <menuItem title="Set manually..." id="706">
                     <attributedString key="attributedTitle"/>
                     <modifierMask key="keyEquivalentModifierMask"/>
-                    <connections>
-                        <action selector="someAction2:" target="728" id="1667"/>
-                    </connections>
                 </menuItem>
                 <menuItem title="Pause Ishimura" enabled="NO" id="707">
                     <modifierMask key="keyEquivalentModifierMask"/>
@@ -942,17 +928,14 @@ ThBTQ2hhdFRoZWF0cmVUZW1wbGF0ZQ
                 <menuItem title="Quit Ishimura" id="718">
                     <modifierMask key="keyEquivalentModifierMask"/>
                     <connections>
-                        <action selector="terminate:" target="-2" id="725"/>
+                        <action selector="terminate:" target="-2" id="c9I-oF-dDX"/>
                     </connections>
                 </menuItem>
             </items>
-            <connections>
-                <outlet property="delegate" destination="728" id="738"/>
-            </connections>
         </menu>
         <customObject id="494" customClass="AppDelegate">
             <connections>
-                <outlet property="statusbarMenuController" destination="728" id="734"/>
+                <outlet property="_statusbarMenu" destination="CKn-Mw-7Oj" id="Lik-JY-01U"/>
                 <outlet property="window" destination="371" id="532"/>
             </connections>
         </customObject>
@@ -964,14 +947,10 @@ ThBTQ2hhdFRoZWF0cmVUZW1wbGF0ZQ
                 <outlet property="pidTF" destination="536" id="586"/>
             </connections>
         </customObject>
-        <customObject id="728" customClass="StatusbarMenuController">
+        <customObject id="CKn-Mw-7Oj" customClass="StatusbarMenu">
             <connections>
-                <outlet property="appListTableView" destination="ZUz-G4-Kcv" id="Ihv-2U-xvK"/>
-                <outlet property="appSubmenuView" destination="1764" id="tIi-je-ui7"/>
-                <outlet property="secondSubmenuView" destination="1620" id="1666"/>
-                <outlet property="statusbarItemView" destination="qPA-Mr-eaZ" id="uqc-B8-KJM"/>
-                <outlet property="statusbarMenu" destination="704" id="732"/>
-                <outlet property="testTable" destination="NME-ZP-Mgt" id="wxV-C9-k7I"/>
+                <outlet property="_mainMenu" destination="704" id="n2R-0O-kwM"/>
+                <outlet property="statusbarItemView" destination="qPA-Mr-eaZ" id="LfD-b2-RtY"/>
             </connections>
         </customObject>
         <customObject id="420" customClass="NSFontManager"/>
@@ -986,9 +965,6 @@ ThBTQ2hhdFRoZWF0cmVUZW1wbGF0ZQ
                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                         <font key="font" metaFont="system"/>
                     </buttonCell>
-                    <connections>
-                        <action selector="activateSelf:" target="728" id="oII-AU-j4o"/>
-                    </connections>
                 </button>
                 <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="1730">
                     <rect key="frame" x="30" y="11" width="96" height="22"/>
@@ -1082,8 +1058,6 @@ ThBTQ2hhdFRoZWF0cmVUZW1wbGF0ZQ
                                     </tableColumn>
                                 </tableColumns>
                                 <connections>
-                                    <outlet property="dataSource" destination="728" id="61D-Rj-MPb"/>
-                                    <outlet property="delegate" destination="728" id="Jf2-DD-0SE"/>
                                     <outlet property="rowView" destination="8M3-HB-Ye9" id="0ff-bE-Brw"/>
                                 </connections>
                             </tableView>
@@ -1125,7 +1099,6 @@ ThBTQ2hhdFRoZWF0cmVUZW1wbGF0ZQ
                 </textField>
             </subviews>
         </customView>
-        <customObject id="1V6-63-Dbp" customClass="test"/>
     </objects>
     <resources>
         <image name="NSActionTemplate" width="15" height="15"/>

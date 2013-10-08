@@ -1,14 +1,13 @@
 //
-//  MyCustomWindowView.h
+//  AppInfoBlockView.h
 //  Ishimura
 //
-//  Created by Maksym on 7/3/13.
+//  Created by Maksym on 10/7/13.
 //  Copyright (c) 2013 Maksym Stefanchuk. All rights reserved.
 //
 
 #import <Cocoa/Cocoa.h>
 
-@interface MyCustomWindowView : NSView
-
+@interface AppInfoBlockView : NSView
 
 @end

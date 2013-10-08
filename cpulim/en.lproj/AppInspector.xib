@@ -5,11 +5,10 @@
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="4510"/>
     </dependencies>
     <objects>
-        <customObject id="-2" userLabel="File's Owner" customClass="AppInspectorController">
+        <customObject id="-2" userLabel="File's Owner" customClass="AppInspector">
             <connections>
-                <outlet property="detachedWindow" destination="f7v-ly-mcW" id="sFm-Yt-MK9"/>
-                <outlet property="popover" destination="Z8H-nX-ABw" id="uSy-PG-gRh"/>
-                <outlet property="popoverViewController" destination="QVt-1y-R1l" id="XqW-AD-fAv"/>
+                <outlet property="_popover" destination="Z8H-nX-ABw" id="tf2-hL-MUi"/>
+                <outlet property="_popoverViewController" destination="QVt-1y-R1l" id="oIL-Xi-Qyi"/>
             </connections>
         </customObject>
         <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
@@ -21,15 +20,5 @@
                 <outlet property="delegate" destination="-2" id="LeE-B4-3yF"/>
             </connections>
         </popover>
-        <window title="Window" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" releasedWhenClosed="NO" showsToolbarButton="NO" visibleAtLaunch="NO" animationBehavior="default" id="f7v-ly-mcW">
-            <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
-            <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
-            <rect key="contentRect" x="196" y="207" width="354" height="125"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1920" height="1058"/>
-            <view key="contentView" id="jyD-sI-HCD">
-                <rect key="frame" x="0.0" y="0.0" width="354" height="125"/>
-                <autoresizingMask key="autoresizingMask"/>
-            </view>
-        </window>
     </objects>
 </document>

@@ -8,13 +8,14 @@
 
 #import <Cocoa/Cocoa.h>
 
-@class StatusbarMenuController;
+@class StatusbarMenu;
 
 
 @interface AppDelegate : NSObject <NSApplicationDelegate>
 {
-	NSStatusItem *statusbarItem;
-	IBOutlet StatusbarMenuController *statusbarMenuController;
+	@private
+	NSStatusItem *_statusbarItem;
+	IBOutlet StatusbarMenu *_statusbarMenu;
 }
 
 @property (assign) IBOutlet NSWindow *window;

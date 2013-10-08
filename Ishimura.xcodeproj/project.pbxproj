@@ -10,11 +10,10 @@
 		A007EAF11786B46B00A7FE8D /* CMTableCellVewOverride.m in Sources */ = {isa = PBXBuildFile; fileRef = A007EAF01786B45A00A7FE8D /* CMTableCellVewOverride.m */; };
 		A007EAF41786BBF000A7FE8D /* CMMenuItemOverride.m in Sources */ = {isa = PBXBuildFile; fileRef = A007EAF31786BBE400A7FE8D /* CMMenuItemOverride.m */; };
 		A007EAF51786CA5500A7FE8D /* MenuItemView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A007EAED1786B0DA00A7FE8D /* MenuItemView.xib */; };
+		A00D28551803E85F00D71F71 /* AppLimitSliderCell.m in Sources */ = {isa = PBXBuildFile; fileRef = A00D28541803E85F00D71F71 /* AppLimitSliderCell.m */; };
 		A00EF4801793D5A50045ACB5 /* CMScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = A00EF47F1793D59E0045ACB5 /* CMScrollView.m */; };
 		A00FBF4D17DF54BF0083B482 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A00FBF4C17DF54BF0083B482 /* QuartzCore.framework */; };
 		A00FBF5317DF68280083B482 /* NSImage+CMMenuImageRepAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = A00FBF5217DF67D70083B482 /* NSImage+CMMenuImageRepAdditions.m */; };
-		A010F3291784311C003A9E92 /* MyWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = A010F328178430B1003A9E92 /* MyWindow.m */; };
-		A010F32C178437F6003A9E92 /* MyCustomWindowView.m in Sources */ = {isa = PBXBuildFile; fileRef = A010F32B17843712003A9E92 /* MyCustomWindowView.m */; };
 		A010F32F17845332003A9E92 /* StatusbarItemView.m in Sources */ = {isa = PBXBuildFile; fileRef = A010F32E1784530D003A9E92 /* StatusbarItemView.m */; };
 		A010F342178474AB003A9E92 /* CMMenu.m in Sources */ = {isa = PBXBuildFile; fileRef = A010F33D178470DD003A9E92 /* CMMenu.m */; };
 		A010F343178474AB003A9E92 /* ChromeMenuUnderlyingWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = A010F33F17847361003A9E92 /* ChromeMenuUnderlyingWindow.m */; };
@@ -23,7 +22,7 @@
 		A010F3481784856B003A9E92 /* CMMenuItemView.m in Sources */ = {isa = PBXBuildFile; fileRef = A010F34717848515003A9E92 /* CMMenuItemView.m */; };
 		A01453BD17833F4D00FFFB39 /* AppInspector.xib in Resources */ = {isa = PBXBuildFile; fileRef = A0154E811782E300008CF159 /* AppInspector.xib */; };
 		A01453BE17833F5700FFFB39 /* PopoverContentView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A0154E7F1782E05B008CF159 /* PopoverContentView.xib */; };
-		A0154E851782EC6F008CF159 /* AppInspectorController.m in Sources */ = {isa = PBXBuildFile; fileRef = A0154E841782E972008CF159 /* AppInspectorController.m */; };
+		A0154E851782EC6F008CF159 /* AppInspector.m in Sources */ = {isa = PBXBuildFile; fileRef = A0154E841782E972008CF159 /* AppInspector.m */; };
 		A02EA4561759CDA300982A8A /* MyTableCellView.m in Sources */ = {isa = PBXBuildFile; fileRef = A02EA4551759CDA300982A8A /* MyTableCellView.m */; };
 		A02EA4591759F2A900982A8A /* MyTableRowView.m in Sources */ = {isa = PBXBuildFile; fileRef = A02EA4581759F2A900982A8A /* MyTableRowView.m */; };
 		A0336A7F17DB9E3A004C2DDB /* CMMenuScroller.m in Sources */ = {isa = PBXBuildFile; fileRef = A0336A7E17DB9616004C2DDB /* CMMenuScroller.m */; };
@@ -50,8 +49,11 @@
 		A07CEC25179D70040016067E /* CMMenuItemSeparatorView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A07CEC20179D6F6D0016067E /* CMMenuItemSeparatorView.xib */; };
 		A0ADD314174A1438002BAADE /* subroutines.c in Sources */ = {isa = PBXBuildFile; fileRef = A0ADD313174A1438002BAADE /* subroutines.c */; };
 		A0ADD317174A24A2002BAADE /* AppsInspector.m in Sources */ = {isa = PBXBuildFile; fileRef = A0ADD316174A24A2002BAADE /* AppsInspector.m */; };
+		A0AED3B41802B571005F4F9D /* AppLoadLevelIndicator.m in Sources */ = {isa = PBXBuildFile; fileRef = A0AED3B31802B571005F4F9D /* AppLoadLevelIndicator.m */; };
+		A0AED3B71802EA9E005F4F9D /* AppInfoBlockView.m in Sources */ = {isa = PBXBuildFile; fileRef = A0AED3B61802EA9E005F4F9D /* AppInfoBlockView.m */; };
+		A0AED3BA180304F2005F4F9D /* AppLimitSlider.m in Sources */ = {isa = PBXBuildFile; fileRef = A0AED3B9180304F2005F4F9D /* AppLimitSlider.m */; };
 		A0BF7C6B17733C2B002A2141 /* MyTableScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = A0BF7C6A17733C2B002A2141 /* MyTableScrollView.m */; };
-		A0CFFF92175500CB00930DFE /* StatusbarMenuController.m in Sources */ = {isa = PBXBuildFile; fileRef = A0CFFF91175500CA00930DFE /* StatusbarMenuController.m */; };
+		A0CFFF92175500CB00930DFE /* StatusbarMenu.m in Sources */ = {isa = PBXBuildFile; fileRef = A0CFFF91175500CA00930DFE /* StatusbarMenu.m */; };
 		A0ED12401790055C00244C3D /* CMWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = A0ED123F179004D800244C3D /* CMWindowController.m */; };
 		A0ED124317900A9000244C3D /* CMScrollDocumentView.m in Sources */ = {isa = PBXBuildFile; fileRef = A0ED124217900A8A00244C3D /* CMScrollDocumentView.m */; };
 		A0ED1249179043F900244C3D /* CMMenuItemView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A0ED12451790218700244C3D /* CMMenuItemView.xib */; };
@@ -77,15 +79,13 @@
 		A007EAF31786BBE400A7FE8D /* CMMenuItemOverride.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = CMMenuItemOverride.m; path = Controllers/CMMenuItemOverride.m; sourceTree = "<group>"; };
 		A007EAF617870B4D00A7FE8D /* CMTableView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = CMTableView.h; path = ChromeMenu/src/CMTableView.h; sourceTree = SOURCE_ROOT; };
 		A007EAF717870B4E00A7FE8D /* CMTableView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = CMTableView.m; path = ChromeMenu/src/CMTableView.m; sourceTree = SOURCE_ROOT; };
+		A00D28531803E85F00D71F71 /* AppLimitSliderCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppLimitSliderCell.h; path = AppInspector/AppLimitSliderCell.h; sourceTree = "<group>"; };
+		A00D28541803E85F00D71F71 /* AppLimitSliderCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppLimitSliderCell.m; path = AppInspector/AppLimitSliderCell.m; sourceTree = "<group>"; };
 		A00EF47E1793D59E0045ACB5 /* CMScrollView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = CMScrollView.h; path = ChromeMenu/src/CMScrollView.h; sourceTree = SOURCE_ROOT; };
 		A00EF47F1793D59E0045ACB5 /* CMScrollView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = CMScrollView.m; path = ChromeMenu/src/CMScrollView.m; sourceTree = SOURCE_ROOT; };
 		A00FBF4C17DF54BF0083B482 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		A00FBF5117DF67D70083B482 /* NSImage+CMMenuImageRepAdditions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "NSImage+CMMenuImageRepAdditions.h"; path = "../ChromeMenu/src/NSImage+CMMenuImageRepAdditions.h"; sourceTree = "<group>"; };
 		A00FBF5217DF67D70083B482 /* NSImage+CMMenuImageRepAdditions.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = "NSImage+CMMenuImageRepAdditions.m"; path = "../ChromeMenu/src/NSImage+CMMenuImageRepAdditions.m"; sourceTree = "<group>"; };
-		A010F327178430B1003A9E92 /* MyWindow.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MyWindow.h; path = Controllers/MyWindow.h; sourceTree = "<group>"; };
-		A010F328178430B1003A9E92 /* MyWindow.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = MyWindow.m; path = Controllers/MyWindow.m; sourceTree = "<group>"; };
-		A010F32A17843712003A9E92 /* MyCustomWindowView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MyCustomWindowView.h; path = Controllers/MyCustomWindowView.h; sourceTree = "<group>"; };
-		A010F32B17843712003A9E92 /* MyCustomWindowView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = MyCustomWindowView.m; path = Controllers/MyCustomWindowView.m; sourceTree = "<group>"; };
 		A010F32D1784530D003A9E92 /* StatusbarItemView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = StatusbarItemView.h; path = Controllers/StatusbarItemView.h; sourceTree = "<group>"; };
 		A010F32E1784530D003A9E92 /* StatusbarItemView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = StatusbarItemView.m; path = Controllers/StatusbarItemView.m; sourceTree = "<group>"; };
 		A010F33B17847043003A9E92 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = ChromeMenu/en.lproj/CMMenu.xib; sourceTree = SOURCE_ROOT; };
@@ -99,8 +99,8 @@
 		A010F34717848515003A9E92 /* CMMenuItemView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = CMMenuItemView.m; path = ChromeMenu/src/CMMenuItemView.m; sourceTree = SOURCE_ROOT; };
 		A0154E801782E05B008CF159 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/PopoverContentView.xib; sourceTree = "<group>"; };
 		A0154E821782E300008CF159 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/AppInspector.xib; sourceTree = "<group>"; };
-		A0154E831782E972008CF159 /* AppInspectorController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = AppInspectorController.h; path = AppInspector/AppInspectorController.h; sourceTree = "<group>"; };
-		A0154E841782E972008CF159 /* AppInspectorController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = AppInspectorController.m; path = AppInspector/AppInspectorController.m; sourceTree = "<group>"; };
+		A0154E831782E972008CF159 /* AppInspector.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = AppInspector.h; path = AppInspector/AppInspector.h; sourceTree = "<group>"; };
+		A0154E841782E972008CF159 /* AppInspector.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = AppInspector.m; path = AppInspector/AppInspector.m; sourceTree = "<group>"; };
 		A02EA4541759CDA300982A8A /* MyTableCellView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MyTableCellView.h; path = Controllers/MyTableCellView.h; sourceTree = "<group>"; };
 		A02EA4551759CDA300982A8A /* MyTableCellView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MyTableCellView.m; path = Controllers/MyTableCellView.m; sourceTree = "<group>"; };
 		A02EA4571759F2A900982A8A /* MyTableRowView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MyTableRowView.h; path = Controllers/MyTableRowView.h; sourceTree = "<group>"; };
@@ -153,10 +153,16 @@
 		A0ADD313174A1438002BAADE /* subroutines.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = subroutines.c; path = C/subroutines.c; sourceTree = "<group>"; };
 		A0ADD315174A24A2002BAADE /* AppsInspector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppsInspector.h; path = Controllers/AppsInspector.h; sourceTree = "<group>"; };
 		A0ADD316174A24A2002BAADE /* AppsInspector.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppsInspector.m; path = Controllers/AppsInspector.m; sourceTree = "<group>"; };
+		A0AED3B21802B571005F4F9D /* AppLoadLevelIndicator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppLoadLevelIndicator.h; path = AppInspector/AppLoadLevelIndicator.h; sourceTree = "<group>"; };
+		A0AED3B31802B571005F4F9D /* AppLoadLevelIndicator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppLoadLevelIndicator.m; path = AppInspector/AppLoadLevelIndicator.m; sourceTree = "<group>"; };
+		A0AED3B51802EA9E005F4F9D /* AppInfoBlockView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppInfoBlockView.h; path = AppInspector/AppInfoBlockView.h; sourceTree = "<group>"; };
+		A0AED3B61802EA9E005F4F9D /* AppInfoBlockView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppInfoBlockView.m; path = AppInspector/AppInfoBlockView.m; sourceTree = "<group>"; };
+		A0AED3B8180304F2005F4F9D /* AppLimitSlider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppLimitSlider.h; path = AppInspector/AppLimitSlider.h; sourceTree = "<group>"; };
+		A0AED3B9180304F2005F4F9D /* AppLimitSlider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppLimitSlider.m; path = AppInspector/AppLimitSlider.m; sourceTree = "<group>"; };
 		A0BF7C6917733C2B002A2141 /* MyTableScrollView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MyTableScrollView.h; path = Controllers/MyTableScrollView.h; sourceTree = "<group>"; };
 		A0BF7C6A17733C2B002A2141 /* MyTableScrollView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MyTableScrollView.m; path = Controllers/MyTableScrollView.m; sourceTree = "<group>"; };
-		A0CFFF90175500CA00930DFE /* StatusbarMenuController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = StatusbarMenuController.h; path = Controllers/StatusbarMenuController.h; sourceTree = "<group>"; };
-		A0CFFF91175500CA00930DFE /* StatusbarMenuController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = StatusbarMenuController.m; path = Controllers/StatusbarMenuController.m; sourceTree = "<group>"; };
+		A0CFFF90175500CA00930DFE /* StatusbarMenu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = StatusbarMenu.h; path = Controllers/StatusbarMenu.h; sourceTree = "<group>"; };
+		A0CFFF91175500CA00930DFE /* StatusbarMenu.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = StatusbarMenu.m; path = Controllers/StatusbarMenu.m; sourceTree = "<group>"; };
 		A0ED123E179004D800244C3D /* CMWindowController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = CMWindowController.h; path = ChromeMenu/src/CMWindowController.h; sourceTree = SOURCE_ROOT; };
 		A0ED123F179004D800244C3D /* CMWindowController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = CMWindowController.m; path = ChromeMenu/src/CMWindowController.m; sourceTree = SOURCE_ROOT; };
 		A0ED124117900A8A00244C3D /* CMScrollDocumentView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = CMScrollDocumentView.h; path = ChromeMenu/src/CMScrollDocumentView.h; sourceTree = SOURCE_ROOT; };
@@ -272,8 +278,16 @@
 		A0154E7E1782DF37008CF159 /* src */ = {
 			isa = PBXGroup;
 			children = (
-				A0154E831782E972008CF159 /* AppInspectorController.h */,
-				A0154E841782E972008CF159 /* AppInspectorController.m */,
+				A0154E831782E972008CF159 /* AppInspector.h */,
+				A0154E841782E972008CF159 /* AppInspector.m */,
+				A0AED3B21802B571005F4F9D /* AppLoadLevelIndicator.h */,
+				A0AED3B31802B571005F4F9D /* AppLoadLevelIndicator.m */,
+				A0AED3B8180304F2005F4F9D /* AppLimitSlider.h */,
+				A0AED3B9180304F2005F4F9D /* AppLimitSlider.m */,
+				A00D28531803E85F00D71F71 /* AppLimitSliderCell.h */,
+				A00D28541803E85F00D71F71 /* AppLimitSliderCell.m */,
+				A0AED3B51802EA9E005F4F9D /* AppInfoBlockView.h */,
+				A0AED3B61802EA9E005F4F9D /* AppInfoBlockView.m */,
 			);
 			name = src;
 			sourceTree = "<group>";
@@ -326,8 +340,8 @@
 				A063797A17492AEF006F2347 /* AppDelegate.m */,
 				A0ADD315174A24A2002BAADE /* AppsInspector.h */,
 				A0ADD316174A24A2002BAADE /* AppsInspector.m */,
-				A0CFFF90175500CA00930DFE /* StatusbarMenuController.h */,
-				A0CFFF91175500CA00930DFE /* StatusbarMenuController.m */,
+				A0CFFF90175500CA00930DFE /* StatusbarMenu.h */,
+				A0CFFF91175500CA00930DFE /* StatusbarMenu.m */,
 				A05A0B091759527C009A12B8 /* MySubmenuView.h */,
 				A05A0B0A1759527C009A12B8 /* MySubmenuView.m */,
 				A05A0B0317592618009A12B8 /* MyTableView.h */,
@@ -340,10 +354,6 @@
 				A05A0B0717593112009A12B8 /* MyImageView.m */,
 				A02EA4571759F2A900982A8A /* MyTableRowView.h */,
 				A02EA4581759F2A900982A8A /* MyTableRowView.m */,
-				A010F327178430B1003A9E92 /* MyWindow.h */,
-				A010F328178430B1003A9E92 /* MyWindow.m */,
-				A010F32A17843712003A9E92 /* MyCustomWindowView.h */,
-				A010F32B17843712003A9E92 /* MyCustomWindowView.m */,
 				A010F32D1784530D003A9E92 /* StatusbarItemView.h */,
 				A010F32E1784530D003A9E92 /* StatusbarItemView.m */,
 				A007EAEF1786B45A00A7FE8D /* CMTableCellVewOverride.h */,
@@ -509,14 +519,18 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A0AED3B71802EA9E005F4F9D /* AppInfoBlockView.m in Sources */,
 				A046C66317E70F0100E4F210 /* CMMenuKeyEventInterpreter.m in Sources */,
 				A00FBF5317DF68280083B482 /* NSImage+CMMenuImageRepAdditions.m in Sources */,
+				A00D28551803E85F00D71F71 /* AppLimitSliderCell.m in Sources */,
 				A0336A7F17DB9E3A004C2DDB /* CMMenuScroller.m in Sources */,
 				A07CEC24179D6FFD0016067E /* CMMenuItemSeparatorView.m in Sources */,
 				A00EF4801793D5A50045ACB5 /* CMScrollView.m in Sources */,
 				A0ED124317900A9000244C3D /* CMScrollDocumentView.m in Sources */,
 				A0ED12401790055C00244C3D /* CMWindowController.m in Sources */,
+				A0AED3BA180304F2005F4F9D /* AppLimitSlider.m in Sources */,
 				A0F0DF1D178A05C4008E85EA /* CMTableView.m in Sources */,
+				A0AED3B41802B571005F4F9D /* AppLoadLevelIndicator.m in Sources */,
 				A007EAF41786BBF000A7FE8D /* CMMenuItemOverride.m in Sources */,
 				A007EAF11786B46B00A7FE8D /* CMTableCellVewOverride.m in Sources */,
 				A05B788917859D6E00015156 /* CMMenuItem.m in Sources */,
@@ -526,22 +540,20 @@
 				A010F343178474AB003A9E92 /* ChromeMenuUnderlyingWindow.m in Sources */,
 				A010F344178474AB003A9E92 /* ChromeMenuUnderlyingView.m in Sources */,
 				A010F32F17845332003A9E92 /* StatusbarItemView.m in Sources */,
-				A010F32C178437F6003A9E92 /* MyCustomWindowView.m in Sources */,
-				A010F3291784311C003A9E92 /* MyWindow.m in Sources */,
 				A063797417492AEF006F2347 /* main.m in Sources */,
 				A063797B17492AEF006F2347 /* AppDelegate.m in Sources */,
 				A063798717492D42006F2347 /* clevel.c in Sources */,
 				A0ADD314174A1438002BAADE /* subroutines.c in Sources */,
 				A0ADD317174A24A2002BAADE /* AppsInspector.m in Sources */,
 				A04FA3D3174D4BD9002E688C /* selfprofile.c in Sources */,
-				A0CFFF92175500CB00930DFE /* StatusbarMenuController.m in Sources */,
+				A0CFFF92175500CB00930DFE /* StatusbarMenu.m in Sources */,
 				A05A0B0517592618009A12B8 /* MyTableView.m in Sources */,
 				A05A0B0817593112009A12B8 /* MyImageView.m in Sources */,
 				A05A0B0B1759527D009A12B8 /* MySubmenuView.m in Sources */,
 				A02EA4561759CDA300982A8A /* MyTableCellView.m in Sources */,
 				A02EA4591759F2A900982A8A /* MyTableRowView.m in Sources */,
 				A0BF7C6B17733C2B002A2141 /* MyTableScrollView.m in Sources */,
-				A0154E851782EC6F008CF159 /* AppInspectorController.m in Sources */,
+				A0154E851782EC6F008CF159 /* AppInspector.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

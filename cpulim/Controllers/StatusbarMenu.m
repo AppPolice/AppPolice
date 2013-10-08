@@ -6,17 +6,17 @@
 //  Copyright (c) 2013 Maksym Stefanchuk. All rights reserved.
 //
 
-#import "StatusbarMenuController.h"
+#import "StatusbarMenu.h"
 #import "MyTableView.h"
 #import "MyTableCellView.h"
 #import "MyTableRowView.h"
 #import "MyImageView.h"
 
-#import "AppInspectorController.h"
+#import "AppInspector.h"
 #import "ChromeMenu.h"
 #import "CMMenuItemOverride.h"
 
-@interface StatusbarMenuController()
+@interface StatusbarMenu()
 {
 	CMMenu *menu;
 	CMMenu *smallMenu;
@@ -27,9 +27,9 @@
 @end
 
 
-@implementation StatusbarMenuController
+@implementation StatusbarMenu
 
-@synthesize statusbarMenu;
+@synthesize mainMenu = _mainMenu;
 @synthesize statusbarItemView;
 @synthesize myPanel;
 
@@ -99,7 +99,7 @@ static NSString *tableData[] = {
 - (void)dealloc {
 //	[appsSubmenu release];
 	[tableContents release];
-	[appInspectorController release];
+	[_appInspector release];
 	[super dealloc];
 }
 
@@ -109,12 +109,17 @@ static NSString *tableData[] = {
 }
 
 
-- (AppInspectorController *)appInspectorController {
-	if (appInspectorController == nil) {
-		appInspectorController = [[AppInspectorController alloc] init];
+/*
+ * Cold load of Applicatoins Inspector
+ */
+- (AppInspector *)appInspector {
+	if (_appInspector == nil) {
+		_appInspector = [[AppInspector alloc] init];
 	}
-	return appInspectorController;
+	return _appInspector;
 }
+
+
 
 
 void cfnotificationCallback(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo) {
@@ -209,7 +214,7 @@ void cfnotificationCallback(CFNotificationCenterRef center, void *observer, CFSt
 	[appsSubmenu addItem:submenuItem];
 	[submenuItem release];
 	
-	[statusbarMenu setSubmenu:appsSubmenu forItem:[statusbarMenu itemAtIndex:0]];
+	[_mainMenu setSubmenu:appsSubmenu forItem:[_mainMenu itemAtIndex:0]];
 	//	[appSubmenuView release];
 	[appsSubmenu release];
 	
@@ -217,7 +222,7 @@ void cfnotificationCallback(CFNotificationCenterRef center, void *observer, CFSt
 	//	NSLog(@"Action: %s", sel_getName([[statusbarMenu itemAtIndex:0] action]));
 	//	[[statusbarMenu itemAtIndex:0] setSubmenu:appsSubmenu];
 	
-	NSMenuItem *item = [statusbarMenu itemAtIndex:4];
+	NSMenuItem *item = [_mainMenu itemAtIndex:4];
 	NSMenu *aMenu = [item submenu];
 //	[self performSelector:@selector(updateMenuFunc:) withObject:[statusbarMenuController statusbarMenu] afterDelay:4.0 inModes:[NSArray arrayWithObject:NSRunLoopCommonModes]];
 //	[self performSelector:@selector(updateMenu:) withObject:aMenu afterDelay:4.0];
@@ -463,7 +468,7 @@ void cfnotificationCallback(CFNotificationCenterRef center, void *observer, CFSt
 		height = 1100;
 	}
 	
-	NSLog(@"Calc height: %f for %ld elements. Taken height: %f. Width: %f", height, elementsCount, [appListTableView frame].size.height, width);
+//	NSLog(@"Calc height: %f for %ld elements. Taken height: %f. Width: %f", height, elementsCount, [appListTableView frame].size.height, width);
 	
 	
 //	const float bottomPadding = 200.0;
@@ -508,7 +513,7 @@ void cfnotificationCallback(CFNotificationCenterRef center, void *observer, CFSt
 
 - (IBAction)someAction2:(NSMenuItem *)sender {
 //	[statusbarMenu itemAtIndex:0]
-	[statusbarMenu performActionForItemAtIndex:0];
+	[_mainMenu performActionForItemAtIndex:0];
 }
 
 
@@ -742,27 +747,31 @@ void cfnotificationCallback(CFNotificationCenterRef center, void *observer, CFSt
 - (void)someActionForOurCustomMenu:(id)sender {
 	CMMenuItem *item = (CMMenuItem *)sender;
 //	NSLog(@"custom menu action, sender: %@", item);
-	NSPopover *popover = [[self appInspectorController] popover];
-	if ([popover isShown] && [item isEqual:[[self appInspectorController] relativeItem]]) {
+	NSPopover *popover = [[self appInspector] popover];
+	if ([popover isShown] && [item isEqual:[[self appInspector] attachedToItem]]) {
 		[popover close];
 		[[item menu] setSuspendMenus:NO];
 	} else {
 		[[item menu] setSuspendMenus:YES];
 		[[item menu] showPopover:popover forItem:item];
-		[[self appInspectorController] setRelativeItem:item];
+		[[self appInspector] setAttachedToItem:item];
 	}
 }
 
 
 - (IBAction)showmenu:(id)sender {
 	NSLog(@"BBBBB");
-	[statusbarMenu popUpMenuPositioningItem:[statusbarMenu itemAtIndex:0] atLocation:NSMakePoint(200, 200) inView:nil];
+	[_mainMenu popUpMenuPositioningItem:[_mainMenu itemAtIndex:0] atLocation:NSMakePoint(200, 200) inView:nil];
 //	[statusbarMenu popUpMenuPositioningItem:nil atLocation:NSMakePoint(200, 200) inView:nil];
 }
 
 - (IBAction)showPopoverForButton:(id)sender {
 	NSButton *button = (NSButton *)sender;
-	[[self appInspectorController] showAppDetailsPopoverRelativeTo:button];
+	[[self appInspector] setPopverDidCloseHandler:^(void) {
+//		[[[self attachedToItem] menu] setSuspendMenus:NO];
+		NSLog(@"popover did close");
+	}];
+	[[self appInspector] showPopoverRelativeTo:button];
 }
 
 
@@ -837,7 +846,7 @@ int flag = 0;
 - (void)tableViewSelectionDidChange:(NSNotification *)notification {
 	NSTableView *tableView = [notification object];
 	NSTableRowView *rowView = [tableView rowViewAtRow:[tableView selectedRow] makeIfNecessary:NO];
-	[[self appInspectorController] showAppDetailsPopoverRelativeTo:rowView];
+	[[self appInspector] showPopoverRelativeTo:rowView];
 }
 
 

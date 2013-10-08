@@ -7,7 +7,7 @@
 //
 
 #import "AppDelegate.h"
-#import "StatusbarMenuController.h"
+#import "StatusbarMenu.h"
 #include "C/def.h"
 
 #ifdef SELF_PROFILE
@@ -17,7 +17,8 @@
 @implementation AppDelegate
 
 - (void)dealloc {
-	[statusbarItem release];
+	[_statusbarItem release];
+//	[_statusbarMenu release];
     [super dealloc];
 }
 
@@ -33,15 +34,16 @@
 	profiling_print_stats();
 #endif
 
-
-	[statusbarMenuController linkStatusbarItemWithMenu];
+//	_statusbarMenu = [[StatusbarMenu alloc] init];
+//	NSLog(@"menu:%@", [_statusbarMenu mainMenu]);
+	[_statusbarMenu linkStatusbarItemWithMenu];
 	
 //	NSLog(@"!!!!!starting delay for menu update");
 //	[self performSelector:@selector(updateMenu:) withObject:nil afterDelay:4.0];
 //	[[NSRunLoop currentRunLoop] performSelector:@selector(delayAndUpdateMenu:) target:self argument:[statusbarMenuController statusbarMenu] order:0 modes:[NSArray arrayWithObject:NSEventTrackingRunLoopMode]];
 	
 //	NSLog(@"current run mode: %@", [[NSRunLoop currentRunLoop] currentMode]);
-	[self performSelector:@selector(updateMenuFunc:) withObject:[statusbarMenuController statusbarMenu] afterDelay:4.0 inModes:[NSArray arrayWithObject:NSRunLoopCommonModes]];
+//	[self performSelector:@selector(updateMenuFunc:) withObject:[_statusbarMenu statusbarMenu] afterDelay:4.0 inModes:[NSArray arrayWithObject:NSRunLoopCommonModes]];
 //	[self performSelector:@selector(updateMenuFunc:) withObject:[statusbarMenuController statusbarMenu] afterDelay:4.0];
 
 }
@@ -64,15 +66,15 @@ extern void proc_cpulim_suspend_wait(void);		/* function returns only after limi
 
 - (void)activateStatusbarItem {
 	NSStatusBar *statusbar = [NSStatusBar systemStatusBar];
-	statusbarItem = [statusbar statusItemWithLength:NSVariableStatusItemLength];
-	[statusbarItem retain];
-//	[statusbarItem setView:[statusbarMenuController statusbarItemView]];
-	[statusbarItem setTitle: NSLocalizedString(@"Ishimura", @"")];
-	[statusbarItem setHighlightMode: YES];
-	[statusbarItem setTarget:self];
-	[statusbarItem setAction:@selector(statusbarItemAction)];
-//	[statusbarItem sendActionOn:NSRightMouseDownMask];
-	[statusbarItem setMenu: [statusbarMenuController statusbarMenu]];
+	_statusbarItem = [statusbar statusItemWithLength:NSVariableStatusItemLength];
+	[_statusbarItem retain];
+//	[_statusbarItem setView:[statusbarMenuController statusbarItemView]];
+	[_statusbarItem setTitle:NSLocalizedString(@"Ishimura", @"")];
+	[_statusbarItem setHighlightMode:YES];
+	[_statusbarItem setTarget:self];
+	[_statusbarItem setAction:@selector(statusbarItemAction)];
+//	[_statusbarItem sendActionOn:NSRightMouseDownMask];
+	[_statusbarItem setMenu:[_statusbarMenu mainMenu]];
 }
 
 
