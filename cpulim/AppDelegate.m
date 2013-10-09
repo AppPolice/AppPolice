@@ -8,11 +8,12 @@
 
 #import "AppDelegate.h"
 #import "StatusbarMenu.h"
-#include "C/def.h"
+//#include "C/def.h"
+#include "C/proc_cpulim.h"
 
-#ifdef SELF_PROFILE
+//#ifdef PROC_CPULIM_PROFILE
 #include "C/selfprofile.h"
-#endif
+//#endif
 
 @implementation AppDelegate
 
@@ -29,7 +30,7 @@
 
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification {
-#ifdef SELF_PROFILE
+#ifdef PROFILE_APPLICATION
 	/* print stats right after App launch: resources used by OS X to launch the App */
 	profiling_print_stats();
 #endif

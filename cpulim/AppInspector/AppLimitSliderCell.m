@@ -36,14 +36,14 @@
 //	NSFrameRect(knobRect);
 //}
 
-- (void)awakeFromNib {
+//- (void)awakeFromNib {
 //	_penultimateTickMark = [self numberOfTickMarks] - 2;
 //	_penultimateTickMarkRect = [self rectOfTickMarkAtIndex:_penultimateTickMark];
 //	NSLog(@"rect: %@", NSStringFromRect(_penultimateTickMarkRect));
 //	CGFloat knobThickness = [self knobThickness];
 //	NSLog(@"thickness: %f", knobThickness);
 //	NSLog(@"image: %@", [self image]);
-}
+//}
 
 
 - (BOOL)startTrackingAt:(NSPoint)startPoint inView:(NSView *)controlView {
@@ -59,22 +59,40 @@
 	if (ABS(_offsetFromKnobCenter) > knobThickness / 2)
 		_offsetFromKnobCenter = 0;
 	
+//	NSLog(@"Start tracking, value: %f", value);
+	
 	return [super startTrackingAt:startPoint inView:controlView];
 }
 
 
 - (BOOL)continueTracking:(NSPoint)lastPoint at:(NSPoint)currentPoint inView:(NSView *)controlView {
 //	BOOL stopOnTickMarks = [self allowsTickMarkValuesOnly];
-//	CGFloat value = [self floatValue];
+	CGFloat value = [self floatValue];
 //	NSRect rect = _penultimateTickMarkRect;
-	
-//	NSLog(@"value: %f\t last: %f\t current: %f \t delta: %f", value, lastPoint.x, currentPoint.x, _delta);
+//	NSLog(@"value: %f\t last: %f\t current: %f \t delta: %f", value, lastPoint.x, currentPoint.x, _offsetFromKnobCenter);
 	
 	if (currentPoint.x > _penultimateTickMarkRect.origin.x + _offsetFromKnobCenter) {
 		[self setAllowsTickMarkValuesOnly:YES];
+		
+		// NSSlider value is not being updated once NSSliderCell sets allowsTickMarkValuesOnly.
+		// Send the finalizing action manually.
+		NSSlider *slider = (NSSlider *)controlView;
+		if (value != [slider floatValue]) {
+//			NSLog(@"sending extra action for veiw: %@", controlView);
+			[NSApp sendAction:[self action] to:[self target] from:self];
+		}
 	} else if ([self allowsTickMarkValuesOnly]) {
 		[self setAllowsTickMarkValuesOnly:NO];
 	}
+
+//	if (currentPoint.x < _penultimateTickMarkRect.origin.x + _offsetFromKnobCenter || value < _penultimateTickMark) {
+//		if ([self allowsTickMarkValuesOnly])
+//			[self setAllowsTickMarkValuesOnly:NO];
+//	} else {
+//		[self setAllowsTickMarkValuesOnly:YES];
+//	}
+
+	
 	
 	/*
 	

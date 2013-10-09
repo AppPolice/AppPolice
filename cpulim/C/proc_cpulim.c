@@ -7,7 +7,7 @@
 //
 
 /* TODO
- * 1. Install signal actions for SIGINT, SIGTERM
+ * -1. Install signal actions for SIGINT, SIGTERM
  *
  */
 
@@ -21,13 +21,16 @@
 #include <libproc.h>				/* proc_pidinfo */
 #include <dispatch/dispatch.h>		/* dispatch_queue */
 
-#include "clevel.h"
+#include "proc_cpulim.h"
 
 /**************** Private Declarations ****************/
 
 /* options */
-uint64_t osleep_interval = 500000000;		/* make sure it is never zero */
-short overbose = 1;
+/* This option corresponds for how often proc_cpulim will wake up to monitor processes.
+	Value is in nanoseconds, for example 200000000 means proc_cpulim will be awake
+	every 0.2s to reschedule processes for sleep time. This value should never be zero. */
+uint64_t opt_task_schedule_interval = 500000000;
+short opt_verbose_level = 1;
 
 struct proc_taskstats {
 	pid_t pid;
@@ -147,7 +150,7 @@ static void proc_limiter_resume(void) {
 	dispatch_queue_t *updtaskstats_queue_ptr;
 	
 	/* before resuming, make sure some values are valid */
-	if (osleep_interval < 1)
+	if (opt_task_schedule_interval < 1)
 		return;
 	
 	updtaskstats_queue_ptr = get_updtaskstats_queue();
@@ -156,7 +159,7 @@ static void proc_limiter_resume(void) {
 			loop_slept = sleep_loop_queue();
 		});
 		
-		sleepns = osleep_interval - loop_slept;
+		sleepns = opt_task_schedule_interval - loop_slept;
 		if (sleepns > 0) {
 			sleepspec = format_time(sleepns);
 			nanosleep(&sleepspec, NULL);
@@ -174,7 +177,7 @@ static uint64_t sleep_loop_queue(void) {
 	
 	proc_tasks_wlim_num = proc_tasks_calcsleeptime();
 	if (proc_tasks_wlim_num == 0) {
-		if (overbose)
+		if (opt_verbose_level)
 			fputs("\n[Ishimura] Info: There are no proc_tasks with limits.", stdout);
 		proc_cpulim_suspend();
 		return 0;
@@ -187,7 +190,7 @@ static uint64_t sleep_loop_queue(void) {
 
 /*
  * Calculate how much time each task should sleep.
- * Return number of tasks that has sleep_time set.
+ * Return number of tasks that have sleep_time set.
  */
 static int proc_tasks_calcsleeptime(void) {
 	struct proc_taskinfo ptinfo;
@@ -196,17 +199,18 @@ static int proc_tasks_calcsleeptime(void) {
 	uint64_t time_diff;
 	float cpuload;
 	struct proc_taskstats *task;
-	uint proc_tasks_wlim_num;
+//	uint proc_tasks_wlim_num;
+	uint ntasks_with_lim;
 	
-	proc_tasks_wlim_num = 0;
+	ntasks_with_lim = 0;
 	for (task = proc_taskstats; task != NULL; task = task->next) {
 		if (task->lim == 0)
 			continue;
 		
-		++proc_tasks_wlim_num;
+		++ntasks_with_lim;
 		error = proc_pidinfo(task->pid, PROC_PIDTASKINFO, (uint64_t)0, &ptinfo, PROC_PIDTASKINFO_SIZE);
 		if (error < 1) {
-			if (overbose)
+			if (opt_verbose_level)
 				fprintf(stdout, "\n[Ishimura] Error: kernel proc_pidinfo returned: %d", error);
 			proc_task_delete(task->pid);	/* either pid is wrong or process exited */
 			continue;
@@ -219,23 +223,23 @@ static int proc_tasks_calcsleeptime(void) {
 			continue;			/* first run for a task */
 		
 		time_diff = task->time - time_prev;
-		cpuload = (float)time_diff / osleep_interval;
+		cpuload = (float)time_diff / opt_task_schedule_interval;
 
 		printf("\nsleep time = %lld + (%llu - %lld) * (%.3f - %.3f) / %0.3f",
 			   task->sleep_time,
-			   osleep_interval,
+			   opt_task_schedule_interval,
 			   task->sleep_time,
 			   cpuload,
 			   task->lim,
 			   MAX(cpuload, task->lim));
 		
 		task->sleep_time = task->sleep_time +
-			(osleep_interval - task->sleep_time) * (cpuload - task->lim) / MAX(cpuload, task->lim);
+			(opt_task_schedule_interval - task->sleep_time) * (cpuload - task->lim) / MAX(cpuload, task->lim);
 		
 		if (task->sleep_time < 0)
 			task->sleep_time = 0;
 		
-		if (overbose)
+		if (opt_verbose_level)
 			printf("\npid # %d, time_prev: %llu, current_time: %llu, time_diff: %llu sleep_time: %llu or %0.3f(s)",
 			   task->pid,
 			   time_prev,
@@ -245,10 +249,10 @@ static int proc_tasks_calcsleeptime(void) {
 			   (double)task->sleep_time / NANOSEC_PER_SEC);
 	}
 	
-	if (overbose)
+	if (opt_verbose_level)
 		fputs("\n", stdout);
 	
-	return proc_tasks_wlim_num;
+	return ntasks_with_lim;
 }
 
 
@@ -268,7 +272,7 @@ static uint64_t proc_tasks_execsleeptime(void) {
 	for (task = proc_taskstats; task != NULL; task = task->next) {
 		if (task->sleep_time != 0) {
 			if (kill(task->pid, SIGSTOP) == -1) {
-				if (overbose)
+				if (opt_verbose_level)
 					fputs("\n[Ishimura] Error: could not send a signal to a process.", stderr);
 				continue;
 			}
@@ -287,7 +291,7 @@ static uint64_t proc_tasks_execsleeptime(void) {
 	nanosleep(&sleepspec, NULL);
 	sleptns = pt_sleep_min;
 	
-	while (!all_awake) {
+	while (! all_awake) {
 		all_awake = 1;
 		pt_sleep_min = ULONG_LONG_MAX;
 		
@@ -343,7 +347,7 @@ static dispatch_queue_t *get_updtaskstats_queue(void) {
 
 void proc_cpulim_suspend(void) {
 	limiter_running_ok = 0;
-	if (overbose)
+	if (opt_verbose_level)
 		fputs("\n[Ishimura] Info: Limiter going to hibernate.", stdout);
 }
 
@@ -355,7 +359,7 @@ void proc_cpulim_suspend_wait(void) {
 	limiter_running_ok = 0;
 	dispatch_queue_t *limiter_queue_ptr = get_limiter_queue();
 	dispatch_sync(*limiter_queue_ptr, ^{
-		if (overbose)
+		if (opt_verbose_level)
 			fputs("\n[Ishimura] Info: Limiter going to hibernate.", stdout);
 	});
 }
@@ -395,7 +399,7 @@ static void proc_task_delete_queue(pid_t pid) {
 		}
 	}
 	
-	if (overbose)
+	if (opt_verbose_level)
 		fprintf(stdout, "\n[Ishimura] Info: Process '%d' deleted from the task list.", pid);
 }
 

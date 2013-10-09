@@ -15,6 +15,7 @@
 #define NANOSEC_PER_SEC 1000000000
 
 
+/* newlim is the fraction of percents. For example 1 corresponds to 100% of permitted cpu load, 0.5 to 50% and 2.5 to 250% (in multicore environment) */
 int proc_cpulim_set(int pid, float newlim);
 void proc_cpulim_resume(void);
 void proc_cpulim_suspend(void);

@@ -36,6 +36,7 @@ static int system_ncpu() {
 
 
 
+
 @implementation AppInspector
 
 @synthesize attachedToItem;
@@ -66,14 +67,18 @@ static int system_ncpu() {
 //	[newSlider setTickMarkPosition:NSTickMarkBelow];
 //	[newSlider setRefusesFirstResponder:YES];
 //	[_popoverView addSubview:newSlider];
+	int ncpu = system_ncpu();
 	
 	[_slider setContinuous:YES];	// this is temporary here
 	[_slider setTarget:self];
 	[_slider setAction:@selector(sliderAction:)];
 	[_levelIndicator setWarningValue:5];
 	[_levelIndicator setCriticalValue:7.5];
+	[_sliderMiddleTextfield setStringValue:[NSString stringWithFormat:@"%d%%", ncpu / 2 * 100]];
+	[_sliderRightTextfield setStringValue:[NSString stringWithFormat:@"%d%%", ncpu * 100]];
 //	[detachedWindow setContentView:popoverView];
 	
+//	[self performSelector:@selector(updateTrackingAreaForHint) withObject:nil afterDelay:0.0];
 	
 //	int mib[2];
 //	size_t len;
@@ -113,6 +118,49 @@ static int system_ncpu() {
 
 - (void)sliderAction:(id)sender {
 	float value = [_slider floatValue];
+//	NSLog(@"slider value: %f", value);
+	
+	if (value == ([_slider numberOfTickMarks] - 1)) {
+		[_sliderTopRightTextField setStringValue:@"Not limited"];
+//		if (! [_sliderBottomTextfield isHidden])
+//			[_sliderBottomTextfield setHidden:YES];
+	} else {
+		int ncpu = system_ncpu();
+		if (value > ([_slider numberOfTickMarks] - 2))
+			value = [_slider numberOfTickMarks] - 2;
+		int percents = floor((value - [_slider minValue]) / ([_slider maxValue] - 1 - [_slider minValue]) * ncpu * 100 + 0.5);
+		if (percents == 0)
+			percents = 1;
+//		int fullyLoadedCoresCount = floor(percents / 100);
+//		int percentsLeft = percents - fullyLoadedCoresCount * 100;
+
+		[_sliderTopRightTextField setStringValue:[NSString stringWithFormat:@"%d%%", (int)roundf(percents)]];
+		
+//		if (fullyLoadedCoresCount > 1 || (fullyLoadedCoresCount && percentsLeft)) {
+//			if ([_sliderBottomTextfield isHidden])
+//				[_sliderBottomTextfield setHidden:NO];
+//			if (percentsLeft) {
+//				[_sliderBottomTextfield setStringValue:[NSString stringWithFormat:@"%d CPU%@ at 100%% and 1 CPU at %d%%",
+//					fullyLoadedCoresCount,
+//					(fullyLoadedCoresCount == 1) ? @"" : @"s",
+//					percentsLeft]];
+//			} else {
+//				[_sliderBottomTextfield setStringValue:[NSString stringWithFormat:@"%d CPUs at 100%%", fullyLoadedCoresCount]];
+//			}
+//
+//		} else {
+//			if (! [_sliderBottomTextfield isHidden])
+//				[_sliderBottomTextfield setHidden:YES];
+//		}
+	}
+	
+	// Hide bottom Hint on mouse up.
+//	NSEvent *theEvent = [NSApp currentEvent];
+//	if ([theEvent type] == NSLeftMouseUp && ![_sliderBottomTextfield isHidden])
+//		[_sliderBottomTextfield setHidden:YES];
+	
+	// Current limit: 249% (2 CPUs at 100% + 1 CPU at 49%)
+	
 //	NSEvent *theEvent = [NSApp currentEvent];
 //	NSEventType eventType = [theEvent type];
 //	NSPoint mouseLocation = [theEvent locationInWindow];
@@ -129,7 +177,7 @@ static int system_ncpu() {
 	
 //	[_slider cell];
 	
-//	NSLog(@"sliderh action: %f", value);
+//	NSLog(@"slider value: %f", value);
 //	NSLog(@"last before last rect: %@, mouse loca: %@", NSStringFromRect(rect), NSStringFromPoint(mouseLocation));
 
 	/*
@@ -161,15 +209,17 @@ static int system_ncpu() {
 	*/
 	[_levelIndicator setFloatValue:value];
 	
-	if (value < 2) {
-		[_applicationNameTextfield setStringValue:@"New app"];
-	} else if (value < 4) {
-		[_applicationNameTextfield setStringValue:@"New app with some name"];
-	} else if (value < 6) {
-		[_applicationNameTextfield setStringValue:@"Little Snitch Configuration (1024)"];
-	} else {
-		[_applicationNameTextfield setStringValue:@"New app with some name longer then previous app."];
-	}
+	[self updateTrackingAreaForHint];
+	
+//	if (value < 2) {
+//		[_applicationNameTextfield setStringValue:@"New app"];
+//	} else if (value < 4) {
+//		[_applicationNameTextfield setStringValue:@"New app with some name"];
+//	} else if (value < 6) {
+//		[_applicationNameTextfield setStringValue:@"Little Snitch Configuration (1024)"];
+//	} else {
+//		[_applicationNameTextfield setStringValue:@"New app with some name longer then previous app."];
+//	}
 
 	
 /*
@@ -214,9 +264,51 @@ static int system_ncpu() {
  */
 
 
+- (void)updateTrackingAreaForHint {
+	NSRect frame = [_sliderTopRightTextField frame];
+	frame.origin.x -= 50;
+	frame.origin.y -= 10;
+	frame.size.width += 100;
+	frame.size.height += 20;
+//	frame = [_sliderTopRightTextField convertRect:frame toView:_popoverView];
+//	NSLog(@"super: %d", [_popoverView canDraw]);
+	if ([_popoverView canDraw]) {
+		[_popoverView lockFocus];
+//		NSLog(@"sub: %@", [_popoverView subviews]);
+		[[NSColor redColor] set];
+		NSFrameRect(frame);
+		[_popoverView unlockFocus];
+//				[_popoverView display];
+//		[_popoverView setNeedsDisplay:YES];
+	}
+//	NSLog(@"frame: %@", NSStringFromRect(frame));	
+//	NSTrackingAreaOptions options = NSTrackingActiveInActiveApp | NSTrackingMouseEnteredAndExited;
+//	NSTrackingArea *trackingArea = [[NSTrackingArea alloc] initWithRect:frame options:options owner:self userInfo:nil];
+//	[_popoverView addTrackingArea:trackingArea];
+//	[trackingArea release];
+	
+	
+	
+}
+
+
+- (void)mouseUp:(id)sender {
+	NSLog(@"mouse is up on hint");
+}
+
+
 - (void)setPopverDidCloseHandler:(void (^)(void))handler {
 	if (_handler != handler)
 		_handler = handler;
+}
+
+
+- (void)popoverDidShow:(NSNotification *)notification {
+	[_popover setAnimates:NO];
+}
+
+- (void)popoverWillClose:(NSNotification *)notification {
+	[_popover setAnimates:YES];
 }
 
 - (void)popoverDidClose:(NSNotification *)notification {

@@ -9,12 +9,12 @@
 #import <Cocoa/Cocoa.h>
 #include <signal.h>
 
-#include "C/def.h"
-#include "C/clevel.h"
+//#include "C/def.h"
+#include "C/proc_cpulim.h"
 
-#ifdef SELF_PROFILE
+//#ifdef PROC_CPULIM_PROFILE
 #include "C/selfprofile.h"
-#endif
+//#endif
 
 void install_signal_handlers(void);
 void termination_handler(int signum);
@@ -23,7 +23,7 @@ void cont_handler(int signum);
 
 
 int main(int argc, char *argv[]) {
-#ifdef SELF_PROFILE
+#ifdef PROFILE_APPLICATION
 	profiling_start();
 	if (atexit(profiling_print_stats) != 0)
 		fputs("\n[Ishimura] Error: Could not establish atexit() method", stderr);

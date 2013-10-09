@@ -7,7 +7,7 @@
 //
 
 #import "AppsInspector.h"
-#import "clevel.h"
+#import "proc_cpulim.h"
 
 @implementation AppsInspector
 
