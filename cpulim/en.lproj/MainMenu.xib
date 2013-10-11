@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="4510" systemVersion="12F37" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="4510" systemVersion="12F45" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment defaultVersion="1070" identifier="macosx"/>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="4510"/>
@@ -97,7 +97,7 @@
                         </connections>
                     </button>
                     <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="590">
-                        <rect key="frame" x="34" y="13" width="92" height="32"/>
+                        <rect key="frame" x="14" y="13" width="92" height="32"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <constraints>
                             <constraint firstAttribute="width" constant="80" id="608"/>
@@ -217,16 +217,16 @@
                                                     <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                     <prototypeCellViews>
                                                         <tableCellView identifier="AppCellViewId" id="J9S-BD-1Ul" customClass="MyTableCellView">
-                                                            <rect key="frame" x="1" y="0.0" width="236" height="17"/>
+                                                            <rect key="frame" x="1" y="0.0" width="236" height="18"/>
                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                             <subviews>
-                                                                <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="FvD-Y6-g0K" customClass="MyImageView">
+                                                                <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="FvD-Y6-g0K" customClass="MyImageView">
                                                                     <rect key="frame" x="14" y="1" width="15" height="15"/>
                                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                                     <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="NSActionTemplate" id="BdX-XC-id5"/>
                                                                 </imageView>
                                                                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="YD4-4i-3Yn">
-                                                                    <rect key="frame" x="34" y="-1" width="205" height="17"/>
+                                                                    <rect key="frame" x="34" y="0.0" width="205" height="17"/>
                                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                                                     <textFieldCell key="cell" lineBreakMode="truncatingTail" refusesFirstResponder="YES" sendsActionOnEndEditing="YES" title="Table View Cell" id="tcc-vp-CeP">
                                                                         <font key="font" size="14" name="LucidaGrande"/>
@@ -251,7 +251,7 @@
                                                             </connections>
                                                         </tableCellView>
                                                         <customView identifier="MyTableRowViewId" id="niF-K7-F82" customClass="MyTableRowView">
-                                                            <rect key="frame" x="1" y="17" width="236" height="19"/>
+                                                            <rect key="frame" x="1" y="18" width="236" height="19"/>
                                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                         </customView>
                                                     </prototypeCellViews>
@@ -315,7 +315,7 @@
                         </connections>
                     </button>
                     <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Fvh-my-HXK">
-                        <rect key="frame" x="27" y="127" width="82" height="32"/>
+                        <rect key="frame" x="14" y="211" width="82" height="32"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <buttonCell key="cell" type="push" title="Start 1" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="ueK-Ht-yKP">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -326,7 +326,7 @@
                         </connections>
                     </button>
                     <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="3Wf-hr-bnQ">
-                        <rect key="frame" x="117" y="127" width="82" height="32"/>
+                        <rect key="frame" x="104" y="211" width="82" height="32"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <buttonCell key="cell" type="push" title="Start 2" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="xth-jm-oO7">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -337,7 +337,7 @@
                         </connections>
                     </button>
                     <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="VId-BX-MBS">
-                        <rect key="frame" x="221" y="127" width="82" height="32"/>
+                        <rect key="frame" x="14" y="178" width="82" height="32"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <buttonCell key="cell" type="push" title="Popover!" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="LuL-GQ-wIL">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -347,11 +347,20 @@
                             <action selector="showPopoverForButton:" target="CKn-Mw-7Oj" id="w4a-2Y-UHd"/>
                         </connections>
                     </button>
-                    <slider verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="5CL-4a-yO4">
-                        <rect key="frame" x="38" y="181" width="96" height="21"/>
+                    <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Nys-3E-nf2">
+                        <rect key="frame" x="14" y="145" width="165" height="32"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                        <sliderCell key="cell" state="on" alignment="left" maxValue="100" doubleValue="50" tickMarkPosition="above" sliderType="linear" id="LY0-ij-XtK"/>
-                    </slider>
+                        <buttonCell key="cell" type="push" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="Wsw-Hk-hw5">
+                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                            <string key="title" base64-UTF8="YES">
+EFRvZ2dsZSBNYWluIE1lbnU
+</string>
+                            <font key="font" metaFont="system"/>
+                        </buttonCell>
+                        <connections>
+                            <action selector="toggleMainMenu:" target="494" id="NTn-cN-0T1"/>
+                        </connections>
+                    </button>
                 </subviews>
                 <constraints>
                     <constraint firstAttribute="bottom" secondItem="590" secondAttribute="bottom" constant="20" symbolic="YES" id="592"/>
@@ -369,7 +378,7 @@
                     <constraint firstItem="688" firstAttribute="top" secondItem="647" secondAttribute="bottom" constant="-21" id="697"/>
                     <constraint firstItem="688" firstAttribute="trailing" secondItem="647" secondAttribute="trailing" constant="113" id="698"/>
                     <constraint firstItem="578" firstAttribute="top" secondItem="688" secondAttribute="bottom" constant="12" symbolic="YES" id="700"/>
-                    <constraint firstItem="590" firstAttribute="leading" secondItem="372" secondAttribute="leading" constant="40" id="976"/>
+                    <constraint firstItem="590" firstAttribute="leading" secondItem="372" secondAttribute="leading" constant="20" id="976"/>
                     <constraint firstItem="647" firstAttribute="top" secondItem="372" secondAttribute="top" constant="99" id="1913"/>
                     <constraint firstAttribute="trailing" secondItem="1673" secondAttribute="trailing" constant="86" id="1952"/>
                     <constraint firstAttribute="bottom" secondItem="1673" secondAttribute="bottom" constant="88" id="1953"/>
@@ -386,10 +395,10 @@
                     <constraint firstItem="ZC4-jI-ScC" firstAttribute="leading" secondItem="vNu-T7-NkF" secondAttribute="trailing" constant="25" id="L2s-KC-I76"/>
                     <constraint firstItem="OrV-Re-ju5" firstAttribute="top" secondItem="578" secondAttribute="bottom" constant="11" id="Lar-9t-ETJ"/>
                     <constraint firstItem="ZC4-jI-ScC" firstAttribute="leading" secondItem="1673" secondAttribute="leading" id="M76-jf-5Ge"/>
-                    <constraint firstItem="3Wf-hr-bnQ" firstAttribute="centerX" secondItem="3aM-PP-Jf8" secondAttribute="centerX" id="SH5-h6-UOD"/>
+                    <constraint firstItem="3Wf-hr-bnQ" firstAttribute="centerX" secondItem="3aM-PP-Jf8" secondAttribute="centerX" constant="-13.5" id="SH5-h6-UOD"/>
                     <constraint firstItem="ZC4-jI-ScC" firstAttribute="leading" secondItem="fGA-lt-rbg" secondAttribute="leading" id="UI0-Sw-1ld"/>
                     <constraint firstItem="1ya-Cp-hLn" firstAttribute="top" secondItem="OrV-Re-ju5" secondAttribute="top" id="aOO-SS-v62"/>
-                    <constraint firstItem="590" firstAttribute="top" secondItem="Fvh-my-HXK" secondAttribute="bottom" constant="93" id="b5w-7S-wCi"/>
+                    <constraint firstItem="590" firstAttribute="top" secondItem="Fvh-my-HXK" secondAttribute="bottom" constant="177" id="b5w-7S-wCi"/>
                     <constraint firstItem="Mrz-h2-cuW" firstAttribute="top" secondItem="vNu-T7-NkF" secondAttribute="bottom" constant="8" symbolic="YES" id="bjv-aV-5U0"/>
                     <constraint firstItem="Mrz-h2-cuW" firstAttribute="trailing" secondItem="vNu-T7-NkF" secondAttribute="trailing" id="c86-LH-5YU"/>
                     <constraint firstItem="647" firstAttribute="leading" secondItem="3aM-PP-Jf8" secondAttribute="trailing" constant="28" id="cHP-2n-OMY"/>

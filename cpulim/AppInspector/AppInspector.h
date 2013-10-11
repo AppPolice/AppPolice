@@ -8,6 +8,11 @@
 
 //#import <AppKit/AppKit.h>
 
+#define APApplicationInfoNameKey @"appInfoNameKey"
+#define APApplicationInfoIconKey @"appInfoIconKey"
+#define APApplicationInfoPidKey @"appInfoPidKey"
+#define APApplicationInfoLimitKey @"appInfoLimitKey"
+
 
 @class NSObject, NSView, NSViewController, NSPopover, NSSlider, NSLevelIndicator;
 @class CMMenuItem;
@@ -15,17 +20,19 @@
 
 @interface AppInspector : NSObject <NSPopoverDelegate>
 {
+	NSMutableDictionary *_applicationInfo;
 	IBOutlet NSPopover *_popover;
 	IBOutlet NSViewController *_popoverViewController;
 	IBOutlet NSView *_popoverView;
 //	IBOutlet NSWindow *detachedWindow;
 	void (^_popoverDidClosehandler)(void);
 	
+	IBOutlet NSImageView *_applicationIcon;
 	IBOutlet NSTextField *_applicationNameTextfield;
 	IBOutlet NSTextField *_applicationUserTextfield;
 	IBOutlet NSTextField *_cpuLoadTextfield;
-	IBOutlet NSTextField *_sliderTopTextfield;
-	IBOutlet NSTextField *_sliderTopRightTextField;
+	IBOutlet NSTextField *_sliderLimit1Textfield;
+	IBOutlet NSTextField *_sliderLimit2Textfield;
 	IBOutlet NSTextField *_sliderLeftTextfield;
 	IBOutlet NSTextField *_sliderMiddleTextfield;
 	IBOutlet NSTextField *_sliderRightTextfield;
@@ -43,7 +50,7 @@
 // as part of AppLimitHintViewDelegate
 //- (void)mouseUp:(id)sender;
 
-@property (assign) CMMenuItem *attachedToItem;
+@property (assign) NSMutableDictionary *applicationInfo;
 
 
 @end

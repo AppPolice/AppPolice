@@ -7,6 +7,7 @@
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="AppInspector">
             <connections>
+                <outlet property="_applicationIcon" destination="RfL-ov-JbE" id="R6W-Tq-H29"/>
                 <outlet property="_applicationNameTextfield" destination="UPW-Bd-Uy1" id="YjJ-3s-e4i"/>
                 <outlet property="_applicationUserTextfield" destination="IZu-80-1hD" id="frw-Jh-k1i"/>
                 <outlet property="_cpuLoadTextfield" destination="X1H-na-SUo" id="q2O-FP-LKf"/>
@@ -14,10 +15,10 @@
                 <outlet property="_popoverView" destination="1W4-jN-jWo" id="VKa-mi-cBQ"/>
                 <outlet property="_slider" destination="Bg4-V0-TsV" id="uNx-M6-gWi"/>
                 <outlet property="_sliderLeftTextfield" destination="MJq-Rw-T1a" id="KW0-Da-bf8"/>
+                <outlet property="_sliderLimit1Textfield" destination="ucT-ZZ-kLz" id="8Dz-50-MFF"/>
+                <outlet property="_sliderLimit2Textfield" destination="VPs-CQ-sHI" id="qq2-LX-4Ve"/>
                 <outlet property="_sliderMiddleTextfield" destination="lFy-YF-2XL" id="FI7-dB-beI"/>
                 <outlet property="_sliderRightTextfield" destination="1SJ-Bs-YWD" id="tIf-0j-c76"/>
-                <outlet property="_sliderTopRightTextField" destination="VPs-CQ-sHI" id="ySQ-2a-WnL"/>
-                <outlet property="_sliderTopTextfield" destination="ucT-ZZ-kLz" id="0Ip-pi-pvJ"/>
             </connections>
         </customObject>
         <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>

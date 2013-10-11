@@ -121,6 +121,17 @@ typedef struct __submenu_tracking_event tracking_event_t;
 - (void)showWithOptions:(CMMenuOptions)options;
 
 /**
+ * @abstract Display menu in frame
+ * @param frameRect Frame for a menu. Use NSZeroRect for a menu to automatically
+ *	calculate best frame.
+ * @param options Options to display menu with.
+ * @param display Boolean specified whether any of the underlying views has changed
+ *	and the underlying document View of NSScrollView needs to be updated.
+ */
+//- (void)setFrame:(NSRect)frameRect options:(CMMenuOptions)options display:(BOOL)display;
+- (void)displayInFrame:(NSRect)frameRect options:(CMMenuOptions)options display:(BOOL)display;
+
+/**
  * @function getBestFrameForMenuWindow
  * @abstract Returns the frame in screen coordinates in which menu will be drawn.
  * @discussion Depending on the position of menu's parent item and the proximity to the screen 
@@ -313,8 +324,12 @@ typedef struct __submenu_tracking_event tracking_event_t;
 	if (index > [_menuItems count])
 		[NSException raise:NSInvalidArgumentException format:@"Provided index is greater then the number of elements in Menu during -insertItem:atIndex:"];
 	
+	XLog3("Adding menu item: %@", newItem);
+	
 	[_menuItems insertObject:newItem atIndex:index];
 	[newItem setMenu:self];
+	if ([newItem hasSubmenu])
+		[[newItem submenu] setSupermenu:self];
 	
 	// Menu will update our newly added item itself
 	if (_needsDisplay)
@@ -332,7 +347,7 @@ typedef struct __submenu_tracking_event tracking_event_t;
 //	NSRect frame = [self getBestFrameForMenuWindow];
 //	[_underlyingWindowController updateFrame:frame options:CMMenuOptionDefault];
 	if (_isActive)
-		[self setFrame:NSZeroRect options:CMMenuOptionDefault display:NO];
+		[self displayInFrame:NSZeroRect options:CMMenuOptionDefault display:NO];
 }
 
 
@@ -372,6 +387,8 @@ typedef struct __submenu_tracking_event tracking_event_t;
 	if ([item hasSubmenu]) {
 		if ([[item submenu] isActive])
 			[[item submenu] cancelTrackingWithoutAnimation];
+		[[item submenu] setParentItem:nil];
+		[[item submenu] setSupermenu:nil];
 		[item setSubmenu:nil];
 	}
 	XLog3("Removing menu item: %@", item);
@@ -384,15 +401,11 @@ typedef struct __submenu_tracking_event tracking_event_t;
 
 	if (animate && !_isActive) {
 		[_underlyingWindowController removeViewAtIndex:index animate:YES complitionHandler:^(void) {
-//			NSLog(@"---- complition handler of CMMenu -removeItem..");
-			if (! itemsCount) {
-//				NSLog(@"no items left in menu. hide menu");
+			if (! itemsCount) {		// no items left in menu, hide it
 				[self cancelTrackingWithoutAnimation];
 			} else {
-//				NSRect frame = [self getBestFrameForMenuWindow];
-//				[_underlyingWindowController updateFrame:frame options:CMMenuOptionDefault];
 				if (_isActive)
-					[self setFrame:NSZeroRect options:CMMenuOptionDefault display:NO];
+					[self displayInFrame:NSZeroRect options:CMMenuOptionDefault display:NO];
 			}
 		}];
 	} else {
@@ -404,7 +417,7 @@ typedef struct __submenu_tracking_event tracking_event_t;
 	//			NSRect frame = [self getBestFrameForMenuWindow];
 	//			[_underlyingWindowController updateFrame:frame options:CMMenuOptionDefault];
 				if (_isActive)
-					[self setFrame:NSZeroRect options:CMMenuOptionDefault display:NO];
+					[self displayInFrame:NSZeroRect options:CMMenuOptionDefault display:NO];
 			}
 		}
 
@@ -501,6 +514,9 @@ typedef struct __submenu_tracking_event tracking_event_t;
  *
  */
 - (void)start {
+	if (_isActive)
+		return;
+	
 	[self showWithOptions:CMMenuOptionDefault];
 }
 
@@ -509,7 +525,7 @@ typedef struct __submenu_tracking_event tracking_event_t;
  *
  */
 - (void)showWithOptions:(CMMenuOptions)options {
-	if (!_underlyingWindowController) {
+	if (! _underlyingWindowController) {
 		_underlyingWindowController = [[CMWindowController alloc] initWithOwner:self];
 		[self reloadData];
 		_needsDisplay = NO;
@@ -519,7 +535,7 @@ typedef struct __submenu_tracking_event tracking_event_t;
 //	BOOL ignoreMouse = (options & CMMenuOptionIgnoreMouse);
 //	NSRect frame = [self getBestFrameForMenuWindow];
 //	[_underlyingWindowController displayInFrame:frame options:options];
-	[self setFrame:NSZeroRect options:options display:NO];
+	[self displayInFrame:NSZeroRect options:options display:NO];
 	
 	// Root menu begins tracking itself.
 	// Root menu doesn't have supermenu.
@@ -1132,7 +1148,7 @@ typedef struct __submenu_tracking_event tracking_event_t;
 		return;
 		
 	if (needsDisplay && _isActive)
-		[self setFrame:NSZeroRect options:CMMenuOptionDefault display:YES];
+		[self displayInFrame:NSZeroRect options:CMMenuOptionDefault display:YES];
 }
 
 
@@ -1171,7 +1187,7 @@ typedef struct __submenu_tracking_event tracking_event_t;
 }
 
 
-- (void)setFrame:(NSRect)frameRect options:(CMMenuOptions)options display:(BOOL)display {
+- (void)displayInFrame:(NSRect)frameRect options:(CMMenuOptions)options display:(BOOL)display {
 	if (display || _needsDisplay) {
 		[_underlyingWindowController updateDocumentView];
 		_needsDisplay = NO;
@@ -1191,7 +1207,7 @@ typedef struct __submenu_tracking_event tracking_event_t;
 	}
 	
 	if ([self activeSubmenu])
-		[[self activeSubmenu] setFrame:NSZeroRect options:CMMenuOptionDefault display:NO];
+		[[self activeSubmenu] displayInFrame:NSZeroRect options:CMMenuOptionDefault display:NO];
 }
 
 

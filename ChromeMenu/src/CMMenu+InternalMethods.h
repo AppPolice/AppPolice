@@ -49,7 +49,7 @@ typedef NSUInteger CMMenuOptions;
 /* Update only particular menu items */
 //- (void)updateItemsAtIndexes:(NSIndexSet *)indexes;
 //- (void)updateFrame;
-- (void)setFrame:(NSRect)frameRect options:(CMMenuOptions)options display:(BOOL)display;
+//- (void)setFrame:(NSRect)frameRect options:(CMMenuOptions)options display:(BOOL)display;
 
 //- (BOOL)isAncestorTo:(CMMenu *)menu;
 

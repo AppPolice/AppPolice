@@ -83,7 +83,10 @@
 //			[_delegate performSelector:@selector(mouseUp:) withObject:self];
 //		}
 //	}
-	[[NSNotificationCenter defaultCenter] postNotificationName:AppLimitHintMouseDownNotification object:self userInfo:nil];
+//	[[NSNotificationCenter defaultCenter] postNotificationName:AppLimitHintMouseDownNotification object:self userInfo:nil];
+	NSNotification *notification = [NSNotification notificationWithName:AppLimitHintMouseDownNotification object:self userInfo:nil];
+	[[NSNotificationQueue defaultQueue] enqueueNotification:notification postingStyle:NSPostASAP coalesceMask:NSNotificationCoalescingOnName forModes:[NSArray arrayWithObject:NSRunLoopCommonModes]];
+	
 	[super mouseUp:theEvent];
 }
 

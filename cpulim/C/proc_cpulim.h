@@ -1,6 +1,6 @@
 //
-//  clevel.h
-//  cpulim
+//  proc_cpulim.h
+//  as part of AppPolice
 //
 //  Created by Maksym on 5/19/13.
 //  Copyright (c) 2013 Maksym Stefanchuk. All rights reserved.
@@ -15,7 +15,8 @@
 #define NANOSEC_PER_SEC 1000000000
 
 
-/* newlim is the fraction of percents. For example 1 corresponds to 100% of permitted cpu load, 0.5 to 50% and 2.5 to 250% (in multicore environment) */
+/* newlim is the fraction of percents. For example 1 corresponds to 100% of permitted cpu load, 0.5 to 50% and 2.5 to 250% (in multicore environment).
+	Return 0 if limit set successful, and 1 if provided parameters are invalid. */
 int proc_cpulim_set(int pid, float newlim);
 void proc_cpulim_resume(void);
 void proc_cpulim_suspend(void);

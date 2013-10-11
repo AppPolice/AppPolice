@@ -7,6 +7,9 @@
 //
 
 #import "AppDelegate.h"
+#import "StatusbarItemController.h"
+#import "StatusbarMenuController.h"
+#import "CMMenu.h"
 #import "StatusbarMenu.h"
 //#include "C/def.h"
 #include "C/proc_cpulim.h"
@@ -18,6 +21,9 @@
 @implementation AppDelegate
 
 - (void)dealloc {
+	[_statusbarItemController release];
+	[_statusbarMenuController release];
+	
 	[_statusbarItem release];
 //	[_statusbarMenu release];
     [super dealloc];
@@ -25,6 +31,9 @@
 
 
 - (void)applicationWillFinishLaunching:(NSNotification *)notification {
+	_statusbarItemController = [[StatusbarItemController alloc] init];
+	[_statusbarItemController addItemToStatusbar];
+	
 	[self activateStatusbarItem];
 }
 
@@ -34,6 +43,12 @@
 	/* print stats right after App launch: resources used by OS X to launch the App */
 	profiling_print_stats();
 #endif
+	
+	_statusbarMenuController = [[StatusbarMenuController alloc] init];
+//	[_statusbarMenuController createMainMenu];
+	CMMenu *mainMenu = [_statusbarMenuController mainMenu];
+	[_statusbarItemController setStatusbarItemMenu:mainMenu];
+	
 
 //	_statusbarMenu = [[StatusbarMenu alloc] init];
 //	NSLog(@"menu:%@", [_statusbarMenu mainMenu]);
@@ -58,10 +73,15 @@
 //	return NSTerminateNow;
 //}
 
-extern void proc_cpulim_suspend_wait(void);		/* function returns only after limiter stopped */
+//extern void proc_cpulim_suspend_wait(void);		/* function returns only after limiter stopped */
 
 - (void)applicationWillTerminate:(NSNotification *)notification {
 	proc_cpulim_suspend_wait();
+}
+
+
+- (IBAction)toggleMainMenu:(id)sender {
+	[[_statusbarMenuController mainMenu] start];
 }
 
 

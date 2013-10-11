@@ -258,6 +258,7 @@
 		
 		if ([target respondsToSelector:_action]) {
 			[target performSelector:_action withObject:self];
+//			[NSApp sendAction:_action to:target from:self];
 		}
 	}
 
@@ -270,8 +271,6 @@
 		} else {
 			[self delayedCancelTracking];
 		}
-		
-
 	}
 }
 

@@ -9,17 +9,15 @@
 //#import <Foundation/Foundation.h>
 //#import "CMMenuItem.h"
 
-
-//@class ChromeMenuUnderlyingWindow, ChromeMenuUnderlyingView, CMTableCellView;
 @class NSString, NSArray, NSIndexSet;
 @class CMMenuItem;
 
 
-enum {
-	CMMenuAnimationEffectNone = 0x0,
-	CMMenuAnimationEffectFade = 0x01
-};
-typedef NSUInteger CMMenuAnimationOptions;
+//enum {
+//	CMMenuAnimationEffectNone = 0x0,
+//	CMMenuAnimationEffectFade = 0x01
+//};
+//typedef NSUInteger CMMenuAnimationOptions;
 
 
 @interface CMMenu : NSObject
@@ -64,7 +62,7 @@ typedef NSUInteger CMMenuAnimationOptions;
 - (NSInteger)numberOfItems;
 
 /* Returns the item at the given index, which must be at least zero and less than the number of items. */
-- (id)itemAtIndex:(NSInteger)index;
+- (CMMenuItem *)itemAtIndex:(NSInteger)index;
 
 /* Returns the index of the item in the menu, or -1 if the item is not present in the menu */
 - (NSInteger)indexOfItem:(CMMenuItem *)item;

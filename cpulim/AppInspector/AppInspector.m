@@ -41,7 +41,7 @@ static int system_ncpu() {
 
 @implementation AppInspector
 
-@synthesize attachedToItem;
+//@synthesize applicationInfo;
 
 - (id)init {
 	self = [super init];
@@ -51,6 +51,7 @@ static int system_ncpu() {
 	}
 	return self;
 }
+
 
 - (void)dealloc {
 	[_hintPopover release];
@@ -86,16 +87,40 @@ static int system_ncpu() {
 //	[detachedWindow setContentView:popoverView];
 	
 //	[self performSelector:@selector(updateTrackingAreaForHint) withObject:nil afterDelay:0.0];
+
 	
-//	int mib[2];
-//	size_t len;
-//	int ncpu;
-//	int res;
-//	mib[0] = CTL_HW;
-//	mib[1] = HW_NCPU;
-//	len = sizeof(ncpu);
-//	res = sysctl(mib, 2, &ncpu, &len, NULL, 0);
 	NSLog(@"cpu's: %d", system_ncpu());
+}
+
+
+- (NSDictionary *)applicationInfo {
+	return _applicationInfo;
+}
+
+- (void)setApplicationInfo:(NSMutableDictionary *)applicationInfo {
+	if (_applicationInfo == applicationInfo)
+		return;
+		
+	_applicationInfo = applicationInfo;
+	if (applicationInfo) {
+		NSImage *icon = [applicationInfo objectForKey:APApplicationInfoIconKey];
+		NSString *name = [applicationInfo objectForKey:APApplicationInfoNameKey];
+		pid_t pid = [(NSNumber *)[applicationInfo objectForKey:APApplicationInfoPidKey] intValue];
+		float limit = [(NSNumber *)[applicationInfo objectForKey:APApplicationInfoLimitKey] floatValue];
+		
+		[_applicationIcon setImage:icon];
+		[_applicationNameTextfield setStringValue:[NSString stringWithFormat:@"%@ (%d)", name, pid]];
+		if (limit == 0) {
+			[_slider setFloatValue:[_slider maxValue]];
+//			[_sliderLimit2Textfield setStringValue:@"Not limited"];
+		} else {
+			float sliderValue = [self sliderValueFromLimit:limit];
+			[_slider setFloatValue:sliderValue];
+//			int intLimit = limit * 100;
+//			[_sliderLimit2Textfield setStringValue:[NSString stringWithFormat:@"%d%%", intLimit]];
+		}
+		[self updateTextfieldsWithLimitValue:limit];
+	}
 }
 
 
@@ -111,10 +136,6 @@ static int system_ncpu() {
 }
 
 
-- (NSPopover *)popover {
-	return _popover;
-}
-
 
 /*
 - (NSWindow *)detachableWindowForPopover:(NSPopover *)thePopover {
@@ -125,18 +146,50 @@ static int system_ncpu() {
 
 - (void)sliderAction:(id)sender {
 	float value = [_slider floatValue];
+	float limit;
+	if (value == [_slider maxValue])
+		limit = 0;
+	else
+		limit = [self limitFromSliderValue:value];
+		
+	[self updateTextfieldsWithLimitValue:limit];
+	
+	NSEvent *theEvent = [NSApp currentEvent];
+	NSEventType eventType = [theEvent type];
+	
+	if (eventType == NSLeftMouseUp) {		// update applicatoinInfo when slider is released
+//		NSNumber *appLimit = [_applicationInfo objectForKey:APApplicationInfoLimitKey];
+//		appLimit = [NSNumber numberWithFloat:limit];
+//		[_applicationInfo removeObjectForKey:APApplicationInfoLimitKey];
+		[_applicationInfo setObject:[NSNumber numberWithFloat:limit] forKey:APApplicationInfoLimitKey];
+	}
+	
+	
+//	NSLog(@"limit: %f", limit);
+}
+
+
+/*
+ *
+ */
+- (void)updateTextfieldsWithLimitValue:(float)limit {
+//	float value = [_slider floatValue];
 //	NSLog(@"slider value: %f", value);
 	
-	if (value == ([_slider numberOfTickMarks] - 1)) {
-		[_sliderTopRightTextField setStringValue:@"Not limited"];
+//	double minValue = [_slider minValue];
+//	double maxValue = [_slider maxValue];
+	
+//	if (value == ([_slider numberOfTickMarks] - 1)) {
+//	if (value == [_slider maxValue]) {
+	if (limit == 0) {
+		[_sliderLimit2Textfield setStringValue:@"Not limited"];
 //		if (! [_sliderBottomTextfield isHidden])
 //			[_sliderBottomTextfield setHidden:YES];
 	} else {
+/*
 		int ncpu = system_ncpu();
 //		NSInteger penultimateValue = [_slider numberOfTickMarks] - 2;
 //		NSInteger middleValue = penultimateValue / 2;
-		double minValue = [_slider minValue];
-		double maxValue = [_slider maxValue];
 		double middleValue;
 		int percents;
 
@@ -164,10 +217,15 @@ static int system_ncpu() {
 		
 		if (percents == 0)
 			percents = 1;
+ */
 //		int fullyLoadedCoresCount = floor(percents / 100);
 //		int percentsLeft = percents - fullyLoadedCoresCount * 100;
 
-		[_sliderTopRightTextField setStringValue:[NSString stringWithFormat:@"%d%%", (int)roundf(percents)]];
+		int percents;
+		percents = floor(limit * 100 + 0.5);
+		if (percents < 1)
+			percents = 1;
+		[_sliderLimit2Textfield setStringValue:[NSString stringWithFormat:@"%d%%", percents]];
 		
 //		if (fullyLoadedCoresCount > 1 || (fullyLoadedCoresCount && percentsLeft)) {
 //			if ([_sliderBottomTextfield isHidden])
@@ -186,95 +244,82 @@ static int system_ncpu() {
 //				[_sliderBottomTextfield setHidden:YES];
 //		}
 	}
-	
-	// Hide bottom Hint on mouse up.
-//	NSEvent *theEvent = [NSApp currentEvent];
-//	if ([theEvent type] == NSLeftMouseUp && ![_sliderBottomTextfield isHidden])
-//		[_sliderBottomTextfield setHidden:YES];
-	
-	// Current limit: 249% (2 CPUs at 100% + 1 CPU at 49%)
-	
-//	NSEvent *theEvent = [NSApp currentEvent];
-//	NSEventType eventType = [theEvent type];
-//	NSPoint mouseLocation = [theEvent locationInWindow];
-//	mouseLocation = [_slider convertPoint:mouseLocation fromView:nil];
-//	mouseLocation = [theEvent window]
-//	NSLog(@"event wind: %@", [theEvent window]);
-//	NSLog(@"sliderh action: %f, event: %ld", value, eventType);
 
-	
-//	[_slider lockFocus];
-//	[[NSColor redColor] set];
-//	NSFrameRect(rect);
-//	[_slider unlockFocus];
-	
-//	[_slider cell];
-	
-//	NSLog(@"slider value: %f", value);
-//	NSLog(@"last before last rect: %@, mouse loca: %@", NSStringFromRect(rect), NSStringFromPoint(mouseLocation));
 
-	/*
-	if (eventType == NSLeftMouseUp) {
-	
-		if (_sliderMouseTrackingTimer) {
-			[_sliderMouseTrackingTimer invalidate];
-			_sliderMouseTrackingTimer = nil;
-		}
-	
-	} else {
-//	BOOL stopOnTickMarks = [_slider allowsTickMarkValuesOnly];
-		NSInteger beforeLastTickMark = [_slider numberOfTickMarks] - 2;
-		if (value >= beforeLastTickMark) {
-			[_slider setAllowsTickMarkValuesOnly:YES];
-			if (! _sliderMouseTrackingTimer) {
-				NSRect tickMarkRect = [_slider rectOfTickMarkAtIndex:beforeLastTickMark];
-				NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:
-										  [theEvent window], @"window",
-										  [NSValue valueWithRect:tickMarkRect], @"tickMarkRect", nil];
-				_sliderMouseTrackingTimer = [NSTimer timerWithTimeInterval:0.05 target:self selector:@selector(sliderTrackingTimerEvent:) userInfo:userInfo repeats:YES];
-				[[NSRunLoop currentRunLoop] addTimer:_sliderMouseTrackingTimer forMode:NSRunLoopCommonModes];
-			}
-		} else {
-			[_slider setAllowsTickMarkValuesOnly:NO];
-		}
-		
-	}
-	*/
-	[_levelIndicator setFloatValue:value];
-	
-//	[self updateTrackingAreaForHint];
-	
-//	if (value < 2) {
-//		[_applicationNameTextfield setStringValue:@"New app"];
-//	} else if (value < 4) {
-//		[_applicationNameTextfield setStringValue:@"New app with some name"];
-//	} else if (value < 6) {
-//		[_applicationNameTextfield setStringValue:@"Little Snitch Configuration (1024)"];
-//	} else {
-//		[_applicationNameTextfield setStringValue:@"New app with some name longer then previous app."];
-//	}
-
-	
-/*
-//	NSLog(@"subviews: %@", [_popoverView subviews]);
-//	[[[_popoverView subviews] objectAtIndex:0] invalidateIntrinsicContentSize];
-	
-	static int showingConstraints = 0;
-	if (! showingConstraints) {
-		NSEvent *theEvent = [NSApp currentEvent];
-		NSWindow *window = [theEvent window];
-//		NSArray *constraints = [_popoverView constraintsAffectingLayoutForOrientation:NSLayoutConstraintOrientationHorizontal];
-		NSMutableArray *constraints = [NSMutableArray new];
-		for (NSView *view in [_popoverView subviews]) {
-			[constraints addObjectsFromArray:[view constraintsAffectingLayoutForOrientation:NSLayoutConstraintOrientationHorizontal]];
-		}
-		NSLog(@"all constraints: %@", constraints);
-		[window visualizeConstraints:constraints];
-		showingConstraints = 1;
-	}
- */
-	
+//	[_levelIndicator setFloatValue:value];
 }
+
+
+
+- (float)limitFromSliderValue:(float)value {
+	double maxValue = [_slider maxValue];
+	double minValue = [_slider minValue];
+	float limit;
+//	int ncpu = system_ncpu();
+//	maxValue -= [_slider minValue];
+//	maxValue -= maxValue / ([_slider numberOfTickMarks] - 1);		// deduct one tick mark
+//	limit = value / maxValue * ncpu;
+	
+	int ncpu = system_ncpu();
+	double middleValue;
+//	int percents;
+	
+	if (minValue) {		// shift all values by min value
+		value -= minValue;
+		maxValue -= minValue;
+	}
+	
+	// max value is reduced on the amount of one tick mark
+	maxValue -= maxValue / ([_slider numberOfTickMarks] - 1);
+	middleValue = maxValue / 2;
+	
+	
+	if (ncpu > 2) {
+		if (value <= middleValue)
+			limit = value / middleValue;
+		else
+			limit = (value - middleValue) / middleValue * (ncpu - 1) + 1;
+	} else {
+		if (value > maxValue)
+			value = maxValue;
+		
+		limit = value / maxValue * ncpu;
+	}
+	
+	if (limit < 0.01)
+		limit = 0.01;
+	
+	return limit;
+}
+
+
+- (float)sliderValueFromLimit:(float)limit {
+	double maxValue = [_slider maxValue];
+	double middleValue;
+	float value;
+	int ncpu;
+	
+	if (limit == 0)
+		return maxValue;
+	
+	ncpu = system_ncpu();
+	maxValue -= [_slider minValue];
+	maxValue -= maxValue / ([_slider numberOfTickMarks] - 1);		// deduct one tick mark
+	middleValue = maxValue / 2;
+//	value = limit / ncpu * maxValue;
+	
+	if (ncpu > 2) {
+		if (limit <= 1)
+			value = limit * middleValue;
+		else
+			value = (limit - 1) / (ncpu - 1) * middleValue + middleValue;
+	} else {
+		value = limit / ncpu * maxValue;
+	}
+
+	return value;
+}
+
 
 /*
 - (void)sliderTrackingTimerEvent:(NSTimer *)timer {
@@ -370,6 +415,11 @@ static int system_ncpu() {
 }
 
 
+- (NSPopover *)popover {
+	return _popover;
+}
+
+
 - (void)setPopverDidCloseHandler:(void (^)(void))handler {
 	if (_popoverDidClosehandler != handler)
 		_popoverDidClosehandler = handler;
@@ -377,19 +427,23 @@ static int system_ncpu() {
 
 
 - (void)popoverDidShow:(NSNotification *)notification {
+//	NSLog(@"popover did show");
 	[_popover setAnimates:NO];
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(limitHintViewMouseUpNotification:) name:AppLimitHintMouseDownNotification object:nil];
 }
 
+
 - (void)popoverWillClose:(NSNotification *)notification {
+//		NSLog(@"popover will close");
 	[_popover setAnimates:YES];
 }
+
 
 - (void)popoverDidClose:(NSNotification *)notification {
 //	[[[self attachedToItem] menu] setSuspendMenus:NO];
 	if (_popoverDidClosehandler)
 		_popoverDidClosehandler();
-	[[NSNotificationCenter defaultCenter] removeObserver:self];
+	[[NSNotificationCenter defaultCenter] removeObserver:self name:AppLimitHintMouseDownNotification object:nil];
 }
 
 
