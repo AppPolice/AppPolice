@@ -10,17 +10,21 @@
 
 @protocol AppLimitHintViewDelegate;
 
+#define AppLimitHintMouseDownNotification @"appLimitHintMouseDownNotification"
+
+
 @interface AppLimitHintView : NSView
 {
 	@private
 	IBOutlet NSImageView *_hintImage;
-	IBOutlet id <AppLimitHintViewDelegate> _delegate;
+//	IBOutlet id <AppLimitHintViewDelegate> _delegate;
+	NSTrackingArea *_trackingArea;
 }
 @end
 
 
-@protocol AppLimitHintViewDelegate <NSObject>
+//@protocol AppLimitHintViewDelegate <NSObject>
 
-- (void)mouseUp:(id)sender;
+//- (void)mouseUp:(id)sender;
 
-@end
+//@end

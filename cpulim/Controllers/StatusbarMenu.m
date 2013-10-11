@@ -771,7 +771,12 @@ void cfnotificationCallback(CFNotificationCenterRef center, void *observer, CFSt
 //		[[[self attachedToItem] menu] setSuspendMenus:NO];
 		NSLog(@"popover did close");
 	}];
-	[[self appInspector] showPopoverRelativeTo:button];
+	
+	if ([[[self appInspector] popover] isShown]) {
+		[[[self appInspector] popover] close];
+	} else {
+		[[self appInspector] showPopoverRelativeTo:button];
+	}
 }
 
 

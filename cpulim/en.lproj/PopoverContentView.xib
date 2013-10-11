@@ -184,7 +184,6 @@
                         <constraint firstAttribute="trailing" secondItem="VPs-CQ-sHI" secondAttribute="trailing" constant="5" id="qXX-qQ-Akc"/>
                     </constraints>
                     <connections>
-                        <outlet property="_delegate" destination="-2" id="5L2-06-bZf"/>
                         <outlet property="_hintImage" destination="hfv-8R-sCB" id="OhC-jV-JVQ"/>
                     </connections>
                 </customView>
@@ -213,15 +212,6 @@
                 <constraint firstAttribute="trailing" secondItem="Bg4-V0-TsV" secondAttribute="trailing" constant="20" id="tOt-tM-UPf"/>
                 <constraint firstItem="MJq-Rw-T1a" firstAttribute="leading" secondItem="1W4-jN-jWo" secondAttribute="leading" constant="23" id="xxN-sg-MZk"/>
             </constraints>
-        </customView>
-        <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" id="ftl-WA-vxR">
-            <rect key="frame" x="0.0" y="0.0" width="48" height="48"/>
-            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-            <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" imageFrameStyle="grayBezel" id="ivG-v0-TED"/>
-        </imageView>
-        <customView id="lVn-Qv-KcD">
-            <rect key="frame" x="0.0" y="0.0" width="115" height="23"/>
-            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
         </customView>
     </objects>
     <resources>

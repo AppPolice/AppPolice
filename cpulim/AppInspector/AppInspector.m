@@ -10,6 +10,8 @@
 #import "ChromeMenu.h"
 //#import "AppLimitSlider.h"
 #import "AppLimitSliderCell.h"
+#import "AppLimitHintView.h"
+#import "HintPopoverTextField.h"
 #include <sys/sysctl.h>
 #include <unistd.h>
 
@@ -50,6 +52,11 @@ static int system_ncpu() {
 	return self;
 }
 
+- (void)dealloc {
+	[_hintPopover release];
+	[super dealloc];
+}
+
 
 - (void)awakeFromNib {
 //	NSLog(@"%@ awakeFromNib", [self className]);
@@ -74,7 +81,7 @@ static int system_ncpu() {
 	[_slider setAction:@selector(sliderAction:)];
 	[_levelIndicator setWarningValue:5];
 	[_levelIndicator setCriticalValue:7.5];
-	[_sliderMiddleTextfield setStringValue:[NSString stringWithFormat:@"%d%%", ncpu / 2 * 100]];
+	[_sliderMiddleTextfield setStringValue:[NSString stringWithFormat:@"%d%%", (ncpu > 2) ? 100 : ncpu / 2 * 100]];
 	[_sliderRightTextfield setStringValue:[NSString stringWithFormat:@"%d%%", ncpu * 100]];
 //	[detachedWindow setContentView:popoverView];
 	
@@ -126,9 +133,35 @@ static int system_ncpu() {
 //			[_sliderBottomTextfield setHidden:YES];
 	} else {
 		int ncpu = system_ncpu();
-		if (value > ([_slider numberOfTickMarks] - 2))
-			value = [_slider numberOfTickMarks] - 2;
-		int percents = floor((value - [_slider minValue]) / ([_slider maxValue] - 1 - [_slider minValue]) * ncpu * 100 + 0.5);
+//		NSInteger penultimateValue = [_slider numberOfTickMarks] - 2;
+//		NSInteger middleValue = penultimateValue / 2;
+		double minValue = [_slider minValue];
+		double maxValue = [_slider maxValue];
+		double middleValue;
+		int percents;
+
+		if (minValue) {		// shift all values by min value
+			value -= minValue;
+			maxValue -= minValue;
+		}
+
+		// max value is reduced on the amount of one tick mark
+		maxValue -= (maxValue - minValue) / ([_slider numberOfTickMarks] - 1);
+		middleValue = maxValue / 2;
+		
+
+		if (ncpu > 2) {
+			if (value <= middleValue)
+				percents = floor(value / middleValue * 100 + 0.5);
+			else
+				percents = floor((value - middleValue) / middleValue * (ncpu - 1) * 100 + 100.5);	// 100.5 = 100% + 0.5 to round to greater value
+		} else {
+			if (value > maxValue)
+				value = maxValue;
+		
+			percents = floor(value / maxValue * ncpu * 100 + 0.5);
+		}
+		
 		if (percents == 0)
 			percents = 1;
 //		int fullyLoadedCoresCount = floor(percents / 100);
@@ -209,7 +242,7 @@ static int system_ncpu() {
 	*/
 	[_levelIndicator setFloatValue:value];
 	
-	[self updateTrackingAreaForHint];
+//	[self updateTrackingAreaForHint];
 	
 //	if (value < 2) {
 //		[_applicationNameTextfield setStringValue:@"New app"];
@@ -264,47 +297,88 @@ static int system_ncpu() {
  */
 
 
-- (void)updateTrackingAreaForHint {
-	NSRect frame = [_sliderTopRightTextField frame];
-	frame.origin.x -= 50;
-	frame.origin.y -= 10;
-	frame.size.width += 100;
-	frame.size.height += 20;
-//	frame = [_sliderTopRightTextField convertRect:frame toView:_popoverView];
-//	NSLog(@"super: %d", [_popoverView canDraw]);
-	if ([_popoverView canDraw]) {
-		[_popoverView lockFocus];
-//		NSLog(@"sub: %@", [_popoverView subviews]);
-		[[NSColor redColor] set];
-		NSFrameRect(frame);
-		[_popoverView unlockFocus];
-//				[_popoverView display];
-//		[_popoverView setNeedsDisplay:YES];
+//- (void)updateTrackingAreaForHint {
+//	NSRect frame = [_sliderTopRightTextField frame];
+//	frame.origin.x -= 50;
+//	frame.origin.y -= 10;
+//	frame.size.width += 100;
+//	frame.size.height += 20;
+////	frame = [_sliderTopRightTextField convertRect:frame toView:_popoverView];
+////	NSLog(@"super: %d", [_popoverView canDraw]);
+//	if ([_popoverView canDraw]) {
+//		[_popoverView lockFocus];
+////		NSLog(@"sub: %@", [_popoverView subviews]);
+//		[[NSColor redColor] set];
+//		NSFrameRect(frame);
+//		[_popoverView unlockFocus];
+////				[_popoverView display];
+////		[_popoverView setNeedsDisplay:YES];
+//	}
+////	NSLog(@"frame: %@", NSStringFromRect(frame));	
+////	NSTrackingAreaOptions options = NSTrackingActiveInActiveApp | NSTrackingMouseEnteredAndExited;
+////	NSTrackingArea *trackingArea = [[NSTrackingArea alloc] initWithRect:frame options:options owner:self userInfo:nil];
+////	[_popoverView addTrackingArea:trackingArea];
+////	[trackingArea release];
+//	
+//	
+//	
+//}
+
+
+//- (void)mouseUp:(id)sender {
+//	NSLog(@"mouse is up on hint");
+//}
+
+
+- (void)limitHintViewMouseUpNotification:(NSNotification *)notification {
+//	NSLog(@"notification: %@", notification);
+	if (! _hintPopover) {
+		_hintPopover = [[NSPopover alloc] init];
+		NSViewController *popoverViewController = [[[NSViewController alloc] init] autorelease];
+		NSView *view = [[[NSView alloc] initWithFrame:NSMakeRect(0, 0, 10, 10)] autorelease];
+		[popoverViewController setView:view];
+		[_hintPopover setContentViewController:popoverViewController];
+		[_hintPopover setAppearance:NSPopoverAppearanceHUD];
+		[_hintPopover setBehavior:NSPopoverBehaviorTransient];
+//		[_hintPopover setAnimates:NO];
+		// 150 here is the maximum width of popover textfield.
+		HintPopoverTextField *textField = [[[HintPopoverTextField alloc] initWithFrame:NSMakeRect(0, 0, 150, 1)] autorelease];
+		[textField setStringValue:@"Limit values greater then 100% cover multiple cores of CPU with 100% for each core."];
+		[textField setFont:[NSFont systemFontOfSize:10]];
+		[textField setTextColor:[NSColor colorWithCalibratedWhite:0.8 alpha:1.0]];
+		[textField setBordered:NO];
+		[textField setBezeled:NO];
+		[textField setBezelStyle:NSTextFieldSquareBezel];
+		[textField setDrawsBackground:NO];
+		[textField setEditable:NO];
+		[textField setRefusesFirstResponder:YES];
+
+		[view addSubview:textField];
+		[textField setTranslatesAutoresizingMaskIntoConstraints:NO];
+		NSMutableArray *constraints = [NSMutableArray arrayWithArray:[NSLayoutConstraint constraintsWithVisualFormat:@"|-[textField(<=150)]-|" options:0 metrics:nil views:NSDictionaryOfVariableBindings(textField)]];
+		[constraints addObjectsFromArray:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-(15)-[textField]-(15)-|" options:0 metrics:nil views:NSDictionaryOfVariableBindings(textField)]];
+		[view addConstraints:constraints];
 	}
-//	NSLog(@"frame: %@", NSStringFromRect(frame));	
-//	NSTrackingAreaOptions options = NSTrackingActiveInActiveApp | NSTrackingMouseEnteredAndExited;
-//	NSTrackingArea *trackingArea = [[NSTrackingArea alloc] initWithRect:frame options:options owner:self userInfo:nil];
-//	[_popoverView addTrackingArea:trackingArea];
-//	[trackingArea release];
 	
-	
-	
-}
-
-
-- (void)mouseUp:(id)sender {
-	NSLog(@"mouse is up on hint");
+//	if ([_hintPopover isShown]) {
+//		[_hintPopover close];
+//	} else {
+	if (! [_hintPopover isShown]) {
+		AppLimitHintView *hintView = (AppLimitHintView *)[notification object];
+		[_hintPopover showRelativeToRect:[hintView bounds] ofView:hintView preferredEdge:NSMaxYEdge];
+	}
 }
 
 
 - (void)setPopverDidCloseHandler:(void (^)(void))handler {
-	if (_handler != handler)
-		_handler = handler;
+	if (_popoverDidClosehandler != handler)
+		_popoverDidClosehandler = handler;
 }
 
 
 - (void)popoverDidShow:(NSNotification *)notification {
 	[_popover setAnimates:NO];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(limitHintViewMouseUpNotification:) name:AppLimitHintMouseDownNotification object:nil];
 }
 
 - (void)popoverWillClose:(NSNotification *)notification {
@@ -313,8 +387,9 @@ static int system_ncpu() {
 
 - (void)popoverDidClose:(NSNotification *)notification {
 //	[[[self attachedToItem] menu] setSuspendMenus:NO];
-	if (_handler)
-		_handler();
+	if (_popoverDidClosehandler)
+		_popoverDidClosehandler();
+	[[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 

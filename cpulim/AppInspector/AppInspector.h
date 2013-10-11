@@ -8,20 +8,18 @@
 
 //#import <AppKit/AppKit.h>
 
-#import "AppLimitHintView.h"
-
 
 @class NSObject, NSView, NSViewController, NSPopover, NSSlider, NSLevelIndicator;
 @class CMMenuItem;
 @protocol NSPopoverDelegate;
 
-@interface AppInspector : NSObject <NSPopoverDelegate, AppLimitHintViewDelegate>
+@interface AppInspector : NSObject <NSPopoverDelegate>
 {
 	IBOutlet NSPopover *_popover;
 	IBOutlet NSViewController *_popoverViewController;
 	IBOutlet NSView *_popoverView;
 //	IBOutlet NSWindow *detachedWindow;
-	void (^_handler)(void);
+	void (^_popoverDidClosehandler)(void);
 	
 	IBOutlet NSTextField *_applicationNameTextfield;
 	IBOutlet NSTextField *_applicationUserTextfield;
@@ -34,6 +32,7 @@
 //	IBOutlet NSTextField *_sliderBottomTextfield;
 	IBOutlet NSSlider *_slider;
 	IBOutlet NSLevelIndicator *_levelIndicator;
+	NSPopover *_hintPopover;
 }
 
 // temp method
@@ -42,7 +41,7 @@
 - (void)setPopverDidCloseHandler:(void (^)(void))handler;
 
 // as part of AppLimitHintViewDelegate
-- (void)mouseUp:(id)sender;
+//- (void)mouseUp:(id)sender;
 
 @property (assign) CMMenuItem *attachedToItem;
 

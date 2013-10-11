@@ -57,6 +57,7 @@
 		A0ED124317900A9000244C3D /* CMScrollDocumentView.m in Sources */ = {isa = PBXBuildFile; fileRef = A0ED124217900A8A00244C3D /* CMScrollDocumentView.m */; };
 		A0ED1249179043F900244C3D /* CMMenuItemView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A0ED12451790218700244C3D /* CMMenuItemView.xib */; };
 		A0F0DF1D178A05C4008E85EA /* CMTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = A007EAF717870B4E00A7FE8D /* CMTableView.m */; };
+		A0FC76B51806AE8E00A92F96 /* HintPopoverTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = A0FC76B41806AE8E00A92F96 /* HintPopoverTextField.m */; };
 		A0FFE0A91805D673007F510E /* AppLimitHintView.m in Sources */ = {isa = PBXBuildFile; fileRef = A0FFE0A81805D673007F510E /* AppLimitHintView.m */; };
 /* End PBXBuildFile section */
 
@@ -168,6 +169,8 @@
 		A0ED12461790218700244C3D /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = ChromeMenu/en.lproj/CMMenuItemView.xib; sourceTree = SOURCE_ROOT; };
 		A0ED1248179040ED00244C3D /* CMMenu+InternalMethods.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "CMMenu+InternalMethods.h"; path = "ChromeMenu/src/CMMenu+InternalMethods.h"; sourceTree = SOURCE_ROOT; };
 		A0F03057179A96FC000C767D /* CMMenuItemView+InternalMethods.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "CMMenuItemView+InternalMethods.h"; path = "ChromeMenu/src/CMMenuItemView+InternalMethods.h"; sourceTree = SOURCE_ROOT; };
+		A0FC76B31806AE8E00A92F96 /* HintPopoverTextField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = HintPopoverTextField.h; path = AppInspector/HintPopoverTextField.h; sourceTree = "<group>"; };
+		A0FC76B41806AE8E00A92F96 /* HintPopoverTextField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = HintPopoverTextField.m; path = AppInspector/HintPopoverTextField.m; sourceTree = "<group>"; };
 		A0FD2889179BE92900740A12 /* CMMenuEventTypes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = CMMenuEventTypes.h; path = ChromeMenu/src/CMMenuEventTypes.h; sourceTree = SOURCE_ROOT; };
 		A0FFE0A71805D673007F510E /* AppLimitHintView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppLimitHintView.h; path = AppInspector/AppLimitHintView.h; sourceTree = "<group>"; };
 		A0FFE0A81805D673007F510E /* AppLimitHintView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppLimitHintView.m; path = AppInspector/AppLimitHintView.m; sourceTree = "<group>"; };
@@ -287,6 +290,8 @@
 				A0AED3B61802EA9E005F4F9D /* AppInfoBlockView.m */,
 				A0FFE0A71805D673007F510E /* AppLimitHintView.h */,
 				A0FFE0A81805D673007F510E /* AppLimitHintView.m */,
+				A0FC76B31806AE8E00A92F96 /* HintPopoverTextField.h */,
+				A0FC76B41806AE8E00A92F96 /* HintPopoverTextField.m */,
 			);
 			name = src;
 			sourceTree = "<group>";
@@ -521,6 +526,7 @@
 				A046C66317E70F0100E4F210 /* CMMenuKeyEventInterpreter.m in Sources */,
 				A00FBF5317DF68280083B482 /* NSImage+CMMenuImageRepAdditions.m in Sources */,
 				A00D28551803E85F00D71F71 /* AppLimitSliderCell.m in Sources */,
+				A0FC76B51806AE8E00A92F96 /* HintPopoverTextField.m in Sources */,
 				A0336A7F17DB9E3A004C2DDB /* CMMenuScroller.m in Sources */,
 				A0FFE0A91805D673007F510E /* AppLimitHintView.m in Sources */,
 				A07CEC24179D6FFD0016067E /* CMMenuItemSeparatorView.m in Sources */,
