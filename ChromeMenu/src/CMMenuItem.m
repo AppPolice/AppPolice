@@ -68,8 +68,10 @@
 
 - (void)dealloc {
 	[_title release];
-	if (_icon)
-		[_icon release];
+	[_icon release];
+	[_offStateImage release];
+	[_onStateImage release];
+	[_mixedStateImage release];
 	
 	if (_viewNibName) {
 //		[_viewIdentifier release];
@@ -190,13 +192,52 @@
 }
 
 
+- (void)setOffStateImage:(NSImage *)image {
+	if (_offStateImage == image)
+		return;
+	
+	if (_offStateImage)
+		[_offStateImage release];
+	if (image)
+		_offStateImage = [image retain];
+	else
+		_offStateImage = nil;
+}
+
+
 - (NSImage *)onStateImage {
 	return (_onStateImage) ? _onStateImage : [NSImage imageNamed:NSImageNameMenuOnStateTemplate];
 }
 
 
+- (void)setOnStateImage:(NSImage *)image {
+	if (_onStateImage == image)
+		return;
+	
+	if (_onStateImage)
+		[_onStateImage release];
+	if (image)
+		_onStateImage = [image retain];
+	else
+		_onStateImage = nil;
+}
+
+
 - (NSImage *)mixedStateImage {
 	return (_mixedStateImage) ? _mixedStateImage : [NSImage imageNamed:NSImageNameMenuMixedStateTemplate];
+}
+
+
+- (void)setMixedStateImage:(NSImage *)image {
+	if (_mixedStateImage == image)
+		return;
+	
+	if (_mixedStateImage)
+		[_mixedStateImage release];
+	if (image)
+		_mixedStateImage = [image retain];
+	else
+		_mixedStateImage = nil;
 }
 
 
@@ -310,8 +351,8 @@
 		}
 		
 		if ([target respondsToSelector:_action]) {
-			[target performSelector:_action withObject:self afterDelay:0.2 inModes:[NSArray arrayWithObject:NSRunLoopCommonModes]];
-//			[NSApp sendAction:_action to:target from:self];
+//			[target performSelector:_action withObject:self afterDelay:0.075 inModes:[NSArray arrayWithObject:NSRunLoopCommonModes]];
+			[NSApp sendAction:_action to:target from:self];
 		}
 	}
 

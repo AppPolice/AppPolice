@@ -1365,6 +1365,7 @@ typedef struct __submenu_tracking_event tracking_event_t;
 				break;
 		} while ((menu = [menu supermenu]));
 		
+		// debug: cycle state
 //		{
 //			CMMenuItem *item = [menu itemAtPoint:mouseLocationOnScreen];
 //			NSInteger state = [item state];
@@ -1373,6 +1374,7 @@ typedef struct __submenu_tracking_event tracking_event_t;
 //				nextState = -1;
 //			[item setState:nextState];
 //		}
+		
 		
 		if ([menu eventBlockingMask]) {
 			[menu setSuspendMenus:NO];

@@ -591,9 +591,15 @@ void cfnotificationCallback(CFNotificationCenterRef center, void *observer, CFSt
 				[item setIcon:image];
 			
 			if (i == 10) {
+				NSImage *image = [NSImage imageNamed:NSImageNameStatusNone];
+				[image setSize:NSMakeSize(12, 12)];
+				[item setMixedStateImage:image];
 				[item setState:NSMixedState];
 			}
 			if (i == 8) {
+				NSImage *image = [NSImage imageNamed:NSImageNameStatusAvailable];
+				[image setSize:NSMakeSize(12, 12)];
+				[item setOnStateImage:image];
 				[item setState:NSOnState];
 			}
 			

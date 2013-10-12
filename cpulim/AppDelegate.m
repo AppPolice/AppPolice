@@ -131,6 +131,19 @@
 //	[menu update];
 	
 //	[self startRunLoop1:self];
+	
+//	[NSEvent addLocalMonitorForEventsMatchingMask:NSLeftMouseDownMask handler:^(NSEvent *theEvent) {
+//		NSLog(@"local event monitor: %@", theEvent);
+//		return theEvent;
+//	}];
+	
+//	NSTimer *timer = [NSTimer timerWithTimeInterval:1.0 target:self selector:@selector(timerFire:) userInfo:nil repeats:YES];
+//	[[NSRunLoop currentRunLoop] addTimer:timer forMode:NSRunLoopCommonModes];
+}
+
+
+- (void)timerFire:(NSTimer *)timer {
+	NSLog(@"timer fire");
 }
 
 - (void)statusbarItemAction {

@@ -42,6 +42,7 @@ static int system_ncpu() {
 @implementation AppInspector
 
 //@synthesize applicationInfo;
+//@synthesize attachedToItem;
 
 - (id)init {
 	self = [super init];
@@ -93,35 +94,67 @@ static int system_ncpu() {
 }
 
 
-- (NSDictionary *)applicationInfo {
-	return _applicationInfo;
+//- (NSDictionary *)applicationInfo {
+//	return _applicationInfo;
+//}
+
+- (CMMenuItem *)attachedToItem {
+	return _attachedToItem;
 }
 
-- (void)setApplicationInfo:(NSMutableDictionary *)applicationInfo {
-	if (_applicationInfo == applicationInfo)
+
+- (void)setAttachedToItem:(CMMenuItem *)attachedToItem {
+	if (attachedToItem == _attachedToItem)
 		return;
+	
+	_attachedToItem = attachedToItem;
+	if (attachedToItem) {
+		NSMutableDictionary *applicationInfo = [attachedToItem representedObject];
+		if (! applicationInfo)
+			return;
 		
-	_applicationInfo = applicationInfo;
-	if (applicationInfo) {
 		NSImage *icon = [applicationInfo objectForKey:APApplicationInfoIconKey];
 		NSString *name = [applicationInfo objectForKey:APApplicationInfoNameKey];
 		pid_t pid = [(NSNumber *)[applicationInfo objectForKey:APApplicationInfoPidKey] intValue];
 		float limit = [(NSNumber *)[applicationInfo objectForKey:APApplicationInfoLimitKey] floatValue];
-		
+
 		[_applicationIcon setImage:icon];
 		[_applicationNameTextfield setStringValue:[NSString stringWithFormat:@"%@ (%d)", name, pid]];
 		if (limit == 0) {
 			[_slider setFloatValue:[_slider maxValue]];
-//			[_sliderLimit2Textfield setStringValue:@"Not limited"];
 		} else {
 			float sliderValue = [self sliderValueFromLimit:limit];
 			[_slider setFloatValue:sliderValue];
-//			int intLimit = limit * 100;
-//			[_sliderLimit2Textfield setStringValue:[NSString stringWithFormat:@"%d%%", intLimit]];
 		}
 		[self updateTextfieldsWithLimitValue:limit];
 	}
 }
+
+//- (void)setApplicationInfo:(NSMutableDictionary *)applicationInfo {
+//	if (_applicationInfo == applicationInfo)
+//		return;
+//		
+//	_applicationInfo = applicationInfo;
+//	if (applicationInfo) {
+//		NSImage *icon = [applicationInfo objectForKey:APApplicationInfoIconKey];
+//		NSString *name = [applicationInfo objectForKey:APApplicationInfoNameKey];
+//		pid_t pid = [(NSNumber *)[applicationInfo objectForKey:APApplicationInfoPidKey] intValue];
+//		float limit = [(NSNumber *)[applicationInfo objectForKey:APApplicationInfoLimitKey] floatValue];
+//		
+//		[_applicationIcon setImage:icon];
+//		[_applicationNameTextfield setStringValue:[NSString stringWithFormat:@"%@ (%d)", name, pid]];
+//		if (limit == 0) {
+//			[_slider setFloatValue:[_slider maxValue]];
+////			[_sliderLimit2Textfield setStringValue:@"Not limited"];
+//		} else {
+//			float sliderValue = [self sliderValueFromLimit:limit];
+//			[_slider setFloatValue:sliderValue];
+////			int intLimit = limit * 100;
+////			[_sliderLimit2Textfield setStringValue:[NSString stringWithFormat:@"%d%%", intLimit]];
+//		}
+//		[self updateTextfieldsWithLimitValue:limit];
+//	}
+//}
 
 
 // temp method
@@ -161,7 +194,15 @@ static int system_ncpu() {
 //		NSNumber *appLimit = [_applicationInfo objectForKey:APApplicationInfoLimitKey];
 //		appLimit = [NSNumber numberWithFloat:limit];
 //		[_applicationInfo removeObjectForKey:APApplicationInfoLimitKey];
-		[_applicationInfo setObject:[NSNumber numberWithFloat:limit] forKey:APApplicationInfoLimitKey];
+//		[_applicationInfo setObject:[NSNumber numberWithFloat:limit] forKey:APApplicationInfoLimitKey];
+		if (_attachedToItem) {
+			NSMutableDictionary *applicationInfo = [_attachedToItem representedObject];
+			[applicationInfo setObject:[NSNumber numberWithFloat:limit] forKey:APApplicationInfoLimitKey];
+			if (limit == 0)
+				[_attachedToItem setState:NSMixedState];
+			else
+				[_attachedToItem setState:NSOnState];
+		}
 	}
 	
 	
@@ -427,7 +468,7 @@ static int system_ncpu() {
 
 
 - (void)popoverDidShow:(NSNotification *)notification {
-//	NSLog(@"popover did show");
+	NSLog(@"popover did show");
 	[_popover setAnimates:NO];
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(limitHintViewMouseUpNotification:) name:AppLimitHintMouseDownNotification object:nil];
 }
@@ -440,7 +481,13 @@ static int system_ncpu() {
 
 
 - (void)popoverDidClose:(NSNotification *)notification {
+//	NSLog(@"popover did close");
 //	[[[self attachedToItem] menu] setSuspendMenus:NO];
+	if (_attachedToItem) {
+		if ([_attachedToItem state] == NSMixedState)
+			[_attachedToItem setState:NSOffState];
+	}
+	[self setAttachedToItem:nil];
 	if (_popoverDidClosehandler)
 		_popoverDidClosehandler();
 	[[NSNotificationCenter defaultCenter] removeObserver:self name:AppLimitHintMouseDownNotification object:nil];

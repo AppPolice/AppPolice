@@ -20,7 +20,8 @@
 
 @interface AppInspector : NSObject <NSPopoverDelegate>
 {
-	NSMutableDictionary *_applicationInfo;
+//	NSMutableDictionary *_applicationInfo;
+	CMMenuItem *_attachedToItem;
 	IBOutlet NSPopover *_popover;
 	IBOutlet NSViewController *_popoverViewController;
 	IBOutlet NSView *_popoverView;
@@ -51,6 +52,7 @@
 //- (void)mouseUp:(id)sender;
 
 @property (assign) NSMutableDictionary *applicationInfo;
+@property (assign, nonatomic) CMMenuItem *attachedToItem;
 
 
 @end

@@ -57,11 +57,11 @@
 // An integer constant representing a state; it should be one of NSOffState, NSOnState, or NSMixedState.
 - (void)setState:(NSInteger)state;
 - (NSInteger)state;
-//- (void)setOnStateImage:(NSImage *)image;  // checkmark by default
+- (void)setOnStateImage:(NSImage *)image;  // checkmark by default
 - (NSImage *)onStateImage;
-//- (void)setOffStateImage:(NSImage *)image;  // none by default
+- (void)setOffStateImage:(NSImage *)image;  // none by default
 - (NSImage *)offStateImage;
-//- (void)setMixedStateImage:(NSImage *)image;  // horizontal line by default?
+- (void)setMixedStateImage:(NSImage *)image;  // horizontal line by default?
 - (NSImage *)mixedStateImage;
 
 - (void)setEnabled:(BOOL)flag;

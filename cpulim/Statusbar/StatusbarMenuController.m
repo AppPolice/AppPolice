@@ -114,6 +114,12 @@ NSString *const APApplicationsSortedByPid = @"APApplicationsSortedByPid";
 		
 		item = [[[CMMenuItem alloc] initWithTitle:[app localizedName] icon:[app icon] action:@selector(selectApplicationItemMenuAction:)] autorelease];
 		[item setTarget:self];
+		NSImage *onStateImage = [NSImage imageNamed:NSImageNameStatusAvailable];
+		[onStateImage setSize:NSMakeSize(12, 12)];
+		[item setOnStateImage:onStateImage];
+//		NSImage *mixedStateImage = [NSImage imageNamed:NSImageNameStatusNone];
+//		[mixedStateImage setSize:NSMakeSize(12, 12)];
+//		[item setMixedStateImage:mixedStateImage];
 		[item setRepresentedObject:appInfo];
 		[menu addItem:item];
 	}
@@ -180,8 +186,10 @@ NSString *const APApplicationsSortedByPid = @"APApplicationsSortedByPid";
 	NSLog(@"terminated %@\n", [[notification userInfo] objectForKey:@"NSApplicationName"]);
 	NSRunningApplication *app = [[notification userInfo] objectForKey:NSWorkspaceApplicationKey];
 	NSUInteger index = [_runningApps indexOfObject:app];
-	[_runningApps removeObjectAtIndex:index];
-	[[[_mainMenu itemAtIndex:0] menu] removeItemAtIndex:index animate:NO];
+	if (index != NSNotFound) {
+		[_runningApps removeObjectAtIndex:index];
+		[[[_mainMenu itemAtIndex:0] menu] removeItemAtIndex:index animate:NO];
+	}
 }
 
 
@@ -194,16 +202,38 @@ NSString *const APApplicationsSortedByPid = @"APApplicationsSortedByPid";
 //	NSDictionary *inspectorAppInfo = [appInspector applicationInfo];
 	NSPopover *popover = [appInspector popover];
 
-	if (_itemWithAttachedPopover && [_itemWithAttachedPopover isEqual:item] && [popover isShown]) {
-		[popover setAnimates:YES];
-		[popover close];
-		[[item menu] setSuspendMenus:NO];
+//	if (_itemWithAttachedPopover && [_itemWithAttachedPopover isEqual:item] && [popover isShown]) {
+	if ([popover isShown]) {
+		CMMenuItem *attachedToItem = [appInspector attachedToItem];
+		if ([attachedToItem state] == NSMixedState)
+			[attachedToItem setState:NSOffState];
+
+		if (attachedToItem == item) {
+			[popover setAnimates:YES];
+			[popover close];
+			[[item menu] setSuspendMenus:NO];
+			[appInspector setAttachedToItem:nil];
+		} else {
+//			NSDictionary *appInfo = [attachedToItem representedObject];
+//			NSNumber *limitNumber = [appInfo objectForKey:APApplicationInfoLimitKey];
+//			if ([limitNumber floatValue] == 0)
+//				[attachedToItem setState:NSOffState];
+//			if ([attachedToItem state] == NSMixedState)
+//				[attachedToItem setState:NSOffState];
+			[appInspector setAttachedToItem:item];
+			[[item menu] showPopover:popover forItem:item];
+			if ([item state] == NSOffState)
+				[item setState:NSMixedState];
+		}
 	} else {
-		NSDictionary *appInfo = [item representedObject];
-		[appInspector setApplicationInfo:appInfo];
+//		NSMutableDictionary *appInfo = [item representedObject];
+//		[appInspector setApplicationInfo:appInfo];
+		[appInspector setAttachedToItem:item];
 		[[item menu] setSuspendMenus:YES];
 		[[item menu] showPopover:popover forItem:item];
-		_itemWithAttachedPopover = item;
+		if ([item state] == NSOffState)
+			[item setState:NSMixedState];
+//		_itemWithAttachedPopover = item;
 	}
 }
 
