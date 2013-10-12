@@ -24,6 +24,10 @@
 	BOOL _mouseOver;						// this doesn't mean the item is selected (e.g. during submenu tracking)
 	BOOL _submenuIntervalIsSetToPopup;
 	NSViewController *_representedViewController;
+	
+	NSImage *_offStateImage;
+	NSImage *_onStateImage;
+	NSImage *_mixedStateImage;
 }
 
 
@@ -134,8 +138,12 @@
  *
  */
 - (void)setIcon:(NSImage *)anImage {
-//	[anImage retain];
-	_icon = [anImage copy];
+	if (_icon != anImage) {
+		if (_icon)
+			[_icon release];
+		
+		_icon = [anImage copy];
+	}
 }
 
 
@@ -144,6 +152,51 @@
  */
 - (NSImage *)icon {
 	return _icon;
+}
+
+
+/*
+ *
+ */
+- (void)setState:(NSInteger)state {
+	if (_state != state) {
+		_state = state;
+		
+		if (_representedViewController) {
+			CMMenuItemView *view = (CMMenuItemView *)[_representedViewController view];
+			if (state == NSOffState) {
+				[[view state] setImage:nil];
+			} else if (state == NSOnState) {
+				[[view state] setImage:[self onStateImage]];
+			} else {
+				[[view state] setImage:[self mixedStateImage]];
+			}
+			[view setNeedsDisplay:YES];
+		}
+	}
+}
+
+
+/*
+ *
+ */
+- (NSInteger)state {
+	return _state;
+}
+
+
+- (NSImage *)offStateImage {
+	return (_offStateImage) ? _offStateImage : nil;
+}
+
+
+- (NSImage *)onStateImage {
+	return (_onStateImage) ? _onStateImage : [NSImage imageNamed:NSImageNameMenuOnStateTemplate];
+}
+
+
+- (NSImage *)mixedStateImage {
+	return (_mixedStateImage) ? _mixedStateImage : [NSImage imageNamed:NSImageNameMenuMixedStateTemplate];
 }
 
 
@@ -257,7 +310,7 @@
 		}
 		
 		if ([target respondsToSelector:_action]) {
-			[target performSelector:_action withObject:self];
+			[target performSelector:_action withObject:self afterDelay:0.2 inModes:[NSArray arrayWithObject:NSRunLoopCommonModes]];
 //			[NSApp sendAction:_action to:target from:self];
 		}
 	}

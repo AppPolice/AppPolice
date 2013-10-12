@@ -59,7 +59,7 @@
 //	[[NSRunLoop currentRunLoop] performSelector:@selector(delayAndUpdateMenu:) target:self argument:[statusbarMenuController statusbarMenu] order:0 modes:[NSArray arrayWithObject:NSEventTrackingRunLoopMode]];
 	
 //	NSLog(@"current run mode: %@", [[NSRunLoop currentRunLoop] currentMode]);
-//	[self performSelector:@selector(updateMenuFunc:) withObject:[_statusbarMenu statusbarMenu] afterDelay:4.0 inModes:[NSArray arrayWithObject:NSRunLoopCommonModes]];
+	[self performSelector:@selector(updateMenuFunc:) withObject:[_statusbarMenu mainMenu] afterDelay:2.0 inModes:[NSArray arrayWithObject:NSRunLoopCommonModes]];
 //	[self performSelector:@selector(updateMenuFunc:) withObject:[statusbarMenuController statusbarMenu] afterDelay:4.0];
 
 }
@@ -129,6 +129,8 @@
 	NSMenuItem *item = [menu itemAtIndex:0];
 	[item setTitle:@"New Title"];
 //	[menu update];
+	
+//	[self startRunLoop1:self];
 }
 
 - (void)statusbarItemAction {

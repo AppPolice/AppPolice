@@ -49,7 +49,7 @@
 
 //- (void)addItem:(CMMenuItem *)newItem;
 
-- (void)setDefaultViewForItemsFromNibNamed:(NSString *)nibName andPropertyNames:(NSArray *)propertyNames;
+//- (void)setDefaultViewForItemsFromNibNamed:(NSString *)nibName andPropertyNames:(NSArray *)propertyNames;
 
 /* Same as [anItem setSubmenu:aMenu].  anItem may not be nil. */
 - (void)setSubmenu:(CMMenu *)aMenu forItem:(CMMenuItem *)anItem;

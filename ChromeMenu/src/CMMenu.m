@@ -1111,6 +1111,11 @@ typedef struct __submenu_tracking_event tracking_event_t;
 				view = (CMMenuItemView *)viewController.view;
 			}
 			
+			if ([menuItem state] != NSOffState) {
+				NSImage *stateImage = ([menuItem state] == NSOnState) ? [menuItem onStateImage] : [menuItem mixedStateImage];
+				[[view state] setImage:stateImage];
+			}
+			
 			[[view title] setStringValue:[menuItem title]];
 			
 			if ([menuItem hasSubmenu])
@@ -1359,6 +1364,15 @@ typedef struct __submenu_tracking_event tracking_event_t;
 			if (NSPointInRect(mouseLocationOnScreen, [menu frame]))
 				break;
 		} while ((menu = [menu supermenu]));
+		
+//		{
+//			CMMenuItem *item = [menu itemAtPoint:mouseLocationOnScreen];
+//			NSInteger state = [item state];
+//			NSInteger nextState = state + 1;
+//			if (nextState > 1)
+//				nextState = -1;
+//			[item setState:nextState];
+//		}
 		
 		if ([menu eventBlockingMask]) {
 			[menu setSuspendMenus:NO];

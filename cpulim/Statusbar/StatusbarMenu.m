@@ -556,7 +556,7 @@ void cfnotificationCallback(CFNotificationCenterRef center, void *observer, CFSt
 //	[menu addItem:item3];
 //	[menu addItem:item4];
 	
-	NSArray *viewProperties = [[NSArray alloc] initWithObjects:@"statusIcon", @"icon", @"title", nil];
+//	NSArray *viewProperties = [[NSArray alloc] initWithObjects:@"statusIcon", @"icon", @"title", nil];
 //	[menu setDefaultViewForItemsFromNibNamed:@"MenuItemView" withIdentifier:@"CMTableCellViewIdOverride" andPropertyNames:viewProperties];
 
 	
@@ -565,7 +565,7 @@ void cfnotificationCallback(CFNotificationCenterRef center, void *observer, CFSt
 	while (*data != nil) {
 		NSString *name = *data;
 		NSImage *image = [NSImage imageNamed:name];
-		NSString *statusImageName = [NSString stringWithString:(i % 2 == 0) ? @"NSStatusAvailable" : @"NSStatusUnavailable"];
+//		NSString *statusImageName = [NSString stringWithString:(i % 2 == 0) ? @"NSStatusAvailable" : @"NSStatusUnavailable"];
 
 		id item = nil;
 		
@@ -578,17 +578,24 @@ void cfnotificationCallback(CFNotificationCenterRef center, void *observer, CFSt
 
 		
 
-			if (i == 1 || i == 9) {
-				item = [[CMMenuItemOverride alloc] initWithTitle:name action:NULL];
-//				[item setViewFromNibNamed:@"MenuItemView" withIdentifier:@"CMTableCellViewIdOverride" andPropertyNames:viewProperties];
-				[item setViewFromNibNamed:@"MenuItemView" andPropertyNames:viewProperties];
-				[item setStatusIcon:[NSImage imageNamed:statusImageName]];
-			} else {
+//			if (i == 1 || i == 9) {
+//				item = [[CMMenuItemOverride alloc] initWithTitle:name action:NULL];
+////				[item setViewFromNibNamed:@"MenuItemView" withIdentifier:@"CMTableCellViewIdOverride" andPropertyNames:viewProperties];
+//				[item setViewFromNibNamed:@"MenuItemView" andPropertyNames:viewProperties];
+//				[item setStatusIcon:[NSImage imageNamed:statusImageName]];
+//			} else {
 				item = [[CMMenuItem alloc] initWithTitle:name action:NULL];
-			}
+//			}
 					
 			if (i > 3)
 				[item setIcon:image];
+			
+			if (i == 10) {
+				[item setState:NSMixedState];
+			}
+			if (i == 8) {
+				[item setState:NSOnState];
+			}
 			
 	//		[item setIcon:image];
 
@@ -601,7 +608,7 @@ void cfnotificationCallback(CFNotificationCenterRef center, void *observer, CFSt
 		++i;
 	}
 	
-	[viewProperties release];
+//	[viewProperties release];
 	
 
 	CMMenu *submenu = [[CMMenu alloc] initWithTitle:@"Submenu 1"];

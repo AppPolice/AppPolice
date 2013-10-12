@@ -12,6 +12,7 @@
 @interface CMMenuItemView : NSView
 {
 @private
+	NSImageView *_state;
 	NSImageView *_icon;
 	NSTextField *_title;
 //	NSImageView *_ownersIcon;
@@ -19,6 +20,7 @@
 	BOOL _selected;
 }
 
+@property (assign) IBOutlet NSImageView *state;
 @property (assign) IBOutlet NSImageView *icon;
 @property (assign) IBOutlet NSTextField *title;
 //@property (assign) IBOutlet NSImageView *ownersIcon;

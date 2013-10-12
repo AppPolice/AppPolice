@@ -217,16 +217,16 @@
                                                     <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                     <prototypeCellViews>
                                                         <tableCellView identifier="AppCellViewId" id="J9S-BD-1Ul" customClass="MyTableCellView">
-                                                            <rect key="frame" x="1" y="0.0" width="236" height="18"/>
+                                                            <rect key="frame" x="1" y="0.0" width="236" height="17"/>
                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                             <subviews>
-                                                                <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="FvD-Y6-g0K" customClass="MyImageView">
+                                                                <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="FvD-Y6-g0K" customClass="MyImageView">
                                                                     <rect key="frame" x="14" y="1" width="15" height="15"/>
                                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                                     <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="NSActionTemplate" id="BdX-XC-id5"/>
                                                                 </imageView>
                                                                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="YD4-4i-3Yn">
-                                                                    <rect key="frame" x="34" y="0.0" width="205" height="17"/>
+                                                                    <rect key="frame" x="34" y="-1" width="205" height="17"/>
                                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                                                     <textFieldCell key="cell" lineBreakMode="truncatingTail" refusesFirstResponder="YES" sendsActionOnEndEditing="YES" title="Table View Cell" id="tcc-vp-CeP">
                                                                         <font key="font" size="14" name="LucidaGrande"/>
@@ -251,7 +251,7 @@
                                                             </connections>
                                                         </tableCellView>
                                                         <customView identifier="MyTableRowViewId" id="niF-K7-F82" customClass="MyTableRowView">
-                                                            <rect key="frame" x="1" y="18" width="236" height="19"/>
+                                                            <rect key="frame" x="1" y="17" width="236" height="19"/>
                                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                         </customView>
                                                     </prototypeCellViews>
@@ -921,14 +921,17 @@ ThBTQ2hhdFRoZWF0cmVUZW1wbGF0ZQ
                         </items>
                     </menu>
                 </menuItem>
-                <menuItem title="Donate" id="711">
+                <menuItem title="Donate" state="on" onStateImage="NSBonjour" offStateImage="NSTrashFull" mixedStateImage="NSStatusPartiallyAvailable" id="711">
                     <modifierMask key="keyEquivalentModifierMask"/>
                 </menuItem>
-                <menuItem title="About" id="716">
+                <menuItem title="About" state="on" image="NSActionTemplate" id="716">
                     <modifierMask key="keyEquivalentModifierMask"/>
                     <connections>
                         <action selector="updateMenu:" target="494" id="afN-u9-y6G"/>
                     </connections>
+                </menuItem>
+                <menuItem title="Item" state="mixed" id="tB8-l8-pY5">
+                    <modifierMask key="keyEquivalentModifierMask"/>
                 </menuItem>
                 <menuItem isSeparatorItem="YES" id="723"/>
                 <menuItem title="Preferences..." id="717">
@@ -959,6 +962,7 @@ ThBTQ2hhdFRoZWF0cmVUZW1wbGF0ZQ
         <customObject id="CKn-Mw-7Oj" customClass="StatusbarMenu">
             <connections>
                 <outlet property="_mainMenu" destination="704" id="n2R-0O-kwM"/>
+                <outlet property="appSubmenuView" destination="1764" id="jZc-km-FKH"/>
                 <outlet property="statusbarItemView" destination="qPA-Mr-eaZ" id="LfD-b2-RtY"/>
             </connections>
         </customObject>
@@ -1111,5 +1115,8 @@ ThBTQ2hhdFRoZWF0cmVUZW1wbGF0ZQ
     </objects>
     <resources>
         <image name="NSActionTemplate" width="15" height="15"/>
+        <image name="NSBonjour" width="32" height="32"/>
+        <image name="NSStatusPartiallyAvailable" width="16" height="16"/>
+        <image name="NSTrashFull" width="32" height="32"/>
     </resources>
 </document>

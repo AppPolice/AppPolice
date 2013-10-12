@@ -20,6 +20,7 @@
 	CMMenu *_submenu;
 	id _representedObject;
 	BOOL _isSeparatorItem;
+	NSInteger _state;
 	
 	id _target;
     SEL _action;
@@ -46,12 +47,26 @@
 - (CMMenu *)submenu;
 
 //- (void)setViewFromNibNamed:(NSString *)nibName withIdentifier:(NSString *)identifier andPropertyNames:(NSArray *)propertyNames;
-- (void)setViewFromNibNamed:(NSString *)nibName andPropertyNames:(NSArray *)propertyNames;
+//- (void)setViewFromNibNamed:(NSString *)nibName andPropertyNames:(NSArray *)propertyNames;
 
 - (void)setTitle:(NSString *)aString;
 - (NSString *)title;
 - (void)setIcon:(NSImage *)anImage;
 - (NSImage *)icon;
+
+// An integer constant representing a state; it should be one of NSOffState, NSOnState, or NSMixedState.
+- (void)setState:(NSInteger)state;
+- (NSInteger)state;
+//- (void)setOnStateImage:(NSImage *)image;  // checkmark by default
+- (NSImage *)onStateImage;
+//- (void)setOffStateImage:(NSImage *)image;  // none by default
+- (NSImage *)offStateImage;
+//- (void)setMixedStateImage:(NSImage *)image;  // horizontal line by default?
+- (NSImage *)mixedStateImage;
+
+- (void)setEnabled:(BOOL)flag;
+- (BOOL)isEnabled;
+
 - (BOOL)isSeparatorItem;
 
 - (void)setTarget:(id)anObject;
