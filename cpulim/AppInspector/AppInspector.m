@@ -64,6 +64,7 @@ static int system_ncpu() {
 //	NSLog(@"%@ awakeFromNib", [self className]);
 //	[_popoverView setTranslatesAutoresizingMaskIntoConstraints:NO];
 	[_popoverViewController setView:_popoverView];
+//	[_popover setAppearance:NSPopoverAppearanceHUD];
 	
 //	NSLog(@"frame: %@", NSStringFromRect([_slider frame]));
 	
@@ -118,6 +119,7 @@ static int system_ncpu() {
 		pid_t pid = [(NSNumber *)[applicationInfo objectForKey:APApplicationInfoPidKey] intValue];
 		float limit = [(NSNumber *)[applicationInfo objectForKey:APApplicationInfoLimitKey] floatValue];
 
+		[icon setSize:[_applicationIcon frame].size];
 		[_applicationIcon setImage:icon];
 		[_applicationNameTextfield setStringValue:[NSString stringWithFormat:@"%@ (%d)", name, pid]];
 		if (limit == 0) {
@@ -486,6 +488,8 @@ static int system_ncpu() {
 	if (_attachedToItem) {
 		if ([_attachedToItem state] == NSMixedState)
 			[_attachedToItem setState:NSOffState];
+		[[_attachedToItem menu] setSuspendMenus:NO];
+		[[_attachedToItem menu] setCancelsTrackingOnMouseEventOutsideMenus:YES];
 	}
 	[self setAttachedToItem:nil];
 	if (_popoverDidClosehandler)

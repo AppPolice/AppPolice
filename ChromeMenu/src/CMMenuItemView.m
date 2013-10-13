@@ -60,8 +60,10 @@
 //	[path appendBezierPathWithRect:[self bounds]];
 //	[[NSColor blueColor] set];
 //	[path stroke];
-		
-	if (_selected) {
+	
+	if (! _enabled) {
+		[_title setTextColor:[NSColor disabledControlTextColor]];
+	} else if (_selected) {
 		NSGraphicsContext *currentContext = [NSGraphicsContext currentContext];
 //		[currentContext saveGraphicsState];
 		
@@ -91,22 +93,31 @@
 	//	may choose to draw the light image color.
 	if ([_state image]) {
 		NSCell *cell = [_state cell];
-		if (_selected) {
+		if (! _enabled) {
+			[cell setBackgroundStyle:NSBackgroundStyleLight];
+			[_state setAlphaValue:0.7];
+		} else if (_selected) {
 			[cell setBackgroundStyle:NSBackgroundStyleDark];
+			[_state setAlphaValue:1.0];
 		} else {
 			[cell setBackgroundStyle:NSBackgroundStyleLight];
+			[_state setAlphaValue:1.0];
 		}
 	}
 	
 	if (_icon && [_icon image]) {
 		NSCell *cell = [_icon cell];
-		if (_selected) {
+		if (! _enabled) {
+			[cell setBackgroundStyle:NSBackgroundStyleLight];
+			[_icon setAlphaValue:0.7];
+		} else if (_selected) {
 			[cell setBackgroundStyle:NSBackgroundStyleDark];
+			[_icon setAlphaValue:1.0];
 		} else {
 			[cell setBackgroundStyle:NSBackgroundStyleLight];
+			[_icon setAlphaValue:1.0];
 		}
 	}
-	
 	
 	if (_submenuIconView) {
 //		NSImage *goRightImage = [NSImage imageNamed:NSImageNameGoRightTemplate];
@@ -128,11 +139,12 @@
 	}
 	
 
+	
 }
 
 
 - (BOOL)needsTracking {
-	return YES;
+	return (_enabled) ? YES : NO;
 }
 
 
@@ -144,6 +156,19 @@
 - (void)setSelected:(BOOL)selected {
 	if (_selected != selected) {
 		_selected = selected;
+		[self setNeedsDisplay:YES];
+	}
+}
+
+
+- (BOOL)isEnabled {
+	return _enabled;
+}
+
+
+- (void)setEnabled:(BOOL)enabled {
+	if (_enabled != enabled) {
+		_enabled = enabled;
 		[self setNeedsDisplay:YES];
 	}
 }
@@ -229,7 +254,20 @@
 	NSView *lastView = [[self subviews] lastObject];
 	NSMutableArray *constraints = [NSMutableArray array];
 
-	NSImage *goRightImage = [NSImage imageNamed:NSImageNameGoRightTemplate];
+	NSImage *goRightImage = [NSImage imageNamed:@"ImageNameMenuGoRightTemplate"];
+	if (! goRightImage) {
+//		NSLog(@"createing goRight image");
+		goRightImage = [[NSImage imageNamed:NSImageNameGoRightTemplate] copy];
+		[goRightImage setSize:NSMakeSize(9, 10)];
+		[goRightImage setName:@"ImageNameMenuGoRightTemplate"];
+	}
+	
+//	NSImage *goRightImage = [NSImage imageNamed:NSImageNameGoRightTemplate];
+	// Caution! Changing image size changes its global state. If it's drawn somewhere else
+	//	it will draw with this size if not set explicitly again.
+//	[goRightImage setSize:NSMakeSize(9, 10)];
+//	NSLog(@"goRightImage size: %@", NSStringFromSize([goRightImage size]));
+
 	_submenuIconView = [[NSImageView alloc] initWithFrame:NSMakeRect(0, 0, goRightImage.size.width, goRightImage.size.height)];
 //	_submenuIconView = [[NSView alloc] init];
 	[_submenuIconView setImage:goRightImage];
@@ -242,7 +280,9 @@
 //	
 //	[constraints addObject:[NSLayoutConstraint constraintWithItem:self attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:_submenuIconView attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:9]];
 	
-	[constraints addObject:[NSLayoutConstraint constraintWithItem:self attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:_submenuIconView attribute:NSLayoutAttributeHeight multiplier:1.0 constant:9.0]];
+//	[constraints addObject:[NSLayoutConstraint constraintWithItem:self attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:_submenuIconView attribute:NSLayoutAttributeWidth multiplier:1.0 constant:9.0]];
+	
+	[constraints addObject:[NSLayoutConstraint constraintWithItem:_submenuIconView attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:_submenuIconView attribute:NSLayoutAttributeHeight multiplier:0.0 constant:10.0]];
 	
 	[constraints addObject:[NSLayoutConstraint constraintWithItem:self attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:_submenuIconView attribute:NSLayoutAttributeCenterY multiplier:1.0 constant:0.0]];
 	
@@ -250,8 +290,28 @@
 	
 	[self addConstraints:constraints];
 	_submenuIconConstraints = [constraints retain];
+	
+//	[goRightImage setSize:NSMakeSize(9, 9)];
+	
+//	NSWindow *window = [[[self superview] superview] window];
+//	NSLog(@"window: %@", window);
+//	[window visualizeConstraints:constraints];
+	
+//	NSTimer *timer = [NSTimer timerWithTimeInterval:2.0 target:self selector:@selector(visualizeConstraints:) userInfo:constraints repeats:NO];
+//	[[NSRunLoop currentRunLoop] addTimer:timer forMode:NSRunLoopCommonModes];
 }
 
+
+//- (void)visualizeConstraints:(NSTimer *)timer {
+//	NSArray *userInfo = [timer userInfo];
+//	NSLog(@"timer, contstraints: %@", userInfo);
+//	
+////	NSWindow *window = [[[self superview] superview] window];
+//	NSWindow *window = [self window];
+////	NSLog(@"window: %@", window);
+//	[window visualizeConstraints:userInfo];
+//
+//}
 
 /*
  *

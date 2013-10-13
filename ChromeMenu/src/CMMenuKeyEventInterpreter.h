@@ -39,5 +39,7 @@
 - (void)moveDown:(NSEvent *)originalEvent;
 - (void)moveLeft:(NSEvent *)originalEvent;
 - (void)moveRight:(NSEvent *)originalEvent;
+- (void)cancelOperation:(NSEvent *)originalEvent;
+- (void)performSelected:(NSEvent *)originalEvent;
 
 @end

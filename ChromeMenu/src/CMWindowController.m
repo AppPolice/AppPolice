@@ -261,7 +261,6 @@
  *
  */ /*
 - (void)updateFrame:(NSRect)frame options:(CMMenuOptions)options {
-	// TODO: window quickjump!
 //	NSLog(@"window prev. frame: %@, new frame: %@", NSStringFromRect([[self window] frame]), NSStringFromRect(frame));
 	
 	[[self window] disableScreenUpdatesUntilFlush];
@@ -380,7 +379,8 @@
 - (void)scrollViewContentViewBoundsDidChange:(NSNotification *)notification {
 	XLog3("Scroll ContentView BoundsDidChangeNotification with new bounds: %@", NSStringFromRect([[_scrollView contentView] bounds]));
 	[self updateMenuScrollers];
-	[self updateTrackingAreasForVisibleRect:[[_scrollView contentView] bounds]];
+//	[self updateTrackingAreasForVisibleRect:[[_scrollView contentView] bounds]];
+	[self updateTrackingAreasForVisibleRect:[self visibleRectCountScrollers:YES]];
 	
 //	[self updateTrackingAreasForVisibleRect:[NSValue valueWithRect:[[_scrollView contentView] bounds]]];
 //	[self performSelector:@selector(updateTrackingAreasForVisibleRect:) withObject:[NSValue valueWithRect:[[_scrollView contentView] bounds]] afterDelay:0.0 inModes:[NSArray arrayWithObject:NSEventTrackingRunLoopMode]];
@@ -442,7 +442,7 @@
 
 
 /*
- * TODO: don't like this function
+ * TODO: don't like this function. It could be united with the method above, if there is no sence in it.
  */
 - (void)updateViews {
 	NSArray *viewControllers = _viewControllers;
@@ -843,6 +843,21 @@
 }
 
 
+- (NSRect)visibleRectCountScrollers:(BOOL)countScrollers {
+	NSRect visibleRect = [[_scrollView contentView] bounds];
+	if (countScrollers) {
+		if (_topScroller && [_topScroller superview]) {
+			visibleRect.origin.y += MENU_SCROLLER_HEIGHT;
+			visibleRect.size.height -= MENU_SCROLLER_HEIGHT;
+		}
+		if (_bottomScroller && [_bottomScroller superview])
+			visibleRect.size.height -= MENU_SCROLLER_HEIGHT;
+	}
+	
+	return visibleRect;
+}
+
+
 
 #pragma mark -
 #pragma mark ******** Tracking Areas & Events Handling ********
@@ -889,12 +904,12 @@
 	mouseLocation = [[self window] mouseLocationOutsideOfEventStream];
 	mouseLocation = [documentView convertPoint:mouseLocation fromView:nil];
 
-	if (_topScroller && [_topScroller superview]) {
-		visibleRect.origin.y += MENU_SCROLLER_HEIGHT;
-		visibleRect.size.height -= MENU_SCROLLER_HEIGHT;
-	}
-	if (_bottomScroller && [_bottomScroller superview])
-		visibleRect.size.height -= MENU_SCROLLER_HEIGHT;
+//	if (_topScroller && [_topScroller superview]) {
+//		visibleRect.origin.y += MENU_SCROLLER_HEIGHT;
+//		visibleRect.size.height -= MENU_SCROLLER_HEIGHT;
+//	}
+//	if (_bottomScroller && [_bottomScroller superview])
+//		visibleRect.size.height -= MENU_SCROLLER_HEIGHT;
 	
 	CGFloat visibleRectMaxY = visibleRect.origin.y + visibleRect.size.height;
 	
@@ -957,6 +972,76 @@
 
 //	[[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.1]];
 	
+	// Let RunLoop run one time in default mode so the AppKit can establish tracking areas
+	CFRunLoopRunInMode(kCFRunLoopDefaultMode, 0, NO);
+}
+
+
+/*
+ *
+ */
+- (void)updateItemViewTrackingArea:(NSViewController *)viewController {
+	CMMenuItemView *view = (CMMenuItemView *)[viewController view];
+	NSView *documentView = [_scrollView documentView];
+	NSTrackingArea *currentTrackingArea = nil;
+
+	for (NSTrackingArea *trackingArea in _trackingAreas) {
+		NSViewController *trackingAreaViewController = [(NSDictionary *)[trackingArea userInfo] objectForKey:kTrackingAreaViewControllerKey];
+		if (viewController == trackingAreaViewController) {
+			currentTrackingArea = trackingArea;
+			break;
+		}
+	}
+
+	if ([view needsTracking]) {
+		if (currentTrackingArea)
+			return;
+			
+//		NSRect visibleRect = [[_scrollView contentView] bounds];
+		NSRect visibleRect = [self visibleRectCountScrollers:YES];
+		NSPoint mouseLocation;
+		mouseLocation = [[self window] mouseLocationOutsideOfEventStream];
+		mouseLocation = [documentView convertPoint:mouseLocation fromView:nil];
+		
+//		if (_topScroller && [_topScroller superview]) {
+//			visibleRect.origin.y += MENU_SCROLLER_HEIGHT;
+//			visibleRect.size.height -= MENU_SCROLLER_HEIGHT;
+//		}
+//		if (_bottomScroller && [_bottomScroller superview])
+//			visibleRect.size.height -= MENU_SCROLLER_HEIGHT;
+		
+		CGFloat visibleRectMaxY = visibleRect.origin.y + visibleRect.size.height;
+		
+
+		NSRect frame = [view frame];
+		NSRect rect;
+		if (frame.origin.y < visibleRect.origin.y) {
+			rect = NSMakeRect(frame.origin.x, visibleRect.origin.y, frame.size.width, frame.origin.y + frame.size.height - visibleRect.origin.y);
+		} else if (frame.origin.y + frame.size.height > visibleRectMaxY) {
+			rect = NSMakeRect(frame.origin.x, frame.origin.y, frame.size.width, visibleRectMaxY - frame.origin.y);
+		} else
+			rect = frame;
+			
+		NSTrackingArea *trackingArea = [self trackingAreaForItemView:viewController inRect:rect];
+		[documentView addTrackingArea:trackingArea];
+		[_trackingAreas addObject:trackingArea];
+			
+		if ( !_ignoreMouse && NSPointInRect(mouseLocation, rect)) {
+			[self mouseEventOnItemView:viewController eventType:CMMenuEventMouseEnteredItem | CMMenuEventDuringScroll];
+		}
+	} else if (currentTrackingArea) {
+		[documentView removeTrackingArea:currentTrackingArea];
+		[_trackingAreas removeObject:currentTrackingArea];
+//		for (NSTrackingArea *trackingArea in _trackingAreas) {
+//			NSViewController *trackingAreaViewController = [(NSDictionary *)[trackingArea userInfo] objectForKey:kTrackingAreaViewControllerKey];
+//			if (viewController == trackingAreaViewController) {
+//				[documentView removeTrackingArea:trackingArea];
+//				[_trackingAreas removeObject:trackingArea];
+//				break;
+//			}
+//		}
+	}
+
 	CFRunLoopRunInMode(kCFRunLoopDefaultMode, 0, NO);
 }
 
@@ -1262,23 +1347,23 @@
 /*
  *
  */
-- (void)mouseUp:(NSEvent *)theEvent {
-//	NSLog(@"UP: %@", theEvent);
-	NSPoint location = [theEvent locationInWindow];
-	location = [[_scrollView documentView] convertPoint:location fromView:nil];
-	NSLog(@"Mouse UP, location: %@", NSStringFromPoint(location));
-	
-	NSLog(@"document: %@, visible view: %@, scroll view: %@", NSStringFromRect([[_scrollView documentView] bounds]),
-//		  NSStringFromRect([[_scrollView contentView] bounds])
-		  NSStringFromRect([_scrollView documentVisibleRect]),
-		  NSStringFromRect([_scrollView frame])
-		  //		  NSStringFromSize([_scrollView contentSize])
-		  );
-
-//	NSLog(@"window is key: %d", [[self window] isKeyWindow]);
-//	[self startEventTracking];
-	
-}
+//- (void)mouseUp:(NSEvent *)theEvent {
+////	NSLog(@"UP: %@", theEvent);
+//	NSPoint location = [theEvent locationInWindow];
+//	location = [[_scrollView documentView] convertPoint:location fromView:nil];
+//	NSLog(@"Mouse UP, location: %@", NSStringFromPoint(location));
+//	
+//	NSLog(@"document: %@, visible view: %@, scroll view: %@", NSStringFromRect([[_scrollView documentView] bounds]),
+////		  NSStringFromRect([[_scrollView contentView] bounds])
+//		  NSStringFromRect([_scrollView documentVisibleRect]),
+//		  NSStringFromRect([_scrollView frame])
+//		  //		  NSStringFromSize([_scrollView contentSize])
+//		  );
+//
+////	NSLog(@"window is key: %d", [[self window] isKeyWindow]);
+////	[self startEventTracking];
+//	
+//}
 
 
 - (void)_beginTrackingWithEvent:(NSEvent *)event {
@@ -1589,16 +1674,16 @@
 
 
 // TODO: this is temp method
-- (CMMenu *)menuToReciveEventWithWindow:(NSWindow *)window {
-	CMMenu *menu = _owner;
-	while (menu) {
-		if ([menu underlyingWindow] == window)
-			return menu;
-		menu = [menu activeSubmenu];
-	}
-	
-	return nil;
-}
+//- (CMMenu *)menuToReciveEventWithWindow:(NSWindow *)window {
+//	CMMenu *menu = _owner;
+//	while (menu) {
+//		if ([menu underlyingWindow] == window)
+//			return menu;
+//		menu = [menu activeSubmenu];
+//	}
+//	
+//	return nil;
+//}
 
 
 - (CMMenu *)menuThatGeneratedEvent:(NSEvent *)theEvent {

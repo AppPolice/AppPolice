@@ -12,6 +12,7 @@
 #define APApplicationInfoIconKey @"appInfoIconKey"
 #define APApplicationInfoPidKey @"appInfoPidKey"
 #define APApplicationInfoLimitKey @"appInfoLimitKey"
+#define APApplicationInfoUserKey @"appInfoUserKey"
 
 
 @class NSObject, NSView, NSViewController, NSPopover, NSSlider, NSLevelIndicator;

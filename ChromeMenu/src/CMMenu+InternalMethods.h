@@ -72,6 +72,7 @@ typedef NSUInteger CMMenuOptions;
 - (void)startTrackingSubmenu:(CMMenu *)submenu forItem:(CMMenuItem *)item;
 - (void)stopTrackingSubmenuReasonSuccess:(BOOL)reasonSuccess;
 - (void)updateTrackingAreaWithOptions:(CMMenuOptions)options;
+- (void)updateItemTrackingArea:(CMMenuItem *)item;
 
 /* Default 0: no event's are blocked */
 - (NSEventMask)eventBlockingMask;

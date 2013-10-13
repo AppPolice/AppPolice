@@ -35,7 +35,6 @@
 		A05A0B0517592618009A12B8 /* MyTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = A05A0B0417592618009A12B8 /* MyTableView.m */; };
 		A05A0B0817593112009A12B8 /* MyImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = A05A0B0717593112009A12B8 /* MyImageView.m */; };
 		A05A0B0B1759527D009A12B8 /* MySubmenuView.m in Sources */ = {isa = PBXBuildFile; fileRef = A05A0B0A1759527C009A12B8 /* MySubmenuView.m */; };
-		A05B78861785837500015156 /* CMMenuItemBackgroundView.m in Sources */ = {isa = PBXBuildFile; fileRef = A05B78851785829900015156 /* CMMenuItemBackgroundView.m */; };
 		A05B788917859D6E00015156 /* CMMenuItem.m in Sources */ = {isa = PBXBuildFile; fileRef = A05B788817859CF200015156 /* CMMenuItem.m */; };
 		A063796817492AEF006F2347 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A063796717492AEF006F2347 /* Cocoa.framework */; };
 		A063797217492AEF006F2347 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = A063797017492AEF006F2347 /* InfoPlist.strings */; };
@@ -57,7 +56,6 @@
 		A0ED12401790055C00244C3D /* CMWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = A0ED123F179004D800244C3D /* CMWindowController.m */; };
 		A0ED124317900A9000244C3D /* CMScrollDocumentView.m in Sources */ = {isa = PBXBuildFile; fileRef = A0ED124217900A8A00244C3D /* CMScrollDocumentView.m */; };
 		A0ED1249179043F900244C3D /* CMMenuItemView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A0ED12451790218700244C3D /* CMMenuItemView.xib */; };
-		A0F0DF1D178A05C4008E85EA /* CMTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = A007EAF717870B4E00A7FE8D /* CMTableView.m */; };
 		A0FC76B51806AE8E00A92F96 /* HintPopoverTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = A0FC76B41806AE8E00A92F96 /* HintPopoverTextField.m */; };
 		A0FFE0A91805D673007F510E /* AppLimitHintView.m in Sources */ = {isa = PBXBuildFile; fileRef = A0FFE0A81805D673007F510E /* AppLimitHintView.m */; };
 /* End PBXBuildFile section */
@@ -79,8 +77,6 @@
 		A007EAF01786B45A00A7FE8D /* CMTableCellVewOverride.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = CMTableCellVewOverride.m; path = Controllers/CMTableCellVewOverride.m; sourceTree = "<group>"; };
 		A007EAF21786BBE400A7FE8D /* CMMenuItemOverride.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = CMMenuItemOverride.h; path = Controllers/CMMenuItemOverride.h; sourceTree = "<group>"; };
 		A007EAF31786BBE400A7FE8D /* CMMenuItemOverride.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = CMMenuItemOverride.m; path = Controllers/CMMenuItemOverride.m; sourceTree = "<group>"; };
-		A007EAF617870B4D00A7FE8D /* CMTableView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = CMTableView.h; path = ChromeMenu/src/CMTableView.h; sourceTree = SOURCE_ROOT; };
-		A007EAF717870B4E00A7FE8D /* CMTableView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = CMTableView.m; path = ChromeMenu/src/CMTableView.m; sourceTree = SOURCE_ROOT; };
 		A00D28531803E85F00D71F71 /* AppLimitSliderCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppLimitSliderCell.h; path = AppInspector/AppLimitSliderCell.h; sourceTree = "<group>"; };
 		A00D28541803E85F00D71F71 /* AppLimitSliderCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppLimitSliderCell.m; path = AppInspector/AppLimitSliderCell.m; sourceTree = "<group>"; };
 		A00EF47E1793D59E0045ACB5 /* CMScrollView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = CMScrollView.h; path = ChromeMenu/src/CMScrollView.h; sourceTree = SOURCE_ROOT; };
@@ -127,8 +123,6 @@
 		A05A0B091759527C009A12B8 /* MySubmenuView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MySubmenuView.h; path = Controllers/MySubmenuView.h; sourceTree = "<group>"; };
 		A05A0B0A1759527C009A12B8 /* MySubmenuView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MySubmenuView.m; path = Controllers/MySubmenuView.m; sourceTree = "<group>"; };
 		A05B788317857FE600015156 /* ChromeMenu.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ChromeMenu.h; path = ChromeMenu/src/ChromeMenu.h; sourceTree = SOURCE_ROOT; };
-		A05B78841785829900015156 /* CMMenuItemBackgroundView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = CMMenuItemBackgroundView.h; path = ChromeMenu/src/CMMenuItemBackgroundView.h; sourceTree = SOURCE_ROOT; };
-		A05B78851785829900015156 /* CMMenuItemBackgroundView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = CMMenuItemBackgroundView.m; path = ChromeMenu/src/CMMenuItemBackgroundView.m; sourceTree = SOURCE_ROOT; };
 		A05B788717859CF200015156 /* CMMenuItem.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = CMMenuItem.h; path = ChromeMenu/src/CMMenuItem.h; sourceTree = SOURCE_ROOT; };
 		A05B788817859CF200015156 /* CMMenuItem.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = CMMenuItem.m; path = ChromeMenu/src/CMMenuItem.m; sourceTree = SOURCE_ROOT; };
 		A063796417492AEF006F2347 /* Ishimura.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Ishimura.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -233,8 +227,6 @@
 				A0ED124217900A8A00244C3D /* CMScrollDocumentView.m */,
 				A00EF47E1793D59E0045ACB5 /* CMScrollView.h */,
 				A00EF47F1793D59E0045ACB5 /* CMScrollView.m */,
-				A007EAF617870B4D00A7FE8D /* CMTableView.h */,
-				A007EAF717870B4E00A7FE8D /* CMTableView.m */,
 				A010F34617848515003A9E92 /* CMMenuItemView.h */,
 				A010F34717848515003A9E92 /* CMMenuItemView.m */,
 				A07CEC22179D6FE20016067E /* CMMenuItemSeparatorView.h */,
@@ -245,8 +237,6 @@
 				A00FBF5217DF67D70083B482 /* NSImage+CMMenuImageRepAdditions.m */,
 				A046C66117E7099F00E4F210 /* CMMenuKeyEventInterpreter.h */,
 				A046C66217E7099F00E4F210 /* CMMenuKeyEventInterpreter.m */,
-				A05B78841785829900015156 /* CMMenuItemBackgroundView.h */,
-				A05B78851785829900015156 /* CMMenuItemBackgroundView.m */,
 			);
 			name = src;
 			sourceTree = "<group>";
@@ -547,12 +537,10 @@
 				A00EF4801793D5A50045ACB5 /* CMScrollView.m in Sources */,
 				A0ED124317900A9000244C3D /* CMScrollDocumentView.m in Sources */,
 				A0ED12401790055C00244C3D /* CMWindowController.m in Sources */,
-				A0F0DF1D178A05C4008E85EA /* CMTableView.m in Sources */,
 				A0AED3B41802B571005F4F9D /* AppLoadLevelIndicator.m in Sources */,
 				A007EAF41786BBF000A7FE8D /* CMMenuItemOverride.m in Sources */,
 				A007EAF11786B46B00A7FE8D /* CMTableCellVewOverride.m in Sources */,
 				A05B788917859D6E00015156 /* CMMenuItem.m in Sources */,
-				A05B78861785837500015156 /* CMMenuItemBackgroundView.m in Sources */,
 				A01191641807DE88004777D9 /* StatusbarMenu.m in Sources */,
 				A010F3481784856B003A9E92 /* CMMenuItemView.m in Sources */,
 				A010F342178474AB003A9E92 /* CMMenu.m in Sources */,

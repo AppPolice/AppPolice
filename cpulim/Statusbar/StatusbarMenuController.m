@@ -52,11 +52,12 @@ NSString *const APApplicationsSortedByPid = @"APApplicationsSortedByPid";
 	item = [[[CMMenuItem alloc] initWithTitle:@"Running Apps" action:NULL] autorelease];
 	CMMenu *runningAppsMenu = [[[CMMenu alloc] initWithTitle:@"Running Apps Menu"] autorelease];
 	[runningAppsMenu setCancelsTrackingOnAction:NO];
-	[runningAppsMenu setCancelsTrackingOnMouseEventOutsideMenus:NO];
+//	[runningAppsMenu setCancelsTrackingOnMouseEventOutsideMenus:NO];
 	[item setSubmenu:runningAppsMenu];
 	[_mainMenu addItem:item];
 	
 	item = [[[CMMenuItem alloc] initWithTitle:@"Pause" action:NULL] autorelease];
+	[item setEnabled:NO];
 	[_mainMenu addItem:item];
 	
 	[_mainMenu addItem:[CMMenuItem separatorItem]];
@@ -212,7 +213,10 @@ NSString *const APApplicationsSortedByPid = @"APApplicationsSortedByPid";
 			[popover setAnimates:YES];
 			[popover close];
 			[[item menu] setSuspendMenus:NO];
+			[[item menu] setCancelsTrackingOnMouseEventOutsideMenus:YES];
 			[appInspector setAttachedToItem:nil];
+			
+//			[item setEnabled:YES];
 		} else {
 //			NSDictionary *appInfo = [attachedToItem representedObject];
 //			NSNumber *limitNumber = [appInfo objectForKey:APApplicationInfoLimitKey];
@@ -230,9 +234,12 @@ NSString *const APApplicationsSortedByPid = @"APApplicationsSortedByPid";
 //		[appInspector setApplicationInfo:appInfo];
 		[appInspector setAttachedToItem:item];
 		[[item menu] setSuspendMenus:YES];
+		[[item menu] setCancelsTrackingOnMouseEventOutsideMenus:NO];
 		[[item menu] showPopover:popover forItem:item];
 		if ([item state] == NSOffState)
 			[item setState:NSMixedState];
+
+//		[item setEnabled:NO];
 //		_itemWithAttachedPopover = item;
 	}
 }

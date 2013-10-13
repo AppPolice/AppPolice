@@ -63,9 +63,10 @@
 	
 
 	NSImage *goRightImage = [NSImage imageNamed:NSImageNameGoRightTemplate];
-	NSSize imageSize = [goRightImage size];
-	imageSize = NSMakeSize(imageSize.width - 1, imageSize.height + 1);	// we want it to be 8 by 10 pixels
-//	NSSize imageSize = NSMakeSize(8.0, 10.0);
+//	[goRightImage setSize:NSMakeSize(8, 10)];
+//	NSSize imageSize = [goRightImage size];
+//	imageSize = NSMakeSize(imageSize.width - 1, imageSize.height + 1);	// we want it to be 8 by 10 pixels
+	NSSize imageSize = NSMakeSize(8.0, 10.0);
 //	imageSize.width -= 1.5;
 	
 

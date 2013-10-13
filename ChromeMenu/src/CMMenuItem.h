@@ -15,6 +15,7 @@
 {
 @private
 	CMMenu *_menu;
+	BOOL _enabled;
 	NSImage *_icon;
 	NSString *_title;
 	CMMenu *_submenu;

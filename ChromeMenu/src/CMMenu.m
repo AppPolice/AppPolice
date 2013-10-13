@@ -949,9 +949,13 @@ typedef struct __submenu_tracking_event tracking_event_t;
 	
 	// top menu
 	if (! _parentItem) {
-		frame.origin = NSMakePoint(70, 200);
+		NSScreen *screen = [[_underlyingWindowController window] screen];
+		NSRect screenFrame = [screen frame];
+
+
 		frame.size.width = intrinsicSize.width;
 		frame.size.height = (intrinsicSize.height > 817) ? 825 : intrinsicSize.height;
+		frame.origin = NSMakePoint(70, screenFrame.size.height - frame.size.height - 50);
 //		frame.size.height = 65;
 		return frame;
 	}
@@ -1120,6 +1124,8 @@ typedef struct __submenu_tracking_event tracking_event_t;
 			
 			if ([menuItem hasSubmenu])
 				[view setHasSubmenuIcon:YES];
+
+			[view setEnabled:[menuItem isEnabled]];
 		}
 		
 		
@@ -1355,6 +1361,12 @@ typedef struct __submenu_tracking_event tracking_event_t;
 				break;
 		} while ((menu = [menu supermenu]));
 		[menu rearrangeStateForNewMouse:mouseLocationOnScreen];
+		
+		// debug: cycle isEnabled
+//		{
+//			CMMenuItem *item = [menu itemAtPoint:mouseLocationOnScreen];
+//			[item setEnabled:(![item isEnabled])];
+//		}
 	
 		
 	} else if (eventType == NSLeftMouseUp || eventType == NSRightMouseUp || eventType == NSOtherMouseUp) {
@@ -1407,12 +1419,12 @@ typedef struct __submenu_tracking_event tracking_event_t;
 			  NSStringFromPoint(mouseLocation),
 			  NSStringFromPoint(mouseLocationOnScreen));
 		
-		CMMenuItem *selectedItem = [menu highlightedItem];
-		XLog3("Currently selected item: %@", selectedItem);
-		CMMenuItem *mousedItem = [menu itemAtPoint:mouseLocationOnScreen];
-					
-		if (mousedItem)
-			XLog3("Moused item: %@", mousedItem);
+//		CMMenuItem *selectedItem = [menu highlightedItem];
+//		XLog3("Currently selected item: %@", selectedItem);
+//		CMMenuItem *mousedItem = [menu itemAtPoint:mouseLocationOnScreen];
+//					
+//		if (mousedItem)
+//			XLog3("Moused item: %@", mousedItem);
 		
 		[menu rearrangeStateForNewMouse:mouseLocationOnScreen];
 		
@@ -1790,6 +1802,11 @@ typedef struct __submenu_tracking_event tracking_event_t;
 }
 
 
+- (void)updateItemTrackingArea:(CMMenuItem *)item {
+	[_underlyingWindowController updateItemViewTrackingArea:[item representedView]];
+}
+
+
 //- (void)startTrackingActiveSubmenu {
 //	CMMenu *activeSubmenu = _activeSubmenu;
 //	CMMenuItem *selectedItem = _parentItem;
@@ -1872,7 +1889,7 @@ typedef struct __submenu_tracking_event tracking_event_t;
 	if ([self supermenu]) {
 		CMMenuItem *parentItem = [[self supermenu] highlightedItem];
 		[self cancelTrackingWithoutAnimation];
-		// Cancel tracking also deseclect submenu parent item. Let us select it back
+		// Cancel tracking also deseclects submenu parent item. Let us select it back
 		[parentItem select];
 	} else if ([self activeSubmenu]) {
 		[self setReceivesMouseMovedEvents:YES];
@@ -1927,7 +1944,7 @@ typedef struct __submenu_tracking_event tracking_event_t;
 			break;
 		}
 			
-		if (! [item isSeparatorItem])
+		if ( ![item isSeparatorItem] && [item isEnabled])
 			previousItem = item;
 	}
 	
@@ -1953,7 +1970,7 @@ typedef struct __submenu_tracking_event tracking_event_t;
 			break;
 		}
 		
-		if (! [item isSeparatorItem])
+		if ( ![item isSeparatorItem] && [item isEnabled])
 			previousItem = item;
 	}
 	
@@ -1986,6 +2003,33 @@ typedef struct __submenu_tracking_event tracking_event_t;
 //- (void)selectLastItemAndShowSubmenu:(BOOL)showSubmenu {
 //	
 //}
+
+
+- (void)cancelOperation:(NSEvent *)originalEvent {
+	[[self rootMenu] cancelTracking];
+}
+
+
+- (void)performSelected:(NSEvent *)originalEvent {
+	CMMenuItem *item = [self highlightedItem];
+	if (item) {
+		if ([item hasSubmenu]) {
+			CMMenu *submenu = [item submenu];
+			[submenu showAsSubmenuOf:item withOptions:CMMenuOptionIgnoreMouse];
+			CMMenuItem *firstItem = [submenu itemAtIndex:0];
+			if (firstItem)
+				[firstItem select];
+			
+			[self setReceivesMouseMovedEvents:YES];
+			[submenu setReceivesMouseMovedEvents:YES];
+			[submenu beginTrackingWithEvent:originalEvent];
+		} else {
+			[item performAction];
+		}
+	} else {
+		[[self rootMenu] cancelTracking];
+	}
+}
 
 
 - (BOOL)receivesMouseMovedEvents {

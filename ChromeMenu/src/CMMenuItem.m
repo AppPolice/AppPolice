@@ -52,6 +52,7 @@
 	if (self = [super init]) {
 		[self setTitle:aTitle];
 		_isSeparatorItem = NO;
+		_enabled = YES;
 		_action = aSelector;
 	}
 	return self;
@@ -241,6 +242,25 @@
 }
 
 
+- (BOOL)isEnabled {
+	return _enabled;
+}
+
+
+- (void)setEnabled:(BOOL)flag {
+	if (_isSeparatorItem || _submenu)	// item with submenu cannot be disabled?
+		return;
+	
+	if (_enabled != flag) {
+		_enabled = flag;
+		CMMenuItemView *view = (CMMenuItemView *)[_representedViewController view];
+		[view setEnabled:flag];
+		[view setSelected:NO];
+		[[self menu] updateItemTrackingArea:self];
+	}
+}
+
+
 /*
  *
  */
@@ -341,10 +361,8 @@
 - (void)performAction {
 	if ([self hasSubmenu])
 		return;
-
-	XLog2("Performing action on item: %@", self);
 	
-	if (_action) {
+	if (_action && _enabled) {
 		id target = _target;
 		if (! target) {		// application delegate could be the one to handle it
 			target = [NSApp delegate];
@@ -352,13 +370,14 @@
 		
 		if ([target respondsToSelector:_action]) {
 //			[target performSelector:_action withObject:self afterDelay:0.075 inModes:[NSArray arrayWithObject:NSRunLoopCommonModes]];
+			XLog2("Performing action on item: %@", self);
 			[NSApp sendAction:_action to:target from:self];
 		}
 	}
 
 	
 	if ([[self menu] cancelsTrackingOnAction]) {
-		if (! _isSeparatorItem) {
+		if (! _isSeparatorItem && _enabled) {
 			CMMenuItemView *view = (CMMenuItemView *)[[self representedView] view];
 			[view blink];
 			[self performSelector:@selector(delayedCancelTracking) withObject:nil afterDelay:0.075 inModes:[NSArray arrayWithObject:NSRunLoopCommonModes]];
@@ -568,7 +587,7 @@
 
 
 - (void)select {
-	if (_isSelected || _isSeparatorItem)
+	if (_isSelected || _isSeparatorItem || !_enabled)
 		return;
 	
 	NSArray *items = [_menu itemArray];
@@ -586,7 +605,7 @@
 
 
 - (void)selectWithDelayForSubmenu:(NSTimeInterval)delay {
-	if (_isSeparatorItem)
+	if (_isSeparatorItem || !_enabled)
 		return;
 
 	//	_isSelected = YES;

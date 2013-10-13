@@ -538,6 +538,7 @@ void cfnotificationCallback(CFNotificationCenterRef center, void *observer, CFSt
 //					  @"Action Template", @"Text", nil]];
 
 	menu = [[CMMenu alloc] initWithTitle:@"Root menu"];
+	[menu setCancelsTrackingOnAction:NO];
 	
 //	CMMenuItem *item1 = [[CMMenuItem alloc] initWithTitle:@"Chat Template"];
 //	[item1 setIcon:[NSImage imageNamed:@"NSIChatTheaterTemplate"]];

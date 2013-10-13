@@ -72,5 +72,11 @@
 - (void)moveVisibleRectToRect:(NSRect)rect ignoreMouse:(BOOL)ignoreMouse;
 
 - (void)updateContentViewTrackingAreaTrackMouseMoved:(BOOL)trackMouseMoved;
+/**
+ * @abstract When certain menu item changes its needsTracking value (for example
+ *	when item is enabled or disabled) add or remove tracking area to/from the documentView of scrollView
+ *	for this item view only. It does not update tracking area literally if it already exists.
+ */
+- (void)updateItemViewTrackingArea:(NSViewController *)viewController;
 
 @end

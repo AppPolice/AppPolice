@@ -18,6 +18,7 @@
 //	NSImageView *_ownersIcon;
 	
 	BOOL _selected;
+	BOOL _enabled;
 }
 
 @property (assign) IBOutlet NSImageView *state;
@@ -28,6 +29,9 @@
 //@property (assign) BOOL mouseInside;
 - (BOOL)isSelected;
 - (void)setSelected:(BOOL)selected;
+
+- (BOOL)isEnabled;
+- (void)setEnabled:(BOOL)enabled;
 
 - (void)fadeIn;
 - (void)fadeOutWithComplitionHandler:(void (^)(void))handler;
