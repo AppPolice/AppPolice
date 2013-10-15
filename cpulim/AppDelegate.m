@@ -66,6 +66,16 @@
 
 - (void)awakeFromNib {
 	NSLog(@"%@ awakeFromNib", [self className]);
+//	uint64_t a = 1LLU << 63;
+//	uint b = INT_MAX;
+//	int c = (int)(b - a);
+//	uint64_t b = (uint64_t)a;
+//	printf("b = %llu", a);
+	
+//	uint64_t orignal = 10;
+//	uint64_t mask = 1ULL << 47;
+//	orignal &= ~mask;
+//	printf("orignal: %llu", orignal);
 }
 
 //- (NSApplicationTerminateReply)applicationShouldTerminate:(NSApplication *)sender {
@@ -76,6 +86,7 @@
 //extern void proc_cpulim_suspend_wait(void);		/* function returns only after limiter stopped */
 
 - (void)applicationWillTerminate:(NSNotification *)notification {
+	// We really want to stop limiter before application terminates, or otherwise any limited processes will remain sleeping.
 	proc_cpulim_suspend_wait();
 }
 

@@ -1368,7 +1368,7 @@
 
 - (void)_beginTrackingWithEvent:(NSEvent *)event {
 	BOOL mouseIsDown = NO;
-	NSUInteger runLoopEventMask = NSMouseEnteredMask | NSMouseExitedMask | NSLeftMouseDownMask | NSLeftMouseUpMask | NSRightMouseDownMask | NSRightMouseUpMask | NSOtherMouseDownMask | NSOtherMouseUpMask | NSScrollWheelMask | NSKeyDownMask;
+	NSEventMask runLoopEventMask = NSMouseEnteredMask | NSMouseExitedMask | NSLeftMouseDownMask | NSLeftMouseUpMask | NSRightMouseDownMask | NSRightMouseUpMask | NSOtherMouseDownMask | NSOtherMouseUpMask | NSScrollWheelMask | NSKeyDownMask;
 	
 //	runLoopEventMask |= NSAppKitDefinedMask | NSApplicationDefinedMask | NSSystemDefinedMask;
 	runLoopEventMask |= NSSystemDefinedMask;
@@ -1642,7 +1642,7 @@
 				runLoopEventMask |= NSMouseMovedMask;
 			}
 		} else if (runLoopEventMask & NSMouseMovedMask) {
-			runLoopEventMask &= ~NSMouseMovedMask;
+			runLoopEventMask &= (NSEventMask)~NSMouseMovedMask;
 		}
 			
 		

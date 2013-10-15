@@ -8,6 +8,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include "subroutines.h"
 
 
 void *xmalloc(size_t size) {

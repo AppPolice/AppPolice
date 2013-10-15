@@ -29,10 +29,10 @@ int main(int argc, char *argv[]) {
 		fputs("\n[Ishimura] Error: Could not establish atexit() method", stderr);
 #endif
 
-/*
- * Print dispatch_debug() logs to stderr
- * setenv("LIBDISPATCH_LOG", "stderr", 1);
- */
+
+	//rint dispatch_debug() logs to stderr
+	setenv("LIBDISPATCH_LOG", "stderr", 1);
+
 	
 	install_signal_handlers();
 	

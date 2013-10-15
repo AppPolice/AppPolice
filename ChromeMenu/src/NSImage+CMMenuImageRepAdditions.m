@@ -12,8 +12,8 @@
 @implementation NSImage (CMMenuImageRepAdditions)
 
 - (NSBitmapImageRep *)bitmapImageRepresentation {
-	CGFloat width = self.size.width;
-	CGFloat height = self.size.height;
+	NSInteger width = (NSInteger)self.size.width;
+	NSInteger height = (NSInteger)self.size.height;
 	
 	if (width < 1 || height < 1)
 		return nil;

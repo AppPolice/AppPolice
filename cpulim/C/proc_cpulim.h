@@ -14,6 +14,11 @@
 // to find out the value for different computers.
 #define NANOSEC_PER_SEC 1000000000
 
+/* Note, to use dispatch_debug() an appropriate env. variable must be set:
+	setenv("LIBDISPATCH_LOG", "stderr", 1);
+ 
+	A proper place for this call could be in the application main file. */
+
 
 /* newlim is the fraction of percents. For example 1 corresponds to 100% of permitted cpu load, 0.5 to 50% and 2.5 to 250% (in multicore environment).
 	Return 0 if limit set successful, and 1 if provided parameters are invalid. */

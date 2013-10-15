@@ -22,6 +22,8 @@
 - (IBAction)deletePid:(NSButton *)sender {
 //	int pid = [pidDeleteTF intValue];
 //	proc_task_delete(pid);
+	int pid = [pidTF intValue];
+	proc_cpulim_set(pid, 0);
 }
 
 - (IBAction)procCPULimiterResume:(NSButton *)sender {
@@ -29,7 +31,9 @@
 }
 
 - (IBAction)procCPULimiterSuspend:(NSButton *)sender {
+//	NSLog(@"limiter suspend called");
 	proc_cpulim_suspend();
+//	NSLog(@"limiter suspend returned");
 }
 
 - (IBAction)printStats:(NSButton *)sender {

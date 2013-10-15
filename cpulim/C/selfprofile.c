@@ -8,6 +8,7 @@
 
 #include <stdio.h>
 #include <time.h>
+#include "selfprofile.h"
 
 clock_t clocks_start, clocks_end;
 time_t time_start, time_end;

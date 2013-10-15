@@ -29,7 +29,7 @@ const short down = 1;
 	CGFloat amount;
 	short direction;
 	
-	multiplier = ceil(ABS(deltaY) / 2);
+	multiplier = (int)ceil(ABS(deltaY) / 2);
 	amount = multiplier * lineHeight;
 	direction = (deltaY < 0) ? down : up;
 	

@@ -28,8 +28,8 @@
 	float value = [self floatValue];
 	double minValue = [self minValue];
 	double maxValue = [self maxValue];
-	float percents = (value - minValue) / (maxValue - minValue);
-	float x = rect.size.width * percents;
+	double percents = (value - minValue) / (maxValue - minValue);
+	CGFloat x = rect.size.width * percents;
 	double warningValue = [self warningValue];
 	double criticalValue = [self criticalValue];
 	
