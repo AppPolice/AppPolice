@@ -95,8 +95,8 @@ NSString *const APApplicationsSortedByPid = @"APApplicationsSortedByPid";
 	_runningApps = [[workspace runningApplications] mutableCopy];
 	
 	// remove ourselves from applications list
-	NSInteger i;
-	NSInteger elementsCount = [_runningApps count];
+	NSUInteger i;
+	NSUInteger elementsCount = [_runningApps count];
 	pid_t shared_pid = getpid();
 	CMMenuItem *item;
 	
@@ -189,7 +189,7 @@ NSString *const APApplicationsSortedByPid = @"APApplicationsSortedByPid";
 	NSUInteger index = [_runningApps indexOfObject:app];
 	if (index != NSNotFound) {
 		[_runningApps removeObjectAtIndex:index];
-		[[[_mainMenu itemAtIndex:0] menu] removeItemAtIndex:index animate:NO];
+		[[[_mainMenu itemAtIndex:0] menu] removeItemAtIndex:(NSInteger)index animate:NO];
 	}
 }
 

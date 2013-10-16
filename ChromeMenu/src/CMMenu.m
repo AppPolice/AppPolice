@@ -261,12 +261,12 @@ typedef struct __submenu_tracking_event tracking_event_t;
 
 
 - (CMMenuItem *)itemAtIndex:(NSInteger)index {
-	if ( !_menuItems || index < 0 || index >= [_menuItems count])
+	if ( !_menuItems || index < 0 || (NSUInteger)index >= [_menuItems count])
 		return nil;
 	
 //	if (index < 0 || index >= [_menuItems count])
 //		[NSException raise:NSRangeException format:@"No item for -itemAtIndex: %ld", index];
-	return [_menuItems objectAtIndex:index];
+	return [_menuItems objectAtIndex:(NSUInteger)index];
 }
 
 
@@ -286,7 +286,7 @@ typedef struct __submenu_tracking_event tracking_event_t;
 
 
 - (NSInteger)numberOfItems {
-	return [_menuItems count];
+	return (NSInteger)[_menuItems count];
 }
 
 
@@ -306,7 +306,7 @@ typedef struct __submenu_tracking_event tracking_event_t;
 	
 	for (i = 0; i < count; ++i) {
 		if (item == [_menuItems objectAtIndex:i]) {
-			return i;
+			return (NSInteger)i;
 		}
 	}
 	
@@ -378,12 +378,13 @@ typedef struct __submenu_tracking_event tracking_event_t;
  */
 - (void)removeItemAtIndex:(NSInteger)index animate:(BOOL)animate {
 	NSUInteger itemsCount = [_menuItems count];
-	if (index >= itemsCount || index < 0) {
+	if (index < 0 || (NSUInteger)index >= itemsCount) {
 		[NSException raise:NSInvalidArgumentException format:@"Provided index out of bounds for Menu's -removeItemAtIndex:"];
 		return;
 	}
 	
-	CMMenuItem *item = [_menuItems objectAtIndex:index];
+	NSUInteger i = (NSUInteger)index;
+	CMMenuItem *item = [_menuItems objectAtIndex:i];
 	if ([item hasSubmenu]) {
 		if ([[item submenu] isActive])
 			[[item submenu] cancelTrackingWithoutAnimation];
@@ -392,7 +393,7 @@ typedef struct __submenu_tracking_event tracking_event_t;
 		[item setSubmenu:nil];
 	}
 	XLog3("Removing menu item: %@", item);
-	[_menuItems removeObjectAtIndex:index];
+	[_menuItems removeObjectAtIndex:i];
 	--itemsCount;
 	
 	// Menu will update items itself
@@ -400,7 +401,7 @@ typedef struct __submenu_tracking_event tracking_event_t;
 		return;
 
 	if (animate && !_isActive) {
-		[_underlyingWindowController removeViewAtIndex:index animate:YES complitionHandler:^(void) {
+		[_underlyingWindowController removeViewAtIndex:i animate:YES complitionHandler:^(void) {
 			if (! itemsCount) {		// no items left in menu, hide it
 				[self cancelTrackingWithoutAnimation];
 			} else {
@@ -409,7 +410,7 @@ typedef struct __submenu_tracking_event tracking_event_t;
 			}
 		}];
 	} else {
-		[_underlyingWindowController removeViewAtIndex:index];
+		[_underlyingWindowController removeViewAtIndex:i];
 		if (_isActive) {
 			if (! itemsCount) {
 				[self cancelTrackingWithoutAnimation];
@@ -443,7 +444,7 @@ typedef struct __submenu_tracking_event tracking_event_t;
 	
 	for (i = 0; i < count; ++i) {
 		if (item == [_menuItems objectAtIndex:i]) {
-			[self removeItemAtIndex:i animate:animate];
+			[self removeItemAtIndex:(NSInteger)i animate:animate];
 			break;
 		}
 	}

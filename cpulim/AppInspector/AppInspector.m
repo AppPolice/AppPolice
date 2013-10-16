@@ -37,6 +37,13 @@ static int system_ncpu() {
 }
 
 
+@interface AppInspector ()
+
+- (float)limitFromSliderValue:(double)value;
+- (double)sliderValueFromLimit:(float)limit;
+
+@end
+
 
 
 @implementation AppInspector
@@ -123,10 +130,10 @@ static int system_ncpu() {
 		[_applicationIcon setImage:icon];
 		[_applicationNameTextfield setStringValue:[NSString stringWithFormat:@"%@ (%d)", name, pid]];
 		if (limit == 0) {
-			[_slider setFloatValue:[_slider maxValue]];
+			[_slider setDoubleValue:[_slider maxValue]];
 		} else {
-			float sliderValue = [self sliderValueFromLimit:limit];
-			[_slider setFloatValue:sliderValue];
+			double sliderValue = [self sliderValueFromLimit:limit];
+			[_slider setDoubleValue:sliderValue];
 		}
 		[self updateTextfieldsWithLimitValue:limit];
 	}
@@ -180,7 +187,7 @@ static int system_ncpu() {
  */
 
 - (void)sliderAction:(id)sender {
-	float value = [_slider floatValue];
+	double value = [_slider doubleValue];
 	float limit;
 	if (value == [_slider maxValue])
 		limit = 0;
@@ -265,7 +272,7 @@ static int system_ncpu() {
 //		int percentsLeft = percents - fullyLoadedCoresCount * 100;
 
 		int percents;
-		percents = floor(limit * 100 + 0.5);
+		percents = (int)floor(limit * 100 + 0.5);
 		if (percents < 1)
 			percents = 1;
 		[_sliderLimit2Textfield setStringValue:[NSString stringWithFormat:@"%d%%", percents]];
@@ -294,17 +301,19 @@ static int system_ncpu() {
 
 
 
-- (float)limitFromSliderValue:(float)value {
+- (float)limitFromSliderValue:(double)value {
 	double maxValue = [_slider maxValue];
 	double minValue = [_slider minValue];
+	double middleValue;
 	float limit;
+	int ncpu = system_ncpu();
 //	int ncpu = system_ncpu();
 //	maxValue -= [_slider minValue];
 //	maxValue -= maxValue / ([_slider numberOfTickMarks] - 1);		// deduct one tick mark
 //	limit = value / maxValue * ncpu;
 	
-	int ncpu = system_ncpu();
-	double middleValue;
+
+
 //	int percents;
 	
 	if (minValue) {		// shift all values by min value
@@ -319,27 +328,27 @@ static int system_ncpu() {
 	
 	if (ncpu > 2) {
 		if (value <= middleValue)
-			limit = value / middleValue;
+			limit = (float)(value / middleValue);
 		else
-			limit = (value - middleValue) / middleValue * (ncpu - 1) + 1;
+			limit = (float)((value - middleValue) / middleValue * (ncpu - 1) + 1);
 	} else {
 		if (value > maxValue)
 			value = maxValue;
 		
-		limit = value / maxValue * ncpu;
+		limit = (float)(value / maxValue * ncpu);
 	}
 	
-	if (limit < 0.01)
-		limit = 0.01;
+	if (limit < 0.01f)
+		limit = 0.01f;
 	
 	return limit;
 }
 
 
-- (float)sliderValueFromLimit:(float)limit {
+- (double)sliderValueFromLimit:(float)limit {
 	double maxValue = [_slider maxValue];
 	double middleValue;
-	float value;
+	double value;
 	int ncpu;
 	
 	if (limit == 0)

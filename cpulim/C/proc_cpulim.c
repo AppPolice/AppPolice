@@ -20,8 +20,8 @@
 #include <signal.h>
 #include <libproc.h>				/* proc_pidinfo */
 #include <dispatch/dispatch.h>		/* dispatch_queue */
-#include <mach/mach.h>
-#include <mach/mach_time.h>
+//#include <mach/mach.h>			/* mach_absolute_time */
+//#include <mach/mach_time.h>
 
 #include "proc_cpulim.h"
 
@@ -45,7 +45,7 @@ struct proc_taskstats_s {
 	float lim;			/* fraction, 1 is 100% for 1 core */
 	uint64_t time;		/* process system_time + user_time */
 	uint64_t sleep_time;
-	uint64_t timestamp;
+//	uint64_t timestamp;
 	int is_sleeping;
 	struct proc_taskstats_s *next;
 	struct proc_taskstats_s *prev;
@@ -54,8 +54,8 @@ typedef struct proc_taskstats_s *proc_taskstats_t;
 
 static proc_taskstats_t _proc_taskstats;	/* pointer to the first task in list */
 
-static int _keep_limiter_running = 0;					// flag for a limiter
-static int _managing_dispatch_queue_locked = 0;			// safely create, return or release queue
+static int _keep_limiter_running = 0;						// flag for a limiter
+static volatile int _managing_dispatch_queue_locked = 0;	// safely create, return or release queue
 
 static void do_proc_cpulim_set(int pid, float newlim);
 static void proc_limiter_resume(void);
@@ -68,7 +68,8 @@ static void reset_all_taskstats(void);
 
 //static dispatch_queue_t get_limiter_queue(void);
 //static dispatch_queue_t get_updtaskstats_queue(void);
-static int get_dispatch_queue(dispatch_queue_t *queue, int type);
+//static int get_dispatch_queue(dispatch_queue_t *queue, int type);
+static dispatch_queue_t get_dispatch_queue(int type);
 //static int get_updtaskstats_queue(void);
 // Dedicated method to release queue when it is no longer needed,
 //	presumably when the limiter is suspended.
@@ -106,9 +107,10 @@ int proc_cpulim_set(int pid, float newlim) {
 	
 	/* safely add to the Serial Queue */
 //	dispatch_queue_t updtaskstats_queue = get_updtaskstats_queue();
-	dispatch_queue_t updtaskstats_queue;
+	dispatch_queue_t updtaskstats_queue = get_dispatch_queue(DISPATCH_QUEUE_UPDTASKSTATS);
 //	int queue_owner =
-	(void) get_dispatch_queue(&updtaskstats_queue, DISPATCH_QUEUE_UPDTASKSTATS);
+//	(void) get_dispatch_queue(&updtaskstats_queue, DISPATCH_QUEUE_UPDTASKSTATS);
+	
 //	if (! queue_owner)
 //		release_dispatch_queue(DISPATCH_QUEUE_UPDTASKSTATS);
 //		retain_dispatch_queue(DISPATCH_QUEUE_UPDTASKSTATS);
@@ -156,7 +158,7 @@ static void do_proc_cpulim_set(int pid, float newlim) {
 		_proc_taskstats->time = 0;
 		_proc_taskstats->sleep_time = 0;
 		_proc_taskstats->is_sleeping = 0;
-		_proc_taskstats->timestamp = 0;
+//		_proc_taskstats->timestamp = 0;
 		_proc_taskstats->next = _proc_taskstats->prev = NULL;
 		
 		return;
@@ -192,7 +194,7 @@ static void do_proc_cpulim_set(int pid, float newlim) {
 	newtask->time = 0;
 	newtask->sleep_time = 0;
 	newtask->is_sleeping = 0;
-	newtask->timestamp = 0;
+//	newtask->timestamp = 0;
 	newtask->prev = task_prev;
 	newtask->next = NULL;
 	task_prev->next = newtask;
@@ -221,8 +223,8 @@ void proc_cpulim_resume(void) {
 	limiter_is_running = 1;
 	_keep_limiter_running = 1;
 //	dispatch_queue_t limiter_queue = get_limiter_queue();
-	dispatch_queue_t limiter_queue;
-	(void) get_dispatch_queue(&limiter_queue, DISPATCH_QUEUE_LIMITER);
+	dispatch_queue_t limiter_queue = get_dispatch_queue(DISPATCH_QUEUE_LIMITER);
+//	(void) get_dispatch_queue(&limiter_queue, DISPATCH_QUEUE_LIMITER);
 	
 //	dispatch_debug(limiter_queue, "limiter queue at timer of resume");
 	dispatch_async(limiter_queue, ^{
@@ -266,7 +268,8 @@ static void proc_limiter_resume(void) {
 	
 //	updtaskstats_queue = get_updtaskstats_queue();
 //	int queue_owner =
-	(void) get_dispatch_queue(&updtaskstats_queue, DISPATCH_QUEUE_UPDTASKSTATS);
+//	(void) get_dispatch_queue(&updtaskstats_queue, DISPATCH_QUEUE_UPDTASKSTATS);
+	updtaskstats_queue = get_dispatch_queue(DISPATCH_QUEUE_UPDTASKSTATS);
 //	fprintf(stdout, "\nIn the meantime _global queue is: %p", _updtaskstats_queue);
 //	if (! queue_owner)
 //		release_dispatch_queue(DISPATCH_QUEUE_UPDTASKSTATS);
@@ -335,22 +338,26 @@ static uint proc_tasks_calcsleeptime(void) {
 	int error = 0;
 	uint64_t time_prev;
 	uint64_t time_diff;
+	int64_t sleep_time;
+	int64_t work_time;
 	float cpuload;
 	proc_taskstats_t task;
 //	uint proc_tasks_wlim_num;
 	uint ntasks_with_lim;
-	uint64_t timestamp;
-	uint64_t timestamp_prev;
-	uint64_t mach_time;
-	static mach_timebase_info_data_t sTimebaseInfo;
+//	uint64_t timestamp;
+//	uint64_t timestamp_prev;
+//	uint64_t mach_time;
+//	static mach_timebase_info_data_t sTimebaseInfo;
 	
 
 	// Get timestamp
-	mach_time = mach_absolute_time();
-	if (sTimebaseInfo.denom == 0) {
-		(void) mach_timebase_info(&sTimebaseInfo);
-	}
-	timestamp = mach_time * sTimebaseInfo.numer / sTimebaseInfo.denom;
+	// See "Mach Absolute Time Units" for instructions:
+	// https://developer.apple.com/library/mac/qa/qa1398/
+//	mach_time = mach_absolute_time();
+//	if (sTimebaseInfo.denom == 0) {
+//		(void) mach_timebase_info(&sTimebaseInfo);
+//	}
+//	timestamp = mach_time * sTimebaseInfo.numer / sTimebaseInfo.denom;
 	
 	
 	ntasks_with_lim = 0;
@@ -372,29 +379,32 @@ static uint proc_tasks_calcsleeptime(void) {
 
 		
 		if (time_prev == 0) {
-			task->timestamp = timestamp;
+//			task->timestamp = timestamp;
 			continue;			/* first run for a task */
 		}
 		
 		
 		time_diff = task->time - time_prev;
 		cpuload = (float)time_diff / opt_task_schedule_interval;
-		timestamp_prev = task->timestamp;
+//		timestamp_prev = task->timestamp;
 
-		printf("\nsleep time = %lld + (%llu - %lld) * (%.3f - %.3f) / %0.3f",
-			   task->sleep_time,
-			   (timestamp - timestamp_prev),
-			   task->sleep_time,
-			   cpuload,
-			   task->lim,
-			   MAX(cpuload, task->lim));
-		
+
 //		task->sleep_time = task->sleep_time +
 //			(opt_task_schedule_interval - task->sleep_time) * (cpuload - task->lim) / MAX(cpuload, task->lim);
 
-		int64_t sleep_time;
-		sleep_time = (int64_t)floor(task->sleep_time +
-			(timestamp - timestamp_prev - task->sleep_time) * (cpuload - task->lim) / MAX(cpuload, task->lim));
+		work_time = (int64_t)(opt_task_schedule_interval - task->sleep_time);	// timestamp - timestamp_prev - task->sleep_time
+		if (work_time == 0) {
+			// If work_time of a process is nearly zero (highloaded and throttled extensively) flipping it to an opposite value
+			//	of sleep_time won't be a big deal because of the expression (cpuload - task->lim) ---> to zero, so the sleep_time
+			//	will balance in the same ranges.
+			//	But in this case, if the limit is lowered the sleep_time will be able to correlate with the new limit. In other words
+			//	sleep_time will be dropping from nearly 'opt_task_schedule_interval' values down letting process run freely.
+			//	Otherwise, zero value of work_time will hang the process sleeping 'opt_task_schedule_interval' nanoseconds always
+			//	despite lowering the limit. E.g:
+			//		sleep_time = sleep_time + 0 * (0.01 - 0.5) / 0.5;	will yield constant sleep_time
+			work_time = (int64_t)opt_task_schedule_interval;
+		}
+		sleep_time = (int64_t)floor(task->sleep_time + work_time * (cpuload - task->lim) / MAX(cpuload, task->lim));
 
 		if (sleep_time < 0) {
 			sleep_time = 0;
@@ -403,17 +413,25 @@ static uint proc_tasks_calcsleeptime(void) {
 		}
 		
 		task->sleep_time = (uint64_t)sleep_time;
-		task->timestamp = timestamp;
+//		task->timestamp = timestamp;
+		
+		printf("\nsleep time = %lld + %lld * (%.3f - %.3f) / %0.3f",
+			   task->sleep_time,
+			   work_time,
+			   cpuload,
+			   task->lim,
+			   MAX(cpuload, task->lim));
+
 		
 		if (opt_verbose_level)
-			printf("\npid # %d, time_prev: %llu, current_time: %llu, time_diff: %llu sleep_time: %llu or %0.3f(s) Worktime(ns): %llu",
+			printf("\npid # %d, time_prev: %llu, current_time: %llu, time_diff: %llu sleep_time: %llu or %0.3f(s) Worktime(ns): %lld",
 				task->pid,
 				time_prev,
 				task->time,
 				time_diff,
 				task->sleep_time,
 				(double)task->sleep_time / NANOSEC_PER_SEC,
-				(timestamp - timestamp_prev)
+				work_time
 			);
 	}
 	
@@ -543,13 +561,15 @@ static dispatch_queue_t get_updtaskstats_queue(void) {
 /*
  *
  */
-static int get_dispatch_queue(dispatch_queue_t *queue, int type) {
+//static int get_dispatch_queue(dispatch_queue_t *queue, int type) {
+static dispatch_queue_t get_dispatch_queue(int type) {
 	while (_managing_dispatch_queue_locked) {
 		fputs("\n<<<<<<<<<<<<<<<< trapped in GET >>>>>>>>>>>>>>>", stdout);
 	}
 	_managing_dispatch_queue_locked = 1;
 	
-	int retval = -1;
+//	int retval = -1;
+	dispatch_queue_t retval = NULL;
 	
 	if (type == DISPATCH_QUEUE_LIMITER) {
 //		if (_limiter_queue) {
@@ -563,17 +583,19 @@ static int get_dispatch_queue(dispatch_queue_t *queue, int type) {
 //		}
 		if (_limiter_queue.queue) {
 			_limiter_queue.refcnt += 1;
-			*queue = _limiter_queue.queue;
-			retval = 0;
+//			*queue = _limiter_queue.queue;
+//			retval = 0;
+			retval = _limiter_queue.queue;
 //			goto out;
 //			return 0;
 		} else {
 			fputs("\nCreating limiter queue", stdout);
 			_limiter_queue.queue = dispatch_queue_create("com.proc_cpulim.LimiterQueue", DISPATCH_QUEUE_SERIAL);
 			_limiter_queue.refcnt = 1;
-			*queue = _limiter_queue.queue;
+			retval = _limiter_queue.queue;
+//			*queue = _limiter_queue.queue;
 //			return 1;
-			retval = 1;
+//			retval = 1;
 //			goto out;
 		}
 	} else if (type == DISPATCH_QUEUE_UPDTASKSTATS) {
@@ -588,18 +610,20 @@ static int get_dispatch_queue(dispatch_queue_t *queue, int type) {
 //		}
 		if (_updtaskstats_queue.queue) {
 			_updtaskstats_queue.refcnt += 1;
-			*queue = _updtaskstats_queue.queue;
+			retval = _updtaskstats_queue.queue;
+//			*queue = _updtaskstats_queue.queue;
 //			return 0;
-			retval = 0;
+//			retval = 0;
 //			goto out;
 		} else {
 			fputs("\nCreating updtasks queue", stdout);
 			fflush(stdout);
 			_updtaskstats_queue.queue = dispatch_queue_create("com.proc_cpulim.UpdTaskStatsQueue", DISPATCH_QUEUE_SERIAL);
 			_updtaskstats_queue.refcnt = 1;
-			*queue = _updtaskstats_queue.queue;
+			retval = _updtaskstats_queue.queue;
+//			*queue = _updtaskstats_queue.queue;
 //			return 1;
-			retval = 1;
+//			retval = 1;
 //			goto out;
 		}
 
@@ -726,9 +750,9 @@ void proc_cpulim_suspend_wait(void) {
 		return;
 	
 //	dispatch_queue_t limiter_queue = get_limiter_queue();
-	dispatch_queue_t limiter_queue;
+	dispatch_queue_t limiter_queue = get_dispatch_queue(DISPATCH_QUEUE_LIMITER);
 //	int queue_owner =
-	(void) get_dispatch_queue(&limiter_queue, DISPATCH_QUEUE_LIMITER);		// not actual? --> don't check retvar, cause it can't be an owner of dispatch_queue
+//	(void) get_dispatch_queue(&limiter_queue, DISPATCH_QUEUE_LIMITER);		// not actual? --> don't check retvar, cause it can't be an owner of dispatch_queue
 //	if (! queue_owner) {
 		// Important, retain queue before setting _keep_limiter_running to zero, as this will stop the limiter loop
 		//	and the queue may be released before we get a chance to use it.
@@ -759,8 +783,8 @@ void proc_cpulim_suspend_wait(void) {
  */
 static void proc_task_delete(pid_t pid) {
 //	dispatch_queue_t updtaskstats_queue = get_updtaskstats_queue();
-	dispatch_queue_t updtaskstats_queue;
-	(void) get_dispatch_queue(&updtaskstats_queue, DISPATCH_QUEUE_UPDTASKSTATS);		// don't check retvarl, because proc_task_delete() is always called by others who own the queue
+	dispatch_queue_t updtaskstats_queue = get_dispatch_queue(DISPATCH_QUEUE_UPDTASKSTATS);
+//	(void) get_dispatch_queue(&updtaskstats_queue, DISPATCH_QUEUE_UPDTASKSTATS);		// don't check retvarl, because proc_task_delete() is always called by others who own the queue
 //	retain_dispatch_queue(DISPATCH_QUEUE_UPDTASKSTATS);
 	dispatch_async(updtaskstats_queue, ^{
 		do_proc_task_delete(pid);
@@ -812,7 +836,7 @@ static void reset_all_taskstats(void) {
 	for (task = _proc_taskstats; task != NULL; task = task->next) {
 		task->time = 0;
 		task->sleep_time = 0;
-		task->timestamp = 0;
+//		task->timestamp = 0;
 		task->is_sleeping = 0;
 	}
 }
