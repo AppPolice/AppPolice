@@ -10,8 +10,8 @@
 #import "ChromeMenu.h"
 #import "AppInspector.h"
 
-NSString *const APApplicationsSortedByName = @"APApplicationsSortedByName";
-NSString *const APApplicationsSortedByPid = @"APApplicationsSortedByPid";
+//NSString *const APApplicationsSortedByName = @"APApplicationsSortedByName";
+//NSString *const APApplicationsSortedByPid = @"APApplicationsSortedByPid";
 
 
 @interface StatusbarMenuController ()
@@ -93,17 +93,20 @@ NSString *const APApplicationsSortedByPid = @"APApplicationsSortedByPid";
 	
 	NSWorkspace *workspace = [NSWorkspace sharedWorkspace];
 	_runningApps = [[workspace runningApplications] mutableCopy];
+	[self sortApplicationsByKey:[self applicationSortKey]];
+//	[self sortApplicationsByKey:APApplicationsSortedByPid];
 	
-	// remove ourselves from applications list
+
 	NSUInteger i;
 	NSUInteger elementsCount = [_runningApps count];
 	pid_t shared_pid = getpid();
+	NSUInteger shared_pid_index;
 	CMMenuItem *item;
 	
 	for (i = 0; i < elementsCount; ++i) {
 		NSRunningApplication *app = [_runningApps objectAtIndex:i];
 		if (shared_pid == [app processIdentifier]) {
-			[_runningApps removeObjectAtIndex:i];
+			shared_pid_index = i;
 			continue;
 		}
 		
@@ -125,6 +128,11 @@ NSString *const APApplicationsSortedByPid = @"APApplicationsSortedByPid";
 		[menu addItem:item];
 	}
 	
+	// Remove ourselves from running applications array
+	[_runningApps removeObjectAtIndex:shared_pid_index];
+	
+	
+	// temp
 	NSMutableDictionary *appInfo = [NSMutableDictionary dictionaryWithObjectsAndKeys:
 									@"Some really long name for some unexistant applicaton", APApplicationInfoNameKey,
 									[NSImage imageNamed:NSImageNameBonjour], APApplicationInfoIconKey,
@@ -135,14 +143,9 @@ NSString *const APApplicationsSortedByPid = @"APApplicationsSortedByPid";
 	[item setTarget:self];
 	[item setRepresentedObject:appInfo];
 	[menu addItem:item];
-	
-//	if (sortApplications)
-//		[self sortApplicationsByNameAndReload:NO];
+	// temp
 	
 
-	
-	
-	
 	NSNotificationCenter *notificationCenter = [workspace notificationCenter];
 	[notificationCenter addObserver:self selector:@selector(appLaunchedNotificationHandler:) name:NSWorkspaceDidLaunchApplicationNotification object:nil];
 	[notificationCenter addObserver:self selector:@selector(appTerminatedNotificationHandler:) name:NSWorkspaceDidTerminateApplicationNotification object:nil];
@@ -152,31 +155,87 @@ NSString *const APApplicationsSortedByPid = @"APApplicationsSortedByPid";
 /*
  *
  */
+- (void)sortApplicationsByKey:(int)sortKey {
+	NSSortDescriptor *descriptor;
+
+	if (! [_runningApps count])
+		return;
+	
+	if (sortKey == APApplicationsSortedByName) {
+		descriptor = [[NSSortDescriptor alloc] initWithKey:@"localizedName" ascending:YES selector:@selector(localizedCompare:)];
+	} else if (sortKey == APApplicationsSortedByPid) {
+		descriptor = [[NSSortDescriptor alloc] initWithKey:@"processIdentifier" ascending:YES];
+	} else {
+		NSLog(@"Provided sort key is not valid");
+		return;
+	}
+	
+	[_runningApps sortUsingDescriptors:[NSArray arrayWithObject:descriptor]];
+	[descriptor release];
+}
+
+
+/*
+ *
+ */
 - (void)appLaunchedNotificationHandler:(NSNotification *)notification {
-	NSLog(@"launched %@\n", [[notification userInfo] objectForKey:@"NSApplicationName"]);
+//	NSLog(@"launched %@ BEGIN", [[notification userInfo] objectForKey:@"NSApplicationName"]);
 	NSRunningApplication *app = [[notification userInfo] objectForKey:NSWorkspaceApplicationKey];
+//	NSLog(@"launched %@\n", app);
 	//	NSLog(@"App object: %@", app);
 	
-/*
+	NSUInteger elementsCount = [_runningApps count];
+	NSUInteger index = elementsCount;
 	
-	NSUInteger index;
-	NSUInteger count = [runningApplications count];
-	if (sortApplications) {
+	/*----------------------------------------------------------------------------------------------------/
+	  ASSUMTION!
+		-appLaunchedNotificationHandler: and -appTerminatedNotificationHandler: are not re-entrant safe.
+		These methods manage shared resource (NSArray *)_runningApps.
+		We assume that these notifications are queued and will be executed in certain order and 
+		will not be interrupted by similar notifications.
+	 /----------------------------------------------------------------------------------------------------*/
+	
+	int sortKey = [self applicationSortKey];
+	if (sortKey == APApplicationsSortedByName) {
 		NSString *appName = [app localizedName];
 		NSUInteger i = 0;
-		while (i < count && [appName compare:[[runningApplications objectAtIndex:i] localizedName]] == NSOrderedDescending)
+		while (i < elementsCount && [appName localizedCompare:[[_runningApps objectAtIndex:i] localizedName]] == NSOrderedDescending)
 			++i;
+
+		//		while (i < elementsCount) {
+		//			NSString *name = [[_runningApps objectAtIndex:i] localizedName];
+		//			NSComparisonResult result = [appName localizedCompare:name];
+		//			if (result == NSOrderedAscending) {
+		//				break;
+		//			}
+
+		
 		index = i;
-	} else
-		index = count;
+
+	} else if (sortKey == APApplicationsSortedByPid) {
+		// New apps most likely will have pid greater then the pid of last app in array
+//		index = elementsCount;
+	}
 	
-	[runningApplications insertObject:app atIndex:index];
+//	NSLog(@"inserting at index: %lu", index);
 	
+	[_runningApps insertObject:app atIndex:index];
 	
-	//	[self setAppSubmenuSizeWithWidth:0 andHeight:0 relative:YES];
-	[self updateAppSubmenuViewSize];
-	[appListTableView insertRowsAtIndexes:[NSIndexSet indexSetWithIndex:index] withAnimation:NSTableViewAnimationEffectFade];
- */
+	NSMutableDictionary *appInfo = [NSMutableDictionary dictionaryWithObjectsAndKeys:
+									[app localizedName], APApplicationInfoNameKey,
+									[app icon], APApplicationInfoIconKey,
+									[NSNumber numberWithInt:[app processIdentifier]], APApplicationInfoPidKey,
+									[NSNumber numberWithFloat:0], APApplicationInfoLimitKey, nil];
+	
+	CMMenuItem *item = [[[CMMenuItem alloc] initWithTitle:[app localizedName] icon:[app icon] action:@selector(selectApplicationItemMenuAction:)] autorelease];
+	[item setTarget:self];
+	NSImage *onStateImage = [NSImage imageNamed:NSImageNameStatusAvailable];
+	[onStateImage setSize:NSMakeSize(12, 12)];
+	[item setOnStateImage:onStateImage];
+	[item setRepresentedObject:appInfo];
+	[[[_mainMenu itemAtIndex:0] submenu] insertItem:item atIndex:index animate:NO];
+	
+//	NSLog(@"launched %@ END", [[notification userInfo] objectForKey:@"NSApplicationName"]);
 }
 
 
@@ -184,12 +243,34 @@ NSString *const APApplicationsSortedByPid = @"APApplicationsSortedByPid";
  *
  */
 - (void)appTerminatedNotificationHandler:(NSNotification *)notification {
-	NSLog(@"terminated %@\n", [[notification userInfo] objectForKey:@"NSApplicationName"]);
+//	NSLog(@"terminated %@\n", [[notification userInfo] objectForKey:@"NSApplicationName"]);
 	NSRunningApplication *app = [[notification userInfo] objectForKey:NSWorkspaceApplicationKey];
-	NSUInteger index = [_runningApps indexOfObject:app];
-	if (index != NSNotFound) {
-		[_runningApps removeObjectAtIndex:index];
-		[[[_mainMenu itemAtIndex:0] menu] removeItemAtIndex:(NSInteger)index animate:NO];
+//	NSLog(@"terminated %@\n", app);
+//	NSUInteger index = [_runningApps indexOfObject:app];
+//	NSUInteger index;
+	
+//	NSLog(@"running apps: %@", _runningApps);
+
+	for (NSRunningApplication *runningApp in _runningApps) {
+		if ([app isEqual:runningApp]) {
+			NSUInteger index = [_runningApps indexOfObject:runningApp];
+			[_runningApps removeObjectAtIndex:index];
+
+			CMMenu *menu = [[_mainMenu itemAtIndex:0] submenu];
+			AppInspector *appInspector = [self appInspector];
+			NSPopover *popover = [appInspector popover];
+			if ([popover isShown]) {
+				CMMenuItem *attachedToItem = [appInspector attachedToItem];
+				CMMenuItem *item = [menu itemAtIndex:(NSInteger)index];
+				if (attachedToItem == item) {
+					[popover setAnimates:YES];
+					[popover close];
+				}
+			}
+			[menu removeItemAtIndex:(NSInteger)index animate:NO];
+
+			return;
+		}
 	}
 }
 
@@ -269,14 +350,20 @@ NSString *const APApplicationsSortedByPid = @"APApplicationsSortedByPid";
 }
 
 
-- (NSString *)applicationSortingKey {
-	return (_applicationSortingKey) ? _applicationSortingKey : APApplicationsSortedByName;
+- (int)applicationSortKey {
+	return (_applicationSortKey) ? _applicationSortKey : APApplicationsSortedByName;
 }
 
 
-- (void)setApplicationSortingKey:(NSString *)sortingKey {
-	if (! [_applicationSortingKey isEqualToString:sortingKey]) {
-		_applicationSortingKey = sortingKey;
+- (void)setApplicationSortKey:(int)sortKey {
+	if ( sortKey !=APApplicationsSortedByName
+	  && sortKey != APApplicationsSortedByPid) {
+		NSLog(@"Provided sortKey does not exist");
+		return;
+	}
+	
+	if (_applicationSortKey != sortKey) {
+		_applicationSortKey = sortKey;
 
 		// update menu here
 		

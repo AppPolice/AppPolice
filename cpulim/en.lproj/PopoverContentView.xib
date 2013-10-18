@@ -7,10 +7,10 @@
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="AppInspector">
             <connections>
+                <outlet property="_applicationCPUTextfield" destination="X1H-na-SUo" id="90K-Ni-Sst"/>
                 <outlet property="_applicationIcon" destination="RfL-ov-JbE" id="R6W-Tq-H29"/>
                 <outlet property="_applicationNameTextfield" destination="UPW-Bd-Uy1" id="YjJ-3s-e4i"/>
                 <outlet property="_applicationUserTextfield" destination="IZu-80-1hD" id="frw-Jh-k1i"/>
-                <outlet property="_cpuLoadTextfield" destination="X1H-na-SUo" id="q2O-FP-LKf"/>
                 <outlet property="_levelIndicator" destination="1fc-8w-npb" id="9E0-73-RGQ"/>
                 <outlet property="_popoverView" destination="1W4-jN-jWo" id="VKa-mi-cBQ"/>
                 <outlet property="_slider" destination="Bg4-V0-TsV" id="uNx-M6-gWi"/>
@@ -52,7 +52,7 @@
                         <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="IZu-80-1hD">
                             <rect key="frame" x="79" y="30" width="69" height="13"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                            <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="User: theuser" id="b36-Ke-2wK">
+                            <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="User: -" id="b36-Ke-2wK">
                                 <font key="font" size="10" name="LucidaGrande"/>
                                 <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                 <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
@@ -61,7 +61,7 @@
                         <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="X1H-na-SUo">
                             <rect key="frame" x="79" y="14" width="66" height="13"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                            <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="% CPU: xx.yy" id="97Z-2o-jm9">
+                            <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="% CPU: -.-" id="97Z-2o-jm9">
                                 <font key="font" size="10" name="LucidaGrande"/>
                                 <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                 <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>

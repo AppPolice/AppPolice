@@ -42,7 +42,7 @@
 
 
 - (void)updateTrackingAreas {
-//	NSLog(@"update trackings");
+	NSLog(@"update trackings");
 	if (_trackingArea) {
 		[self removeTrackingArea:_trackingArea];
 		[_trackingArea release];

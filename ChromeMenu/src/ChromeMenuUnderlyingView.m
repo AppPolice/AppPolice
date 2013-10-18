@@ -20,6 +20,9 @@
 	return self;
 }
 
+//- (BOOL)acceptsFirstResponder {
+//	return YES;
+//}
 
 - (void)dealloc {
 	[_borderRadius release];

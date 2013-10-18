@@ -51,7 +51,7 @@
 		
 		if (eventType == NSKeyDown) {
 			unsigned short keyCode = [theEvent keyCode];
-			NSLog(@"key code: %d, modifier: %lu", keyCode, modifierFlags);
+//			NSLog(@"key code: %d, modifier: %lu", keyCode, modifierFlags);
 			
 			SEL action = nil;
 			

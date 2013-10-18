@@ -400,12 +400,12 @@ typedef struct __submenu_tracking_event tracking_event_t;
 	if (_needsDisplay)
 		return;
 
-	if (animate && !_isActive) {
+	if (animate && _isActive) {
 		[_underlyingWindowController removeViewAtIndex:i animate:YES complitionHandler:^(void) {
 			if (! itemsCount) {		// no items left in menu, hide it
 				[self cancelTrackingWithoutAnimation];
 			} else {
-				if (_isActive)
+				if (_isActive)		// if menu hasn't been hidden during animation
 					[self displayInFrame:NSZeroRect options:CMMenuOptionDefault display:NO];
 			}
 		}];
@@ -1325,7 +1325,7 @@ typedef struct __submenu_tracking_event tracking_event_t;
 
 	
 	if (eventType == NSMouseEntered) {
-		NSLog(@"mouse ENTER menu: %@", theEvent);
+		NSLog(@"mouse ENTER menu: %@", self);
 		
 		/*
 		 * Possible Events:
@@ -1562,7 +1562,7 @@ typedef struct __submenu_tracking_event tracking_event_t;
 //														   selector:@selector(trackingLoop:)
 //														   userInfo:nil
 //															repeats:YES] retain];
-	
+	NSLog(@" --------------------- CREATING SUBMENU TIMER ---------------------------- \n\n");
 	_tracking_event->timer = [NSTimer timerWithTimeInterval:interval target:self selector:@selector(trackingLoop:) userInfo:nil repeats:YES];
 //	[[NSRunLoop currentRunLoop] addTimer:_tracking_event->timer forMode:NSEventTrackingRunLoopMode];
 	[[NSRunLoop currentRunLoop] addTimer:_tracking_event->timer forMode:NSRunLoopCommonModes];

@@ -341,6 +341,10 @@
 	[[NSAnimationContext currentContext] setCompletionHandler:handler];
 	for (NSView *view in subviews) {
 //		[view setAlphaValue:0.0];
+//		if ([[view class] isSubclassOfClass:NSClassFromString(@"NSTextField")]) {
+////			[[(NSTextField *)view animator] setTextColor:[NSColor redColor]];
+//			[[view animator] setAlphaValue:0.0];
+//		} else
 		[[view animator] setAlphaValue:0.0];
 	}
 	[NSAnimationContext endGrouping];

@@ -21,6 +21,7 @@
 
 @interface AppInspector : NSObject <NSPopoverDelegate>
 {
+	@private
 //	NSMutableDictionary *_applicationInfo;
 	CMMenuItem *_attachedToItem;
 	IBOutlet NSPopover *_popover;
@@ -28,11 +29,16 @@
 	IBOutlet NSView *_popoverView;
 //	IBOutlet NSWindow *detachedWindow;
 	void (^_popoverDidClosehandler)(void);
+	NSTimer *_cpuTimer;
+	struct {
+		uint64_t cputime;
+		uint64_t timestamp;
+	} _cpuTime;
 	
 	IBOutlet NSImageView *_applicationIcon;
 	IBOutlet NSTextField *_applicationNameTextfield;
 	IBOutlet NSTextField *_applicationUserTextfield;
-	IBOutlet NSTextField *_cpuLoadTextfield;
+	IBOutlet NSTextField *_applicationCPUTextfield;
 	IBOutlet NSTextField *_sliderLimit1Textfield;
 	IBOutlet NSTextField *_sliderLimit2Textfield;
 	IBOutlet NSTextField *_sliderLeftTextfield;

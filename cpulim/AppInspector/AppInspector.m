@@ -12,8 +12,14 @@
 #import "AppLimitSliderCell.h"
 #import "AppLimitHintView.h"
 #import "HintPopoverTextField.h"
-#include <sys/sysctl.h>
-#include <unistd.h>
+// C
+#include <sys/sysctl.h>				/* sysctl() */
+#include <unistd.h>					/* sysconf(_SC_NPROCESSORS_ONLN) */
+#include <libproc.h>				/* proc_pidinfo() */
+#include <pwd.h>					/* getpwuid() */
+#include <mach/mach.h>				/* mach_absolute_time */
+#include <mach/mach_time.h>
+
 
 
 /*
@@ -37,10 +43,75 @@ static int system_ncpu() {
 }
 
 
+/*
+ *
+ */
+//static void pid_bsd_shortinfo(pid_t pid) {
+static char *get_proc_username(pid_t pid) {
+	int error;
+	struct passwd *pwdinfo;
+	struct proc_bsdshortinfo bsdinfo;
+//	char *pw_name;						// process name
+	
+	error = 0;
+	error = proc_pidinfo(pid, PROC_PIDT_SHORTBSDINFO, (uint64_t)0, &bsdinfo, PROC_PIDT_SHORTBSDINFO_SIZE);
+	if (error < 1) {
+		// no process info couldn't be fetched.
+		fprintf(stdout, "\nProcess pid: %d info couldn't be fetched.", pid);
+		return NULL;
+	}
+	pwdinfo = getpwuid(bsdinfo.pbsi_uid);
+//	pw_name = pwdinfo->pw_name;
+	return pwdinfo->pw_name;
+}
+
+
+/*
+ *
+ */
+static uint64_t get_proc_cputime(pid_t pid) {
+	int error;
+	struct proc_taskinfo ptinfo;
+	
+	error = 0;
+	error = proc_pidinfo(pid, PROC_PIDTASKINFO, (uint64_t)0, &ptinfo, PROC_PIDTASKINFO_SIZE);
+	if (error < 1) {
+		// no process info couldn't be fetched.
+		fprintf(stdout, "\nProcess pid: %d info couldn't be fetched.", pid);
+		return 0;
+	}
+	
+	return (ptinfo.pti_total_user + ptinfo.pti_total_system);
+}
+
+
+/*
+ *
+ */
+static uint64_t get_timestamp() {
+	uint64_t timestamp;
+	uint64_t mach_time;
+	static mach_timebase_info_data_t sTimebaseInfo;
+	
+	// See "Mach Absolute Time Units" for instructions:
+	// https://developer.apple.com/library/mac/qa/qa1398/
+	mach_time = mach_absolute_time();
+	if (sTimebaseInfo.denom == 0) {
+		(void) mach_timebase_info(&sTimebaseInfo);
+	}
+	timestamp = mach_time * sTimebaseInfo.numer / sTimebaseInfo.denom;
+	return timestamp;
+}
+
+
+// ---------------------------------- Obj-c ---------------------------------------
+
 @interface AppInspector ()
 
 - (float)limitFromSliderValue:(double)value;
 - (double)sliderValueFromLimit:(float)limit;
+- (double)levelIndicatorValueFromCPU:(double)cpu;
+- (void)cpuTimerFire:(NSTimer *)timer;
 
 @end
 
@@ -118,8 +189,10 @@ static int system_ncpu() {
 	_attachedToItem = attachedToItem;
 	if (attachedToItem) {
 		NSMutableDictionary *applicationInfo = [attachedToItem representedObject];
-		if (! applicationInfo)
+		if (! applicationInfo) {
+			NSLog(@"Pleaes provide application info for menu item (represented object).");
 			return;
+		}
 		
 		NSImage *icon = [applicationInfo objectForKey:APApplicationInfoIconKey];
 		NSString *name = [applicationInfo objectForKey:APApplicationInfoNameKey];
@@ -136,8 +209,64 @@ static int system_ncpu() {
 			[_slider setDoubleValue:sliderValue];
 		}
 		[self updateTextfieldsWithLimitValue:limit];
+		
+		// TODO: NULL username
+		char *proc_username = get_proc_username(pid);
+		[_applicationUserTextfield setStringValue:[NSString stringWithFormat:@"User: %@", [NSString stringWithCString:proc_username encoding:NSUTF8StringEncoding]]];
+		[_applicationCPUTextfield setStringValue:@"\% CPU -.-"];
+		[_levelIndicator setFloatValue:0.0];
+		
+		if (_cpuTimer) {
+			[_cpuTimer invalidate];
+			_cpuTimer = nil;
+		}
+		
+		// Current cpu time for a process
+		_cpuTime.cputime = get_proc_cputime(pid);
+		_cpuTime.timestamp = get_timestamp();
+		NSDictionary *timerUserInfo = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithInt:pid], @"pid", nil];
+		_cpuTimer = [NSTimer timerWithTimeInterval:2.0 target:self selector:@selector(cpuTimerFire:) userInfo:timerUserInfo repeats:YES];
+		[[NSRunLoop currentRunLoop] addTimer:_cpuTimer forMode:NSRunLoopCommonModes];
 	}
 }
+
+
+/*
+ *
+ */
+- (void)cpuTimerFire:(NSTimer *)timer {
+	uint64_t cputime;
+	uint64_t timestamp;
+	double cpuload;
+	pid_t pid;
+	NSDictionary *userInfo;
+	
+	userInfo = [timer userInfo];
+	pid = [(NSNumber *)[userInfo objectForKey:@"pid"] intValue];
+	cputime = get_proc_cputime(pid);
+	timestamp = get_timestamp();
+	
+	if (_cpuTime.cputime == 0) {
+		_cpuTime.cputime = cputime;
+		_cpuTime.timestamp = timestamp;
+		return;
+	}
+	
+//	NSLog(@"timer event :: cputime_prev: %llu, cputtime: %llu (difference: %llu), timestamp_prev: %llu, timestampt: %llu", _cpuTime.cputime, cputime, (cputime - _cpuTime.cputime), _cpuTime.timestamp, timestamp);
+
+//	NSLog(@"%llu / %llu = %f",
+//		  (cputime - _cpuTime.cputime),
+//		  (timestamp - _cpuTime.timestamp) / 100,
+//		  (double)(cputime - _cpuTime.cputime) / (timestamp - _cpuTime.timestamp) * 100.0);
+	
+	cpuload = (double)(cputime - _cpuTime.cputime) / (timestamp - _cpuTime.timestamp) * 100;
+	_cpuTime.cputime = cputime;
+	_cpuTime.timestamp = timestamp;
+	
+	[_applicationCPUTextfield setStringValue:[NSString stringWithFormat:@"%% CPU: %.2f", cpuload]];
+	
+}
+
 
 //- (void)setApplicationInfo:(NSMutableDictionary *)applicationInfo {
 //	if (_applicationInfo == applicationInfo)
@@ -164,19 +293,6 @@ static int system_ncpu() {
 //		[self updateTextfieldsWithLimitValue:limit];
 //	}
 //}
-
-
-// temp method
-- (void)showPopoverRelativeTo:(NSView *)view {
-//	if (popoverViewController == nil) {
-//		popoverViewController = [[NSViewController alloc] initWithNibName:@"AppInspector" bundle:[NSBundle mainBundle]];
-//	}
-	
-	
-//	NSLog(@"called show popover: %@", popoverViewController);
-	[_popover showRelativeToRect:[view bounds] ofView:view preferredEdge:NSMaxXEdge];
-}
-
 
 
 /*
@@ -478,6 +594,20 @@ static int system_ncpu() {
 }
 
 
+// temp method
+- (void)showPopoverRelativeTo:(NSView *)view {
+	//	if (popoverViewController == nil) {
+	//		popoverViewController = [[NSViewController alloc] initWithNibName:@"AppInspector" bundle:[NSBundle mainBundle]];
+	//	}
+	
+	
+	//	NSLog(@"called show popover: %@", popoverViewController);
+	[_popover showRelativeToRect:[view bounds] ofView:view preferredEdge:NSMaxXEdge];
+}
+
+
+
+
 - (void)popoverDidShow:(NSNotification *)notification {
 	NSLog(@"popover did show");
 	[_popover setAnimates:NO];
@@ -494,6 +624,11 @@ static int system_ncpu() {
 - (void)popoverDidClose:(NSNotification *)notification {
 //	NSLog(@"popover did close");
 //	[[[self attachedToItem] menu] setSuspendMenus:NO];
+	if (_cpuTimer) {
+		[_cpuTimer invalidate];
+		_cpuTimer = nil;
+	}
+	
 	if (_attachedToItem) {
 		if ([_attachedToItem state] == NSMixedState)
 			[_attachedToItem setState:NSOffState];

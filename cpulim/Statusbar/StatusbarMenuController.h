@@ -8,6 +8,8 @@
 
 #import <Foundation/Foundation.h>
 
+#define APApplicationsSortedByName 0
+#define APApplicationsSortedByPid 1
 
 @class CMMenu, CMMenuItem, AppInspector;
 
@@ -16,7 +18,7 @@
 	@private;
 	CMMenu *_mainMenu;
 	NSMutableArray *_runningApps;
-	NSString *_applicationSortingKey;
+	int _applicationSortKey;
 	AppInspector *_appInspector;
 	CMMenuItem *_itemWithAttachedPopover;
 }
@@ -24,11 +26,11 @@
 - (CMMenu *)mainMenu;
 
 // APApplicationsSortedByName is the default
-- (NSString *)applicationSortingKey;
-- (void)setApplicationSortingKey:(NSString *)sortingKey;
+- (int)applicationSortKey;
+- (void)setApplicationSortKey:(int)sortKey;
 
+//extern NSString *const APApplicationsSortedByName;
+//extern NSString *const APApplicationsSortedByPid;
 
-extern NSString *const APApplicationsSortedByName;
-extern NSString *const APApplicationsSortedByPid;
 
 @end
