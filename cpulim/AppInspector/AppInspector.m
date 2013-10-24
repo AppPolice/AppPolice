@@ -213,7 +213,7 @@ static uint64_t get_timestamp() {
 		// TODO: NULL username
 		char *proc_username = get_proc_username(pid);
 		[_applicationUserTextfield setStringValue:[NSString stringWithFormat:@"User: %@", [NSString stringWithCString:proc_username encoding:NSUTF8StringEncoding]]];
-		[_applicationCPUTextfield setStringValue:@"\% CPU -.-"];
+		[_applicationCPUTextfield setStringValue:@"\% CPU: 0.00"];
 		[_levelIndicator setFloatValue:0.0];
 		
 		if (_cpuTimer) {

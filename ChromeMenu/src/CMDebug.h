@@ -10,7 +10,7 @@
 #define Ishimura_CMDebug_h
 
 #define CM_DEBUG_ON
-#define CM_DEBUG_LEVEL 3		// 1 is the lowest level | 3 is the highest
+#define CM_DEBUG_LEVEL 3		// 1 is the lowest level, 3 is the highest
 
 
 #if defined(CM_DEBUG_ON) && CM_DEBUG_LEVEL >= 1

@@ -22,6 +22,7 @@
 #include <dispatch/dispatch.h>		/* dispatch_queue */
 //#include <mach/mach.h>			/* mach_absolute_time */
 //#include <mach/mach_time.h>
+#include <libkern/OSAtomic.h>
 
 #include "proc_cpulim.h"
 
@@ -48,14 +49,14 @@ struct proc_taskstats_s {
 //	uint64_t timestamp;
 	int is_sleeping;
 	struct proc_taskstats_s *next;
-	struct proc_taskstats_s *prev;
+//	struct proc_taskstats_s *prev;
 };
 typedef struct proc_taskstats_s *proc_taskstats_t;
 
-static proc_taskstats_t _proc_taskstats;	/* pointer to the first task in list */
+static proc_taskstats_t _proc_taskstats_list;	/* pointer to the first task in list */
 
-static int _keep_limiter_running = 0;						// flag for a limiter
-static volatile int _managing_dispatch_queue_locked = 0;	// safely create, return or release queue
+static int _keep_limiter_running;							// flag for a limiter
+static volatile int32_t _managing_dispatch_queue_locked;	// safely create, return or release queue
 
 static void do_proc_cpulim_set(int pid, float newlim);
 static void proc_limiter_resume(void);
@@ -148,32 +149,36 @@ static void do_proc_cpulim_set(int pid, float newlim) {
 
 	
 	/* if there are no tasks yet */
-	if (_proc_taskstats == NULL) {
+	if (_proc_taskstats_list == NULL) {
 		if (newlim == 0)
 			return;
 		
-		_proc_taskstats = (proc_taskstats_t)xmalloc(sizeof(struct proc_taskstats_s));
-		_proc_taskstats->pid = pid;
-		_proc_taskstats->lim = newlim;
-		_proc_taskstats->time = 0;
-		_proc_taskstats->sleep_time = 0;
-		_proc_taskstats->is_sleeping = 0;
+		proc_taskstats_t task;
+		task = (proc_taskstats_t)xmalloc(sizeof(struct proc_taskstats_s));
+		task->pid = pid;
+		task->lim = newlim;
+		task->time = 0;
+		task->sleep_time = 0;
+		task->is_sleeping = 0;
 //		_proc_taskstats->timestamp = 0;
-		_proc_taskstats->next = _proc_taskstats->prev = NULL;
+		task->next = NULL;
+		_proc_taskstats_list = task;	// make list point to the first task
+//		_proc_taskstats->prev
 		
 		return;
 	}
 	
 	
 	proc_taskstats_t task;
-	proc_taskstats_t task_prev;
+//	proc_taskstats_t task_prev;
 	
 //	struct proc_taskstats_s *tassk;
 //	tassk = _proc_taskstats->next;
 	
 	
 	/* if found task with pid -- update it */
-	for (task = _proc_taskstats; task != NULL; task_prev = task, task = task->next) {
+//	for (task = _proc_taskstats_list; task != NULL; task_prev = task, task = task->next) {
+	for (task = _proc_taskstats_list; task != NULL; task = task->next) {
 		if (task->pid == pid) {
 			if (newlim == 0)
 				proc_task_delete(pid);
@@ -188,6 +193,7 @@ static void do_proc_cpulim_set(int pid, float newlim) {
 	if (newlim == 0)
 		return;
 	
+	proc_taskstats_t head = _proc_taskstats_list;
 	proc_taskstats_t newtask = (proc_taskstats_t)xmalloc(sizeof(struct proc_taskstats_s));
 	newtask->pid = pid;
 	newtask->lim = newlim;
@@ -195,9 +201,10 @@ static void do_proc_cpulim_set(int pid, float newlim) {
 	newtask->sleep_time = 0;
 	newtask->is_sleeping = 0;
 //	newtask->timestamp = 0;
-	newtask->prev = task_prev;
-	newtask->next = NULL;
-	task_prev->next = newtask;
+//	newtask->prev = task_prev;
+	newtask->next = head;
+	_proc_taskstats_list = newtask;
+//	task_prev->next = newtask;
 }
 
 
@@ -361,7 +368,7 @@ static uint proc_tasks_calcsleeptime(void) {
 	
 	
 	ntasks_with_lim = 0;
-	for (task = _proc_taskstats; task != NULL; task = task->next) {
+	for (task = _proc_taskstats_list; task != NULL; task = task->next) {
 		if (task->lim == 0)
 			continue;
 		
@@ -456,7 +463,7 @@ static uint64_t proc_tasks_execsleeptime(void) {
 	proc_taskstats_t task;
 	
 	pt_sleep_min = ULONG_LONG_MAX;
-	for (task = _proc_taskstats; task != NULL; task = task->next) {
+	for (task = _proc_taskstats_list; task != NULL; task = task->next) {
 		if (task->sleep_time != 0) {
 			if (kill(task->pid, SIGSTOP) == -1) {
 				if (opt_verbose_level)
@@ -482,7 +489,7 @@ static uint64_t proc_tasks_execsleeptime(void) {
 		all_awake = 1;
 		pt_sleep_min = ULONG_LONG_MAX;
 		
-		for (task = _proc_taskstats; task != NULL; task = task->next) {
+		for (task = _proc_taskstats_list; task != NULL; task = task->next) {
 			if (task->sleep_time == 0 || task->is_sleeping == 0)
 				continue;
 			else if (task->sleep_time == sleptns) {
@@ -563,10 +570,13 @@ static dispatch_queue_t get_updtaskstats_queue(void) {
  */
 //static int get_dispatch_queue(dispatch_queue_t *queue, int type) {
 static dispatch_queue_t get_dispatch_queue(int type) {
-	while (_managing_dispatch_queue_locked) {
+//	while (_managing_dispatch_queue_locked) {
+//		fputs("\n<<<<<<<<<<<<<<<< trapped in GET >>>>>>>>>>>>>>>", stdout);
+//	}
+	while (! OSAtomicCompareAndSwap32Barrier(0, 1, &_managing_dispatch_queue_locked)) {
 		fputs("\n<<<<<<<<<<<<<<<< trapped in GET >>>>>>>>>>>>>>>", stdout);
 	}
-	_managing_dispatch_queue_locked = 1;
+//	_managing_dispatch_queue_locked = 1;
 	
 //	int retval = -1;
 	dispatch_queue_t retval = NULL;
@@ -663,24 +673,10 @@ static void retain_dispatch_queue(int type) {
  *
  */
 static void release_dispatch_queue(int type) {
-//	if (type == DISPATCH_QUEUE_LIMITER) {
-//		dispatch_debug(_limiter_queue, " <--- RELEASING limiter queue");
-//		dispatch_release(_limiter_queue);
-//		_limiter_queue = NULL;
-//	} else if (type == DISPATCH_QUEUE_UPDTASKSTATS) {
-//		dispatch_queue_t queue = _updtaskstats_queue;
-//		_updtaskstats_queue = NULL;
-//		dispatch_debug(queue, " <--- RELEASING updtaskstats queue");
-//		dispatch_release(queue);
-////		_updtaskstats_queue = NULL;
-//		fputs("\nupdtaskstats queue released!!", stdout);
-//		fflush(stdout);
-//	}
-	
-	while (_managing_dispatch_queue_locked) {
+//	while (_managing_dispatch_queue_locked) {
+	while (! OSAtomicCompareAndSwap32Barrier(0, 1, &_managing_dispatch_queue_locked)) {
 		fputs("\n<<<<<<<<<<<<<<<< trapped in RELEASE >>>>>>>>>>>>>>>", stdout);
 	}
-	_managing_dispatch_queue_locked = 1;
 
 	
 	if (type == DISPATCH_QUEUE_LIMITER) {
@@ -796,10 +792,11 @@ static void proc_task_delete(pid_t pid) {
 /*
  *
  */
+/*
 static void do_proc_task_delete(pid_t pid) {
 //	struct proc_taskstats *task;
 	proc_taskstats_t task;
-	for (task = _proc_taskstats; task != NULL; task = task->next) {
+	for (task = _proc_taskstats_list; task != NULL; task = task->next) {
 		if (task->pid == pid) {
 			if (task->next && task->prev) {
 				task->prev->next = task->next;
@@ -826,6 +823,31 @@ static void do_proc_task_delete(pid_t pid) {
 	if (opt_verbose_level)
 		fprintf(stdout, "\n[proc_cpulim] Info: Process '%d' deleted from the task list.", pid);
 }
+*/
+
+static void do_proc_task_delete(pid_t pid) {
+	proc_taskstats_t head = _proc_taskstats_list;
+	proc_taskstats_t task;
+	proc_taskstats_t prev_task = NULL;
+	for (task = head; task != NULL; prev_task = task, task = task->next) {
+		if (task->pid == pid) {
+			// if it's the first task in the list simply make the head point to the next task
+			if (task == head) {
+				_proc_taskstats_list = task->next;
+			} else if (prev_task) {				// if it's not the only task in the list
+				prev_task->next = task->next;
+			}
+			
+			free(task);
+			
+			break;
+		}
+		
+	}
+	
+	if (opt_verbose_level)
+		fprintf(stdout, "\n[proc_cpulim] Info: Process '%d' deleted from the task list.", pid);
+}
 
 
 /*
@@ -833,7 +855,7 @@ static void do_proc_task_delete(pid_t pid) {
  */
 static void reset_all_taskstats(void) {
 	proc_taskstats_t task;
-	for (task = _proc_taskstats; task != NULL; task = task->next) {
+	for (task = _proc_taskstats_list; task != NULL; task = task->next) {
 		task->time = 0;
 		task->sleep_time = 0;
 //		task->timestamp = 0;
@@ -866,19 +888,19 @@ void proc_taskstats_print(void) {
 	
 	fputs("\n\n---------------- STATS BEGIN --------------", stdout);
 	
-	if (_proc_taskstats) {
+	if (_proc_taskstats_list) {
 		int task_num = 0;
 		proc_taskstats_t task;
 		
-		fputs("\nTask #     PID     Limit      Time           ptr              prevptr          nextptr\n", stdout);
-		for (task = _proc_taskstats; task != NULL; task = task->next) {
-			printf("%-10d %-7d %-10.3f %-14llu %-16p %-16p %p\n",
+		fputs("\nTask #     PID     Limit      Time           ptr              nextptr\n", stdout);
+		for (task = _proc_taskstats_list; task != NULL; task = task->next) {
+			printf("%-10d %-7d %-10.3f %-14llu %-16p %p\n",
 				   task_num,
 				   task->pid,
 				   task->lim,
 				   task->time,
 				   task,
-				   task->prev,
+//				   task->prev,
 				   task->next);
 
 			++task_num;

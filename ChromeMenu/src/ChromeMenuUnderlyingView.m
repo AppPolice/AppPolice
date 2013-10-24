@@ -31,11 +31,10 @@
 }
 
 
-- (void)drawRect:(NSRect)dirtyRect {
+- (void)drawRect:(NSRect)dirtyRect {	
 	NSBezierPath *windowBorder = [NSBezierPath bezierPath];
 	
 	NSRect rect = [self bounds];
-	
 	if (! _borderRadius) {
 		[windowBorder appendBezierPathWithRect:rect];
 	} else {
@@ -80,10 +79,15 @@
 //		[windowBorder appendBezierPathWithRoundedRect:[self bounds] xRadius:5.0 yRadius:5.0];
 	}
 
-	[[NSColor windowFrameColor] set];
-	[windowBorder stroke];
-	[[NSColor colorWithCalibratedWhite:1.0 alpha:0.95] set];
+
+//	[[NSColor colorWithCalibratedWhite:1.0 alpha:0.95] set];
+	[[NSColor colorWithDeviceWhite:1.0 alpha:0.95] set];
 	[windowBorder fill];
+//	[[NSColor windowFrameColor] set];
+//	[[NSColor colorWithDeviceRed:1.0 green:0.5 blue:0.5 alpha:0.7] set];
+//	[windowBorder stroke];
+	
+
 }
 
 

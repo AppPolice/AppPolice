@@ -72,7 +72,7 @@ typedef NSUInteger CMMenuOptions;
 - (void)startTrackingSubmenu:(CMMenu *)submenu forItem:(CMMenuItem *)item;
 - (void)stopTrackingSubmenuReasonSuccess:(BOOL)reasonSuccess;
 - (void)updateTrackingAreaWithOptions:(CMMenuOptions)options;
-- (void)updateItemTrackingArea:(CMMenuItem *)item;
+- (void)updateTrackingAreaForItem:(CMMenuItem *)item;
 
 /* Default 0: no event's are blocked */
 - (NSEventMask)eventBlockingMask;
@@ -94,7 +94,12 @@ typedef NSUInteger CMMenuOptions;
  */
 - (void)setReceivesMouseMovedEvents:(BOOL)receiveEvents;
 
-- (void)mouseEvent:(NSEvent *)theEvent;
+/**
+ * @abstract Pass mouse event to a menu for a processing.
+ */
+- (void)mouseEvent:(NSEvent *)theEvent __attribute__ ((deprecated));
+- (void)mouseEventAtLocation:(NSPoint)mouseLocation type:(NSEventType)eventType;
+
 //- (void)mouseMoved:(NSEvent *)theEvent;
 
 /**

@@ -18,6 +18,7 @@
 #include "C/selfprofile.h"
 //#endif
 
+
 @implementation AppDelegate
 
 - (void)dealloc {
@@ -66,16 +67,22 @@
 
 - (void)awakeFromNib {
 	NSLog(@"%@ awakeFromNib", [self className]);
-	uint64_t a = 10;
-	uint64_t b = 5;
-	int64_t c = (int64_t)(b - a);
-//	uint64_t b = (uint64_t)a;
-	printf("c = %lld", c);
+	
+	
+	
+//	uint64_t a = 10;
+//	uint64_t b = 5;
+//	int64_t c = (int64_t)(b - a);
+////	uint64_t b = (uint64_t)a;
+//	printf("c = %lld", c);
+	
+//	NSDictionary *dic = [NSDictionary dictionaryWithObjectsAndKeys:@"some obj", @"some key", nil];
+//	NSLog(@"print dic: %@", dic);
 	
 //	uint64_t orignal = 10;
 //	uint64_t mask = 1ULL << 47;
 //	orignal &= ~mask;
-//	printf("orignal: %llu", orignal);
+//	printf("orignal: %llu", orignal);	
 }
 
 //- (NSApplicationTerminateReply)applicationShouldTerminate:(NSApplication *)sender {

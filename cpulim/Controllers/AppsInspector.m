@@ -22,7 +22,7 @@
 - (IBAction)deletePid:(NSButton *)sender {
 //	int pid = [pidDeleteTF intValue];
 //	proc_task_delete(pid);
-	int pid = [pidTF intValue];
+	int pid = [pidDeleteTF intValue];
 	proc_cpulim_set(pid, 0);
 }
 

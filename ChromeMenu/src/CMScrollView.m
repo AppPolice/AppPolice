@@ -8,20 +8,14 @@
 
 #import "CMScrollView.h"
 
-const short up = 0;
-const short down = 1;
+static const short up = 0;
+static const short down = 1;
 
 
 @implementation CMScrollView
 
-//- (void)drawRect:(NSRect)dirtyRect {
-//	[[NSColor greenColor] set];
-//	NSFrameRect([self bounds]);
-//}
 
 - (void)scrollWheel:(NSEvent *)theEvent {
-//	NSLog(@"event: %@", theEvent);
-	
 	CGFloat deltaY = theEvent.deltaY;
 	CGFloat lineHeight = [self lineScroll];
 //	CGFloat yOrigin = NSMinY([[self contentView] bounds]);
@@ -34,21 +28,21 @@ const short down = 1;
 	direction = (deltaY < 0) ? down : up;
 	
 	[self scrollInDirection:direction byAmount:amount];
+}
+
+
+- (void)scrollWithEvent:(NSEvent *)theEvent {
+	CGFloat deltaY = theEvent.deltaY;
+	CGFloat lineHeight = [self lineScroll];
+	int multiplier;
+	CGFloat amount;
+	short direction;
 	
-//	if (deltaY < 0) {
-//		yOrigin += lineHeight * multiplier;
-//		CGFloat yBound = NSMaxY([[self documentView] bounds]) - NSHeight([[self contentView] bounds]);
-//		if (yOrigin > yBound) {
-//			yOrigin = yBound;
-//		}
-//	} else if (deltaY > 0) {
-//		yOrigin -= lineHeight * multiplier;
-//		if (yOrigin < 0)
-//			yOrigin = 0;
-//	}
-//	
-//
-//	[[self documentView] scrollPoint:NSMakePoint(0, yOrigin)];
+	multiplier = (int)ceil(ABS(deltaY) / 2);
+	amount = multiplier * lineHeight;
+	direction = (deltaY < 0) ? down : up;
+	
+	[self scrollInDirection:direction byAmount:amount];
 }
 
 
@@ -66,19 +60,29 @@ const short down = 1;
 	CGFloat yOrigin = NSMinY([[self contentView] bounds]);
 	
 	if (direction == down) {
-		yOrigin += amount;
 		CGFloat yBound = NSMaxY([[self documentView] bounds]) - NSHeight([[self contentView] bounds]);
+		if (yOrigin == yBound) {	// no need to update contentView
+			NSLog(@"no more down: %@", NSStringFromRect([[self contentView] bounds]));
+			return;
+		}
+		
+		yOrigin += amount;
 		if (yOrigin > yBound) {
+			NSLog(@"new yOrigin");
 			yOrigin = yBound;
 		}
 	} else {
+		if (yOrigin == 0) {	// no need to update contentView
+			NSLog(@"no more up: %@",  NSStringFromRect([[self contentView] bounds]));
+			return;
+		}
 		yOrigin -= amount;
 		if (yOrigin < 0)
 			yOrigin = 0;
 	}
 	
-	
-	[[self documentView] scrollPoint:NSMakePoint(0, yOrigin)];
+	[[self contentView] setBoundsOrigin:NSMakePoint(0, yOrigin)];
+//	[[self documentView] scrollPoint:NSMakePoint(0, yOrigin)];
 }
 
 @end

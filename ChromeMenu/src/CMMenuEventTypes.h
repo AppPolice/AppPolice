@@ -10,7 +10,7 @@
 #define Ishimura_CMMenuEventTypes_h
 
 enum {
-	CMMenuEventDuringScroll = 0x001,				// when mouse event occurred because of scrolling
+	CMMenuEventDuringTrackingAreaUpdate = 0x001,				// when mouse event occurred because of scrolling
 	CMMenuEventMouseEnteredItem = 0x002,
 	CMMenuEventMouseExitedItem = 0x004,
 	CMMenuEventMouseItem = 0x006,

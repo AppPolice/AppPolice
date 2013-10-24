@@ -12,6 +12,7 @@
 
 @interface CMScrollView : NSScrollView
 
+- (void)scrollWithEvent:(NSEvent *)theEvent;
 - (void)scrollUpByAmount:(CGFloat)amount;
 - (void)scrollDownByAmount:(CGFloat)amount;
 

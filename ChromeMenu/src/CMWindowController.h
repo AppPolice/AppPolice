@@ -69,7 +69,7 @@
 - (void)scrollWithActiveScroller:(CMMenuScroller *)scroller;
 
 
-- (void)moveVisibleRectToRect:(NSRect)rect ignoreMouse:(BOOL)ignoreMouse;
+- (void)moveVisibleRectToRect:(NSRect)rect ignoreMouse:(BOOL)ignoreMouse updateTrackingPrimitives:(BOOL)updateTrackingPrimitives;
 
 - (void)updateContentViewTrackingAreaTrackMouseMoved:(BOOL)trackMouseMoved;
 /**

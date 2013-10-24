@@ -20,11 +20,11 @@
 		[self setBackgroundColor:[NSColor clearColor]];
 		[self setHasShadow:YES];
 		[self setOpaque:NO];
-		//		[self setAlphaValue:0.95];
+//		[self setAlphaValue:0.5];
+//		[self setHasShadow:NO];
 	}
 	return self;
 }
-
 
 //- (BOOL)canBecomeKeyWindow {
 //	return YES;

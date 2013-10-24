@@ -256,7 +256,7 @@
 		CMMenuItemView *view = (CMMenuItemView *)[_representedViewController view];
 		[view setEnabled:flag];
 		[view setSelected:NO];
-		[[self menu] updateItemTrackingArea:self];
+		[[self menu] updateTrackingAreaForItem:self];
 	}
 }
 

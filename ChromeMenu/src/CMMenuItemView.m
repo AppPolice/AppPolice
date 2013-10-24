@@ -62,7 +62,7 @@
 //	[path stroke];
 	
 	if (! _enabled) {
-		[_title setTextColor:[NSColor disabledControlTextColor]];
+		[_title setTextColor:[NSColor colorWithDeviceRed:0.0 green:0.0 blue:0.0 alpha:0.4]];
 	} else if (_selected) {
 		NSGraphicsContext *currentContext = [NSGraphicsContext currentContext];
 //		[currentContext saveGraphicsState];
