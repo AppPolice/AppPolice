@@ -9,7 +9,7 @@
 #ifndef Ishimura_CMMenuEventTypes_h
 #define Ishimura_CMMenuEventTypes_h
 
-enum {
+typedef enum : NSUInteger {
 	CMMenuEventDuringTrackingAreaUpdate = 0x001,				// when mouse event occurred because of scrolling
 	CMMenuEventMouseEnteredItem = 0x002,
 	CMMenuEventMouseExitedItem = 0x004,
@@ -20,8 +20,8 @@ enum {
 	CMMenuEventMouseEnteredScroller = 0x020,
 	CMMenuEventMouseExitedScroller = 0x040,
 	CMMenuEventMouseScroller = 0x060
-};
-typedef NSUInteger CMMenuEventType;
+} CMMenuEventType;
+//typedef NSUInteger CMMenuEventType;
 
 
 #endif

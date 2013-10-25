@@ -11,10 +11,6 @@
 
 #include "CMMenuEventTypes.h"
 
-//#define SUBMENU_POPUP_DELAY_DEFAULT 0.2
-//#define SUBMENU_POPUP_DELAY_AFTER_TRACKING 0.15
-
-
 @interface CMMenuItem (CMMenuItemInternalMethods)
 
 - (NSViewController *)representedView;

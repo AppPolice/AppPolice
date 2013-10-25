@@ -449,6 +449,7 @@
 					[[self menu] stopTrackingSubmenuReasonSuccess:YES];
 				} else {
 					CMMenu *activeSubmenu = [[self menu] activeSubmenu];
+					// TODO: Take care of this part: either provide comment what it does or edit it!
 					if ( !activeSubmenu && activeSubmenu != _submenu) {
 //						[self performSelector:@selector(showItemSubmenu) withObject:nil afterDelay:SUBMENU_POPUP_DELAY_DEFAULT inModes:[NSArray arrayWithObject:NSEventTrackingRunLoopMode]];
 						[self performSelector:@selector(showItemSubmenu) withObject:nil afterDelay:SUBMENU_POPUP_DELAY_DEFAULT inModes:[NSArray arrayWithObject:NSRunLoopCommonModes]];
@@ -473,7 +474,7 @@
 			} else {
 				_isSelected = YES;
 				
-				if ([self hasSubmenu]) {
+				if ([self hasSubmenu] && [_submenu numberOfItems]) {
 //					[self performSelector:@selector(showItemSubmenu) withObject:nil afterDelay:SUBMENU_POPUP_DELAY_DEFAULT];
 //					[self performSelector:@selector(showItemSubmenu) withObject:nil afterDelay:SUBMENU_POPUP_DELAY_DEFAULT inModes:[NSArray arrayWithObject:NSEventTrackingRunLoopMode]];
 					[self performSelector:@selector(showItemSubmenu) withObject:nil afterDelay:SUBMENU_POPUP_DELAY_DEFAULT inModes:[NSArray arrayWithObject:NSRunLoopCommonModes]];
@@ -529,6 +530,7 @@
  *
  */
 - (void)showItemSubmenu {
+	NSLog(@"show item submenu: %@", _title);
 	_submenuIntervalIsSetToPopup = NO;
 //	[_submenu showMenu];
 	[_submenu showAsSubmenuOf:self withOptions:CMMenuOptionDefault];
@@ -613,7 +615,7 @@
 	
 	[self select];
 
-	if ([self hasSubmenu]) {
+	if ([self hasSubmenu] && [_submenu numberOfItems]) {
 //		[self performSelector:@selector(showItemSubmenu) withObject:nil afterDelay:delay];
 //		[self performSelector:@selector(showItemSubmenu) withObject:nil afterDelay:delay inModes:[NSArray arrayWithObject:NSEventTrackingRunLoopMode]];
 		[self performSelector:@selector(showItemSubmenu) withObject:nil afterDelay:delay inModes:[NSArray arrayWithObject:NSRunLoopCommonModes]];

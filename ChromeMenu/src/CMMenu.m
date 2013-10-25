@@ -125,10 +125,9 @@ typedef struct __submenu_tracking_event tracking_event_t;
  * @param frameRect Frame for a menu. Use NSZeroRect for a menu to automatically
  *	calculate best frame.
  * @param options Options to display menu with.
- * @param display Boolean specified whether any of the underlying views has changed
- *	and the underlying document View of NSScrollView needs to be updated.
+ * @param display (BOOL) Specified whether any of the underlying views has changed
+ *	and the underlying Document View of NSScrollView needs to be updated.
  */
-//- (void)setFrame:(NSRect)frameRect options:(CMMenuOptions)options display:(BOOL)display;
 - (void)displayInFrame:(NSRect)frameRect options:(CMMenuOptions)options display:(BOOL)display;
 
 /**
@@ -348,7 +347,7 @@ typedef struct __submenu_tracking_event tracking_event_t;
 //	NSRect frame = [self getBestFrameForMenuWindow];
 //	[_underlyingWindowController updateFrame:frame options:CMMenuOptionDefault];
 	if (_isActive)
-		[self displayInFrame:NSZeroRect options:CMMenuOptionDefault display:NO];
+		[self displayInFrame:NSZeroRect options:CMMenuOptionUpdateScrollers | CMMenuOptionUpdateTrackingPrimitives display:NO];
 }
 
 
@@ -407,7 +406,7 @@ typedef struct __submenu_tracking_event tracking_event_t;
 				[self cancelTrackingWithoutAnimation];
 			} else {
 				if (_isActive)		// if menu hasn't been hidden during animation
-					[self displayInFrame:NSZeroRect options:CMMenuOptionDefault display:NO];
+					[self displayInFrame:NSZeroRect options:CMMenuOptionUpdateScrollers | CMMenuOptionUpdateTrackingPrimitives display:NO];
 			}
 		}];
 	} else {
@@ -418,8 +417,8 @@ typedef struct __submenu_tracking_event tracking_event_t;
 			} else {
 	//			NSRect frame = [self getBestFrameForMenuWindow];
 	//			[_underlyingWindowController updateFrame:frame options:CMMenuOptionDefault];
-				if (_isActive)
-					[self displayInFrame:NSZeroRect options:CMMenuOptionDefault display:NO];
+//				if (_isActive)
+					[self displayInFrame:NSZeroRect options:CMMenuOptionUpdateScrollers | CMMenuOptionUpdateTrackingPrimitives display:NO];
 			}
 		}
 
@@ -1525,6 +1524,9 @@ typedef struct __submenu_tracking_event tracking_event_t;
 }
 
 
+/*
+ *
+ */
 - (void)rearrangeStateForNewMouse:(NSPoint)mouseLocation {
 	CMMenuItem *selectedItem = [self highlightedItem];
 	CMMenuItem *mousedItem = [self itemAtPoint:mouseLocation];

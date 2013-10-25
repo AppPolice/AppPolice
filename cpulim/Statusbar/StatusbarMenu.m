@@ -621,11 +621,11 @@ void cfnotificationCallback(CFNotificationCenterRef center, void *observer, CFSt
 	CMMenu *submenu = [[CMMenu alloc] initWithTitle:@"Submenu 1"];
 	[submenu setCancelsTrackingOnAction:NO];
 	[submenu setCancelsTrackingOnMouseEventOutsideMenus:NO];
-	CMMenuItem *submenuItem1 = [[CMMenuItem alloc] initWithTitle:@"ViewTemplate" action:@selector(someActionForOurCustomMenu:)];
+	CMMenuItem *submenuItem1 = [[CMMenuItem alloc] initWithTitle:@"ViewTemplate" action:NULL];
 	[submenuItem1 setTarget:self];
 	[submenu addItem:submenuItem1];
 	[submenuItem1 release];
-	CMMenuItem *submenuItem2 = [[CMMenuItem alloc] initWithTitle:@"Item" action:@selector(someActionForOurCustomMenu:)];
+	CMMenuItem *submenuItem2 = [[CMMenuItem alloc] initWithTitle:@"Item" action:NULL];
 	[submenuItem2 setTarget:self];
 	[submenu addItem:submenuItem2];
 	[submenuItem2 release];

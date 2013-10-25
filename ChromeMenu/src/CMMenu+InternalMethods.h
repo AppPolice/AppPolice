@@ -23,7 +23,9 @@
 enum {
 	CMMenuOptionDefault = 0x000,
 	CMMenuOptionIgnoreMouse = 0x001,
-	CMMenuOptionTrackMouseMoved = 0x002
+	CMMenuOptionTrackMouseMoved = 0x002,
+	CMMenuOptionUpdateTrackingPrimitives = 0x004,
+	CMMenuOptionUpdateScrollers = 0x008
 };
 typedef NSUInteger CMMenuOptions;
 
