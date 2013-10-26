@@ -169,7 +169,7 @@
 		A0F03057179A96FC000C767D /* CMMenuItemView+InternalMethods.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "CMMenuItemView+InternalMethods.h"; path = "ChromeMenu/src/CMMenuItemView+InternalMethods.h"; sourceTree = SOURCE_ROOT; };
 		A0FC76B31806AE8E00A92F96 /* HintPopoverTextField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = HintPopoverTextField.h; path = AppInspector/HintPopoverTextField.h; sourceTree = "<group>"; };
 		A0FC76B41806AE8E00A92F96 /* HintPopoverTextField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = HintPopoverTextField.m; path = AppInspector/HintPopoverTextField.m; sourceTree = "<group>"; };
-		A0FD2889179BE92900740A12 /* CMMenuEventTypes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = CMMenuEventTypes.h; path = ChromeMenu/src/CMMenuEventTypes.h; sourceTree = SOURCE_ROOT; };
+		A0FD2889179BE92900740A12 /* __delete_CMMenuEventTypes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = __delete_CMMenuEventTypes.h; path = ChromeMenu/src/__delete_CMMenuEventTypes.h; sourceTree = SOURCE_ROOT; };
 		A0FFE0A71805D673007F510E /* AppLimitHintView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppLimitHintView.h; path = AppInspector/AppLimitHintView.h; sourceTree = "<group>"; };
 		A0FFE0A81805D673007F510E /* AppLimitHintView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppLimitHintView.m; path = AppInspector/AppLimitHintView.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -215,7 +215,7 @@
 				A0ED1248179040ED00244C3D /* CMMenu+InternalMethods.h */,
 				A0ED1244179016A900244C3D /* CMMenuItem+InternalMethods.h */,
 				A0F03057179A96FC000C767D /* CMMenuItemView+InternalMethods.h */,
-				A0FD2889179BE92900740A12 /* CMMenuEventTypes.h */,
+				A0FD2889179BE92900740A12 /* __delete_CMMenuEventTypes.h */,
 				A005E2AC17F6B5D000B4FDB2 /* CMDebug.h */,
 				A0ED123E179004D800244C3D /* CMWindowController.h */,
 				A0ED123F179004D800244C3D /* CMWindowController.m */,

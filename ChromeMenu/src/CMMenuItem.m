@@ -248,7 +248,7 @@
 
 
 - (void)setEnabled:(BOOL)flag {
-	if (_isSeparatorItem || _submenu)	// item with submenu cannot be disabled?
+	if (_isSeparatorItem)
 		return;
 	
 	if (_enabled != flag) {
@@ -256,7 +256,10 @@
 		CMMenuItemView *view = (CMMenuItemView *)[_representedViewController view];
 		[view setEnabled:flag];
 		[view setSelected:NO];
-		[[self menu] updateTrackingAreaForItem:self];
+		if (flag == NO && [_submenu isActive]) {
+			[_submenu cancelTrackingWithoutAnimation];
+		}
+		[[self menu] updateTrackingPrimitiveForItem:self];
 	}
 }
 

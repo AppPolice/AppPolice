@@ -9,7 +9,8 @@
 #ifndef CMMenuItem_InternalMethods
 #define CMMenuItem_InternalMethods
 
-#include "CMMenuEventTypes.h"
+//#include "CMMenuEventTypes.h"
+#import "CMMenu+InternalMethods.h"
 
 @interface CMMenuItem (CMMenuItemInternalMethods)
 

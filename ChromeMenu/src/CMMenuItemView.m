@@ -10,6 +10,7 @@
 #import "CMMenuItemView.h"
 #import "CMMenuItemView+InternalMethods.h"
 #import "NSImage+CMMenuImageRepAdditions.h"
+#import <QuartzCore/CAMediaTimingFunction.h>
 #import <objc/runtime.h>
 
 
@@ -19,6 +20,7 @@
 //	NSView *_submenuIconView;
 	NSImageView *_submenuIconView;
 	NSMutableArray *_submenuIconConstraints;
+	BOOL _isAnimating;
 }
 
 @end
@@ -95,13 +97,16 @@
 		NSCell *cell = [_state cell];
 		if (! _enabled) {
 			[cell setBackgroundStyle:NSBackgroundStyleLight];
-			[_state setAlphaValue:0.7];
+			if (! _isAnimating)
+				[_state setAlphaValue:0.6];
 		} else if (_selected) {
 			[cell setBackgroundStyle:NSBackgroundStyleDark];
-			[_state setAlphaValue:1.0];
+			if (! _isAnimating)
+				[_state setAlphaValue:1.0];
 		} else {
 			[cell setBackgroundStyle:NSBackgroundStyleLight];
-			[_state setAlphaValue:1.0];
+			if (! _isAnimating)
+				[_state setAlphaValue:1.0];
 		}
 	}
 	
@@ -109,13 +114,16 @@
 		NSCell *cell = [_icon cell];
 		if (! _enabled) {
 			[cell setBackgroundStyle:NSBackgroundStyleLight];
-			[_icon setAlphaValue:0.7];
+			if (! _isAnimating)
+				[_icon setAlphaValue:0.6];
 		} else if (_selected) {
 			[cell setBackgroundStyle:NSBackgroundStyleDark];
-			[_icon setAlphaValue:1.0];
+			if (! _isAnimating)
+				[_icon setAlphaValue:1.0];
 		} else {
 			[cell setBackgroundStyle:NSBackgroundStyleLight];
-			[_icon setAlphaValue:1.0];
+			if (! _isAnimating)
+				[_icon setAlphaValue:1.0];
 		}
 	}
 	
@@ -131,10 +139,18 @@
 //		}
 		
 		NSCell *cell = [_submenuIconView cell];
-		if (_selected) {
+		if (! _enabled) {
+			[cell setBackgroundStyle:NSBackgroundStyleLight];
+			if (! _isAnimating)
+				[_submenuIconView setAlphaValue:0.5];
+		} else if (_selected) {
 			[cell setBackgroundStyle:NSBackgroundStyleDark];
+			if (! _isAnimating)
+				[_submenuIconView setAlphaValue:1.0];
 		} else {
 			[cell setBackgroundStyle:NSBackgroundStyleLight];
+			if (! _isAnimating)
+				[_submenuIconView setAlphaValue:1.0];
 		}
 	}
 	
@@ -319,9 +335,13 @@
 - (void)fadeIn {
 	NSArray *subviews = [self subviews];
 //	NSLog(@"fade these subviews: %@", subviews);
-	
+	_isAnimating = YES;
 	[NSAnimationContext beginGrouping];
-	[[NSAnimationContext currentContext] setDuration:0.3];
+	[[NSAnimationContext currentContext] setTimingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseIn]];
+	[[NSAnimationContext currentContext] setDuration:0.25];
+	[[NSAnimationContext currentContext] setCompletionHandler:^(void) {
+		_isAnimating = NO;
+	}];
 	for (NSView *view in subviews) {
 		[view setAlphaValue:0.0];
 		[[view animator] setAlphaValue:1.0];
@@ -335,16 +355,18 @@
  */
 - (void)fadeOutWithComplitionHandler:(void (^)(void))handler {
 	NSArray *subviews = [self subviews];
-	
+
+	_isAnimating = YES;
 	[NSAnimationContext beginGrouping];
-	[[NSAnimationContext currentContext] setDuration:0.3];
-	[[NSAnimationContext currentContext] setCompletionHandler:handler];
+	[[NSAnimationContext currentContext] setTimingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionLinear]];
+	[[NSAnimationContext currentContext] setDuration:0.25];
+	[[NSAnimationContext currentContext] setCompletionHandler:^(void) {
+		_isAnimating = NO;
+		if (handler)
+			handler();
+	}];
+	
 	for (NSView *view in subviews) {
-//		[view setAlphaValue:0.0];
-//		if ([[view class] isSubclassOfClass:NSClassFromString(@"NSTextField")]) {
-////			[[(NSTextField *)view animator] setTextColor:[NSColor redColor]];
-//			[[view animator] setAlphaValue:0.0];
-//		} else
 		[[view animator] setAlphaValue:0.0];
 	}
 	[NSAnimationContext endGrouping];

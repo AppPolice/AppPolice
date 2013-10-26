@@ -20,6 +20,27 @@
 #define SUBMENU_POPUP_NO_DELAY 0
 
 
+
+#ifndef Ishimura_CMMenuEventTypes_h
+#define Ishimura_CMMenuEventTypes_h
+
+typedef enum : NSUInteger {
+	CMMenuEventDuringTrackingAreaUpdate = 0x001,				// when mouse event occurred because of scrolling
+	CMMenuEventMouseEnteredItem = 0x002,
+	CMMenuEventMouseExitedItem = 0x004,
+	CMMenuEventMouseItem = 0x006,
+	CMMenuEventMouseEnteredMenu = 0x008,
+	CMMenuEventMouseExitedMenu = 0x010,
+	CMMenuEventMouseMenu = 0x018,
+	CMMenuEventMouseEnteredScroller = 0x020,
+	CMMenuEventMouseExitedScroller = 0x040,
+	CMMenuEventMouseScroller = 0x060
+} CMMenuEventType;
+//typedef NSUInteger CMMenuEventType;
+
+#endif
+
+
 enum {
 	CMMenuOptionDefault = 0x000,
 	CMMenuOptionIgnoreMouse = 0x001,
@@ -31,7 +52,7 @@ typedef NSUInteger CMMenuOptions;
 
 
 
-@class CMMenuItem, CMMenuScroller;
+@class CMMenuItem, CMMenuScroller, CMWindowController;
 //@protocol CMMenuKeyEventInterpreterDelegate;
 
 
@@ -61,12 +82,12 @@ typedef NSUInteger CMMenuOptions;
 - (BOOL)isTracking;
 
 /**
- * @discussion Receiving menu begins tracking in NSEventTrackingRunLoopMode if it is not already.
+ * @abstract Receiving menu begins tracking in NSEventTrackingRunLoopMode if it is not already.
  */
 - (void)beginTrackingWithEvent:(NSEvent *)theEvent;
 
 /**
- * @discussion End previously started tracking.
+ * @abstract End previously started tracking.
  */
 - (void)endTracking;
 
@@ -74,7 +95,8 @@ typedef NSUInteger CMMenuOptions;
 - (void)startTrackingSubmenu:(CMMenu *)submenu forItem:(CMMenuItem *)item;
 - (void)stopTrackingSubmenuReasonSuccess:(BOOL)reasonSuccess;
 - (void)updateTrackingAreaWithOptions:(CMMenuOptions)options;
-- (void)updateTrackingAreaForItem:(CMMenuItem *)item;
+- (void)updateTrackingAreaForItem:(CMMenuItem *)item __attribute__((deprecated));
+- (void)updateTrackingPrimitiveForItem:(CMMenuItem *)item;
 
 /* Default 0: no event's are blocked */
 - (NSEventMask)eventBlockingMask;
@@ -115,7 +137,8 @@ typedef NSUInteger CMMenuOptions;
 - (NSRect)frame;
 
 // TODO: this is temp method
-- (NSWindow *)underlyingWindow;
+- (NSWindow *)underlyingWindow __attribute__((deprecated));
+- (CMWindowController *)underlyingWindowController;
 - (NSInteger)windowLevel;
 
 - (NSRect)convertRectToScreen:(NSRect)aRect;

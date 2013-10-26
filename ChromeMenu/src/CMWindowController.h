@@ -6,7 +6,6 @@
 //  Copyright (c) 2013 Maksym Stefanchuk. All rights reserved.
 //
 
-//#import <Cocoa/Cocoa.h>
 #import "CMMenu+InternalMethods.h"
 
 @class NSWindowController, NSViewController, NSMutableArray;
@@ -71,12 +70,13 @@
 
 - (void)moveVisibleRectToRect:(NSRect)rect ignoreMouse:(BOOL)ignoreMouse updateTrackingPrimitives:(BOOL)updateTrackingPrimitives;
 
-- (void)updateContentViewTrackingAreaTrackMouseMoved:(BOOL)trackMouseMoved;
+- (void)updateContentViewTrackingAreaTrackMouseMoved:(BOOL)trackMouseMoved __attribute__((deprecated));
 /**
  * @abstract When certain menu item changes its needsTracking value (for example
  *	when item is enabled or disabled) add or remove tracking area to/from the documentView of scrollView
  *	for this item view only. It does not update tracking area literally if it already exists.
  */
-- (void)updateItemViewTrackingArea:(NSViewController *)viewController;
+- (void)updateTrackingPrimitiveForView:(NSViewController *)viewController ignoreMouse:(BOOL)ignoreMouse;
+- (void)updateItemViewTrackingArea:(NSViewController *)viewController __attribute__((deprecated));
 
 @end

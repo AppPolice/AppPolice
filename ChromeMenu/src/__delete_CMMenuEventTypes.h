@@ -6,6 +6,8 @@
 //  Copyright (c) 2013 Maksym Stefanchuk. All rights reserved.
 //
 
+/*
+
 #ifndef Ishimura_CMMenuEventTypes_h
 #define Ishimura_CMMenuEventTypes_h
 
@@ -25,3 +27,4 @@ typedef enum : NSUInteger {
 
 
 #endif
+*/
