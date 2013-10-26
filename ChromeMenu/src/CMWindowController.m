@@ -1976,6 +1976,11 @@ typedef struct tracking_primitive_s {
 		NSWindow *eventWindow = [theEvent window];
 		NSEventType eventType = [theEvent type];
 		NSEventMask eventMask = NSEventMaskFromType(eventType);
+		NSPoint mouseLocation = [theEvent locationInWindow];
+		if (eventWindow)
+			mouseLocation = [eventWindow convertBaseToScreen:mouseLocation];
+		mouseInsideWindow = NSPointInRect(mouseLocation, [[self window] frame]);
+
 //		NSEventMask blockingMask = [_owner eventBlockingMask];
 		
 		if (! (eventMask & (NSMouseMovedMask | NSLeftMouseDraggedMask | NSRightMouseDraggedMask | NSOtherMouseDraggedMask | NSSystemDefinedMask))) {
@@ -1989,91 +1994,191 @@ typedef struct tracking_primitive_s {
 		if (eventType == NSSystemDefined)
 			continue;
 		
-		
+//		BOOL eventWindowBelongsToAnyMenu __attribute__((deprecated));
+//		eventWindowBelongsToAnyMenu = NO;
 		// TODO: verify eventWindowBelongsToAnyMenu for all events
-		BOOL eventWindowBelongsToAnyMenu = [self eventWindowBelongsToAnyMenu:theEvent];
-//		NSLog(@"event belongs to menu: %d, blocking mask: %llu", eventWindowBelongsToAnyMenu, blockingMask);
-		if (eventWindowBelongsToAnyMenu && ![[self window] isEqual:eventWindow]) {
-//			NSLog(@"SINCE event outside menu owning loop, find it");
-			CMMenu *menu = [self menuThatGeneratedEvent:theEvent];
-			if (menu && (eventMask & [menu eventBlockingMask])) {
+//		BOOL eventWindowBelongsToAnyMenu = [self eventWindowBelongsToAnyMenu:theEvent];
+//		NSLog(@"event belongs to any menu: %d, win: %@", eventWindowBelongsToAnyMenu, eventWindow);
+////		NSLog(@"event belongs to menu: %d, blocking mask: %llu", eventWindowBelongsToAnyMenu, blockingMask);
+//		if (eventWindowBelongsToAnyMenu && ![[self window] isEqual:eventWindow]) {
+////			NSLog(@"SINCE event outside menu owning loop, find it");
+//			CMMenu *menu = [self menuThatGeneratedEvent:theEvent];
+//			if (menu && (eventMask & [menu eventBlockingMask])) {
+//				NSLog(@"Event has been blocked. Conitnue.");
+//				continue;
+//			}
+//		}
+		
+		CMMenu *candidateMenu = nil;
+		if (! mouseInsideWindow) {
+			candidateMenu = [_owner menuAtPoint:mouseLocation];
+			// Mouse moved events are handled separately below because
+			// even if the candidate menu blocks this event, current menu
+			// needs to process moved event through tracking primitives.
+			if ( !(eventMask & (NSMouseMovedMask | NSLeftMouseDraggedMask | NSRightMouseDraggedMask | NSOtherMouseDraggedMask))
+					&& candidateMenu
+					&& (eventMask & [candidateMenu eventBlockingMask])) {
 				NSLog(@"Event has been blocked. Conitnue.");
 				continue;
 			}
 		}
 
+		BOOL mouseInsideDisplayedMenusDuringEvent = mouseInsideWindow;
+		if ( !mouseInsideDisplayedMenusDuringEvent && candidateMenu)
+			mouseInsideDisplayedMenusDuringEvent = YES;
 		
 		
-#pragma mark MouseEntered
-		if (eventType == NSMouseEntered && eventWindowBelongsToAnyMenu) {
-/*
-			NSDictionary *userData = [theEvent userData];
-			CMMenuEventType menuEventType = [(NSNumber *)[userData objectForKey:kUserDataEventTypeKey] unsignedIntegerValue];
-			
-			if (menuEventType & CMMenuEventMouseItem) {
-				NSViewController *viewController = [(NSDictionary *)[theEvent userData] objectForKey:kTrackingAreaViewControllerKey];
-				[self mouseEventOnItemView:viewController eventType:CMMenuEventMouseEnteredItem];
-			} else if (menuEventType & CMMenuEventMouseScroller) {
-				CMMenuScroller *scroller = [userData objectForKey:kUserDataScrollerViewKey];
-//				CMMenu *menu = [(NSDictionary *)[theEvent userData] objectForKey:kUserDataMenuKey];
-				[self scrollWithActiveScroller:scroller];
-			} else if (menuEventType & CMMenuEventMouseMenu) {
-				CMMenu *menu = [(NSDictionary *)[theEvent userData] objectForKey:kUserDataMenuObjKey];
-//				NSLog(@"event blocking masK: %llu", [menu eventBlockingMask]);
-//				if ([menu eventBlockingMask] & eventMask) {
-//					continue;
+//#pragma mark MouseEntered
+//		if (eventType == NSMouseEntered && eventWindowBelongsToAnyMenu) {
+///*
+//			NSDictionary *userData = [theEvent userData];
+//			CMMenuEventType menuEventType = [(NSNumber *)[userData objectForKey:kUserDataEventTypeKey] unsignedIntegerValue];
+//			
+//			if (menuEventType & CMMenuEventMouseItem) {
+//				NSViewController *viewController = [(NSDictionary *)[theEvent userData] objectForKey:kTrackingAreaViewControllerKey];
+//				[self mouseEventOnItemView:viewController eventType:CMMenuEventMouseEnteredItem];
+//			} else if (menuEventType & CMMenuEventMouseScroller) {
+//				CMMenuScroller *scroller = [userData objectForKey:kUserDataScrollerViewKey];
+////				CMMenu *menu = [(NSDictionary *)[theEvent userData] objectForKey:kUserDataMenuKey];
+//				[self scrollWithActiveScroller:scroller];
+//			} else if (menuEventType & CMMenuEventMouseMenu) {
+//				CMMenu *menu = [(NSDictionary *)[theEvent userData] objectForKey:kUserDataMenuObjKey];
+////				NSLog(@"event blocking masK: %llu", [menu eventBlockingMask]);
+////				if ([menu eventBlockingMask] & eventMask) {
+////					continue;
+////				}
+//				
+//				NSPoint mouseLocation = [theEvent locationInWindow];
+//				mouseLocation = [eventWindow convertBaseToScreen:mouseLocation];
+//				
+//				// When mouse moves from submenu to its supermenu, submenu ends its tracking.
+//				// New menu begins tracking, however if new menu is supermenu the method simply returns,
+//				// since the tracking was previously set up. If new menu is submenu, tracking begins and
+//				// new menu is now the receiver of all events.
+//				NSLog(@"------------------- MOUSE ENTER MENU ------------------------- \n\n");
+////				NSLog(@"and this menu is: %@", menu);
+////				NSLog(@"now sending event to menu");
+//				[menu mouseEvent:theEvent];
+//				if (! NSPointInRect(mouseLocation, [[self window] frame])) {
+//					if ([_owner supermenu] == menu)
+//						[_owner endTracking];
+//					[menu beginTrackingWithEvent:theEvent];
 //				}
+//			}
+//		*/
+//			
+//#pragma mark MouseExited
+//		} else if (eventType == NSMouseExited && eventWindowBelongsToAnyMenu) {
+///*			NSDictionary *userData = [theEvent userData];
+//			CMMenuEventType eventType = [(NSNumber *)[userData objectForKey:kUserDataEventTypeKey] unsignedIntegerValue];
+//			if (eventType & CMMenuEventMouseItem) {
+//	
+////				  We want to redraw currently selected item after newly hovered item has background.
+////				  This technic is used to solve the blinking problem when moving mouse swiftly through the menu items.
+//	
+////				[self performSelector:@selector(delayedMouseExitedEvent:) withObject:theEvent afterDelay:0.0];
+////				[self performSelector:@selector(delayedMouseExitedEvent:) withObject:theEvent afterDelay:0.1 inModes:[NSArray arrayWithObject:NSEventTrackingRunLoopMode]];
+//				NSViewController *viewController = [(NSDictionary *)[theEvent userData] objectForKey:kTrackingAreaViewControllerKey];
+//				[self mouseEventOnItemView:viewController eventType:CMMenuEventMouseExitedItem];
+//			} else if (eventType & CMMenuEventMouseScroller) {
+//				if (_scrollTimer) {
+//					[_scrollTimer invalidate];
+//					//		[_scrollTimer release];
+//					_scrollTimer = nil;
+//				}
+//			} else if (eventType & CMMenuEventMouseMenu) {
+////				CMMenu *menu = (CMMenu *)_owner;
+////				CMMenu *menu = [self menuToReciveEventWithWindow:eventWindow];
+//				CMMenu *menu = [(NSDictionary *)[theEvent userData] objectForKey:kUserDataMenuObjKey];
+//				[menu mouseEvent:theEvent];
+//			}
+//	*/
+//			
+//		} else
+			
+			
+#pragma mark MouseMoved
+//#pragma mark LeftMouseDragged
+//#pragma mark RightMouseDragged
+//#pragma mark OtherMouseDragged
+//		if (eventType == NSMouseMoved || eventType == NSLeftMouseDragged || eventType == NSRightMouseDragged || eventType == NSOtherMouseDragged) {
+		if (eventMask & (NSMouseMovedMask | NSLeftMouseDraggedMask | NSRightMouseDraggedMask | NSOtherMouseDraggedMask)) {
+	//			NSWindow *window = [theEvent window];
+	//			NSLog(@"moved in window: %@ with rect: %@", window, NSStringFromRect([window frame]));
+
+	//			[_owner mouseEvent:theEvent];
+
+	// TODO: Do not send mouseMoved events to anybody else (other windows)
+
+
+	//			NSPoint mouseLocation = [theEvent locationInWindow];
+	//			if (eventWindow)
+	//				mouseLocation = [eventWindow convertBaseToScreen:mouseLocation];
+
+	//			if (eventWindowBelongsToAnyMenu && [_owner receivesMouseMovedEvents]) {
+	//				[_owner mouseEventAtLocation:mouseLocation type:eventType];
+	//			}
+
+	//			if (NSPointInRect(mouseLocation, [[self window] frame])) {
+	//				mouseInsideWindow = YES;
+			if (mouseInsideWindow) {
+				// If menu has subscribed to receive mouse moved event -- send it to it
+				if ([_owner receivesMouseMovedEvents])
+					[_owner mouseEventAtLocation:mouseLocation type:NSMouseMoved];
+				// Process tracking primitive event
+				[self eventOnTrackingPrimitiveAtLocation:mouseLocation mouseInside:YES];
+			} else {
+	//				if (mouseInsideWindow) {		// mouse left window
+	//					mouseInsideWindow = NO;
+				[self eventOnTrackingPrimitiveAtLocation:mouseLocation mouseInside:NO];
+	//				}
 				
-				NSPoint mouseLocation = [theEvent locationInWindow];
-				mouseLocation = [eventWindow convertBaseToScreen:mouseLocation];
+				if (candidateMenu && (eventMask & [candidateMenu eventBlockingMask])) {
+					NSLog(@"Event has been blocked. Conitnue.");
+					goto endEvent;
+				}
 				
-				// When mouse moves from submenu to its supermenu, submenu ends its tracking.
-				// New menu begins tracking, however if new menu is supermenu the method simply returns,
-				// since the tracking was previously set up. If new menu is submenu, tracking begins and
-				// new menu is now the receiver of all events.
-				NSLog(@"------------------- MOUSE ENTER MENU ------------------------- \n\n");
-//				NSLog(@"and this menu is: %@", menu);
-//				NSLog(@"now sending event to menu");
-				[menu mouseEvent:theEvent];
-				if (! NSPointInRect(mouseLocation, [[self window] frame])) {
-					if ([_owner supermenu] == menu)
-						[_owner endTracking];
-					[menu beginTrackingWithEvent:theEvent];
+				
+				// Possibly mouse entered another menu
+	//				CMMenu *candidateMenu = [_owner menuAtPoint:mouseLocation];
+				if (candidateMenu) {
+	//				CMMenu *menu = [_owner rootMenu];
+	//				do {
+	//					if (menu == _owner)
+	//						continue;
+	//
+	//					if (NSPointInRect(mouseLocation, [menu frame])) {
+					// If menu has subscribed to receive mouse moved event -- send it to it
+					if ([candidateMenu receivesMouseMovedEvents])
+						[candidateMenu mouseEventAtLocation:mouseLocation type:NSMouseMoved];
+					
+					[candidateMenu mouseEventAtLocation:mouseLocation type:NSMouseEntered];
+					[[candidateMenu underlyingWindowController] eventOnTrackingPrimitiveAtLocation:mouseLocation mouseInside:YES];
+					if ([candidateMenu supermenu] == _owner) {				// entered submenu
+						[candidateMenu beginTrackingWithEvent:theEvent];
+					} else {												// entered one of the supermenus
+						[self endTracking];
+	//							goto endTracking;
+					}
+					
+					// This goto will be reached only after menu's submenu ends tracking.
+					// Menu here just ends the previous event (that started the submenu).
+					goto endEvent;
+	//					}
+					
+	//				} while ((menu = [menu activeSubmenu]));
 				}
 			}
-		*/
 			
-#pragma mark MouseExited
-		} else if (eventType == NSMouseExited && eventWindowBelongsToAnyMenu) {
-/*			NSDictionary *userData = [theEvent userData];
-			CMMenuEventType eventType = [(NSNumber *)[userData objectForKey:kUserDataEventTypeKey] unsignedIntegerValue];
-			if (eventType & CMMenuEventMouseItem) {
-	
-//				  We want to redraw currently selected item after newly hovered item has background.
-//				  This technic is used to solve the blinking problem when moving mouse swiftly through the menu items.
-	
-//				[self performSelector:@selector(delayedMouseExitedEvent:) withObject:theEvent afterDelay:0.0];
-//				[self performSelector:@selector(delayedMouseExitedEvent:) withObject:theEvent afterDelay:0.1 inModes:[NSArray arrayWithObject:NSEventTrackingRunLoopMode]];
-				NSViewController *viewController = [(NSDictionary *)[theEvent userData] objectForKey:kTrackingAreaViewControllerKey];
-				[self mouseEventOnItemView:viewController eventType:CMMenuEventMouseExitedItem];
-			} else if (eventType & CMMenuEventMouseScroller) {
-				if (_scrollTimer) {
-					[_scrollTimer invalidate];
-					//		[_scrollTimer release];
-					_scrollTimer = nil;
-				}
-			} else if (eventType & CMMenuEventMouseMenu) {
-//				CMMenu *menu = (CMMenu *)_owner;
-//				CMMenu *menu = [self menuToReciveEventWithWindow:eventWindow];
-				CMMenu *menu = [(NSDictionary *)[theEvent userData] objectForKey:kUserDataMenuObjKey];
-				[menu mouseEvent:theEvent];
-			}
-	*/
+			// MouseMoved events are not passed to other windows
+			goto endEvent;
 			
-#pragma mark LeftMouseDown
-#pragma mark RightMouseDown
-#pragma mark OtherMouseDown
-		} else if (eventType == NSLeftMouseDown || eventType == NSRightMouseDown || eventType == NSOtherMouseDown) {
+			
+#pragma mark MouseDown
+//#pragma mark RightMouseDown
+//#pragma mark OtherMouseDown
+//		} else if (eventType == NSLeftMouseDown || eventType == NSRightMouseDown || eventType == NSOtherMouseDown) {
+		} else if (eventMask & (NSLeftMouseDownMask | NSRightMouseDownMask | NSOtherMouseDownMask)) {
 
 //			NSPoint mouseLocation = [theEvent locationInWindow];
 //			NSLog(@"mouse loc: %@", NSStringFromPoint(mouseLocation));
@@ -2090,11 +2195,13 @@ typedef struct tracking_primitive_s {
 //			}
 			
 			
-			NSPoint mouseLocation = [theEvent locationInWindow];
-			if (eventWindow)
-				mouseLocation = [eventWindow convertBaseToScreen:mouseLocation];
+//			NSPoint mouseLocation = [theEvent locationInWindow];
+//			if (eventWindow)
+//				mouseLocation = [eventWindow convertBaseToScreen:mouseLocation];
 			
-			if (eventWindowBelongsToAnyMenu) {
+			
+//			if (eventWindowBelongsToAnyMenu) {
+			if (mouseInsideDisplayedMenusDuringEvent) {
 				mouseIsDown = YES;
 				[_owner mouseEventAtLocation:mouseLocation type:eventType];
 			}
@@ -2104,33 +2211,39 @@ typedef struct tracking_primitive_s {
 //				[[self window] makeKeyWindow];
 //				NSLog(@"key window: %d", [[self window] isKeyWindow]);
 //			} else {
-				if ([_owner cancelsTrackingOnMouseEventOutsideMenus] && ![self mouseInsideDisplayedMenusDuringEvent:theEvent]) {
-					NSLog(@"mouse is outside any menu during MOUSEDOWN!!!");
-					[[_owner rootMenu] cancelTracking];
-					goto endEvent;
-//					goto endTracking;
-				}
+//				if ([_owner cancelsTrackingOnMouseEventOutsideMenus] && ![self mouseInsideDisplayedMenusDuringEvent:theEvent]) {
+			if ([_owner cancelsTrackingOnMouseEventOutsideMenus] && !mouseInsideDisplayedMenusDuringEvent) {
+				NSLog(@"mouse is outside any menu during MOUSEDOWN!!!");
+				[[_owner rootMenu] cancelTracking];
+				goto endEvent;
+//				goto endTracking;
+			}
 //			}
 			
 			
-#pragma mark LeftMouseUp
-#pragma mark RightMouseUp
-#pragma mark OtherMouseUp
-		} else if (eventType == NSLeftMouseUp || eventType == NSRightMouseUp || eventType == NSOtherMouseUp) {
+#pragma mark MouseUp
+//#pragma mark RightMouseUp
+//#pragma mark OtherMouseUp
+//		} else if (eventType == NSLeftMouseUp || eventType == NSRightMouseUp || eventType == NSOtherMouseUp) {
+		} else if (eventMask & (NSLeftMouseUpMask | NSRightMouseUpMask | NSOtherMouseUpMask)) {
 			mouseIsDown = NO;
 			
-			NSPoint mouseLocation = [theEvent locationInWindow];
-			if (eventWindow)
-				mouseLocation = [eventWindow convertBaseToScreen:mouseLocation];
+//			NSPoint mouseLocation = [theEvent locationInWindow];
+//			if (eventWindow)
+//				mouseLocation = [eventWindow convertBaseToScreen:mouseLocation];
 			
-			if ([self mouseInsideDisplayedMenusDuringEvent:theEvent]) {
+			
+			if (mouseInsideDisplayedMenusDuringEvent) {
 				[_owner mouseEventAtLocation:mouseLocation type:eventType];
 			} else if ([_owner cancelsTrackingOnMouseEventOutsideMenus]) {
 				NSLog(@"mouse is outside any menu during MOUSEUP!!!");
+				// this may not be needed, since menus are cancelled on mouseDown
 				[[_owner rootMenu] cancelTracking];
+				goto endEvent;
 			}
 			
-			/* */
+			
+			/* termporary toys */
 			if (NSPointInRect(mouseLocation, [[self window] frame])) {
 				CMMenuItem *item = [_owner itemAtPoint:mouseLocation];
 //				if (item)
@@ -2202,12 +2315,7 @@ typedef struct tracking_primitive_s {
 		
 
 #pragma mark ScrollWheel
-		} else if (eventType == NSScrollWheel && eventWindowBelongsToAnyMenu) {
-			//			[_scrollView scrollWheel:event];
-			//			[[self window] sendEvent:theEvent];
-			//			CFRunLoopRunInMode(kCFRunLoopDefaultMode, 0, NO);
-			
-			//			[NSApp discardEventsMatchingMask:NSPeriodicMask beforeEvent:theEvent];
+		} else if (eventType == NSScrollWheel && mouseInsideWindow) {
 			NSRect contentRect = [[_scrollView contentView] bounds];
 			[_scrollView scrollWithEvent:theEvent];
 			NSRect contentRectAfter = [[_scrollView contentView] bounds];
@@ -2215,7 +2323,8 @@ typedef struct tracking_primitive_s {
 				[self updateMenuScrollersIgnoreMouse:NO];
 				[self updateTrackingPrimitivesIgnoreMouse:NO];
 			}
-		
+
+			
 #pragma mark KeyDown
 		} else if (eventType == NSKeyDown && !mouseIsDown) {
 			if (! _keyEventInterpreter)
@@ -2223,68 +2332,6 @@ typedef struct tracking_primitive_s {
 			
 			[_keyEventInterpreter interpretEvent:theEvent];
 
-			
-#pragma mark MouseMoved
-#pragma mark LeftMouseDragged
-#pragma mark RightMouseDragged
-#pragma mark OtherMouseDragged
-		} else if (eventType == NSMouseMoved || eventType == NSLeftMouseDragged || eventType == NSRightMouseDragged || eventType == NSOtherMouseDragged) {
-//			NSWindow *window = [theEvent window];
-//			NSLog(@"moved in window: %@ with rect: %@", window, NSStringFromRect([window frame]));
-			
-//			[_owner mouseEvent:theEvent];
-			
-// TODO: Do not send mouseMoved events to anybody else (other windows)
-			
-			
-			NSPoint mouseLocation = [theEvent locationInWindow];
-			if (eventWindow)
-				mouseLocation = [eventWindow convertBaseToScreen:mouseLocation];
-			
-//			if (eventWindowBelongsToAnyMenu && [_owner receivesMouseMovedEvents]) {
-//				[_owner mouseEventAtLocation:mouseLocation type:eventType];
-//			}
-
-			if (NSPointInRect(mouseLocation, [[self window] frame])) {
-				mouseInsideWindow = YES;
-				// If menu has subscribed to receive mouse moved event -- send it to it
-				if ([_owner receivesMouseMovedEvents])
-					[_owner mouseEventAtLocation:mouseLocation type:NSMouseMoved];
-				// Process tracking primitive event
-				[self eventOnTrackingPrimitiveAtLocation:mouseLocation mouseInside:YES];
-			} else {
-				if (mouseInsideWindow) {		// mouse left window
-					mouseInsideWindow = NO;
-					[self eventOnTrackingPrimitiveAtLocation:mouseLocation mouseInside:NO];
-				}
-				
-				// Possibly mouse entered another menu
-				CMMenu *menu = [_owner rootMenu];
-				do {
-					if (menu == _owner)
-						continue;
-					
-					if (NSPointInRect(mouseLocation, [menu frame])) {
-						// If menu has subscribed to receive mouse moved event -- send it to it
-						if ([menu receivesMouseMovedEvents])
-							[menu mouseEventAtLocation:mouseLocation type:NSMouseMoved];
-						
-						[menu mouseEventAtLocation:mouseLocation type:NSMouseEntered];
-						[[menu underlyingWindowController] eventOnTrackingPrimitiveAtLocation:mouseLocation mouseInside:YES];
-						if ([menu supermenu] == _owner) {				// entered submenu
-							[menu beginTrackingWithEvent:theEvent];
-						} else {										// entered one of the supermenus
-							[self endTracking];
-//							goto endTracking;
-						}
-						
-						// This goto will be reached only after menu's submenu ends tracking.
-						// Menu here just ends the previous event (that started the submenu).
-						goto endEvent;
-					}
-						
-				} while ((menu = [menu activeSubmenu]));
-			}
 		}
 		
 /*
@@ -2303,12 +2350,13 @@ typedef struct tracking_primitive_s {
 //		NSLog(@"event loop, and we track mouse moved: %d", ((eventMask & NSMouseMovedMask) != 0));
 		
 	
-		if ( !eventWindowBelongsToAnyMenu && eventType != NSKeyDown && eventWindow && ![_owner cancelsTrackingOnMouseEventOutsideMenus]) {
-			if (eventType != NSScrollWheel) {
+//		if ( !eventWindowBelongsToAnyMenu && eventType != NSKeyDown && eventWindow && ![_owner cancelsTrackingOnMouseEventOutsideMenus]) {
+		if ( !mouseInsideDisplayedMenusDuringEvent && eventType != NSKeyDown && eventWindow && ![_owner cancelsTrackingOnMouseEventOutsideMenus]) {
+//			if (eventType != NSScrollWheel) {
 //			NSLog(@"Sending event to non-menu window");
 			[NSApp discardEventsMatchingMask:NSAnyEventMask beforeEvent:theEvent];
 			[eventWindow sendEvent:theEvent];
-			}
+//			}
 		}
 
 		
@@ -2347,6 +2395,8 @@ typedef struct tracking_primitive_s {
 //}
 
 
+
+
 - (CMMenu *)menuThatGeneratedEvent:(NSEvent *)theEvent {
 	NSWindow *window = [theEvent window];
 	if (! window)
@@ -2378,7 +2428,7 @@ typedef struct tracking_primitive_s {
 	NSWindow *window = [theEvent window];
 	CMMenu *menu = ([_owner activeSubmenu]) ? [_owner activeSubmenu] : _owner;
 	while (menu) {
-		if ([[menu underlyingWindow] isEqual:window])
+		if ([[[menu underlyingWindowController] window] isEqual:window])
 			return YES;
 		menu = [menu supermenu];
 	}

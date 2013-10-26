@@ -123,6 +123,7 @@ typedef NSUInteger CMMenuOptions;
  */
 - (void)mouseEvent:(NSEvent *)theEvent __attribute__ ((deprecated));
 - (void)mouseEventAtLocation:(NSPoint)mouseLocation type:(NSEventType)eventType;
+- (CMMenu *)menuAtPoint:(NSPoint)location;
 
 //- (void)mouseMoved:(NSEvent *)theEvent;
 

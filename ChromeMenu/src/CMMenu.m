@@ -786,7 +786,9 @@ typedef struct __submenu_tracking_event tracking_event_t;
 		[self blockEventsMatchingMask:0];
 		CMMenu *menu = [self supermenu];
 		while (menu) {
-			[menu blockEventsMatchingMask:NSLeftMouseDownMask | NSMouseEnteredMask | NSMouseExitedMask | NSScrollWheelMask];
+//			[menu blockEventsMatchingMask:NSLeftMouseDownMask | NSMouseEnteredMask | NSMouseExitedMask | NSScrollWheelMask];
+			[menu blockEventsMatchingMask:NSLeftMouseDownMask | NSRightMouseDownMask | NSOtherMouseDownMask | NSScrollWheelMask | NSMouseMovedMask];
+			// | NSLeftMouseDraggedMask | NSRightMouseDraggedMask | NSOtherMouseDraggedMask
 			menu = [menu supermenu];
 		}
 	} else {
@@ -1220,6 +1222,21 @@ typedef struct __submenu_tracking_event tracking_event_t;
 	
 	if ([self activeSubmenu])
 		[[self activeSubmenu] displayInFrame:NSZeroRect options:CMMenuOptionDefault display:NO];
+}
+
+
+/*
+ *
+ */
+- (CMMenu *)menuAtPoint:(NSPoint)location {
+	CMMenu *menu = [self rootMenu];
+	do {
+		if (NSPointInRect(location, [menu frame])) {
+			return menu;
+		}
+	} while ((menu = [menu activeSubmenu]));
+	
+	return  nil;
 }
 
 
