@@ -17,7 +17,7 @@
 #include <unistd.h>					/* sysconf(_SC_NPROCESSORS_ONLN) */
 #include <libproc.h>				/* proc_pidinfo() */
 #include <pwd.h>					/* getpwuid() */
-#include <mach/mach.h>				/* mach_absolute_time */
+#include <mach/mach.h>				/* mach_absolute_time() */
 #include <mach/mach_time.h>
 
 
@@ -169,7 +169,7 @@ static uint64_t get_timestamp() {
 //	[self performSelector:@selector(updateTrackingAreaForHint) withObject:nil afterDelay:0.0];
 
 	
-	NSLog(@"cpu's: %d", system_ncpu());
+//	NSLog(@"cpu's: %d", system_ncpu());
 }
 
 
@@ -199,6 +199,17 @@ static uint64_t get_timestamp() {
 		pid_t pid = [(NSNumber *)[applicationInfo objectForKey:APApplicationInfoPidKey] intValue];
 		float limit = [(NSNumber *)[applicationInfo objectForKey:APApplicationInfoLimitKey] floatValue];
 
+//		NSLog(@"app icon: %@", icon);
+//		if (! icon) {
+////			NSImage *genericIcon = [[NSWorkspace sharedWorkspace] iconForFileType:NSFileTypeForHFSTypeCode(kGenericExtensionIcon)];
+//			NSImage *genericIcon = [[NSWorkspace sharedWorkspace] iconForFile:@"/bin/ls"];
+//			NSLog(@"generic icon: %@, %@", [genericIcon name], genericIcon);
+////			NSLog(@"image types: %@", [NSImage imageFileTypes]);
+//			NSLog(@"file type: %@", NSHFSTypeOfFile(@"/usr/bin/ssh"));
+//			
+//			icon = genericIcon;
+//		}
+		
 		[icon setSize:[_applicationIcon frame].size];
 		[_applicationIcon setImage:icon];
 		[_applicationNameTextfield setStringValue:[NSString stringWithFormat:@"%@ (%d)", name, pid]];
@@ -212,7 +223,10 @@ static uint64_t get_timestamp() {
 		
 		// TODO: NULL username
 		char *proc_username = get_proc_username(pid);
-		[_applicationUserTextfield setStringValue:[NSString stringWithFormat:@"User: %@", [NSString stringWithCString:proc_username encoding:NSUTF8StringEncoding]]];
+		if (proc_username)
+			[_applicationUserTextfield setStringValue:[NSString stringWithFormat:@"User: %@", [NSString stringWithCString:proc_username encoding:NSUTF8StringEncoding]]];
+		else
+			[_applicationUserTextfield setStringValue:@"User: -"];
 		[_applicationCPUTextfield setStringValue:@"\% CPU: 0.00"];
 		[_levelIndicator setFloatValue:0.0];
 		
@@ -246,6 +260,15 @@ static uint64_t get_timestamp() {
 	cputime = get_proc_cputime(pid);
 	timestamp = get_timestamp();
 	
+	// Info about the process is not available. Stop polling
+	if (cputime == 0) {
+		[_applicationCPUTextfield setStringValue:@"% CPU: -"];
+		[_cpuTimer invalidate];
+		_cpuTimer = nil;
+		return;
+	}
+	
+	// First run: write values and continue
 	if (_cpuTime.cputime == 0) {
 		_cpuTime.cputime = cputime;
 		_cpuTime.timestamp = timestamp;
@@ -259,12 +282,16 @@ static uint64_t get_timestamp() {
 //		  (timestamp - _cpuTime.timestamp) / 100,
 //		  (double)(cputime - _cpuTime.cputime) / (timestamp - _cpuTime.timestamp) * 100.0);
 	
+
+	
 	cpuload = (double)(cputime - _cpuTime.cputime) / (timestamp - _cpuTime.timestamp) * 100;
 	_cpuTime.cputime = cputime;
 	_cpuTime.timestamp = timestamp;
 	
 	[_applicationCPUTextfield setStringValue:[NSString stringWithFormat:@"%% CPU: %.2f", cpuload]];
+	[_levelIndicator setDoubleValue:[self levelIndicatorValueFromCPU:cpuload]];
 	
+//	NSLog(@"level value: %.3f", [self levelIndicatorValueFromCPU:cpuload]);
 }
 
 
@@ -463,7 +490,9 @@ static uint64_t get_timestamp() {
 
 - (double)sliderValueFromLimit:(float)limit {
 	double maxValue = [_slider maxValue];
-	double middleValue;
+	double minValue = [_slider minValue];
+//	double middleValue;
+	double rangeOfValues;
 	double value;
 	int ncpu;
 	
@@ -471,19 +500,64 @@ static uint64_t get_timestamp() {
 		return maxValue;
 	
 	ncpu = system_ncpu();
-	maxValue -= [_slider minValue];
-	maxValue -= maxValue / ([_slider numberOfTickMarks] - 1);		// deduct one tick mark
-	middleValue = maxValue / 2;
+//	maxValue -= [_slider minValue];
+	rangeOfValues = maxValue - minValue;
+//	maxValue -= maxValue / ([_slider numberOfTickMarks] - 1);		// deduct one tick mark
+	rangeOfValues -= maxValue / ([_slider numberOfTickMarks] - 1);		// deduct one tick mark
+//	middleValue = maxValue / 2;
+//	middleValue = valuesRange / 2;
 //	value = limit / ncpu * maxValue;
 	
+	// If there are more that 2 CPUs we take half of the slider width
+	// to show 100%. Other half will show (ncpu - 1) * 100%
 	if (ncpu > 2) {
+		double middleRange = rangeOfValues / 2;
 		if (limit <= 1)
-			value = limit * middleValue;
+			value = limit * middleRange;
 		else
-			value = (limit - 1) / (ncpu - 1) * middleValue + middleValue;
+			value = (limit - 1) / (ncpu - 1) * middleRange + middleRange;
 	} else {
-		value = limit / ncpu * maxValue;
+		value = limit / ncpu * rangeOfValues;
 	}
+	
+	// offset |value| back by minValue
+	if (minValue)
+		value += minValue;
+
+	return value;
+}
+
+
+- (double)levelIndicatorValueFromCPU:(double)cpu {
+	double minValue = [_levelIndicator minValue];
+	double maxValue = [_levelIndicator maxValue];
+	double rangeOfValues;
+//	double middleRange;
+	double value;
+	int ncpu;
+	
+	if (cpu == 0)
+		return minValue;
+	
+	ncpu = system_ncpu();
+//	maxValue -= minValue;
+//	value = cpu / ncpu / 100 * maxValue + minValue;		// cpu / (ncpu * 100) * maxValue + minValue
+	rangeOfValues = maxValue - minValue;
+
+	
+	if (ncpu > 2) {
+		double middleRange = rangeOfValues / 2;
+		if (cpu <= 100.0) {
+			value = cpu / 100 * middleRange;
+		} else {
+			value = (cpu / 100.0 - 1) / (ncpu - 1) * middleRange + middleRange;
+		}
+	} else {
+		value = cpu / 100 / ncpu * rangeOfValues;
+	}
+	
+	if (minValue)
+		value += minValue;
 
 	return value;
 }

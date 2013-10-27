@@ -22,7 +22,7 @@
 //
 - (void)drawRect:(NSRect)dirtyRect {
     // Drawing code here.
-	NSLog(@"called MySubmenuView DRAWRECT");
+//	NSLog(@"called MySubmenuView DRAWRECT");
 //	[[NSColor blueColor] set];
 //	NSRectFill(dirtyRect);
 }
@@ -58,15 +58,15 @@
 //}
 
 - (void)mouseDown:(NSEvent *)theEvent {
-	NSLog(@"MySubmenuView Mouse Donw");
+//	NSLog(@"MySubmenuView Mouse Donw");
 }
 
 - (void)keyDown:(NSEvent *)theEvent {
-	NSLog(@"MySubmenuView key down");
+//	NSLog(@"MySubmenuView key down");
 }
 
 - (void)viewDidMoveToSuperview {
-	NSLog(@"MySubmenuView did movo to superview");
+//	NSLog(@"MySubmenuView did movo to superview");
 //	[self setWantsLayer:YES];
 }
 

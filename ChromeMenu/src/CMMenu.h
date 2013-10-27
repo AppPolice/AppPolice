@@ -11,7 +11,7 @@
 
 @class NSString, NSArray, NSIndexSet;
 @class CMMenuItem;
-
+@protocol CMMenuDelegate;
 
 //enum {
 //	CMMenuAnimationEffectNone = 0x0,
@@ -117,6 +117,11 @@
 - (CMMenuItem *)highlightedItem;
 
 
+/* Set and get the delegate for the menu.  See the NSMenuDelegate protocol for methods that the delegate may implement. */
+- (void)setDelegate:(id <CMMenuDelegate>)anObject;
+- (id <CMMenuDelegate>)delegate;
+
+
 - (void)showPopover:(NSPopover *)popover forItem:(CMMenuItem *)item;
 
 
@@ -133,5 +138,11 @@
 - (CGFloat)borderRadius;
 - (void)setBorderRadius:(CGFloat)radius;
 
+
+@end
+
+@protocol CMMenuDelegate <NSObject>
+@optional
+- (void)menuNeedsUpdate:(CMMenu *)menu;
 
 @end

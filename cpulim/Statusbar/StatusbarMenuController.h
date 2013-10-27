@@ -7,17 +7,19 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "ChromeMenu.h"
 
 #define APApplicationsSortedByName 0
 #define APApplicationsSortedByPid 1
 
-@class CMMenu, CMMenuItem, AppInspector;
+@class /*CMMenu, CMMenuItem,*/ AppInspector;
 
-@interface StatusbarMenuController : NSObject
+@interface StatusbarMenuController : NSObject<CMMenuDelegate>
 {
 	@private;
 	CMMenu *_mainMenu;
-	NSMutableArray *_runningApps;
+	NSMutableArray *_runningApplications;
+	NSMutableArray *_runningProcesses;
 	int _applicationSortKey;
 	AppInspector *_appInspector;
 	CMMenuItem *_itemWithAttachedPopover;

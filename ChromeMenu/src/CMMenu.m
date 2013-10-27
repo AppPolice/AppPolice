@@ -108,6 +108,8 @@ typedef struct __submenu_tracking_event tracking_event_t;
 //	id _localMouseMoveEventMonitor;
 	id _globalEventMonitor;
 	
+	id<CMMenuDelegate> _delegate;
+	
 	NSMutableArray *_popovers;
 }
 
@@ -526,20 +528,20 @@ typedef struct __submenu_tracking_event tracking_event_t;
  *
  */
 - (void)showWithOptions:(CMMenuOptions)options {
+	if (_delegate) {
+		if ([_delegate respondsToSelector:@selector(menuNeedsUpdate:)]) {
+			[_delegate performSelector:@selector(menuNeedsUpdate:) withObject:self];
+		}
+	}
+	
 	if (! _underlyingWindowController) {
 		_underlyingWindowController = [[CMWindowController alloc] initWithOwner:self];
 		[self reloadData];
 		_needsDisplay = NO;
 	}
 	
-//	BOOL isRootMenu = !_supermenu;
-//	BOOL ignoreMouse = (options & CMMenuOptionIgnoreMouse);
-//	NSRect frame = [self getBestFrameForMenuWindow];
-//	[_underlyingWindowController displayInFrame:frame options:options];
 	[self displayInFrame:NSZeroRect options:options display:NO];
 	
-	// Root menu begins tracking itself.
-	// Root menu doesn't have supermenu.
 	if (! _supermenu) {
 		[self beginTrackingWithEvent:nil];
 		
@@ -549,39 +551,10 @@ typedef struct __submenu_tracking_event tracking_event_t;
 
 		// Use workspace to monitor if app gets deactived (e.g. by Command + Tab)
 		// Cannot use NSApplicationDidResignActiveNotification as it doesn't work in NSEventTRackingRunLoopMode
-//		[[[NSWorkspace sharedWorkspace] notificationCenter] addObserver:self selector:@selector(didDeactivateApplicationNotificationHandler:) name:NSWorkspaceDidDeactivateApplicationNotification object:nil];
-
-		
-		
-//		[self performSelector:@selector(registerObserver) withObject:nil afterDelay:0 inModes:[NSArray arrayWithObject:NSEventTrackingRunLoopMode]];
+		[[[NSWorkspace sharedWorkspace] notificationCenter] addObserver:self selector:@selector(didDeactivateApplicationNotificationHandler:) name:NSWorkspaceDidDeactivateApplicationNotification object:nil];
 	}
 	
 	_isActive = YES;
-	
-	/* Only the root menu receives interpreted actions and then routes them to according menu.
-		Root menu doesn't have supermenu. */
-//	if (isRootMenu) {
-//		[_underlyingWindowController beginEventTracking];
-//		if (! _keyEventInterpreter)
-//			_keyEventInterpreter = [[CMMenuKeyEventInterpreter alloc] initWithTarget:self];
-//		[_keyEventInterpreter start];
-		
-		
-		
-//		id monitor = [NSEvent addLocalMonitorForEventsMatchingMask:NSLeftMouseDownMask | NSLeftMouseUpMask handler:^(NSEvent *theEvent) {
-//			NSEventType eventType = [theEvent type];
-//			if (eventType == NSLeftMouseDown) {
-//				NSLog(@"monitored left mouse DOWN click");
-//			} else {
-//				NSLog(@"monitored left mouse UP click");
-//				theEvent = nil;
-//			}
-//			return theEvent;
-//		}];
-		
-//		[self startEventTracking];
-//		NSLog(@"window is key: %d", [[_underlyingWindowController window] isKeyWindow]);
-//	}
 }
 
 
@@ -825,6 +798,23 @@ typedef struct __submenu_tracking_event tracking_event_t;
 	}
 	
 	return nil;
+}
+
+
+/*
+ *
+ */
+- (id<CMMenuDelegate>)delegate {
+	return _delegate;
+}
+
+
+/*
+ *
+ */
+- (void)setDelegate:(id<CMMenuDelegate>)anObject {
+	[_delegate autorelease];
+	_delegate = [anObject retain];
 }
 
 

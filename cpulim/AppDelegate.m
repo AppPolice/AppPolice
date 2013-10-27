@@ -68,6 +68,10 @@
 - (void)awakeFromNib {
 	NSLog(@"%@ awakeFromNib", [self className]);
 	
+//	int a = 1;
+//	int mask = 1 << (8 * sizeof(int) - 1);
+//	a |= mask;
+//	a &= ~mask;
 	
 	
 //	uint64_t a = 10;
