@@ -1051,7 +1051,7 @@ typedef struct tracking_primitive_s {
 //	[[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.1]];
 	
 	// Let RunLoop run one time in default mode so the AppKit can establish tracking areas
-	CFRunLoopRunInMode(kCFRunLoopDefaultMode, 0, NO);
+//	CFRunLoopRunInMode(kCFRunLoopDefaultMode, 0, NO);
 }
 
 
@@ -1110,7 +1110,7 @@ typedef struct tracking_primitive_s {
 //		}
 	}
 
-	CFRunLoopRunInMode(kCFRunLoopDefaultMode, 0, NO);
+//	CFRunLoopRunInMode(kCFRunLoopDefaultMode, 0, NO);
 }
 
 
@@ -1326,7 +1326,7 @@ typedef struct tracking_primitive_s {
 	[contentView addTrackingArea:trackingArea];
 	_contentViewTrackingArea = trackingArea;
 	
-	CFRunLoopRunInMode(kCFRunLoopDefaultMode, 0, NO);
+//	CFRunLoopRunInMode(kCFRunLoopDefaultMode, 0, NO);
 }
 
 
@@ -2270,8 +2270,14 @@ typedef struct tracking_primitive_s {
 
 				} else if (modifierFlags & NSAlternateKeyMask) {
 					item = [_owner itemAtPoint:mouseLocation];
+					NSUInteger idx = (NSUInteger)[_owner indexOfItem:item];
 					if (item) {
-						[_owner removeItem:item animate:YES];
+//						[_owner removeItem:item animate:YES];
+						NSMutableIndexSet *indexes = [NSMutableIndexSet indexSet];
+						[indexes addIndex:(idx - 1)];
+						[indexes addIndex:idx];
+						[indexes addIndex:(idx + 2)];
+						[_owner removeItemsAtIndexes:indexes];
 					}
 
 				} else if (modifierFlags & NSCommandKeyMask) {

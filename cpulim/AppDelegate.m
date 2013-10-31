@@ -67,7 +67,25 @@
 
 - (void)awakeFromNib {
 	NSLog(@"%@ awakeFromNib", [self className]);
+
+	NSMutableArray *array = [[NSMutableArray alloc] initWithObjects:@3, @4, @7, @8, nil];
+	NSMutableIndexSet *indexes = [NSMutableIndexSet indexSet];
+	[indexes addIndex:1];
+	[indexes addIndex:3];
+	[array removeObjectsAtIndexes:indexes];
+	NSLog(@"array: %@", array);
 	
+// ---------------
+//	NSMutableIndexSet *indexSet = [NSMutableIndexSet indexSet];
+//	[indexSet addIndex:3];
+//	[indexSet addIndex:4];
+//	[indexSet addIndex:7];
+//	
+//	[indexSet enumerateIndexesUsingBlock:^(NSUInteger index, BOOL *stop) {
+//		index += 1;
+//	}];
+//	NSLog(@"final index set: %@", indexSet);
+// ----------------
 //	int a = 1;
 //	int mask = 1 << (8 * sizeof(int) - 1);
 //	a |= mask;

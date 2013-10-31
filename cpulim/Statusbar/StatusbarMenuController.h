@@ -19,8 +19,8 @@
 	@private;
 	CMMenu *_mainMenu;
 	NSMutableArray *_runningApplications;
-	NSMutableArray *_runningProcesses;
-	int _applicationSortKey;
+	NSMutableArray *_runningSystemProcesses;
+	int _sortKey;
 	AppInspector *_appInspector;
 	CMMenuItem *_itemWithAttachedPopover;
 }
@@ -28,8 +28,8 @@
 - (CMMenu *)mainMenu;
 
 // APApplicationsSortedByName is the default
-- (int)applicationSortKey;
-- (void)setApplicationSortKey:(int)sortKey;
+- (int)sortKey;
+- (void)setSortKey:(int)sortKey;
 
 //extern NSString *const APApplicationsSortedByName;
 //extern NSString *const APApplicationsSortedByPid;

@@ -6,6 +6,7 @@
 //  Copyright (c) 2013 Maksym Stefanchuk. All rights reserved.
 //
 
+#import "AppInspector.h"
 #import "AppLimitHintView.h"
 
 @implementation AppLimitHintView
@@ -28,6 +29,7 @@
 
 - (void)dealloc {
 	[_trackingArea release];
+	[[NSNotificationCenter defaultCenter] removeObserver:self];
 	[super dealloc];
 }
 
@@ -38,18 +40,37 @@
 //	_trackingArea = [[NSTrackingArea alloc] initWithRect:[self bounds] options:options owner:self userInfo:nil];
 //	[self addTrackingArea:_trackingArea];
 	[self updateTrackingAreas];
+	
+	if (! _observingAppInspectorNotifications) {
+//		NSLog(@"adding observer");
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appInsepctorPopoverDidShowNotificationHandler:) name:APAppInspectorPopoverDidShow object:nil];
+		_observingAppInspectorNotifications = YES;
+	}
 }
 
 
 - (void)updateTrackingAreas {
-	NSLog(@"update trackings");
+//	static int tr = 0;
+//	NSLog(@"update trackings, bounds: %@", NSStringFromRect([self frame]));
+//	NSLog(@"superview: %@", NSStringFromRect([[self superview] frame]));
+//	[[self superview] lockFocusIfCanDraw];
+//	[[NSColor redColor] set];
+//	NSFrameRect([[self superview] frame]);
+//	[[self superview] unlockFocus];
+	
+//	NSLog(@"trackings: %@", [self trackingAreas]);
 	if (_trackingArea) {
 		[self removeTrackingArea:_trackingArea];
 		[_trackingArea release];
+		_trackingArea = nil;
 	}
+	
 	NSTrackingAreaOptions options = NSTrackingActiveInActiveApp | NSTrackingMouseEnteredAndExited;
 	_trackingArea = [[NSTrackingArea alloc] initWithRect:[self bounds] options:options owner:self userInfo:nil];
 	[self addTrackingArea:_trackingArea];
+	
+	// Run RunLoop in default mode for AppKit to update tracking areas
+	CFRunLoopRunInMode(kCFRunLoopDefaultMode, 0, YES);
 }
 
 
@@ -84,10 +105,19 @@
 //		}
 //	}
 //	[[NSNotificationCenter defaultCenter] postNotificationName:AppLimitHintMouseDownNotification object:self userInfo:nil];
-	NSNotification *notification = [NSNotification notificationWithName:AppLimitHintMouseDownNotification object:self userInfo:nil];
-	[[NSNotificationQueue defaultQueue] enqueueNotification:notification postingStyle:NSPostASAP coalesceMask:NSNotificationCoalescingOnName forModes:[NSArray arrayWithObject:NSRunLoopCommonModes]];
+	NSNotification *notification = [NSNotification notificationWithName:APAppLimitHintMouseDownNotification object:self userInfo:nil];
+	[[NSNotificationQueue defaultQueue] enqueueNotification:notification
+											   postingStyle:NSPostASAP
+											   coalesceMask:NSNotificationCoalescingOnName
+												   forModes:[NSArray arrayWithObject:NSRunLoopCommonModes]];
 	
 	[super mouseUp:theEvent];
+}
+
+
+- (void)appInsepctorPopoverDidShowNotificationHandler:(NSNotification *)notification {
+	NSLog(@"appInspector update notification!!");
+	[self updateTrackingAreas];
 }
 
 

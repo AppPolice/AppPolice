@@ -14,6 +14,7 @@
 		A00EF4801793D5A50045ACB5 /* CMScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = A00EF47F1793D59E0045ACB5 /* CMScrollView.m */; };
 		A00FBF4D17DF54BF0083B482 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A00FBF4C17DF54BF0083B482 /* QuartzCore.framework */; };
 		A00FBF5317DF68280083B482 /* NSImage+CMMenuImageRepAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = A00FBF5217DF67D70083B482 /* NSImage+CMMenuImageRepAdditions.m */; };
+		A0100693182106A10017296D /* app_inspector_c.c in Sources */ = {isa = PBXBuildFile; fileRef = A0100692182106A10017296D /* app_inspector_c.c */; };
 		A010F342178474AB003A9E92 /* CMMenu.m in Sources */ = {isa = PBXBuildFile; fileRef = A010F33D178470DD003A9E92 /* CMMenu.m */; };
 		A010F343178474AB003A9E92 /* ChromeMenuUnderlyingWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = A010F33F17847361003A9E92 /* ChromeMenuUnderlyingWindow.m */; };
 		A010F344178474AB003A9E92 /* ChromeMenuUnderlyingView.m in Sources */ = {isa = PBXBuildFile; fileRef = A010F341178473F2003A9E92 /* ChromeMenuUnderlyingView.m */; };
@@ -84,6 +85,8 @@
 		A00FBF4C17DF54BF0083B482 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		A00FBF5117DF67D70083B482 /* NSImage+CMMenuImageRepAdditions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "NSImage+CMMenuImageRepAdditions.h"; path = "../ChromeMenu/src/NSImage+CMMenuImageRepAdditions.h"; sourceTree = "<group>"; };
 		A00FBF5217DF67D70083B482 /* NSImage+CMMenuImageRepAdditions.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = "NSImage+CMMenuImageRepAdditions.m"; path = "../ChromeMenu/src/NSImage+CMMenuImageRepAdditions.m"; sourceTree = "<group>"; };
+		A0100691182106900017296D /* app_inspector_c.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = app_inspector_c.h; path = C/app_inspector_c.h; sourceTree = "<group>"; };
+		A0100692182106A10017296D /* app_inspector_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = app_inspector_c.c; path = C/app_inspector_c.c; sourceTree = "<group>"; };
 		A010F33B17847043003A9E92 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = ChromeMenu/en.lproj/CMMenu.xib; sourceTree = SOURCE_ROOT; };
 		A010F33C178470DD003A9E92 /* CMMenu.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = CMMenu.h; path = ChromeMenu/src/CMMenu.h; sourceTree = SOURCE_ROOT; };
 		A010F33D178470DD003A9E92 /* CMMenu.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = CMMenu.m; path = ChromeMenu/src/CMMenu.m; sourceTree = SOURCE_ROOT; };
@@ -400,6 +403,8 @@
 				A0ADD313174A1438002BAADE /* subroutines.c */,
 				A04FA3D4174D4BF5002E688C /* selfprofile.h */,
 				A04FA3D2174D4BD9002E688C /* selfprofile.c */,
+				A0100691182106900017296D /* app_inspector_c.h */,
+				A0100692182106A10017296D /* app_inspector_c.c */,
 			);
 			name = C;
 			sourceTree = "<group>";
@@ -541,6 +546,7 @@
 				A007EAF41786BBF000A7FE8D /* CMMenuItemOverride.m in Sources */,
 				A007EAF11786B46B00A7FE8D /* CMTableCellVewOverride.m in Sources */,
 				A05B788917859D6E00015156 /* CMMenuItem.m in Sources */,
+				A0100693182106A10017296D /* app_inspector_c.c in Sources */,
 				A01191641807DE88004777D9 /* StatusbarMenu.m in Sources */,
 				A010F3481784856B003A9E92 /* CMMenuItemView.m in Sources */,
 				A010F342178474AB003A9E92 /* CMMenu.m in Sources */,

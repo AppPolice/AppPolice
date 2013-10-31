@@ -425,7 +425,6 @@ typedef struct __submenu_tracking_event tracking_event_t;
 		}
 
 	}
-
 }
 
 
@@ -449,6 +448,57 @@ typedef struct __submenu_tracking_event tracking_event_t;
 			[self removeItemAtIndex:(NSInteger)i animate:animate];
 			break;
 		}
+	}
+}
+
+
+/*
+ *
+ */
+- (void)removeItemsAtIndexes:(NSIndexSet *)indexes {
+	__block NSUInteger itemsCount = [_menuItems count];
+	if (! itemsCount) {
+		[NSException raise:NSInvalidArgumentException format:@"Removing items from empty Menu at -removeItemsAtIndexes:"];
+		return;
+	}
+	if ([indexes indexGreaterThanOrEqualToIndex:itemsCount] != NSNotFound) {
+		[NSException raise:NSRangeException format:@"Indexes out of bounds at CMMenu -removeItemsAtIndexes:"];
+		return;
+	}
+	
+	
+	[indexes enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop) {
+		// See if any of the removing items has submenus
+		--itemsCount;
+		CMMenuItem *item = [_menuItems objectAtIndex:idx];
+		if ([item hasSubmenu]) {
+			if ([[item submenu] isActive])
+				[[item submenu] cancelTrackingWithoutAnimation];
+			[[item submenu] setParentItem:nil];
+			[[item submenu] setSupermenu:nil];
+			[item setSubmenu:nil];
+		}
+		XLog3("Removing menu item: %@", item);
+	}];
+	
+	[_menuItems removeObjectsAtIndexes:indexes];
+
+	
+	// Menu will update items itself
+	if (_needsDisplay)
+		return;
+	
+	__block NSUInteger offset = 0;
+	[indexes enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop) {
+		[_underlyingWindowController removeViewAtIndex:(idx - offset)];
+		++offset;
+	}];
+	
+	if (_isActive) {
+		if (! itemsCount)
+			[self cancelTrackingWithoutAnimation];
+		else
+			[self displayInFrame:NSZeroRect options:CMMenuOptionUpdateScrollers | CMMenuOptionUpdateTrackingPrimitives display:NO];
 	}
 }
 

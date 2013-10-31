@@ -14,6 +14,8 @@
 #define APApplicationInfoLimitKey @"appInfoLimitKey"
 #define APApplicationInfoUserKey @"appInfoUserKey"
 
+#define APAppInspectorPopoverDidShow @"appInspectorPopoverDidShow"
+
 
 @class NSObject, NSView, NSViewController, NSPopover, NSSlider, NSLevelIndicator;
 @class CMMenuItem;

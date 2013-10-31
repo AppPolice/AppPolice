@@ -10,49 +10,51 @@
 #import "ChromeMenu.h"
 #import "AppInspector.h"
 #include <libproc.h>
+#include "app_inspector_c.h"
 
 //NSString *const APApplicationsSortedByName = @"APApplicationsSortedByName";
 //NSString *const APApplicationsSortedByPid = @"APApplicationsSortedByPid";
 
 static const int gShowAllProcesses = 1;
+static const int gShowOtherUsersProcesses = 0;
+
+#define kProcPidKey @"pid"
+#define kProcNameKey @"name"
+#define kNotFoundAppIndexesKey @"nfAppIdx"
+#define kNotFoundSysProcIndexesKey @"nfSysIdx"
+#define kNewSysProcIndexesKey @"newSysIdx"
 
 static const int kPidFoundMask = 1 << (8 * sizeof(int) - 1);
 //#define kPidFoundMask (1 << (8 * sizeof(int) - 1))
 #define PID_MARK_FOUND(pid) (pid |= kPidFoundMask)
 #define PID_UNMARK(pid) (pid &= ~kPidFoundMask)
 #define PID_IS_MARKED(pid) ((pid & kPidFoundMask) ? 1 : 0)
+#define PROC_NAME_MAXLEN 128
 
-// Sets "logind" into provided name buffer for the path
-// like "/System/Library/CoreServices/logind"
-int process_name_from_path(char name[], const char path[]);
-
-int process_name_from_path(char name[], const char path[]) {
-	int pos = -1;
-	int i = 0;
-	
-	for (i = 0; path[i] != '\0'; ++i) {
-		if (path[i] == '/')
-			pos = i;
-	}
-	
-	if (pos == -1)
-		return 0;
-	
-	i = 0;
-	++pos;
-	while ((name[i] = path[pos]) != '\0') {
-		++i;
-		++pos;
-	}
-	
-	return i;
-}
 
 
 @interface StatusbarMenuController ()
 
 - (void)setupMenus;
 - (void)populateMenuWithRunningApplications:(CMMenu *)menu;
+/*!
+  @abstract Makes changes to _runningApplications  and _runningSystemProcesses arrays
+ 	by removing processes that are no longer running, and adding new ones in
+ 	accordance with current sort option set.
+  @discussion This method is the core of all business logic in this Class.
+
+  @return Dictionary of three sets of NSIndexSet type that are to be accessed by keys:
+
+ \return 1. \p kNotFoundAppIndexesKey Set of indexes of items that were removed from
+ 		_runningApplications array. These indexes tell us which menu items
+ 		should be remove.
+ \return 2. \p kNotFoundSysProcIndexesKey Same as above but for _runningSystemProcesses.
+
+ \return 3. \p kNewSysProcIndexesKey Set of indexes of new items that were added
+ 		to _runningSystemProcesses. Use this to insert new menu items at
+ 		corresponding locations.
+ */
+- (NSDictionary *)updateRunningProcesses;
 - (void)appLaunchedNotificationHandler:(NSNotification *)notification;
 - (void)appTerminatedNotificationHandler:(NSNotification *)notification;
 
@@ -73,7 +75,7 @@ int process_name_from_path(char name[], const char path[]) {
 
 - (void)dealloc {
 	[_runningApplications release];
-	[_runningProcesses release];
+	[_runningSystemProcesses release];
 	[_mainMenu release];
 	[_appInspector release];
 	[super dealloc];
@@ -133,7 +135,7 @@ int process_name_from_path(char name[], const char path[]) {
 	// This method is run just once at startup. So the array is guaranteed to
 	// have not been previously used.
 	_runningApplications = [[workspace runningApplications] mutableCopy];
-	[self sortApplicationsByKey:[self applicationSortKey]];
+	[self sortApplicationsByKey:[self sortKey]];
 //	[self sortApplicationsByKey:APApplicationsSortedByPid];
 	
 
@@ -150,6 +152,9 @@ int process_name_from_path(char name[], const char path[]) {
 		[menu addItem:item];
 	}
 	
+	// --------------------------------------------------
+	//		Populate with Applications
+	// --------------------------------------------------
 	for (i = 0; i < elementsCount; ++i) {
 		NSRunningApplication *app = [_runningApplications objectAtIndex:i];
 		if (shared_pid == [app processIdentifier]) {
@@ -174,7 +179,7 @@ int process_name_from_path(char name[], const char path[]) {
 										[NSNumber numberWithFloat:0], APApplicationInfoLimitKey,
 										nil];
 				
-		item = [[[CMMenuItem alloc] initWithTitle:[app localizedName] icon:icon action:@selector(selectApplicationItemMenuAction:)] autorelease];
+		item = [[[CMMenuItem alloc] initWithTitle:[app localizedName] icon:icon action:@selector(selectProcessMenuItemAction:)] autorelease];
 		[item setTarget:self];
 		NSImage *onStateImage = [NSImage imageNamed:NSImageNameStatusAvailable];
 		[onStateImage setSize:NSMakeSize(12, 12)];
@@ -189,72 +194,54 @@ int process_name_from_path(char name[], const char path[]) {
 	// Remove ourselves from running applications array
 	[_runningApplications removeObjectAtIndex:shared_pid_index];
 	
-	// Show System processes delimiter
+	// -----------------------------------------------------
+	//		Populate with System processes if option is set
+	// -----------------------------------------------------
 	if (gShowAllProcesses) {
 		item = [[[CMMenuItem alloc] initWithTitle:@"System" action:NULL] autorelease];
 		[item setEnabled:NO];
 		[menu addItem:item];
 	
-	
+		if (! _runningSystemProcesses)
+			_runningSystemProcesses = [[NSMutableArray alloc] init];
 
-		// Now get running processes. It is complete list that includes also the pids
-		// from above applications.
-		int *proc_pids;
-		int buffersize = proc_listpids(PROC_ALL_PIDS, (uint32_t)0, NULL, 0);
-		proc_pids = (int *)malloc((size_t)buffersize);
-		//memset(buffer, 0xDC, buffersize);
-		// On the first call proc_listpids() returns buffer size with +(20 * sizeof(int))
-		// On the second call it returns the actual size used by buffer; use it to calculate
-		// number of elements in array.
-		int buffersize_used = proc_listpids(PROC_ALL_PIDS, (uint32_t)0, proc_pids, buffersize);
-		int numpids = buffersize_used / (int)(sizeof(int));
-		int n;
 		
-		for (NSRunningApplication *app in _runningApplications) {
-			int pid = (int)[app processIdentifier];
-			//int found = 0;
-			for (n = 0; n < numpids; ++n) {
-				if (pid == proc_pids[n]) {
-					PID_MARK_FOUND(proc_pids[n]);
-					//found = 1;
-//				fprintf(stdout, "\nfound pid: %d after mark: %d", pid, proc_pids[n]);
-					break;
-				}
-			}
-			// What if Application ID was not found in the process list? It probably was
-			// terminatated in such a short period of time?
-			// if (! found) {}
-		}
-	
-		// After the previous lookup we have a list of processes marked as either
-		// already displayed as Application or not marked (system process).
-		_runningProcesses = [[NSMutableArray alloc] init];
-
-		char *pathbuffer = (char *)malloc(PROC_PIDPATHINFO_MAXSIZE);
-		char *namebuffer = (char *)malloc(128 * sizeof(char));
-		//memset(pathbuffer, 0xDC, PROC_PIDPATHINFO_MAXSIZE);
-		for (n = 0; n < numpids; ++n) {
-			if (PID_IS_MARKED(proc_pids[n]))
-				continue;
-			if (proc_pids[n] == 0) {
-				// reached the bottom pid
-				break;
-			}
-			int pid = PID_UNMARK(proc_pids[n]);
-			proc_pidpath(pid, pathbuffer, PROC_PIDPATHINFO_MAXSIZE);
-			int len = process_name_from_path(namebuffer, pathbuffer);
-			fprintf(stdout, "\nproc name: %s", namebuffer);
-//			fprintf(stdout, "\npid[%d] = %d\tpath: %s", n, proc_pids[n], pathbuffer);
-		}
-		free(namebuffer);
-		free(pathbuffer);
-		free(proc_pids);
-//	fputs("\n", stdout);
-//	fflush(stdout);
+		NSDictionary *updateIndexes = [self updateRunningProcesses];
+		NSIndexSet *notfoundAppIndexes = [updateIndexes objectForKey:kNotFoundAppIndexesKey];
+		NSIndexSet *newSysProcIndexes = [updateIndexes objectForKey:kNewSysProcIndexesKey];
 		
+		if ([notfoundAppIndexes count]) {
+			// Because of first menu item "Applications" shift indexes by 1
+			NSMutableIndexSet *shiftedIndexes = [NSMutableIndexSet indexSet];
+			[notfoundAppIndexes enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop) {
+				[shiftedIndexes addIndex:(idx + 1)];
+			}];
+			[menu removeItemsAtIndexes:shiftedIndexes];
+		}
+		
+		if ([newSysProcIndexes count]) {
+			NSImage *genericIcon = [[NSWorkspace sharedWorkspace] iconForFile:@"/bin/ls"];
+			[_runningSystemProcesses enumerateObjectsAtIndexes:newSysProcIndexes options:0 usingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+				NSDictionary *procInfo = (NSDictionary *)obj;
+				NSMutableDictionary *appInfo = [NSMutableDictionary dictionaryWithObjectsAndKeys:
+												[procInfo objectForKey:kProcNameKey], APApplicationInfoNameKey,
+												genericIcon, APApplicationInfoIconKey,
+												[procInfo objectForKey:kProcPidKey], APApplicationInfoPidKey,
+												[NSNumber numberWithFloat:0], APApplicationInfoLimitKey,
+												nil];
+				
+				CMMenuItem *item = [[[CMMenuItem alloc] initWithTitle:[procInfo objectForKey:kProcNameKey] icon:genericIcon action:@selector(selectProcessMenuItemAction:)] autorelease];
+				[item setTarget:self];
+				NSImage *onStateImage = [NSImage imageNamed:NSImageNameStatusAvailable];
+				[onStateImage setSize:NSMakeSize(12, 12)];
+				[item setOnStateImage:onStateImage];
+				[item setRepresentedObject:appInfo];
+				[menu addItem:item];
+			}];
+		}
+		
+//		NSLog(@"not found indexes: %@", updateIndexes);
 	}
-	
-	
 	
 
 	/* temp */ {
@@ -264,7 +251,7 @@ int process_name_from_path(char name[], const char path[]) {
 										[NSNumber numberWithInt:999], APApplicationInfoPidKey,
 										[NSNumber numberWithFloat:0], APApplicationInfoLimitKey, nil];
 		
-		CMMenuItem *item = [[[CMMenuItem alloc] initWithTitle:@"Some really long name for some unexistant applicaton" icon:[NSImage imageNamed:NSImageNameBonjour] action:@selector(selectApplicationItemMenuAction:)] autorelease];
+		CMMenuItem *item = [[[CMMenuItem alloc] initWithTitle:@"Some really long name for some unexistant applicaton" icon:[NSImage imageNamed:NSImageNameBonjour] action:@selector(selectProcessMenuItemAction:)] autorelease];
 		[item setTarget:self];
 		[item setRepresentedObject:appInfo];
 		[menu addItem:item];
@@ -274,6 +261,206 @@ int process_name_from_path(char name[], const char path[]) {
 	NSNotificationCenter *notificationCenter = [workspace notificationCenter];
 	[notificationCenter addObserver:self selector:@selector(appLaunchedNotificationHandler:) name:NSWorkspaceDidLaunchApplicationNotification object:nil];
 	[notificationCenter addObserver:self selector:@selector(appTerminatedNotificationHandler:) name:NSWorkspaceDidTerminateApplicationNotification object:nil];
+}
+
+
+/*
+ *
+ */
+- (NSDictionary *)updateRunningProcesses {
+	pid_t shared_pid = getpid();
+	uid_t shared_uid;
+	NSUInteger shownAppliationsCount = [_runningApplications count];
+	NSUInteger shownSystemProcessesCount = [_runningSystemProcesses count];
+	NSMutableIndexSet *notfoundAppIndexes = [NSMutableIndexSet indexSet];
+	NSMutableIndexSet *notfoundSysProcIndexes = [NSMutableIndexSet indexSet];
+	NSMutableIndexSet *newSysProcIndexes = [NSMutableIndexSet indexSet];
+	
+	// Now get running processes. It is complete list that includes also the pids
+	// from above applications.
+	int *proc_pids;
+	int buffersize = proc_listpids(PROC_ALL_PIDS, (uint32_t)0, NULL, 0);
+	proc_pids = (int *)malloc((size_t)buffersize);
+	//memset(buffer, 0xDC, buffersize);
+	// On the first call proc_listpids() returns buffer size with +(20 * sizeof(int))
+	// On the second call it returns the actual size used by buffer; use it to calculate
+	// number of elements in array.
+	int buffersize_used = proc_listpids(PROC_ALL_PIDS, (uint32_t)0, proc_pids, buffersize);
+	int numpids = buffersize_used / (int)(sizeof(int));
+	int n;
+	NSUInteger idx;
+	
+	
+	// Mark running processes as already shown.
+	// If Application is not found among currently running processes, it most likely
+	// has been terminated, therefore remove it.
+	for (idx = 0; idx < shownAppliationsCount; ++idx) {
+		int pid = (int)[[_runningApplications objectAtIndex:idx] processIdentifier];
+		int found = 0;
+		for (n = 0; n < numpids; ++n) {
+			if (pid == proc_pids[n]) {
+				PID_MARK_FOUND(proc_pids[n]);
+				found = 1;
+//				fprintf(stdout, "\nfound pid: %d after mark: %d", pid, proc_pids[n]);
+				break;
+			}
+		}
+		// If Application is no longer running -- remove it
+		if (! found)
+			[notfoundAppIndexes addIndex:idx];
+	}
+	
+	if ([notfoundAppIndexes count])
+		[_runningApplications removeObjectsAtIndexes:notfoundAppIndexes];
+	
+
+	
+	// Now is the turn to mark System processes that we're already showing.
+	for (idx = 0; idx < shownSystemProcessesCount; ++idx) {
+		int pid = [(NSNumber *)[[_runningSystemProcesses objectAtIndex:idx] objectForKey:kProcPidKey] intValue];
+		int found = 0;
+		for (n = 0; n < numpids; ++n) {
+			if (pid == proc_pids[n]) {
+				PID_MARK_FOUND(proc_pids[n]);
+				found = 1;
+				break;
+			}
+		}
+		if (! found)
+			[notfoundSysProcIndexes addIndex:idx];
+	}
+	
+	if ([notfoundSysProcIndexes count]) {
+//		/* temp */ {
+//			[notfoundSysProcIndexes enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop) {
+//				NSLog(@"removing old process: %@", [_runningSystemProcesses objectAtIndex:idx]);
+//			}];
+//		}
+		[_runningSystemProcesses removeObjectsAtIndexes:notfoundSysProcIndexes];
+		// update the number of sys processes
+		shownSystemProcessesCount -= [notfoundSysProcIndexes count];
+	}
+	
+	
+	
+	// After the previous lookups we have an array of processes that
+	// are marked as either already shown or not. Those that are not
+	// shown, get process name and add to the System processes array.
+	
+	char *pathbuffer = (char *)malloc(PROC_PIDPATHINFO_MAXSIZE);
+	char *namebuffer = (char *)malloc(PROC_NAME_MAXLEN * sizeof(char));
+	//memset(pathbuffer, 0xDC, PROC_PIDPATHINFO_MAXSIZE);
+	int *insert_indexes;
+	int insert_indexes_num = 0;
+	int insert_index_i;
+	// If there are shown processes we will be inserting new processes
+	// into an array accounting current sorting and store insertion indexes.
+	// Previous insert indexes must be incremented if the new insertion was
+	// above. For example, if current indexes are (5, 6, 9) and new one is (3)
+	// the resulting indexes would be (3, 6, 7, 10).
+	if (shownSystemProcessesCount)
+		insert_indexes = (int *)malloc((size_t)numpids * sizeof(int));
+
+	if (!gShowOtherUsersProcesses)
+		shared_uid = getuid();
+
+
+	for (n = 0; n < numpids; ++n) {
+		if (proc_pids[n] == 0) // reached the bottom pid
+			break;
+
+		if (PID_IS_MARKED(proc_pids[n]) || proc_pids[n] == shared_pid)
+			continue;
+		
+		if (!gShowOtherUsersProcesses) {
+			uid_t proc_uid = get_proc_uid(proc_pids[n]);
+			printf("skipg pid: %d\n", proc_pids[n]);
+			if (proc_uid != shared_uid)
+				continue;
+		}
+		
+		//			int pid = PID_UNMARK(proc_pids[n]);
+		proc_pidpath(proc_pids[n], pathbuffer, PROC_PIDPATHINFO_MAXSIZE);
+		int len = proc_name_from_path(namebuffer, pathbuffer, PROC_NAME_MAXLEN);
+		if (! len)	// process doesn't have a name?
+			continue;
+		
+		NSDictionary *procInfo = @{
+			kProcPidKey : [NSNumber numberWithInt:proc_pids[n]],
+			kProcNameKey : [NSString stringWithCString:namebuffer encoding:NSUTF8StringEncoding]
+		};
+		// If there are already objects in array, all new ones must be inserted in a
+		// positon according to current sort key.
+		if (shownSystemProcessesCount) {
+			int insertIndex = (int)[self addProccessAccountingSorting:procInfo];
+			for (insert_index_i = 0; insert_index_i < insert_indexes_num; ++insert_index_i)
+				if (insertIndex <= insert_indexes[insert_index_i])
+					insert_indexes[insert_index_i] += 1;
+			insert_indexes[insert_indexes_num++] = insertIndex;
+		} else {		// otherwise simply add them and sort later
+			[_runningSystemProcesses addObject:procInfo];
+		}
+		fprintf(stdout, "proc %d name: %s\n", proc_pids[n], namebuffer);
+//		fprintf(stdout, "\npid[%d] = %d\tpath: %s", n, proc_pids[n], pathbuffer);
+	}
+	free(namebuffer);
+	free(pathbuffer);
+	free(proc_pids);
+	
+	
+	if (shownSystemProcessesCount) {
+		for (insert_index_i = 0; insert_index_i < insert_indexes_num; ++insert_index_i)
+			[newSysProcIndexes addIndex:(NSUInteger)insert_indexes[insert_index_i]];
+		free(insert_indexes);
+	} else {
+		[self sortSystemProcessesByKey:[self sortKey]];
+		[newSysProcIndexes addIndexesInRange:NSMakeRange(0, [_runningSystemProcesses count])];
+	}
+	
+//	/* temp */ {
+//		[_runningSystemProcesses enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+//			BOOL new = [newSysProcIndexes containsIndex:idx];
+//			NSLog(@"%lu pid[%d][%@] %@", idx, [[obj objectForKey:kProcPidKey] intValue], [obj objectForKey:kProcNameKey], (new) ? @" -- is new" : @"");
+//		}];
+//	}
+	
+//	NSLog(@"running system processes: %@", _runningSystemProcesses);
+//	NSLog(@"procs: %@", _runningProcesses);
+	
+	return @{
+		kNotFoundAppIndexesKey : notfoundAppIndexes,
+		kNotFoundSysProcIndexesKey : notfoundSysProcIndexes,
+		kNewSysProcIndexesKey : newSysProcIndexes
+	};
+}
+
+
+/*
+ *
+ */
+- (NSUInteger)addProccessAccountingSorting:(NSDictionary *)processInfo {
+	NSUInteger elementsCount = [_runningSystemProcesses count];
+	NSUInteger index = 0;
+	
+	int sortKey = [self sortKey];
+	if (sortKey == APApplicationsSortedByName) {
+		NSString *name = [processInfo objectForKey:kProcNameKey];
+		NSUInteger i = 0;
+		while (i < elementsCount && [name localizedCompare:[[_runningSystemProcesses objectAtIndex:i] objectForKey:kProcNameKey]] == NSOrderedDescending)
+			++i;
+		index = i;
+		
+	} else if (sortKey == APApplicationsSortedByPid) {
+		NSNumber *pid = [processInfo objectForKey:kProcPidKey];
+		NSUInteger i = 0;
+		while (i < elementsCount && [pid compare:[[_runningSystemProcesses objectAtIndex:i] objectForKey:kProcPidKey]] == NSOrderedDescending)
+			++i;
+		index = i;
+	}
+	
+	[_runningSystemProcesses insertObject:processInfo atIndex:index];
+	
+	return index;
 }
 
 
@@ -303,8 +490,81 @@ int process_name_from_path(char name[], const char path[]) {
 /*
  *
  */
+- (void)sortSystemProcessesByKey:(int)sortKey {
+	NSSortDescriptor *descriptor;
+	
+	if (! [_runningSystemProcesses count])
+		return;
+	
+	if (sortKey == APApplicationsSortedByName) {
+		descriptor = [[NSSortDescriptor alloc] initWithKey:kProcNameKey ascending:YES selector:@selector(localizedCompare:)];
+	} else if (sortKey == APApplicationsSortedByPid) {
+		descriptor = [[NSSortDescriptor alloc] initWithKey:kProcPidKey ascending:YES];
+	} else {
+		NSLog(@"Provided sort key is not valid");
+		return;
+	}
+	
+	[_runningSystemProcesses sortUsingDescriptors:[NSArray arrayWithObject:descriptor]];
+	[descriptor release];
+}
+
+
+/*
+ *
+ */
 - (void)menuNeedsUpdate:(CMMenu *)menu {
-	NSLog(@"menu needs upate: %@", menu);
+	NSDictionary *updateIndexSets = [self updateRunningProcesses];
+	NSIndexSet *notfoundAppIndexes = [updateIndexSets objectForKey:kNotFoundAppIndexesKey];
+	NSIndexSet *notfoundSysProcIndexes = [updateIndexSets objectForKey:kNotFoundSysProcIndexesKey];
+	NSIndexSet *newSysProcIndexes = [updateIndexSets objectForKey:kNewSysProcIndexesKey];
+	NSLog(@"update indexes: %@", updateIndexSets);
+	
+	
+	if ([notfoundAppIndexes count]) {
+		// Because of first menu item "Applications" shift indexes by 1
+		NSMutableIndexSet *shiftedIndexes = [NSMutableIndexSet indexSet];
+		[notfoundAppIndexes enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop) {
+			[shiftedIndexes addIndex:(idx + 1)];
+		}];
+		[menu removeItemsAtIndexes:shiftedIndexes];
+	}
+	
+	if ([notfoundSysProcIndexes count]) {
+		NSUInteger offset = [_runningApplications count] + 2;
+		// Shift indexes by amount of Application items and two delimeters
+		NSMutableIndexSet *shiftedIndexes = [NSMutableIndexSet indexSet];
+		[notfoundSysProcIndexes enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop) {
+			[shiftedIndexes addIndex:(idx + offset)];
+		}];
+		[menu removeItemsAtIndexes:shiftedIndexes];
+	}
+	
+	if ([newSysProcIndexes count]) {
+		NSUInteger offset = [_runningApplications count] + 2;
+		NSImage *genericIcon = [[NSWorkspace sharedWorkspace] iconForFile:@"/bin/ls"];
+		[_runningSystemProcesses enumerateObjectsAtIndexes:newSysProcIndexes options:0 usingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+			NSDictionary *procInfo = (NSDictionary *)obj;
+			NSMutableDictionary *appInfo = [NSMutableDictionary dictionaryWithObjectsAndKeys:
+											[procInfo objectForKey:kProcNameKey], APApplicationInfoNameKey,
+											genericIcon, APApplicationInfoIconKey,
+											[procInfo objectForKey:kProcPidKey], APApplicationInfoPidKey,
+											[NSNumber numberWithFloat:0], APApplicationInfoLimitKey,
+											nil];
+			
+			CMMenuItem *item = [[[CMMenuItem alloc] initWithTitle:[procInfo objectForKey:kProcNameKey] icon:genericIcon action:@selector(selectProcessMenuItemAction:)] autorelease];
+			[item setTarget:self];
+			NSImage *onStateImage = [NSImage imageNamed:NSImageNameStatusAvailable];
+			[onStateImage setSize:NSMakeSize(12, 12)];
+			[item setOnStateImage:onStateImage];
+			[item setRepresentedObject:appInfo];
+			[menu insertItem:item atIndex:(idx + offset) animate:NO];
+		}];
+	}
+	
+//	[notfoundSysProcIndexes enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop) {
+//		NSLog(@"notfound proc: %@", [_runningSystemProcesses objectAtIndex:idx]);
+//	}];
 }
 
 
@@ -328,7 +588,7 @@ int process_name_from_path(char name[], const char path[]) {
 		will not be interrupted by similar notifications.
 	 /----------------------------------------------------------------------------------------------------*/
 	
-	int sortKey = [self applicationSortKey];
+	int sortKey = [self sortKey];
 	if (sortKey == APApplicationsSortedByName) {
 		NSString *appName = [app localizedName];
 		NSUInteger i = 0;
@@ -347,6 +607,7 @@ int process_name_from_path(char name[], const char path[]) {
 
 	} else if (sortKey == APApplicationsSortedByPid) {
 		// New apps most likely will have pid greater then the pid of last app in array
+		// TODO: take into account the Asc/Desc
 //		index = elementsCount;
 	}
 	
@@ -360,7 +621,7 @@ int process_name_from_path(char name[], const char path[]) {
 									[NSNumber numberWithInt:[app processIdentifier]], APApplicationInfoPidKey,
 									[NSNumber numberWithFloat:0], APApplicationInfoLimitKey, nil];
 	
-	CMMenuItem *item = [[[CMMenuItem alloc] initWithTitle:[app localizedName] icon:[app icon] action:@selector(selectApplicationItemMenuAction:)] autorelease];
+	CMMenuItem *item = [[[CMMenuItem alloc] initWithTitle:[app localizedName] icon:[app icon] action:@selector(selectProcessMenuItemAction:)] autorelease];
 	[item setTarget:self];
 	NSImage *onStateImage = [NSImage imageNamed:NSImageNameStatusAvailable];
 	[onStateImage setSize:NSMakeSize(12, 12)];
@@ -411,7 +672,7 @@ int process_name_from_path(char name[], const char path[]) {
 /*
  *
  */
-- (void)selectApplicationItemMenuAction:(id)sender {
+- (void)selectProcessMenuItemAction:(id)sender {
 	CMMenuItem *item = (CMMenuItem *)sender;
 	AppInspector *appInspector = [self appInspector];
 //	NSDictionary *inspectorAppInfo = [appInspector applicationInfo];
@@ -483,20 +744,20 @@ int process_name_from_path(char name[], const char path[]) {
 }
 
 
-- (int)applicationSortKey {
-	return (_applicationSortKey) ? _applicationSortKey : APApplicationsSortedByName;
+- (int)sortKey {
+	return (_sortKey) ? _sortKey : APApplicationsSortedByName;
 }
 
 
-- (void)setApplicationSortKey:(int)sortKey {
+- (void)setSortKey:(int)sortKey {
 	if ( sortKey != APApplicationsSortedByName
 	  && sortKey != APApplicationsSortedByPid) {
 		NSLog(@"Provided sortKey does not exist");
 		return;
 	}
 	
-	if (_applicationSortKey != sortKey) {
-		_applicationSortKey = sortKey;
+	if (_sortKey != sortKey) {
+		_sortKey = sortKey;
 
 		// update menu here
 		

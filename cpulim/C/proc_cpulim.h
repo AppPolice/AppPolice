@@ -6,6 +6,8 @@
 //  Copyright (c) 2013 Maksym Stefanchuk. All rights reserved.
 //
 
+#ifndef _PROC_CPULIM_H
+#define _PROC_CPULIM_H
 
 #include "subroutines.h"
 
@@ -17,7 +19,8 @@
 /* Note, to use dispatch_debug() an appropriate env. variable must be set:
 	setenv("LIBDISPATCH_LOG", "stderr", 1);
  
-	A proper place for this call could be in the application main file. */
+	A proper place for this call could be in the application main file.
+*/
 
 
 /* newlim is the fraction of percents. For example 1 corresponds to 100% of permitted cpu load, 0.5 to 50% and 2.5 to 250% (in multicore environment).
@@ -30,3 +33,5 @@ void proc_cpulim_suspend_wait(void);	/* function returns only after limiter stop
 
 /* should be private */
 void proc_taskstats_print(void);
+
+#endif

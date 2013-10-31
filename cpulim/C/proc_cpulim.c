@@ -23,6 +23,7 @@
 //#include <mach/mach.h>			/* mach_absolute_time */
 //#include <mach/mach_time.h>
 #include <libkern/OSAtomic.h>
+#include <errno.h>					/* errno */
 
 #include "proc_cpulim.h"
 
@@ -219,7 +220,7 @@ void proc_cpulim_resume(void) {
 	
 	if (limiter_is_running) {
 		if (opt_verbose_level) {
-			fputs("\n[proc_cpulim] Info: Limiter is still running. Try when it's fully stopped.", stdout);
+			fputs("[proc_cpulim] Info: Limiter is still running. Try when it's fully stopped.\n", stdout);
 			fflush(stdout);
 		}
 		return;
@@ -326,7 +327,7 @@ static uint64_t do_sleep_loop(void) {
 	ntasks_with_lim = proc_tasks_calcsleeptime();
 	if (ntasks_with_lim == 0) {
 		if (opt_verbose_level)
-			fputs("\n[proc_cpulim] Info: There are no proc_tasks with limits.", stdout);
+			fputs("[proc_cpulim] Info: There are no process tasks with limits.\n", stdout);
 		proc_cpulim_suspend();
 		return 0;
 	}
@@ -342,7 +343,7 @@ static uint64_t do_sleep_loop(void) {
  */
 static uint proc_tasks_calcsleeptime(void) {
 	struct proc_taskinfo ptinfo;
-	int error = 0;
+	int numbytes;			// number of bytes returned by proc_pidinfo()
 	uint64_t time_prev;
 	uint64_t time_diff;
 	int64_t sleep_time;
@@ -373,11 +374,12 @@ static uint proc_tasks_calcsleeptime(void) {
 			continue;
 		
 		++ntasks_with_lim;
-		error = proc_pidinfo(task->pid, PROC_PIDTASKINFO, (uint64_t)0, &ptinfo, PROC_PIDTASKINFO_SIZE);
-		if (error < 1) {
-			if (opt_verbose_level)
-				fprintf(stdout, "\n[proc_cpulim] Error: kernel proc_pidinfo returned: %d", error);
-			proc_task_delete(task->pid);	/* either pid is wrong or process exited */
+		errno = 0;
+		numbytes = proc_pidinfo(task->pid, PROC_PIDTASKINFO, (uint64_t)0, &ptinfo, PROC_PIDTASKINFO_SIZE);
+		if (numbytes <= 0) {
+			if (errno == ESRCH && opt_verbose_level)
+				(void) fprintf(stdout, "[proc_cpulim] Info: process %d not found. Removing from the list\n", task->pid);
+			proc_task_delete(task->pid);
 			continue;
 		}
 		
@@ -422,7 +424,7 @@ static uint proc_tasks_calcsleeptime(void) {
 		task->sleep_time = (uint64_t)sleep_time;
 //		task->timestamp = timestamp;
 		
-		printf("\nsleep time = %lld + %lld * (%.3f - %.3f) / %0.3f",
+		printf("sleep time = %lld + %lld * (%.3f - %.3f) / %0.3f\n",
 			   task->sleep_time,
 			   work_time,
 			   cpuload,
@@ -431,7 +433,7 @@ static uint proc_tasks_calcsleeptime(void) {
 
 		
 		if (opt_verbose_level)
-			printf("\npid # %d, time_prev: %llu, current_time: %llu, time_diff: %llu sleep_time: %llu or %0.3f(s) Worktime(ns): %lld",
+			printf("pid # %d, time_prev: %llu, current_time: %llu, time_diff: %llu sleep_time: %llu or %0.3f(s) Worktime(ns): %lld\n",
 				task->pid,
 				time_prev,
 				task->time,
@@ -467,7 +469,7 @@ static uint64_t proc_tasks_execsleeptime(void) {
 		if (task->sleep_time != 0) {
 			if (kill(task->pid, SIGSTOP) == -1) {
 				if (opt_verbose_level)
-					fputs("\n[proc_cpulim] Error: could not send a signal to a process.", stderr);
+					fputs("[proc_cpulim] Error: could not send a signal to a process.\n", stderr);
 				continue;
 			}
 			
@@ -734,7 +736,7 @@ void proc_cpulim_suspend(void) {
 	
 	_keep_limiter_running = 0;
 	if (opt_verbose_level)
-		fputs("\n[proc_cpulim] Info: Limiter going to hibernate.", stdout);
+		fputs("[proc_cpulim] Info: Limiter going to hibernate.\n", stdout);
 }
 
 
@@ -761,7 +763,7 @@ void proc_cpulim_suspend_wait(void) {
 	//	Submits a block object for execution on a dispatch queue and waits until that block completes
 	dispatch_sync(limiter_queue, ^{
 		if (opt_verbose_level)
-			fputs("\n[proc_cpulim] Info: Limiter going to hibernate.", stdout);
+			fputs("[proc_cpulim] Info: Limiter going to hibernate.\n", stdout);
 	});
 	
 //	if (owner) {
@@ -846,7 +848,7 @@ static void do_proc_task_delete(pid_t pid) {
 	}
 	
 	if (opt_verbose_level)
-		fprintf(stdout, "\n[proc_cpulim] Info: Process '%d' deleted from the task list.", pid);
+		fprintf(stdout, "[proc_cpulim] Info: Process '%d' deleted from the task list.\n", pid);
 }
 
 

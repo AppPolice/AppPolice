@@ -87,6 +87,8 @@
 /* Removes the item from the menu.  If the item is nil, or is not present in the receiver, an exception will be raised. */
 - (void)removeItem:(CMMenuItem *)item animate:(BOOL)animate;
 
+- (void)removeItemsAtIndexes:(NSIndexSet *)indexes;
+
 
 /* this is an actual table reload, scary thing. must be taken care of */
 //- (void)update;

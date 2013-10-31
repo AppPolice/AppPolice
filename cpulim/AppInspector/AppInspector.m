@@ -12,96 +12,11 @@
 #import "AppLimitSliderCell.h"
 #import "AppLimitHintView.h"
 #import "HintPopoverTextField.h"
-// C
-#include <sys/sysctl.h>				/* sysctl() */
-#include <unistd.h>					/* sysconf(_SC_NPROCESSORS_ONLN) */
-#include <libproc.h>				/* proc_pidinfo() */
-#include <pwd.h>					/* getpwuid() */
-#include <mach/mach.h>				/* mach_absolute_time() */
-#include <mach/mach_time.h>
+#include "app_inspector_c.h"
+#include <errno.h>
 
-
-
-/*
- * Return number of CPUs in computer
- */
-static int system_ncpu() {
-	static int ncpu = 0;
-	if (ncpu)
-		return ncpu;
-	
-#ifdef _SC_NPROCESSORS_ONLN
-	ncpu = (int)sysconf(_SC_NPROCESSORS_ONLN);
-#else
-	int mib[2];
-	mib[0] = CTL_HW;
-	mig[1] = HW_NCPU;
-	size_t len = sizeof(ncpu);
-	sysctl(mib, 2, &ncpu, &len, NULL, 0);
-#endif
-	return ncpu;
-}
-
-
-/*
- *
- */
-//static void pid_bsd_shortinfo(pid_t pid) {
-static char *get_proc_username(pid_t pid) {
-	int error;
-	struct passwd *pwdinfo;
-	struct proc_bsdshortinfo bsdinfo;
-//	char *pw_name;						// process name
-	
-	error = 0;
-	error = proc_pidinfo(pid, PROC_PIDT_SHORTBSDINFO, (uint64_t)0, &bsdinfo, PROC_PIDT_SHORTBSDINFO_SIZE);
-	if (error < 1) {
-		// no process info couldn't be fetched.
-		fprintf(stdout, "\nProcess pid: %d info couldn't be fetched.", pid);
-		return NULL;
-	}
-	pwdinfo = getpwuid(bsdinfo.pbsi_uid);
-//	pw_name = pwdinfo->pw_name;
-	return pwdinfo->pw_name;
-}
-
-
-/*
- *
- */
-static uint64_t get_proc_cputime(pid_t pid) {
-	int error;
-	struct proc_taskinfo ptinfo;
-	
-	error = 0;
-	error = proc_pidinfo(pid, PROC_PIDTASKINFO, (uint64_t)0, &ptinfo, PROC_PIDTASKINFO_SIZE);
-	if (error < 1) {
-		// no process info couldn't be fetched.
-		fprintf(stdout, "\nProcess pid: %d info couldn't be fetched.", pid);
-		return 0;
-	}
-	
-	return (ptinfo.pti_total_user + ptinfo.pti_total_system);
-}
-
-
-/*
- *
- */
-static uint64_t get_timestamp() {
-	uint64_t timestamp;
-	uint64_t mach_time;
-	static mach_timebase_info_data_t sTimebaseInfo;
-	
-	// See "Mach Absolute Time Units" for instructions:
-	// https://developer.apple.com/library/mac/qa/qa1398/
-	mach_time = mach_absolute_time();
-	if (sTimebaseInfo.denom == 0) {
-		(void) mach_timebase_info(&sTimebaseInfo);
-	}
-	timestamp = mach_time * sTimebaseInfo.numer / sTimebaseInfo.denom;
-	return timestamp;
-}
+#define SLIDER_NOT_LIMITED_VALUE [_slider maxValue]
+#define NO_LIMIT 0.0
 
 
 // ---------------------------------- Obj-c ---------------------------------------
@@ -187,32 +102,76 @@ static uint64_t get_timestamp() {
 		return;
 	
 	_attachedToItem = attachedToItem;
-	if (attachedToItem) {
-		NSMutableDictionary *applicationInfo = [attachedToItem representedObject];
-		if (! applicationInfo) {
-			NSLog(@"Pleaes provide application info for menu item (represented object).");
-			return;
-		}
-		
-		NSImage *icon = [applicationInfo objectForKey:APApplicationInfoIconKey];
-		NSString *name = [applicationInfo objectForKey:APApplicationInfoNameKey];
-		pid_t pid = [(NSNumber *)[applicationInfo objectForKey:APApplicationInfoPidKey] intValue];
-		float limit = [(NSNumber *)[applicationInfo objectForKey:APApplicationInfoLimitKey] floatValue];
+	if (! attachedToItem)
+		return;
+	
+//	NSLog(@"attached ot item: %@", attachedToItem);
+	
+	NSMutableDictionary *applicationInfo = [attachedToItem representedObject];
+	if (! applicationInfo) {
+		NSLog(@"No application info provided with menu item (represented object).");
+		return;
+	}
+	
+	NSImage *icon = [applicationInfo objectForKey:APApplicationInfoIconKey];
+	NSString *name = [applicationInfo objectForKey:APApplicationInfoNameKey];
+	pid_t pid = [(NSNumber *)[applicationInfo objectForKey:APApplicationInfoPidKey] intValue];
+	float limit = [(NSNumber *)[applicationInfo objectForKey:APApplicationInfoLimitKey] floatValue];
 
-//		NSLog(@"app icon: %@", icon);
-//		if (! icon) {
-////			NSImage *genericIcon = [[NSWorkspace sharedWorkspace] iconForFileType:NSFileTypeForHFSTypeCode(kGenericExtensionIcon)];
-//			NSImage *genericIcon = [[NSWorkspace sharedWorkspace] iconForFile:@"/bin/ls"];
-//			NSLog(@"generic icon: %@, %@", [genericIcon name], genericIcon);
-////			NSLog(@"image types: %@", [NSImage imageFileTypes]);
-//			NSLog(@"file type: %@", NSHFSTypeOfFile(@"/usr/bin/ssh"));
-//			
-//			icon = genericIcon;
-//		}
+//		NSImage *genericIcon = [[NSWorkspace sharedWorkspace] iconForFileType:NSFileTypeForHFSTypeCode(kGenericExtensionIcon)];
+//		NSImage *genericIcon = [[NSWorkspace sharedWorkspace] iconForFile:@"/bin/ls"];
+	
+	[icon setSize:[_applicationIcon frame].size];
+	[_applicationIcon setImage:icon];
+	[_applicationNameTextfield setStringValue:[NSString stringWithFormat:@"%@ (%d)", name, pid]];
+	
+	
+	if (_cpuTimer) {
+		[_cpuTimer invalidate];
+		_cpuTimer = nil;
+	}
+	
+
+
+	errno = 0;
+	// Current cpu time for a process
+	_cpuTime.cputime = get_proc_cputime(pid);
+	if (_cpuTime.cputime == 0 && errno != 0) {
+		if (errno == ESRCH) {
+			[_applicationUserTextfield setStringValue:@"No such process"];
+		} else if (errno == EPERM) {
+			[[_applicationUserTextfield cell] setWraps:YES];
+			[_applicationUserTextfield setPreferredMaxLayoutWidth:150.0];
+			[_applicationUserTextfield setStringValue:@"No permission to access process information"];
+		} else {
+			[[_applicationUserTextfield cell] setWraps:YES];
+			[_applicationUserTextfield setPreferredMaxLayoutWidth:150.0];
+			[_applicationUserTextfield setStringValue:@"Error accessing process information"];
+		}
+		[_applicationCPUTextfield setStringValue:@""];
+		[_slider setDoubleValue:SLIDER_NOT_LIMITED_VALUE];
+		[self updateTextfieldsWithLimitValue:NO_LIMIT];
+		[_levelIndicator setDoubleValue:0.0];
+		[self updateMenuItemStateWithLimit:NO_LIMIT];
+	} else {
+		_cpuTime.timestamp = get_timestamp();
 		
-		[icon setSize:[_applicationIcon frame].size];
-		[_applicationIcon setImage:icon];
-		[_applicationNameTextfield setStringValue:[NSString stringWithFormat:@"%@ (%d)", name, pid]];
+		// Reset params
+		if ([[_applicationUserTextfield cell] wraps]) {
+			[[_applicationUserTextfield cell] setWraps:NO];
+			[_applicationUserTextfield setPreferredMaxLayoutWidth:0.0];
+		}
+		// Basically, we handled to possible process access permission problem above
+		// so this should always evaluate to true.
+		char *proc_username = get_proc_username(pid);
+		if (proc_username)
+			[_applicationUserTextfield setStringValue:[NSString stringWithFormat:@"User: %@", [NSString stringWithCString:proc_username encoding:NSUTF8StringEncoding]]];
+		else
+			[_applicationUserTextfield setStringValue:@"User: -"];
+		[_applicationCPUTextfield setStringValue:@"\% CPU: 0.00"];
+		// Update level indicator
+		[_levelIndicator setFloatValue:0.0];
+		// Update slider
 		if (limit == 0) {
 			[_slider setDoubleValue:[_slider maxValue]];
 		} else {
@@ -221,26 +180,20 @@ static uint64_t get_timestamp() {
 		}
 		[self updateTextfieldsWithLimitValue:limit];
 		
-		// TODO: NULL username
-		char *proc_username = get_proc_username(pid);
-		if (proc_username)
-			[_applicationUserTextfield setStringValue:[NSString stringWithFormat:@"User: %@", [NSString stringWithCString:proc_username encoding:NSUTF8StringEncoding]]];
-		else
-			[_applicationUserTextfield setStringValue:@"User: -"];
-		[_applicationCPUTextfield setStringValue:@"\% CPU: 0.00"];
-		[_levelIndicator setFloatValue:0.0];
 		
-		if (_cpuTimer) {
-			[_cpuTimer invalidate];
-			_cpuTimer = nil;
-		}
-		
-		// Current cpu time for a process
-		_cpuTime.cputime = get_proc_cputime(pid);
-		_cpuTime.timestamp = get_timestamp();
 		NSDictionary *timerUserInfo = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithInt:pid], @"pid", nil];
 		_cpuTimer = [NSTimer timerWithTimeInterval:2.0 target:self selector:@selector(cpuTimerFire:) userInfo:timerUserInfo repeats:YES];
 		[[NSRunLoop currentRunLoop] addTimer:_cpuTimer forMode:NSRunLoopCommonModes];
+	}
+	
+	if ([_popover isShown]) {
+		// post notification about popover having been updated
+//		NSLog(@"postnotification from setAttached");
+		NSNotification *postNotification = [NSNotification notificationWithName:APAppInspectorPopoverDidShow object:self userInfo:nil];
+		[[NSNotificationQueue defaultQueue] enqueueNotification:postNotification
+												   postingStyle:NSPostASAP
+												   coalesceMask:NSNotificationCoalescingOnName
+													   forModes:[NSArray arrayWithObject:NSRunLoopCommonModes]];
 	}
 }
 
@@ -257,16 +210,35 @@ static uint64_t get_timestamp() {
 	
 	userInfo = [timer userInfo];
 	pid = [(NSNumber *)[userInfo objectForKey:@"pid"] intValue];
+	errno = 0;
 	cputime = get_proc_cputime(pid);
-	timestamp = get_timestamp();
+
 	
 	// Info about the process is not available. Stop polling
-	if (cputime == 0) {
-		[_applicationCPUTextfield setStringValue:@"% CPU: -"];
+	if (cputime == 0 && errno != 0) {
+		if (errno == ESRCH) {
+			[_applicationUserTextfield setStringValue:@"No such process"];
+		} else if (errno == EPERM) {
+			[[_applicationUserTextfield cell] setWraps:YES];
+			[_applicationUserTextfield setPreferredMaxLayoutWidth:150.0];
+			[_applicationUserTextfield setStringValue:@"No permission to access process information"];
+		} else {
+			[[_applicationUserTextfield cell] setWraps:YES];
+			[_applicationUserTextfield setPreferredMaxLayoutWidth:150.0];
+			[_applicationUserTextfield setStringValue:@"Error accessing process information"];
+		}
+		[_applicationCPUTextfield setStringValue:@""];
+		[_slider setDoubleValue:SLIDER_NOT_LIMITED_VALUE];
+		[self updateTextfieldsWithLimitValue:NO_LIMIT];
+		[_levelIndicator setDoubleValue:0.0];
+		[self updateMenuItemStateWithLimit:NO_LIMIT];
+		
 		[_cpuTimer invalidate];
 		_cpuTimer = nil;
 		return;
 	}
+	
+	timestamp = get_timestamp();
 	
 	// First run: write values and continue
 	if (_cpuTime.cputime == 0) {
@@ -343,21 +315,9 @@ static uint64_t get_timestamp() {
 	NSEventType eventType = [theEvent type];
 	
 	if (eventType == NSLeftMouseUp) {		// update applicatoinInfo when slider is released
-//		NSNumber *appLimit = [_applicationInfo objectForKey:APApplicationInfoLimitKey];
-//		appLimit = [NSNumber numberWithFloat:limit];
-//		[_applicationInfo removeObjectForKey:APApplicationInfoLimitKey];
-//		[_applicationInfo setObject:[NSNumber numberWithFloat:limit] forKey:APApplicationInfoLimitKey];
-		if (_attachedToItem) {
-			NSMutableDictionary *applicationInfo = [_attachedToItem representedObject];
-			[applicationInfo setObject:[NSNumber numberWithFloat:limit] forKey:APApplicationInfoLimitKey];
-			if (limit == 0)
-				[_attachedToItem setState:NSMixedState];
-			else
-				[_attachedToItem setState:NSOnState];
-		}
+		[self updateMenuItemStateWithLimit:limit];
 	}
-	
-	
+
 //	NSLog(@"limit: %f", limit);
 }
 
@@ -366,80 +326,30 @@ static uint64_t get_timestamp() {
  *
  */
 - (void)updateTextfieldsWithLimitValue:(float)limit {
-//	float value = [_slider floatValue];
-//	NSLog(@"slider value: %f", value);
-	
-//	double minValue = [_slider minValue];
-//	double maxValue = [_slider maxValue];
-	
-//	if (value == ([_slider numberOfTickMarks] - 1)) {
-//	if (value == [_slider maxValue]) {
 	if (limit == 0) {
 		[_sliderLimit2Textfield setStringValue:@"Not limited"];
-//		if (! [_sliderBottomTextfield isHidden])
-//			[_sliderBottomTextfield setHidden:YES];
 	} else {
-/*
-		int ncpu = system_ncpu();
-//		NSInteger penultimateValue = [_slider numberOfTickMarks] - 2;
-//		NSInteger middleValue = penultimateValue / 2;
-		double middleValue;
-		int percents;
-
-		if (minValue) {		// shift all values by min value
-			value -= minValue;
-			maxValue -= minValue;
-		}
-
-		// max value is reduced on the amount of one tick mark
-		maxValue -= (maxValue - minValue) / ([_slider numberOfTickMarks] - 1);
-		middleValue = maxValue / 2;
-		
-
-		if (ncpu > 2) {
-			if (value <= middleValue)
-				percents = floor(value / middleValue * 100 + 0.5);
-			else
-				percents = floor((value - middleValue) / middleValue * (ncpu - 1) * 100 + 100.5);	// 100.5 = 100% + 0.5 to round to greater value
-		} else {
-			if (value > maxValue)
-				value = maxValue;
-		
-			percents = floor(value / maxValue * ncpu * 100 + 0.5);
-		}
-		
-		if (percents == 0)
-			percents = 1;
- */
-//		int fullyLoadedCoresCount = floor(percents / 100);
-//		int percentsLeft = percents - fullyLoadedCoresCount * 100;
-
 		int percents;
 		percents = (int)floor(limit * 100 + 0.5);
 		if (percents < 1)
 			percents = 1;
 		[_sliderLimit2Textfield setStringValue:[NSString stringWithFormat:@"%d%%", percents]];
-		
-//		if (fullyLoadedCoresCount > 1 || (fullyLoadedCoresCount && percentsLeft)) {
-//			if ([_sliderBottomTextfield isHidden])
-//				[_sliderBottomTextfield setHidden:NO];
-//			if (percentsLeft) {
-//				[_sliderBottomTextfield setStringValue:[NSString stringWithFormat:@"%d CPU%@ at 100%% and 1 CPU at %d%%",
-//					fullyLoadedCoresCount,
-//					(fullyLoadedCoresCount == 1) ? @"" : @"s",
-//					percentsLeft]];
-//			} else {
-//				[_sliderBottomTextfield setStringValue:[NSString stringWithFormat:@"%d CPUs at 100%%", fullyLoadedCoresCount]];
-//			}
-//
-//		} else {
-//			if (! [_sliderBottomTextfield isHidden])
-//				[_sliderBottomTextfield setHidden:YES];
-//		}
 	}
+}
 
 
-//	[_levelIndicator setFloatValue:value];
+/*
+ *
+ */
+- (void)updateMenuItemStateWithLimit:(float)limit {
+	if (_attachedToItem) {
+		NSMutableDictionary *applicationInfo = [_attachedToItem representedObject];
+		[applicationInfo setObject:[NSNumber numberWithFloat:limit] forKey:APApplicationInfoLimitKey];
+		if (limit == 0)
+			[_attachedToItem setState:NSMixedState];
+		else
+			[_attachedToItem setState:NSOnState];
+	}
 }
 
 
@@ -447,38 +357,46 @@ static uint64_t get_timestamp() {
 - (float)limitFromSliderValue:(double)value {
 	double maxValue = [_slider maxValue];
 	double minValue = [_slider minValue];
-	double middleValue;
+//	double middleValue;
+	double rangeOfValues;
+	double middleRange;
 	float limit;
-	int ncpu = system_ncpu();
+	int ncpu;
 //	int ncpu = system_ncpu();
 //	maxValue -= [_slider minValue];
 //	maxValue -= maxValue / ([_slider numberOfTickMarks] - 1);		// deduct one tick mark
 //	limit = value / maxValue * ncpu;
 	
-
+	if (value == maxValue)
+		return 0;
 
 //	int percents;
 	
-	if (minValue) {		// shift all values by min value
-		value -= minValue;
-		maxValue -= minValue;
-	}
+//	if (minValue) {		// shift all values by min value
+//		value -= minValue;
+//		maxValue -= minValue;
+//	}
+//	
+//	// max value is reduced on the amount of one tick mark
+//	maxValue -= maxValue / ([_slider numberOfTickMarks] - 1);
+//	middleValue = maxValue / 2;
 	
-	// max value is reduced on the amount of one tick mark
-	maxValue -= maxValue / ([_slider numberOfTickMarks] - 1);
-	middleValue = maxValue / 2;
-	
+	value -= minValue;
+	rangeOfValues = maxValue - minValue;
+	rangeOfValues -= maxValue / ([_slider numberOfTickMarks] - 1);	// last mark is deducted from the range
+	middleRange = rangeOfValues / 2;
+	ncpu = system_ncpu();
 	
 	if (ncpu > 2) {
-		if (value <= middleValue)
-			limit = (float)(value / middleValue);
+		if (value <= middleRange)
+			limit = (float)(value / middleRange);
 		else
-			limit = (float)((value - middleValue) / middleValue * (ncpu - 1) + 1);
+			limit = (float)((value - middleRange) / middleRange * (ncpu - 1) + 1);
 	} else {
-		if (value > maxValue)
-			value = maxValue;
+		if (value > rangeOfValues)
+			value = rangeOfValues;
 		
-		limit = (float)(value / maxValue * ncpu);
+		limit = (float)(value / rangeOfValues * ncpu);
 	}
 	
 	if (limit < 0.01f)
@@ -563,60 +481,6 @@ static uint64_t get_timestamp() {
 }
 
 
-/*
-- (void)sliderTrackingTimerEvent:(NSTimer *)timer {
-	NSDictionary *userInfo = [timer userInfo];
-	NSWindow *window = [userInfo objectForKey:@"window"];
-	NSPoint mouseLocation = [NSEvent mouseLocation];
-	mouseLocation = [_slider convertPoint:[window convertScreenToBase:mouseLocation] fromView:nil];
-//	NSLog(@"timer event, mouseloc: %@", NSStringFromPoint(mouseLocation));
-	
-	NSRect rect = [(NSValue *)[userInfo objectForKey:@"tickMarkRect"] rectValue];
-	
-	if (mouseLocation.x < rect.origin.x) {
-//		NSLog(@"snapping should be released");
-		[_slider setAllowsTickMarkValuesOnly:NO];
-		[timer invalidate];
-		_sliderMouseTrackingTimer = nil;
-	}
-	
-}
- */
-
-
-//- (void)updateTrackingAreaForHint {
-//	NSRect frame = [_sliderTopRightTextField frame];
-//	frame.origin.x -= 50;
-//	frame.origin.y -= 10;
-//	frame.size.width += 100;
-//	frame.size.height += 20;
-////	frame = [_sliderTopRightTextField convertRect:frame toView:_popoverView];
-////	NSLog(@"super: %d", [_popoverView canDraw]);
-//	if ([_popoverView canDraw]) {
-//		[_popoverView lockFocus];
-////		NSLog(@"sub: %@", [_popoverView subviews]);
-//		[[NSColor redColor] set];
-//		NSFrameRect(frame);
-//		[_popoverView unlockFocus];
-////				[_popoverView display];
-////		[_popoverView setNeedsDisplay:YES];
-//	}
-////	NSLog(@"frame: %@", NSStringFromRect(frame));	
-////	NSTrackingAreaOptions options = NSTrackingActiveInActiveApp | NSTrackingMouseEnteredAndExited;
-////	NSTrackingArea *trackingArea = [[NSTrackingArea alloc] initWithRect:frame options:options owner:self userInfo:nil];
-////	[_popoverView addTrackingArea:trackingArea];
-////	[trackingArea release];
-//	
-//	
-//	
-//}
-
-
-//- (void)mouseUp:(id)sender {
-//	NSLog(@"mouse is up on hint");
-//}
-
-
 - (void)limitHintViewMouseUpNotification:(NSNotification *)notification {
 //	NSLog(@"notification: %@", notification);
 	if (! _hintPopover) {
@@ -629,7 +493,10 @@ static uint64_t get_timestamp() {
 		[_hintPopover setBehavior:NSPopoverBehaviorTransient];
 //		[_hintPopover setAnimates:NO];
 		// 150 here is the maximum width of popover textfield.
-		HintPopoverTextField *textField = [[[HintPopoverTextField alloc] initWithFrame:NSMakeRect(0, 0, 150, 1)] autorelease];
+//		HintPopoverTextField *textField = [[[HintPopoverTextField alloc] initWithFrame:NSMakeRect(0, 0, 150, 1)] autorelease];
+		NSTextField *textField = [[[NSTextField alloc] init] autorelease];
+		[[textField cell] setWraps:YES];
+		[textField setPreferredMaxLayoutWidth:150.0];
 		[textField setStringValue:@"Limit values greater then 100% cover multiple cores of CPU with 100% for each core."];
 		[textField setFont:[NSFont systemFontOfSize:10]];
 		[textField setTextColor:[NSColor colorWithCalibratedWhite:0.8 alpha:1.0]];
@@ -683,9 +550,16 @@ static uint64_t get_timestamp() {
 
 
 - (void)popoverDidShow:(NSNotification *)notification {
-	NSLog(@"popover did show");
+//	NSLog(@"popover did show");
 	[_popover setAnimates:NO];
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(limitHintViewMouseUpNotification:) name:AppLimitHintMouseDownNotification object:nil];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(limitHintViewMouseUpNotification:) name:APAppLimitHintMouseDownNotification object:nil];
+	
+//	NSLog(@"post appinspector notification from popoverDidShow");
+	NSNotification *postNotification = [NSNotification notificationWithName:APAppInspectorPopoverDidShow object:self userInfo:nil];
+	[[NSNotificationQueue defaultQueue] enqueueNotification:postNotification
+											   postingStyle:NSPostNow
+											   coalesceMask:NSNotificationCoalescingOnName
+												   forModes:[NSArray arrayWithObject:NSRunLoopCommonModes]];
 }
 
 
@@ -712,7 +586,7 @@ static uint64_t get_timestamp() {
 	[self setAttachedToItem:nil];
 	if (_popoverDidClosehandler)
 		_popoverDidClosehandler();
-	[[NSNotificationCenter defaultCenter] removeObserver:self name:AppLimitHintMouseDownNotification object:nil];
+	[[NSNotificationCenter defaultCenter] removeObserver:self name:APAppLimitHintMouseDownNotification object:nil];
 }
 
 
