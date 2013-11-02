@@ -531,8 +531,8 @@ typedef struct __submenu_tracking_event tracking_event_t;
 		}
 		
 		if ([target respondsToSelector:action]) {
-//			[target performSelector:_action withObject:self afterDelay:0.075 inModes:[NSArray arrayWithObject:NSRunLoopCommonModes]];
-			XLog2("Performing action on item: %@", self);
+			XLog2("Performing action on item: %@", item);
+//			[target performSelector:action withObject:item afterDelay:0.15 inModes:[NSArray arrayWithObject:NSRunLoopCommonModes]];
 			[NSApp sendAction:action to:target from:item];
 		}
 	}

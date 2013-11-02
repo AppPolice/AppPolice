@@ -107,10 +107,11 @@
  *
  */
 - (void)setTitle:(NSString *)aTitle {
-	if (! aTitle) {
-		[NSException raise:NSInvalidArgumentException format:@"No title provided for a menu item -setTitle:"];
-		return;
-	}
+//	if (! aTitle) {
+//		[NSException raise:NSInvalidArgumentException format:@"No title provided for a menu item -setTitle:"];
+//		return;
+//	}
+	NSAssert(aTitle != nil, @"Invalid parameter not satisfying: aTitle != nil");
 	
 	if (_title == aTitle)
 		return;
@@ -120,11 +121,11 @@
 	_title = [aTitle copy];
 	if (_representedViewController)
 		[[(CMMenuItemView *)[_representedViewController view] title] setStringValue:aTitle];
+
+//	if ([_menu needsDisplay])	// menu will update item's title itself, no more actions are required.
+//		return;
 	
-	if ([_menu needsDisplay])	// menu will update item's title itself, no more actions are required.
-		return;
-	
-//	[_menu setFrame:NSZeroRect options:CMMenuOptionDefault display:YES];
+	// Update menu's size and position if needed
 	[_menu setNeedsDisplay:YES];
 }
 

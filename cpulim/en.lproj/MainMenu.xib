@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="4510" systemVersion="12F45" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="4514" systemVersion="13A603" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment defaultVersion="1070" identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="4510"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="4514"/>
     </dependencies>
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="NSApplication">
@@ -217,16 +217,16 @@
                                                     <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                     <prototypeCellViews>
                                                         <tableCellView identifier="AppCellViewId" id="J9S-BD-1Ul" customClass="MyTableCellView">
-                                                            <rect key="frame" x="1" y="0.0" width="236" height="18"/>
+                                                            <rect key="frame" x="1" y="0.0" width="236" height="17"/>
                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                             <subviews>
-                                                                <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="FvD-Y6-g0K" customClass="MyImageView">
+                                                                <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="FvD-Y6-g0K" customClass="MyImageView">
                                                                     <rect key="frame" x="14" y="1" width="15" height="15"/>
                                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                                     <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="NSActionTemplate" id="BdX-XC-id5"/>
                                                                 </imageView>
                                                                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="YD4-4i-3Yn">
-                                                                    <rect key="frame" x="34" y="0.0" width="205" height="17"/>
+                                                                    <rect key="frame" x="34" y="-1" width="205" height="17"/>
                                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                                                     <textFieldCell key="cell" lineBreakMode="truncatingTail" refusesFirstResponder="YES" sendsActionOnEndEditing="YES" title="Table View Cell" id="tcc-vp-CeP">
                                                                         <font key="font" size="14" name="LucidaGrande"/>
@@ -264,11 +264,11 @@
                                     </subviews>
                                     <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                 </clipView>
-                                <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" id="xVz-uF-tNY">
+                                <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="YES" id="xVz-uF-tNY">
                                     <rect key="frame" x="-100" y="-100" width="223" height="15"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                 </scroller>
-                                <scroller key="verticalScroller" hidden="YES" verticalHuggingPriority="750" id="PEa-E4-B5B">
+                                <scroller key="verticalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="NO" id="PEa-E4-B5B">
                                     <rect key="frame" x="-100" y="-100" width="15" height="102"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                 </scroller>
@@ -923,6 +923,9 @@ ThBTQ2hhdFRoZWF0cmVUZW1wbGF0ZQ
                 </menuItem>
                 <menuItem title="Donate" state="on" onStateImage="NSStatusAvailable" offStateImage="NSTrashFull" mixedStateImage="NSStatusPartiallyAvailable" id="711">
                     <modifierMask key="keyEquivalentModifierMask"/>
+                    <connections>
+                        <action selector="donateMenuAction2:" target="494" id="lyo-db-qBX"/>
+                    </connections>
                 </menuItem>
                 <menuItem title="About" state="on" image="NSMenuMixedStateTemplate" onStateImage="NSStatusAvailable" enabled="NO" id="716">
                     <modifierMask key="keyEquivalentModifierMask"/>
@@ -1034,12 +1037,12 @@ ThBTQ2hhdFRoZWF0cmVUZW1wbGF0ZQ
                                                 <rect key="frame" x="1" y="0.0" width="274" height="17"/>
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
-                                                    <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="cC7-H1-tng" customClass="MyImageView">
+                                                    <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="cC7-H1-tng" customClass="MyImageView">
                                                         <rect key="frame" x="14" y="1" width="15" height="15"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                         <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="NSActionTemplate" id="Pqt-yw-zs2"/>
                                                     </imageView>
-                                                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="Ypp-yy-raU">
+                                                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Ypp-yy-raU">
                                                         <rect key="frame" x="34" y="1" width="243" height="17"/>
                                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                                         <textFieldCell key="cell" lineBreakMode="truncatingTail" refusesFirstResponder="YES" sendsActionOnEndEditing="YES" title="Table View Cell" id="TQl-te-aZT">
@@ -1077,11 +1080,11 @@ ThBTQ2hhdFRoZWF0cmVUZW1wbGF0ZQ
                         </subviews>
                         <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                     </clipView>
-                    <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" id="TAo-AZ-5tw">
+                    <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="YES" id="TAo-AZ-5tw">
                         <rect key="frame" x="-100" y="-100" width="223" height="15"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </scroller>
-                    <scroller key="verticalScroller" hidden="YES" verticalHuggingPriority="750" id="sbA-v9-ZAd">
+                    <scroller key="verticalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="NO" id="sbA-v9-ZAd">
                         <rect key="frame" x="-100" y="-100" width="15" height="102"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </scroller>
@@ -1114,7 +1117,7 @@ ThBTQ2hhdFRoZWF0cmVUZW1wbGF0ZQ
         </customView>
     </objects>
     <resources>
-        <image name="NSActionTemplate" width="15" height="15"/>
+        <image name="NSActionTemplate" width="14" height="14"/>
         <image name="NSMenuMixedStateTemplate" width="10" height="3"/>
         <image name="NSStatusAvailable" width="16" height="16"/>
         <image name="NSStatusPartiallyAvailable" width="16" height="16"/>

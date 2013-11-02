@@ -69,6 +69,13 @@ static const int kPidFoundMask = 1 << (8 * sizeof(int) - 1);
 //- (void)processPid:(NSNumber *)pid didChangeLimit:(float)limit;
 // Menu actions
 - (void)selectProcessMenuItemAction:(id)sender;
+- (void)toggleLimiterMenuAction:(id)sender;
+/*!
+ @discussion CMMenu is built to instantly update when either title,
+	image, etc. is changed. This method is used to delay title update
+	after Action performs and menu is hidden.
+*/
+- (void)updateMenuItemWithTitle:(NSDictionary *)itemAndTitle;
 - (void)terminateApplicationMenuAction:(id)sender;
 
 @end
@@ -823,19 +830,34 @@ static const int kPidFoundMask = 1 << (8 * sizeof(int) - 1);
 
 	if (state == ALL_LIMITS_PAUSED) {	// resume
 		proc_cpulim_resume();
-		[item setTitle:@"Pause all limits"];
+//		[item setTitle:@"Pause all limits"];
+		[self performSelector:@selector(updateMenuItemWithTitle:)
+				   withObject:@{ @"item" : item, @"title" : @"Pause all limits" }
+				   afterDelay:0.2];
 		[item setRepresentedObject:[NSNumber numberWithBool:!ALL_LIMITS_PAUSED]];
 		for (CMMenuItem *item in _limitedProcessItems) {
 			[item setOnStateImage:[NSImage imageNamed:NSImageNameStatusAvailable]];
 		}
 	} else {	// pause
 		proc_cpulim_suspend();
-		[item setTitle:@"Resume"];
+//		[item setTitle:@"Resume"];
+		[self performSelector:@selector(updateMenuItemWithTitle:)
+				   withObject:@{ @"item" : item, @"title" : @"Resume" }
+				   afterDelay:0.2];
 		[item setRepresentedObject:[NSNumber numberWithBool:ALL_LIMITS_PAUSED]];
 		for (CMMenuItem *item in _limitedProcessItems) {
 			[item setOnStateImage:[NSImage imageNamed:NSImageNameStatusPartiallyAvailable]];
 		}
 	}
+}
+
+
+/* Helper method to update menu item with new title after
+	a certain delay */
+- (void)updateMenuItemWithTitle:(NSDictionary *)itemAndTitle {
+	CMMenuItem *item = [itemAndTitle objectForKey:@"item"];
+	NSString *aString = [itemAndTitle objectForKey:@"title"];
+	[item setTitle:aString];
 }
 
 

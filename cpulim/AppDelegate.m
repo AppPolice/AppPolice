@@ -209,6 +209,27 @@
 }
 
 
+- (IBAction)donateMenuAction2:(id)sender {
+	NSLog(@"donate click: %@", sender);
+	[self performSelector:@selector(donateMenuActionHelper:) withObject:(NSMenuItem *)sender afterDelay:0.0 inModes:[NSArray arrayWithObject:NSRunLoopCommonModes]];
+}
+
+
+- (void)donateMenuActionHelper:(NSMenuItem *)item {
+	static int i = 0;
+	NSLog(@"donate helper");
+//	NSMenuItem *item = (NSMenuItem *)sender;
+	if ((i % 2) == 0) {
+		[item setTitle:@"New title for Donate"];
+		[item setState:NSMixedState];
+	} else {
+		[item setTitle:@"Donate"];
+		[item setState:NSOnState];
+	}
+	++i;
+}
+
+
 - (IBAction)startRunLoop1:(id)sender {
 	static BOOL keepRunning = false;
 	if (! keepRunning) {
