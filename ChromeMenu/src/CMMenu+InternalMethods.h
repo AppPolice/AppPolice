@@ -125,6 +125,9 @@ typedef NSUInteger CMMenuOptions;
 - (void)mouseEventAtLocation:(NSPoint)mouseLocation type:(NSEventType)eventType;
 - (CMMenu *)menuAtPoint:(NSPoint)location;
 
+/* Perform item's action */
+- (void)performActionForItem:(CMMenuItem *)item;
+
 //- (void)mouseMoved:(NSEvent *)theEvent;
 
 /**
@@ -137,8 +140,6 @@ typedef NSUInteger CMMenuOptions;
 
 - (NSRect)frame;
 
-// TODO: this is temp method
-- (NSWindow *)underlyingWindow __attribute__((deprecated));
 - (CMWindowController *)underlyingWindowController;
 - (NSInteger)windowLevel;
 

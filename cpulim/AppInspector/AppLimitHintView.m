@@ -94,7 +94,6 @@
 //	}];
 //	[[_hintImage animator] setAlphaValue:0];
 //	[NSAnimationContext endGrouping];
-
 }
 
 
@@ -116,7 +115,6 @@
 
 
 - (void)appInsepctorPopoverDidShowNotificationHandler:(NSNotification *)notification {
-	NSLog(@"appInspector update notification!!");
 	[self updateTrackingAreas];
 }
 

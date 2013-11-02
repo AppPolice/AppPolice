@@ -164,7 +164,8 @@
 - (void)setState:(NSInteger)state {
 	if (_state != state) {
 		_state = state;
-		
+		// If item has never been shown yet it doesn't have |_representedViewController|
+		// In that case just skip the part -- icon will be set when item is drawn first time.
 		if (_representedViewController) {
 			CMMenuItemView *view = (CMMenuItemView *)[_representedViewController view];
 			if (state == NSOffState) {
@@ -196,13 +197,21 @@
 - (void)setOffStateImage:(NSImage *)image {
 	if (_offStateImage == image)
 		return;
-	
-	if (_offStateImage)
-		[_offStateImage release];
-	if (image)
-		_offStateImage = [image retain];
-	else
-		_offStateImage = nil;
+//
+//	if (_offStateImage)
+//		[_offStateImage release];
+//	if (image)
+//		_offStateImage = [image retain];
+//	else
+//		_offStateImage = nil;
+	[_offStateImage release];
+	_offStateImage = [image retain];
+	if (_representedViewController) {
+		CMMenuItemView *view = (CMMenuItemView *)[_representedViewController view];
+		[[view state] setImage:[self offStateImage]];
+		[view setNeedsDisplay:YES];
+	}
+
 }
 
 
@@ -214,13 +223,21 @@
 - (void)setOnStateImage:(NSImage *)image {
 	if (_onStateImage == image)
 		return;
-	
-	if (_onStateImage)
-		[_onStateImage release];
-	if (image)
-		_onStateImage = [image retain];
-	else
-		_onStateImage = nil;
+//
+//	if (_onStateImage)
+//		[_onStateImage release];
+//	if (image)
+//		_onStateImage = [image retain];
+//	else
+//		_onStateImage = nil;
+
+	[_onStateImage release];
+	_onStateImage = [image retain];
+	if (_representedViewController) {
+		CMMenuItemView *view = (CMMenuItemView *)[_representedViewController view];
+		[[view state] setImage:[self onStateImage]];
+		[view setNeedsDisplay:YES];
+	}
 }
 
 
@@ -232,13 +249,21 @@
 - (void)setMixedStateImage:(NSImage *)image {
 	if (_mixedStateImage == image)
 		return;
-	
-	if (_mixedStateImage)
-		[_mixedStateImage release];
-	if (image)
-		_mixedStateImage = [image retain];
-	else
-		_mixedStateImage = nil;
+//
+//	if (_mixedStateImage)
+//		[_mixedStateImage release];
+//	if (image)
+//		_mixedStateImage = [image retain];
+//	else
+//		_mixedStateImage = nil;
+	[_mixedStateImage release];
+	_mixedStateImage = [image retain];
+	if (_representedViewController) {
+		CMMenuItemView *view = (CMMenuItemView *)[_representedViewController view];
+		[[view state] setImage:[self mixedStateImage]];
+		[view setNeedsDisplay:YES];
+	}
+
 }
 
 
@@ -364,7 +389,7 @@
 - (void)performAction {
 	if ([self hasSubmenu])
 		return;
-	
+	NSLog(@"performaction on item: %@", _title);
 	if (_action && _enabled) {
 		id target = _target;
 		if (! target) {		// application delegate could be the one to handle it
@@ -380,7 +405,8 @@
 
 	
 	if ([[self menu] cancelsTrackingOnAction]) {
-		if (! _isSeparatorItem && _enabled) {
+		[_menu endTracking];
+		if ( !_isSeparatorItem && _enabled) {
 			CMMenuItemView *view = (CMMenuItemView *)[[self representedView] view];
 			[view blink];
 			[self performSelector:@selector(delayedCancelTracking) withObject:nil afterDelay:0.075 inModes:[NSArray arrayWithObject:NSRunLoopCommonModes]];
@@ -392,12 +418,13 @@
 
 
 - (void)delayedCancelTracking {
-	CMMenu *menu = [self menu];
-	CMMenu *supermenu = menu;
-	while ((menu = [menu supermenu]))
-		supermenu = menu;
+//	CMMenu *menu = [self menu];
+//	CMMenu *supermenu = menu;
+//	while ((menu = [menu supermenu]))
+//		supermenu = menu;
 	
-	[supermenu cancelTracking];
+//	[supermenu cancelTracking];
+	[[_menu rootMenu] cancelTracking];
 }
 
 

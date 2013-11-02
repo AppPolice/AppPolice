@@ -538,7 +538,7 @@ void cfnotificationCallback(CFNotificationCenterRef center, void *observer, CFSt
 //					  @"Action Template", @"Text", nil]];
 
 	menu = [[CMMenu alloc] initWithTitle:@"Root menu"];
-	[menu setCancelsTrackingOnAction:NO];
+//	[menu setCancelsTrackingOnAction:NO];
 	
 //	CMMenuItem *item1 = [[CMMenuItem alloc] initWithTitle:@"Chat Template"];
 //	[item1 setIcon:[NSImage imageNamed:@"NSIChatTheaterTemplate"]];
@@ -573,9 +573,10 @@ void cfnotificationCallback(CFNotificationCenterRef center, void *observer, CFSt
 		if (i == 2 || i == 12) {
 			item = [CMMenuItem separatorItem];
 			[menu addItem:item];
-			++i;
-			continue;
-		} else {
+		}
+//			++i;
+//			continue;
+//		} else {
 
 		
 
@@ -588,7 +589,7 @@ void cfnotificationCallback(CFNotificationCenterRef center, void *observer, CFSt
 				item = [[CMMenuItem alloc] initWithTitle:name action:NULL];
 //			}
 					
-			if (i > 3)
+//			if (i > 3)
 				[item setIcon:image];
 			
 			if (i == 10) {
@@ -606,7 +607,7 @@ void cfnotificationCallback(CFNotificationCenterRef center, void *observer, CFSt
 			
 	//		[item setIcon:image];
 
-		}
+//		}
 		
 		[menu addItem:item];
 		[item release];

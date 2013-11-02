@@ -519,6 +519,47 @@ typedef struct __submenu_tracking_event tracking_event_t;
 /*
  *
  */
+- (void)performActionForItem:(CMMenuItem *)item {
+	if ([item hasSubmenu])
+		return;
+
+	SEL action = [item action];
+	if (action && [item isEnabled]) {
+		id target = [item target];
+		if (! target) {		// application delegate could be the one to handle it
+			target = [NSApp delegate];
+		}
+		
+		if ([target respondsToSelector:action]) {
+//			[target performSelector:_action withObject:self afterDelay:0.075 inModes:[NSArray arrayWithObject:NSRunLoopCommonModes]];
+			XLog2("Performing action on item: %@", self);
+			[NSApp sendAction:action to:target from:item];
+		}
+	}
+	
+	
+	if ([self cancelsTrackingOnAction]) {
+		if ( ![item isSeparatorItem] && [item isEnabled]) {
+			CMMenu *menu = self;
+			CMMenu *rootMenu;
+			do {
+				[menu endTracking];
+				rootMenu = menu;
+			} while ((menu = [menu supermenu]));
+			
+			CMMenuItemView *view = (CMMenuItemView *)[[item representedView] view];
+			[view blink];
+			[rootMenu performSelector:@selector(cancelTracking) withObject:nil afterDelay:0.075 inModes:[NSArray arrayWithObject:NSRunLoopCommonModes]];
+		} else {
+			[[self rootMenu] cancelTracking];
+		}
+	}
+}
+
+
+/*
+ *
+ */
 - (void)setDefaultViewForItemsFromNibNamed:(NSString *)nibName andPropertyNames:(NSArray *)propertyNames {
 	if (nibName == nil || [nibName isEqualToString:@""] || propertyNames == nil)
 		[NSException raise:NSInvalidArgumentException format:@"Bad arguments provided in -%@", NSStringFromSelector(_cmd)];
@@ -810,7 +851,9 @@ typedef struct __submenu_tracking_event tracking_event_t;
 		CMMenu *menu = [self supermenu];
 		while (menu) {
 //			[menu blockEventsMatchingMask:NSLeftMouseDownMask | NSMouseEnteredMask | NSMouseExitedMask | NSScrollWheelMask];
-			[menu blockEventsMatchingMask:NSLeftMouseDownMask | NSRightMouseDownMask | NSOtherMouseDownMask | NSScrollWheelMask | NSMouseMovedMask];
+			[menu blockEventsMatchingMask:NSLeftMouseDownMask | NSRightMouseDownMask | NSOtherMouseDownMask | NSScrollWheelMask | NSMouseMovedMask | NSLeftMouseDraggedMask | NSRightMouseDraggedMask | NSOtherMouseDraggedMask];
+			// These three additional event masks define whether menu exits suspend status
+			// on mouse move/dragged
 			// | NSLeftMouseDraggedMask | NSRightMouseDraggedMask | NSOtherMouseDraggedMask
 			menu = [menu supermenu];
 		}
@@ -1319,12 +1362,6 @@ typedef struct __submenu_tracking_event tracking_event_t;
 }
 
 
-// TODO: temp method
-- (NSWindow *)underlyingWindow {
-	return [_underlyingWindowController window];
-}
-
-
 - (CMWindowController *)underlyingWindowController {
 	return _underlyingWindowController;
 }
@@ -1457,7 +1494,8 @@ typedef struct __submenu_tracking_event tracking_event_t;
 		} else {
 			CMMenuItem *item = [menu itemAtPoint:mouseLocationOnScreen];
 			if (item)
-				[item performAction];
+				[menu performActionForItem:item];
+//				[item performAction];
 		}
 		
 		
@@ -1560,7 +1598,8 @@ typedef struct __submenu_tracking_event tracking_event_t;
 		} else {
 			CMMenuItem *item = [menu itemAtPoint:mouseLocation];
 			if (item)
-				[item performAction];
+				[menu performActionForItem:item];
+//				[item performAction];
 		}
 		
 		
@@ -1608,7 +1647,7 @@ typedef struct __submenu_tracking_event tracking_event_t;
 				[mousedItem selectWithDelayForSubmenu:SUBMENU_POPUP_DELAY_DEFAULT];
 		}
 	} else {
-		if (mousedItem && ![mousedItem isSeparatorItem]) {
+		if (mousedItem && ![mousedItem isSeparatorItem] && [mousedItem isEnabled]) {
 			CGFloat delay = (mousedItem == selectedItem) ? SUBMENU_POPUP_NO_DELAY : SUBMENU_POPUP_DELAY_DEFAULT;
 			[mousedItem selectWithDelayForSubmenu:delay];
 		} else
@@ -1953,7 +1992,7 @@ typedef struct __submenu_tracking_event tracking_event_t;
 #pragma mark -
 #pragma mark ****** Actions from Key Interpreter ******
 
-
+/*
 - (CMMenu *)menuToReceiveKeyEvent {
 	CMMenu *menu = self;
 //	NSPoint mouseLocation = [NSEvent mouseLocation];
@@ -1969,10 +2008,11 @@ typedef struct __submenu_tracking_event tracking_event_t;
 	
 	return menu;
 }
+ */
 
 
 /*
- * This selector is only called upon root menu, which dispatches according actions to other menus
+ *
  */
 - (void)moveUp:(NSEvent *)originalEvent {
 //	CMMenu *menu = [self menuToReceiveKeyEvent];
@@ -1990,7 +2030,7 @@ typedef struct __submenu_tracking_event tracking_event_t;
 
 
 /*
- * This selector is only called upon root menu, which dispatches according actions to other menus
+ *
  */
 //- (void)moveDown:(id)sender {
 - (void)moveDown:(NSEvent *)originalEvent {
@@ -2009,7 +2049,7 @@ typedef struct __submenu_tracking_event tracking_event_t;
 
 
 /*
- * This selector is only called upon root menu, which dispatches according actions to other menus
+ *
  */
 - (void)moveLeft:(NSEvent *)originalEvent {
 //	CMMenu *menu = [self menuToReceiveKeyEvent];
@@ -2030,7 +2070,7 @@ typedef struct __submenu_tracking_event tracking_event_t;
 
 
 /*
- * This selector is only called upon root menu, which dispatches according actions to other menus
+ *
  */
 - (void)moveRight:(NSEvent *)originalEvent {
 	CMMenuItem *selectedItem = [self highlightedItem];
@@ -2074,6 +2114,8 @@ typedef struct __submenu_tracking_event tracking_event_t;
 	if (! previousItem)
 		return;
 
+//	[selectedItem deselect];
+	
 	if (showSubmenu)
 		[previousItem selectWithDelayForSubmenu:SUBMENU_POPUP_DELAY_DEFAULT];
 	else
@@ -2147,7 +2189,8 @@ typedef struct __submenu_tracking_event tracking_event_t;
 			[submenu setReceivesMouseMovedEvents:YES];
 			[submenu beginTrackingWithEvent:originalEvent];
 		} else {
-			[item performAction];
+			[self performActionForItem:item];
+//			[item performAction];
 		}
 	} else {
 		[[self rootMenu] cancelTracking];

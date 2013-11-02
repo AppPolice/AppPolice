@@ -11,6 +11,7 @@
 #import "AppInspector.h"
 #include <libproc.h>
 #include "app_inspector_c.h"
+#include "proc_cpulim.h"
 
 //NSString *const APApplicationsSortedByName = @"APApplicationsSortedByName";
 //NSString *const APApplicationsSortedByPid = @"APApplicationsSortedByPid";
@@ -23,6 +24,8 @@ static const int gShowOtherUsersProcesses = 0;
 #define kNotFoundAppIndexesKey @"nfAppIdx"
 #define kNotFoundSysProcIndexesKey @"nfSysIdx"
 #define kNewSysProcIndexesKey @"newSysIdx"
+#define PROCESS_NOT_LIMITED 0.0
+#define ALL_LIMITS_PAUSED YES
 
 static const int kPidFoundMask = 1 << (8 * sizeof(int) - 1);
 //#define kPidFoundMask (1 << (8 * sizeof(int) - 1))
@@ -34,6 +37,9 @@ static const int kPidFoundMask = 1 << (8 * sizeof(int) - 1);
 
 
 @interface StatusbarMenuController ()
+{
+	NSMutableArray *_limitedProcessItems;
+}
 
 - (void)setupMenus;
 - (void)populateMenuWithRunningApplications:(CMMenu *)menu;
@@ -57,6 +63,13 @@ static const int kPidFoundMask = 1 << (8 * sizeof(int) - 1);
 - (NSDictionary *)updateRunningProcesses;
 - (void)appLaunchedNotificationHandler:(NSNotification *)notification;
 - (void)appTerminatedNotificationHandler:(NSNotification *)notification;
+// |APAppInspectorProcessDidChangeLimit| notification handler
+- (void)processDidChangeLimitNotificationHandler:(NSNotification *)notification;
+// Helper for |APAppInspectorProcessDidChangeLimit| notification handler
+//- (void)processPid:(NSNumber *)pid didChangeLimit:(float)limit;
+// Menu actions
+- (void)selectProcessMenuItemAction:(id)sender;
+- (void)terminateApplicationMenuAction:(id)sender;
 
 @end
 
@@ -67,6 +80,7 @@ static const int kPidFoundMask = 1 << (8 * sizeof(int) - 1);
 - (id)init {
 	self = [super init];
 	if (self) {
+		_limitedProcessItems = [[NSMutableArray alloc] init];
 		[self setupMenus];
 	}
 	return self;
@@ -74,10 +88,15 @@ static const int kPidFoundMask = 1 << (8 * sizeof(int) - 1);
 
 
 - (void)dealloc {
+	[_limitedProcessItems release];
 	[_runningApplications release];
 	[_runningSystemProcesses release];
 	[_mainMenu release];
 	[_appInspector release];
+	// Remove ourself from notification centers
+	[[[NSWorkspace sharedWorkspace] notificationCenter] removeObserver:self];
+	[[NSNotificationCenter defaultCenter] removeObserver:self];
+	
 	[super dealloc];
 }
 
@@ -96,7 +115,8 @@ static const int kPidFoundMask = 1 << (8 * sizeof(int) - 1);
 	[item setSubmenu:runningAppsMenu];
 	[_mainMenu addItem:item];
 	
-	item = [[[CMMenuItem alloc] initWithTitle:@"Pause" action:NULL] autorelease];
+	item = [[[CMMenuItem alloc] initWithTitle:@"Pause all limits" action:@selector(toggleLimiterMenuAction:)] autorelease];
+	[item setTarget:self];
 	[item setEnabled:NO];
 	[_mainMenu addItem:item];
 	
@@ -144,6 +164,10 @@ static const int kPidFoundMask = 1 << (8 * sizeof(int) - 1);
 	pid_t shared_pid = getpid();
 	NSUInteger shared_pid_index;
 	CMMenuItem *item;
+	NSImage *onStateImageActive = [NSImage imageNamed:NSImageNameStatusAvailable];
+	NSImage *onStateImagePaused = [NSImage imageNamed:NSImageNameStatusPartiallyAvailable];
+	[onStateImageActive setSize:NSMakeSize(12, 12)];
+	[onStateImagePaused setSize:NSMakeSize(12, 12)];
 	
 	// Show Applications delimiter
 	if (gShowAllProcesses) {
@@ -181,9 +205,7 @@ static const int kPidFoundMask = 1 << (8 * sizeof(int) - 1);
 				
 		item = [[[CMMenuItem alloc] initWithTitle:[app localizedName] icon:icon action:@selector(selectProcessMenuItemAction:)] autorelease];
 		[item setTarget:self];
-		NSImage *onStateImage = [NSImage imageNamed:NSImageNameStatusAvailable];
-		[onStateImage setSize:NSMakeSize(12, 12)];
-		[item setOnStateImage:onStateImage];
+		[item setOnStateImage:onStateImageActive];
 //		NSImage *mixedStateImage = [NSImage imageNamed:NSImageNameStatusNone];
 //		[mixedStateImage setSize:NSMakeSize(12, 12)];
 //		[item setMixedStateImage:mixedStateImage];
@@ -232,9 +254,9 @@ static const int kPidFoundMask = 1 << (8 * sizeof(int) - 1);
 				
 				CMMenuItem *item = [[[CMMenuItem alloc] initWithTitle:[procInfo objectForKey:kProcNameKey] icon:genericIcon action:@selector(selectProcessMenuItemAction:)] autorelease];
 				[item setTarget:self];
-				NSImage *onStateImage = [NSImage imageNamed:NSImageNameStatusAvailable];
-				[onStateImage setSize:NSMakeSize(12, 12)];
-				[item setOnStateImage:onStateImage];
+//				NSImage *onStateImage = [NSImage imageNamed:NSImageNameStatusAvailable];
+//				[onStateImage setSize:NSMakeSize(12, 12)];
+				[item setOnStateImage:onStateImageActive];
 				[item setRepresentedObject:appInfo];
 				[menu addItem:item];
 			}];
@@ -261,6 +283,7 @@ static const int kPidFoundMask = 1 << (8 * sizeof(int) - 1);
 	NSNotificationCenter *notificationCenter = [workspace notificationCenter];
 	[notificationCenter addObserver:self selector:@selector(appLaunchedNotificationHandler:) name:NSWorkspaceDidLaunchApplicationNotification object:nil];
 	[notificationCenter addObserver:self selector:@selector(appTerminatedNotificationHandler:) name:NSWorkspaceDidTerminateApplicationNotification object:nil];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(processDidChangeLimitNotificationHandler:) name:APAppInspectorProcessDidChangeLimit object:nil];
 }
 
 
@@ -537,6 +560,15 @@ static const int kPidFoundMask = 1 << (8 * sizeof(int) - 1);
 		[notfoundSysProcIndexes enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop) {
 			[shiftedIndexes addIndex:(idx + offset)];
 		}];
+		// If any of the processes represented by menu item was limited before
+		// pass its pid to limit handler method to remove it from array
+		[[menu itemArray] enumerateObjectsAtIndexes:shiftedIndexes options:0 usingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+//			NSDictionary *representedObj = [(CMMenuItem *)obj representedObject];
+//			if (representedObj)
+//				[self processPid:[representedObj objectForKey:APApplicationInfoPidKey] didChangeLimit:PROCESS_NOT_LIMITED];
+			[self processOfItem:(CMMenuItem *)obj didChangeLimit:PROCESS_NOT_LIMITED];
+		}];
+		
 		[menu removeItemsAtIndexes:shiftedIndexes];
 	}
 	
@@ -614,6 +646,9 @@ static const int kPidFoundMask = 1 << (8 * sizeof(int) - 1);
 //	NSLog(@"inserting at index: %lu", index);
 	
 	[_runningApplications insertObject:app atIndex:index];
+	// If showing all processes the first menu item is "Applications". Offset index by 1.
+	if (gShowAllProcesses)
+		++index;
 	
 	NSMutableDictionary *appInfo = [NSMutableDictionary dictionaryWithObjectsAndKeys:
 									[app localizedName], APApplicationInfoNameKey,
@@ -644,28 +679,87 @@ static const int kPidFoundMask = 1 << (8 * sizeof(int) - 1);
 //	NSUInteger index;
 	
 //	NSLog(@"running apps: %@", _runningApplications);
-
+	
 	for (NSRunningApplication *runningApp in _runningApplications) {
 		if ([app isEqual:runningApp]) {
 			NSUInteger index = [_runningApplications indexOfObject:runningApp];
 			[_runningApplications removeObjectAtIndex:index];
-
+			// If showing all process, the first menu item is "Applications". Shift index by 1
+			NSInteger menuIndex = (gShowAllProcesses) ? (NSInteger)(index + 1) : (NSInteger)index;
+			
 			CMMenu *menu = [[_mainMenu itemAtIndex:0] submenu];
+			CMMenuItem *item = [menu itemAtIndex:menuIndex];
 			AppInspector *appInspector = [self appInspector];
 			NSPopover *popover = [appInspector popover];
 			if ([popover isShown]) {
 				CMMenuItem *attachedToItem = [appInspector attachedToItem];
-				CMMenuItem *item = [menu itemAtIndex:(NSInteger)index];
 				if (attachedToItem == item) {
 					[popover setAnimates:YES];
 					[popover close];
 				}
 			}
-			[menu removeItemAtIndex:(NSInteger)index animate:NO];
+//			NSDictionary *representedObj = [item representedObject];
+//			if (representedObj) {
+//				NSNumber *pid = [representedObj objectForKey:APApplicationInfoPidKey];
+//				[self processPid:pid didChangeLimit:0.0];
+//			}
+			[self processOfItem:item didChangeLimit:PROCESS_NOT_LIMITED];
+			[menu removeItemAtIndex:menuIndex animate:NO];
 
 			return;
 		}
 	}
+}
+
+
+/*
+ *
+ */
+- (void)processDidChangeLimitNotificationHandler:(NSNotification *)notification {
+	NSDictionary *userInfo = [notification userInfo];
+//	NSNumber *pid = [userInfo objectForKey:@"pid"];
+//	float limit = [(NSNumber *)[userInfo objectForKey:@"limit"] floatValue];
+//	[self processPid:pid didChangeLimit:limit];
+
+	CMMenuItem *item = [userInfo objectForKey:@"menuItem"];
+	NSDictionary *representedObj = [item representedObject];
+	if (! representedObj)
+		return;
+
+	float limit = [[representedObj objectForKey:APApplicationInfoLimitKey] floatValue];
+	[self processOfItem:item didChangeLimit:limit];
+}
+
+
+/*
+ *
+ */
+- (void)processOfItem:(CMMenuItem *)item didChangeLimit:(float)limit {
+	CMMenuItem *pauseItem = [_mainMenu itemAtIndex:1];
+	BOOL newState = YES;
+	BOOL allLimitsPaused = [[pauseItem representedObject] boolValue];
+	
+	if (limit == PROCESS_NOT_LIMITED) {
+		[item setState:NSMixedState];
+		[_limitedProcessItems removeObject:item];
+		if (! [_limitedProcessItems count])
+			newState = NO;
+	} else {
+		NSImage *image = (allLimitsPaused) ? [NSImage imageNamed:NSImageNameStatusPartiallyAvailable] : [NSImage imageNamed:NSImageNameStatusAvailable];
+		if (! [[item onStateImage] isEqual:image])
+			[item setOnStateImage:image];
+		[item setState:NSOnState];
+		if ([_limitedProcessItems indexOfObject:item] == NSNotFound)
+			[_limitedProcessItems addObject:item];
+//		[pauseItem setTitle:@"Pause all limits"];
+//		[pauseItem setRepresentedObject:[NSNumber numberWithInt:!ALL_LIMITS_PAUSED]];
+		if (! allLimitsPaused)
+			proc_cpulim_resume();
+	}
+	
+	if ([pauseItem isEnabled] != newState)
+		[pauseItem setEnabled:newState];
+	
 }
 
 
@@ -716,6 +810,31 @@ static const int kPidFoundMask = 1 << (8 * sizeof(int) - 1);
 
 //		[item setEnabled:NO];
 //		_itemWithAttachedPopover = item;
+	}
+}
+
+
+/*
+ *
+ */
+- (void)toggleLimiterMenuAction:(id)sender {
+	CMMenuItem *item = (CMMenuItem *)sender;
+	int state = [[item representedObject] intValue];
+
+	if (state == ALL_LIMITS_PAUSED) {	// resume
+		proc_cpulim_resume();
+		[item setTitle:@"Pause all limits"];
+		[item setRepresentedObject:[NSNumber numberWithBool:!ALL_LIMITS_PAUSED]];
+		for (CMMenuItem *item in _limitedProcessItems) {
+			[item setOnStateImage:[NSImage imageNamed:NSImageNameStatusAvailable]];
+		}
+	} else {	// pause
+		proc_cpulim_suspend();
+		[item setTitle:@"Resume"];
+		[item setRepresentedObject:[NSNumber numberWithBool:ALL_LIMITS_PAUSED]];
+		for (CMMenuItem *item in _limitedProcessItems) {
+			[item setOnStateImage:[NSImage imageNamed:NSImageNameStatusPartiallyAvailable]];
+		}
 	}
 }
 

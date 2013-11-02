@@ -8,6 +8,8 @@
 
 #import <Cocoa/Cocoa.h>
 
+// Custom view used in AppInspector popover positioned
+// at the very top and draws a slightly grayed background.
 @interface AppInfoBlockView : NSView
 
 @end

@@ -15,6 +15,7 @@
 #define APApplicationInfoUserKey @"appInfoUserKey"
 
 #define APAppInspectorPopoverDidShow @"appInspectorPopoverDidShow"
+#define APAppInspectorProcessDidChangeLimit @"appInspectorProcDidChangeLim"
 
 
 @class NSObject, NSView, NSViewController, NSPopover, NSSlider, NSLevelIndicator;

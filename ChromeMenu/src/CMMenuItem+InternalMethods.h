@@ -40,7 +40,7 @@
 - (void)selectWithDelayForSubmenu:(NSTimeInterval)delay;
 - (void)deselect;
 
-- (void)performAction;
+- (void)performAction __attribute__((deprecated));
 
 @end
 

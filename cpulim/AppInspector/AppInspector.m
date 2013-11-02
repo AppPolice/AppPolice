@@ -13,6 +13,7 @@
 #import "AppLimitHintView.h"
 #import "HintPopoverTextField.h"
 #include "app_inspector_c.h"
+#include "proc_cpulim.h"
 #include <errno.h>
 
 #define SLIDER_NOT_LIMITED_VALUE [_slider maxValue]
@@ -22,11 +23,16 @@
 // ---------------------------------- Obj-c ---------------------------------------
 
 @interface AppInspector ()
+{
+	BOOL _processIsRunning;
+}
 
-- (float)limitFromSliderValue:(double)value;
+- (void)cpuTimerFire:(NSTimer *)timer;
+- (void)updateTextfieldsWithLimitValue:(float)limit;
+- (void)setProcessLimit:(float)limit;
+- (float)limitFromSliderValue:(double)value;			// |limit| is a fraction of 1 for 100%
 - (double)sliderValueFromLimit:(float)limit;
 - (double)levelIndicatorValueFromCPU:(double)cpu;
-- (void)cpuTimerFire:(NSTimer *)timer;
 
 @end
 
@@ -137,6 +143,7 @@
 	// Current cpu time for a process
 	_cpuTime.cputime = get_proc_cputime(pid);
 	if (_cpuTime.cputime == 0 && errno != 0) {
+		_processIsRunning = NO;
 		if (errno == ESRCH) {
 			[_applicationUserTextfield setStringValue:@"No such process"];
 		} else if (errno == EPERM) {
@@ -152,8 +159,9 @@
 		[_slider setDoubleValue:SLIDER_NOT_LIMITED_VALUE];
 		[self updateTextfieldsWithLimitValue:NO_LIMIT];
 		[_levelIndicator setDoubleValue:0.0];
-		[self updateMenuItemStateWithLimit:NO_LIMIT];
+		[self setProcessLimit:NO_LIMIT];
 	} else {
+		_processIsRunning = YES;
 		_cpuTime.timestamp = get_timestamp();
 		
 		// Reset params
@@ -216,6 +224,7 @@
 	
 	// Info about the process is not available. Stop polling
 	if (cputime == 0 && errno != 0) {
+		_processIsRunning = NO;
 		if (errno == ESRCH) {
 			[_applicationUserTextfield setStringValue:@"No such process"];
 		} else if (errno == EPERM) {
@@ -231,7 +240,7 @@
 		[_slider setDoubleValue:SLIDER_NOT_LIMITED_VALUE];
 		[self updateTextfieldsWithLimitValue:NO_LIMIT];
 		[_levelIndicator setDoubleValue:0.0];
-		[self updateMenuItemStateWithLimit:NO_LIMIT];
+		[self setProcessLimit:NO_LIMIT];
 		
 		[_cpuTimer invalidate];
 		_cpuTimer = nil;
@@ -305,7 +314,7 @@
 	double value = [_slider doubleValue];
 	float limit;
 	if (value == [_slider maxValue])
-		limit = 0;
+		limit = NO_LIMIT;
 	else
 		limit = [self limitFromSliderValue:value];
 		
@@ -315,7 +324,7 @@
 	NSEventType eventType = [theEvent type];
 	
 	if (eventType == NSLeftMouseUp) {		// update applicatoinInfo when slider is released
-		[self updateMenuItemStateWithLimit:limit];
+		[self setProcessLimit:limit];
 	}
 
 //	NSLog(@"limit: %f", limit);
@@ -326,7 +335,7 @@
  *
  */
 - (void)updateTextfieldsWithLimitValue:(float)limit {
-	if (limit == 0) {
+	if (limit == NO_LIMIT) {
 		[_sliderLimit2Textfield setStringValue:@"Not limited"];
 	} else {
 		int percents;
@@ -341,15 +350,41 @@
 /*
  *
  */
-- (void)updateMenuItemStateWithLimit:(float)limit {
-	if (_attachedToItem) {
-		NSMutableDictionary *applicationInfo = [_attachedToItem representedObject];
-		[applicationInfo setObject:[NSNumber numberWithFloat:limit] forKey:APApplicationInfoLimitKey];
-		if (limit == 0)
-			[_attachedToItem setState:NSMixedState];
-		else
-			[_attachedToItem setState:NSOnState];
-	}
+- (void)setProcessLimit:(float)limit {
+	// Update the attached-to menu item state
+	if (! _attachedToItem)
+		return;
+	
+	if (! _processIsRunning)
+		limit = NO_LIMIT;
+	
+	NSMutableDictionary *applicationInfo = [_attachedToItem representedObject];
+	[applicationInfo setObject:[NSNumber numberWithFloat:limit] forKey:APApplicationInfoLimitKey];
+//	if (limit == NO_LIMIT)
+//		[_attachedToItem setState:NSMixedState];
+//	else
+//		[_attachedToItem setState:NSOnState];
+	
+	NSNumber *pid_n = [applicationInfo objectForKey:APApplicationInfoPidKey];
+	pid_t pid = [pid_n intValue];
+	// Set limit for process and start limiter in case it's not already running
+	proc_cpulim_set(pid, limit);
+//	proc_cpulim_resume();
+	
+	// Post notification about process changed limit
+//	NSDictionary *userInfo = @{
+//		@"pid" : pid_n,
+//		@"limit" : [NSNumber numberWithFloat:limit]
+//	};
+	NSDictionary *userInfo = @{
+		@"menuItem" : _attachedToItem
+	};
+	NSNotification *postNotification = [NSNotification notificationWithName:APAppInspectorProcessDidChangeLimit object:self userInfo:userInfo];
+	[[NSNotificationQueue defaultQueue] enqueueNotification:postNotification
+											   postingStyle:NSPostNow
+											   coalesceMask:NSNotificationCoalescingOnName
+												   forModes:[NSArray arrayWithObject:NSRunLoopCommonModes]];
+
 }
 
 

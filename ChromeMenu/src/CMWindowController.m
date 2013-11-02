@@ -52,8 +52,8 @@ typedef struct tracking_primitive_s {
 	
 //	BOOL _needsLayoutUpdate;
 	CGFloat _maximumViewWidth;
-	CGFloat _viewHeight;
-	CGFloat _separatorViewHeight;
+	CGFloat _defaultViewHeight;
+	CGFloat _defaultSeparatorViewHeight;
 	
 	__strong CMMenuScroller *_topScroller;
 	__strong CMMenuScroller *_bottomScroller;
@@ -183,10 +183,11 @@ typedef struct tracking_primitive_s {
 		[documentView release];
 		[contentView release];
 		
-		_separatorViewHeight = 12.0;
+		_defaultViewHeight = 19.0;
+		_defaultSeparatorViewHeight = 12.0;
 		_verticalPadding = 4.0;
 		_keepTracking = NO;
-		_ignoreMouse = NO;
+//		_ignoreMouse = NO;
 		_trackingPrimitives = NULL;
 //		_ignoreMouseDuringScrollContentViewBoundsChange = NO;
 		
@@ -370,6 +371,7 @@ typedef struct tracking_primitive_s {
 		  NSStringFromRect([[self window] frame]));
 
 	_keepTracking = NO;
+	[self discardTrackingPrimitivesIgnoreMouse:YES];
 	// By posting another event we will effectively quit nextEventMatchingMask event tracking
 	//	since we set the _keepTracking to NO.
 	NSEvent *customEvent = [NSEvent otherEventWithType:NSSystemDefined location:NSMakePoint(1, 1) modifierFlags:0 timestamp:0 windowNumber:0 context:nil subtype:0 data1:0 data2:0];
@@ -471,7 +473,8 @@ typedef struct tracking_primitive_s {
 	
 	NSView *documentView = [_scrollView documentView];
 	CGFloat maximumWidth = 0.0f;
-	
+	// On first pass add views to the documentView and find the
+	// maximum width
 	for (NSViewController *controller in viewControllers) {
 		NSView *view = controller.view;
 		NSSize size = [view fittingSize];
@@ -481,18 +484,39 @@ typedef struct tracking_primitive_s {
 		[documentView addSubview:view];
 	}
 	
-	_viewHeight = [[viewControllers objectAtIndex:0] view].frame.size.height;
-	_maximumViewWidth = maximumWidth;
+//	_viewHeight = [[viewControllers objectAtIndex:0] view].frame.size.height;
+//	_maximumViewWidth = maximumWidth;
 
+	CGFloat offset = 0.0f;
+	// On second pass align views properly
+	for (NSViewController *viewController in [viewControllers reverseObjectEnumerator]) {
+		CMMenuItem *menuItem = [viewController representedObject];
+		NSView *view = [viewController view];
+		NSRect frame = [view frame];
+		CGFloat height = frame.size.height;
+		if (! height) {
+			height = ([menuItem isSeparatorItem]) ? _defaultSeparatorViewHeight : _defaultViewHeight;
+			frame.size.height = height;
+		}
+//		CGFloat height = ([menuItem isSeparatorItem]) ? separatorViewHeight : viewHeight;
+//		frame.size = NSMakeSize(width, height);
+		frame.size.width = maximumWidth;
+		offset -= height + VERTICAL_SPACING;
+		frame.origin.y = offset;
+		frame.origin.x = 0;
+		[view setFrame:frame];
+	}
 	
-	[self updateViews];
+	[documentView setFrame:NSMakeRect(0, 0, maximumWidth, -1 * offset)];
+	
+//	[self updateViews];
 }
 
 
 
 /*
- * TODO: don't like this function. It could be united with the method above, if there is no sence in it.
- */
+ *
+ */ /*
 - (void)updateViews {
 	NSArray *viewControllers = _viewControllers;
 	NSView *documentView = [_scrollView documentView];
@@ -504,9 +528,15 @@ typedef struct tracking_primitive_s {
 	for (NSViewController *viewController in [viewControllers reverseObjectEnumerator]) {
 		CMMenuItem *menuItem = [viewController representedObject];
 		NSView *view = [viewController view];
-		NSRect frame;
-		CGFloat height = ([menuItem isSeparatorItem]) ? separatorViewHeight : viewHeight;
-		frame.size = NSMakeSize(width, height);
+		NSRect frame = [view frame];
+		CGFloat height = frame.size.height;
+		if (! height) {
+			height = ([menuItem isSeparatorItem]) ? separatorViewHeight : viewHeight;
+			frame.size.height = height;
+		}
+//		CGFloat height = ([menuItem isSeparatorItem]) ? separatorViewHeight : viewHeight;
+//		frame.size = NSMakeSize(width, height);
+		frame.size.width = width;
 		offset -= height + VERTICAL_SPACING;
 		frame.origin.y = offset;
 		frame.origin.x = 0;
@@ -514,7 +544,7 @@ typedef struct tracking_primitive_s {
 	}
 
 	[documentView setFrame:NSMakeRect(0, 0, width, -1 * offset)];
-}
+} */
 
 
 /*
@@ -1754,7 +1784,7 @@ typedef struct tracking_primitive_s {
 		primitive->next = _trackingPrimitivesList;
 		_trackingPrimitivesList = primitive;
 		
-		NSLog(@"created new tracking primitive: %@", primitive->userInfo);
+//		NSLog(@"created new tracking primitive: %@", primitive->userInfo);
 		
 		if (mouseInside)
 			[self mouseEventOnItemView:viewController eventType:CMMenuEventMouseEnteredItem | CMMenuEventDuringTrackingAreaUpdate];
@@ -1772,7 +1802,7 @@ typedef struct tracking_primitive_s {
 			}
 		}
 		
-		NSLog(@"removing tracking primitive for item: %@", currentTrackingPrimitive->userInfo);
+//		NSLog(@"removing tracking primitive for item: %@", currentTrackingPrimitive->userInfo);
 		
 		[currentTrackingPrimitive->userInfo release];
 		free(currentTrackingPrimitive);
@@ -1983,7 +2013,8 @@ typedef struct tracking_primitive_s {
 
 //		NSEventMask blockingMask = [_owner eventBlockingMask];
 		
-		if (! (eventMask & (NSMouseMovedMask | NSLeftMouseDraggedMask | NSRightMouseDraggedMask | NSOtherMouseDraggedMask | NSSystemDefinedMask))) {
+		// NSSystemDefinedMask
+		if (! (eventMask & (NSMouseMovedMask | NSLeftMouseDraggedMask | NSRightMouseDraggedMask | NSOtherMouseDraggedMask))) {
 			XLog3("New RunLoop event:\n\tEvent: %@\n\tMenu frame owning RunLoop:\t%@ \"%@\"\n\tMenu frame of occurred event:\t%@",
 				  theEvent,
 				  NSStringFromRect([[self window] frame]),
@@ -1996,7 +2027,6 @@ typedef struct tracking_primitive_s {
 		
 //		BOOL eventWindowBelongsToAnyMenu __attribute__((deprecated));
 //		eventWindowBelongsToAnyMenu = NO;
-		// TODO: verify eventWindowBelongsToAnyMenu for all events
 //		BOOL eventWindowBelongsToAnyMenu = [self eventWindowBelongsToAnyMenu:theEvent];
 //		NSLog(@"event belongs to any menu: %d, win: %@", eventWindowBelongsToAnyMenu, eventWindow);
 ////		NSLog(@"event belongs to menu: %d, blocking mask: %llu", eventWindowBelongsToAnyMenu, blockingMask);
@@ -2108,8 +2138,6 @@ typedef struct tracking_primitive_s {
 
 	//			[_owner mouseEvent:theEvent];
 
-	// TODO: Do not send mouseMoved events to anybody else (other windows)
-
 
 	//			NSPoint mouseLocation = [theEvent locationInWindow];
 	//			if (eventWindow)
@@ -2137,7 +2165,6 @@ typedef struct tracking_primitive_s {
 					NSLog(@"Event has been blocked. Conitnue.");
 					goto endEvent;
 				}
-				
 				
 				// Possibly mouse entered another menu
 	//				CMMenu *candidateMenu = [_owner menuAtPoint:mouseLocation];
@@ -2243,63 +2270,63 @@ typedef struct tracking_primitive_s {
 			}
 			
 			
-			/* termporary toys */
-			if (NSPointInRect(mouseLocation, [[self window] frame])) {
-				CMMenuItem *item = [_owner itemAtPoint:mouseLocation];
-//				if (item)
-//					[item performAction];
+			/* temp */ {
+				if (NSPointInRect(mouseLocation, [[self window] frame])) {
+					CMMenuItem *item = [_owner itemAtPoint:mouseLocation];
+	//				if (item)
+	//					[item performAction];
+					
+					NSUInteger modifierFlags = [theEvent modifierFlags];
+					if (modifierFlags & NSShiftKeyMask) {
+						int i;
+						int lim = 1;
+						for (i = 0; i < lim; ++i) {
+		//					CMMenuItem *item = [[CMMenuItem alloc] initWithTitle:@"New Item"];
+							CMMenuItem *item  = [[CMMenuItem alloc] initWithTitle:@"New Item With Image" icon:[NSImage imageNamed:NSImageNameBluetoothTemplate] action:NULL];
+							[_owner insertItem:item atIndex:1 animate:YES];
+							[item release];
+						}
+					} else if (modifierFlags & NSControlKeyMask) {
+						item = [_owner itemAtPoint:mouseLocation];
+						if (item) {
+							if (modifierFlags & NSAlternateKeyMask)
+								[item setTitle:@"Shrt ttl"];
+							else
+								[item setTitle:@"New title for item and quite longer.."];
+						}
+
+					} else if (modifierFlags & NSAlternateKeyMask) {
+						item = [_owner itemAtPoint:mouseLocation];
+						NSUInteger idx = (NSUInteger)[_owner indexOfItem:item];
+						if (item) {
+	//						[_owner removeItem:item animate:YES];
+							NSMutableIndexSet *indexes = [NSMutableIndexSet indexSet];
+							[indexes addIndex:(idx - 1)];
+							[indexes addIndex:idx];
+							[indexes addIndex:(idx + 2)];
+							[_owner removeItemsAtIndexes:indexes];
+						}
+
+					} else if (modifierFlags & NSCommandKeyMask) {
+						if (eventType == NSRightMouseUp) {
+							NSInteger state = [item state];
+							NSInteger nextState = state + 1;
+							if (nextState > 1)
+								nextState = -1;
+							[item setState:nextState];
+						} else {
+							[item setEnabled:![item isEnabled]];
+						}
+					}
 				
-				NSUInteger modifierFlags = [theEvent modifierFlags];
-				if (modifierFlags & NSShiftKeyMask) {
-					int i;
-					int lim = 1;
-					for (i = 0; i < lim; ++i) {
-	//					CMMenuItem *item = [[CMMenuItem alloc] initWithTitle:@"New Item"];
-						CMMenuItem *item  = [[CMMenuItem alloc] initWithTitle:@"New Item With Image" icon:[NSImage imageNamed:NSImageNameBluetoothTemplate] action:NULL];
-						[_owner insertItem:item atIndex:1 animate:YES];
-						[item release];
-					}
-				} else if (modifierFlags & NSControlKeyMask) {
-					item = [_owner itemAtPoint:mouseLocation];
-					if (item) {
-						if (modifierFlags & NSAlternateKeyMask)
-							[item setTitle:@"Shrt ttl"];
-						else
-							[item setTitle:@"New title for item and quite longer.."];
-					}
-
-				} else if (modifierFlags & NSAlternateKeyMask) {
-					item = [_owner itemAtPoint:mouseLocation];
-					NSUInteger idx = (NSUInteger)[_owner indexOfItem:item];
-					if (item) {
-//						[_owner removeItem:item animate:YES];
-						NSMutableIndexSet *indexes = [NSMutableIndexSet indexSet];
-						[indexes addIndex:(idx - 1)];
-						[indexes addIndex:idx];
-						[indexes addIndex:(idx + 2)];
-						[_owner removeItemsAtIndexes:indexes];
-					}
-
-				} else if (modifierFlags & NSCommandKeyMask) {
-					if (eventType == NSRightMouseUp) {
-						NSInteger state = [item state];
-						NSInteger nextState = state + 1;
-						if (nextState > 1)
-							nextState = -1;
-						[item setState:nextState];
-					} else {
-						[item setEnabled:![item isEnabled]];
-					}
+	//				NSLog(@"Added new item: %@ to menu: %@", item, menu);
+				} else {
+//					if ([_owner cancelsTrackingOnMouseEventOutsideMenus] && ![self mouseInsideDisplayedMenusDuringEvent:theEvent]) {
+//						NSLog(@"mouse is outside any menu during MOUSEUP!!!");
+//						[[_owner rootMenu] cancelTracking];
+//					}
 				}
-			
-//				NSLog(@"Added new item: %@ to menu: %@", item, menu);
-			} else {
-				if ([_owner cancelsTrackingOnMouseEventOutsideMenus] && ![self mouseInsideDisplayedMenusDuringEvent:theEvent]) {
-					NSLog(@"mouse is outside any menu during MOUSEUP!!!");
-					[[_owner rootMenu] cancelTracking];
-				}
-			}
-		/*	 */
+			} /* temp */
 			
 
 //#pragma mark RightMouseDown
@@ -2388,21 +2415,9 @@ typedef struct tracking_primitive_s {
 }
 
 
-// TODO: this is temp method
-//- (CMMenu *)menuToReciveEventWithWindow:(NSWindow *)window {
-//	CMMenu *menu = _owner;
-//	while (menu) {
-//		if ([menu underlyingWindow] == window)
-//			return menu;
-//		menu = [menu activeSubmenu];
-//	}
-//	
-//	return nil;
-//}
 
 
-
-
+/*
 - (CMMenu *)menuThatGeneratedEvent:(NSEvent *)theEvent {
 	NSWindow *window = [theEvent window];
 	if (! window)
@@ -2416,6 +2431,7 @@ typedef struct tracking_primitive_s {
 	
 	return nil;
 }
+ */
 
 - (BOOL)mouseInsideDisplayedMenusDuringEvent:(NSEvent *)theEvent {
 	NSPoint mouseLocation = [theEvent locationInWindow];
@@ -2429,7 +2445,7 @@ typedef struct tracking_primitive_s {
 	return NO;
 }
 
-
+/*
 - (BOOL)eventWindowBelongsToAnyMenu:(NSEvent *)theEvent {
 	NSWindow *window = [theEvent window];
 	CMMenu *menu = ([_owner activeSubmenu]) ? [_owner activeSubmenu] : _owner;
@@ -2441,6 +2457,7 @@ typedef struct tracking_primitive_s {
 
 	return NO;
 }
+ */
 
 
 //- (void)mouseMoved:(NSEvent *)theEvent {
@@ -2488,7 +2505,7 @@ typedef struct tracking_primitive_s {
 //	CMMenuItemView *view = (CMMenuItemView *)[viewController view];
 //	NSLog(@"ffframe: %@", NSStringFromRect([view frame]));
 	
-	NSLog(@"Mouse event on item: %@", [menuItem title]);
+//	NSLog(@"Mouse event on item: %@", [menuItem title]);
 	
 	
 	BOOL selected;

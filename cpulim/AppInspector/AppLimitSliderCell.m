@@ -59,7 +59,13 @@
 	if (ABS(_offsetFromKnobCenter) > knobThickness / 2)
 		_offsetFromKnobCenter = 0;
 	
-//	NSLog(@"Start tracking, value: %f", value);
+//	NSLog(@"Start tracking, value: %f", [self floatValue]);
+//	NSLog(@"Start tracking, offset from knob: %f\tstart point: %@", _offsetFromKnobCenter, NSStringFromPoint(startPoint));
+
+	// When the mouse is down between penultimate and final tick marks
+	// the slider is not yet sticky and the value is wrong. Run the method
+	// manually once to validate mouse starting point.
+	(void) [self continueTracking:NSMakePoint(0, 0) at:startPoint inView:controlView];
 	
 	return [super startTrackingAt:startPoint inView:controlView];
 }

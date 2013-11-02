@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="4510" systemVersion="12F45" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="4514" systemVersion="13A603" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment defaultVersion="1070" identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="4510"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="4514"/>
     </dependencies>
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="AppInspector">
@@ -41,7 +41,7 @@
                             <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" id="LQE-Eo-gg1"/>
                         </imageView>
                         <textField horizontalHuggingPriority="750" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="UPW-Bd-Uy1">
-                            <rect key="frame" x="79" y="46" width="214" height="17"/>
+                            <rect key="frame" x="80" y="46" width="212" height="17"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Application name (PID)" id="kN0-t2-zR6">
                                 <font key="font" size="13" name="LucidaGrande"/>
@@ -50,7 +50,7 @@
                             </textFieldCell>
                         </textField>
                         <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="IZu-80-1hD">
-                            <rect key="frame" x="79" y="30" width="69" height="13"/>
+                            <rect key="frame" x="80" y="30" width="38" height="13"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="User: -" id="b36-Ke-2wK">
                                 <font key="font" size="10" name="LucidaGrande"/>
@@ -59,7 +59,7 @@
                             </textFieldCell>
                         </textField>
                         <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="X1H-na-SUo">
-                            <rect key="frame" x="79" y="14" width="66" height="13"/>
+                            <rect key="frame" x="80" y="14" width="55" height="13"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="% CPU: -.-" id="97Z-2o-jm9">
                                 <font key="font" size="10" name="LucidaGrande"/>
@@ -92,7 +92,7 @@
                     <levelIndicatorCell key="cell" alignment="left" doubleValue="5" maxValue="10" warningValue="5" criticalValue="8" levelIndicatorStyle="continuousCapacity" id="82X-tI-IIi"/>
                 </levelIndicator>
                 <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Bg4-V0-TsV">
-                    <rect key="frame" x="18" y="40" width="274" height="25"/>
+                    <rect key="frame" x="18" y="38" width="274" height="27"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <constraints>
                         <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="270" id="AUQ-qd-ZDe"/>
@@ -100,7 +100,7 @@
                     <sliderCell key="cell" refusesFirstResponder="YES" state="on" alignment="left" maxValue="11" doubleValue="11" tickMarkPosition="below" numberOfTickMarks="12" sliderType="linear" id="qcC-TO-TiU" customClass="AppLimitSliderCell"/>
                 </slider>
                 <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" horizontalCompressionResistancePriority="751" translatesAutoresizingMaskIntoConstraints="NO" id="ucT-ZZ-kLz">
-                    <rect key="frame" x="17" y="71" width="76" height="14"/>
+                    <rect key="frame" x="18" y="71" width="76" height="14"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Current limit:" id="9MP-ug-QgQ">
                         <font key="font" size="11" name="LucidaGrande"/>
@@ -109,7 +109,7 @@
                     </textFieldCell>
                 </textField>
                 <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="MJq-Rw-T1a">
-                    <rect key="frame" x="20" y="20" width="27" height="13"/>
+                    <rect key="frame" x="21" y="18" width="25" height="13"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <constraints>
                         <constraint firstAttribute="width" constant="21" id="UXC-oN-Mwt"/>
@@ -121,7 +121,7 @@
                     </textFieldCell>
                 </textField>
                 <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="mNg-eT-yNB">
-                    <rect key="frame" x="275" y="20" width="30" height="13"/>
+                    <rect key="frame" x="276" y="18" width="28" height="13"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <constraints>
                         <constraint firstAttribute="width" constant="24" id="n0X-dC-lNu"/>
@@ -133,7 +133,7 @@
                     </textFieldCell>
                 </textField>
                 <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="lFy-YF-2XL">
-                    <rect key="frame" x="129" y="20" width="30" height="13"/>
+                    <rect key="frame" x="129" y="18" width="30" height="13"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="100%" id="Zcb-FP-lpx">
                         <font key="font" size="10" name="LucidaGrande"/>
@@ -142,7 +142,7 @@
                     </textFieldCell>
                 </textField>
                 <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="1SJ-Bs-YWD">
-                    <rect key="frame" x="243" y="20" width="38" height="13"/>
+                    <rect key="frame" x="244" y="18" width="36" height="13"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <constraints>
                         <constraint firstAttribute="width" constant="32" id="us3-Wf-ckg"/>
@@ -154,7 +154,7 @@
                     </textFieldCell>
                 </textField>
                 <customView translatesAutoresizingMaskIntoConstraints="NO" id="Gb2-Vs-cx2" customClass="AppLimitHintView">
-                    <rect key="frame" x="204" y="69" width="86" height="19"/>
+                    <rect key="frame" x="202" y="69" width="88" height="19"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <subviews>
                         <imageView hidden="YES" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="hfv-8R-sCB">
@@ -167,7 +167,7 @@
                             <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="NSInfo" id="94m-m3-Tm0"/>
                         </imageView>
                         <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="VPs-CQ-sHI">
-                            <rect key="frame" x="25" y="3" width="59" height="13"/>
+                            <rect key="frame" x="26" y="3" width="59" height="13"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Not limited" id="PQK-tx-ITQ">
                                 <font key="font" size="10" name="LucidaGrande"/>
