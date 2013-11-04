@@ -71,6 +71,12 @@
 
 - (BOOL)isSeparatorItem;
 
+/*!
+	@description Sets the menu item indentation level for the receiver
+	@param indentationLevel The value for \p indentationLevel may be from 0 to 15.
+		If \p indentationLevel is greater than 15, the value is pinned to the maximum.
+		If \p indentationLevel is less than 0, an exception is raised. The default indentation level is 0.
+ */
 - (void)setIndentationLevel:(NSInteger)indentationLevel;
 - (NSInteger)indentationLevel;
 

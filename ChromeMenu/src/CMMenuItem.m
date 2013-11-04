@@ -353,7 +353,22 @@
 
 
 - (void)setIndentationLevel:(NSInteger)indentationLevel {
+	if (indentationLevel < 0) {
+		[NSException raise:NSInvalidArgumentException format:@"CMMenuItem indentationLevel cannot be less then 0"];
+		return;
+	} else if (indentationLevel > 15)
+		indentationLevel = 15;
+	
 	_indentationLevel = indentationLevel;
+	if (_representedViewController) {
+		CMMenuItemView *view =  (CMMenuItemView *)[_representedViewController view];
+		NSLog(@"item view: %@", view);
+		[view setIndentationLevel:indentationLevel];
+		// If menu item with new indentation is wider then the menu currently is
+		// redraw menu with new size and position
+		if ([view fittingSize].width > [_menu frame].size.width)
+			[_menu setNeedsDisplay:YES];
+	}
 }
 
 

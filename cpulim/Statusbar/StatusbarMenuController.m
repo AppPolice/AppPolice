@@ -182,7 +182,7 @@ static const int kPidFoundMask = 1 << (8 * sizeof(int) - 1);
 		[item setEnabled:NO];
 		[menu addItem:item];
 	}
-	
+
 	// --------------------------------------------------
 	//		Populate with Applications
 	// --------------------------------------------------
@@ -213,6 +213,8 @@ static const int kPidFoundMask = 1 << (8 * sizeof(int) - 1);
 		item = [[[CMMenuItem alloc] initWithTitle:[app localizedName] icon:icon action:@selector(selectProcessMenuItemAction:)] autorelease];
 		[item setTarget:self];
 		[item setOnStateImage:onStateImageActive];
+		if (gShowAllProcesses)
+			[item setIndentationLevel:1];
 //		NSImage *mixedStateImage = [NSImage imageNamed:NSImageNameStatusNone];
 //		[mixedStateImage setSize:NSMakeSize(12, 12)];
 //		[item setMixedStateImage:mixedStateImage];
@@ -264,6 +266,7 @@ static const int kPidFoundMask = 1 << (8 * sizeof(int) - 1);
 //				NSImage *onStateImage = [NSImage imageNamed:NSImageNameStatusAvailable];
 //				[onStateImage setSize:NSMakeSize(12, 12)];
 				[item setOnStateImage:onStateImageActive];
+				[item setIndentationLevel:1];
 				[item setRepresentedObject:appInfo];
 				[menu addItem:item];
 			}];
@@ -404,7 +407,7 @@ static const int kPidFoundMask = 1 << (8 * sizeof(int) - 1);
 		
 		if (!gShowOtherUsersProcesses) {
 			uid_t proc_uid = get_proc_uid(proc_pids[n]);
-			printf("skipg pid: %d\n", proc_pids[n]);
+//			printf("skipg pid: %d\n", proc_pids[n]);
 			if (proc_uid != shared_uid)
 				continue;
 		}
@@ -430,7 +433,7 @@ static const int kPidFoundMask = 1 << (8 * sizeof(int) - 1);
 		} else {		// otherwise simply add them and sort later
 			[_runningSystemProcesses addObject:procInfo];
 		}
-		fprintf(stdout, "proc %d name: %s\n", proc_pids[n], namebuffer);
+//		fprintf(stdout, "proc %d name: %s\n", proc_pids[n], namebuffer);
 //		fprintf(stdout, "\npid[%d] = %d\tpath: %s", n, proc_pids[n], pathbuffer);
 	}
 	free(namebuffer);

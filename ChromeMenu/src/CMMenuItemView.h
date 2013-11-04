@@ -19,6 +19,7 @@
 	
 	BOOL _selected;
 	BOOL _enabled;
+	NSInteger _indentationLevel;
 }
 
 @property (assign) IBOutlet NSImageView *state;
@@ -36,6 +37,9 @@
 - (void)fadeIn;
 - (void)fadeOutWithComplitionHandler:(void (^)(void))handler;
 - (void)blink;
+
+- (void)setIndentationLevel:(NSInteger)indentationLevel;
+- (NSInteger)indentationLevel;
 
 /**
  * @function needsTracking

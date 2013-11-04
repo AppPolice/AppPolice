@@ -17,8 +17,11 @@
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
             <subviews>
                 <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="pgH-uf-60w">
-                    <rect key="frame" x="6" y="1" width="0.0" height="17"/>
+                    <rect key="frame" x="6" y="1" width="11" height="17"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="11" id="VBn-KX-Cc4"/>
+                    </constraints>
                     <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" id="JuI-eb-9QJ"/>
                 </imageView>
                 <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="rrg-Oi-Ai9">
@@ -37,9 +40,9 @@
             <constraints>
                 <constraint firstAttribute="bottom" secondItem="rrg-Oi-Ai9" secondAttribute="bottom" constant="1" id="E2o-ra-VbK"/>
                 <constraint firstItem="rrg-Oi-Ai9" firstAttribute="top" secondItem="awL-YU-2wg" secondAttribute="top" id="MKe-dw-9lR"/>
+                <constraint firstItem="rrg-Oi-Ai9" firstAttribute="leading" secondItem="pgH-uf-60w" secondAttribute="trailing" constant="5" id="Z5i-zw-1hG"/>
                 <constraint firstItem="pgH-uf-60w" firstAttribute="leading" secondItem="awL-YU-2wg" secondAttribute="leading" constant="6" id="aMz-WJ-C5H"/>
                 <constraint firstAttribute="trailing" secondItem="rrg-Oi-Ai9" secondAttribute="trailing" priority="750" constant="24" id="aPC-RD-VTU"/>
-                <constraint firstItem="rrg-Oi-Ai9" firstAttribute="leading" secondItem="awL-YU-2wg" secondAttribute="leading" constant="22" id="c4J-M1-v5b"/>
                 <constraint firstAttribute="bottom" secondItem="pgH-uf-60w" secondAttribute="bottom" constant="1" id="vJN-c7-oVG"/>
                 <constraint firstItem="pgH-uf-60w" firstAttribute="top" secondItem="awL-YU-2wg" secondAttribute="top" constant="1" id="wKU-Tp-Sr5"/>
             </constraints>

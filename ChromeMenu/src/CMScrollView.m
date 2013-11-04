@@ -14,7 +14,7 @@ static const short down = 1;
 
 @implementation CMScrollView
 
-
+/*
 - (void)scrollWheel:(NSEvent *)theEvent {
 	CGFloat deltaY = theEvent.deltaY;
 	CGFloat lineHeight = [self lineScroll];
@@ -29,10 +29,12 @@ static const short down = 1;
 	
 	[self scrollInDirection:direction byAmount:amount];
 }
+ */
 
 
 - (void)scrollWithEvent:(NSEvent *)theEvent {
-	CGFloat deltaY = theEvent.deltaY;
+//	CGFloat deltaY = theEvent.deltaY;
+	CGFloat deltaY = [theEvent scrollingDeltaY];
 	CGFloat lineHeight = [self lineScroll];
 	int multiplier;
 	CGFloat amount;

@@ -1211,6 +1211,9 @@ typedef struct __submenu_tracking_event tracking_event_t;
 			if ([menuItem hasSubmenu])
 				[view setHasSubmenuIcon:YES];
 
+			if ([menuItem indentationLevel])
+				[view setIndentationLevel:[menuItem indentationLevel]];
+			
 			[view setEnabled:[menuItem isEnabled]];
 		}
 		

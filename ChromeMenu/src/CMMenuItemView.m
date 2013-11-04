@@ -158,6 +158,47 @@
 	
 }
 
+/*
+- (void)viewDidMoveToSuperview {
+	NSLog(@"view: %@ did move to superview", [[self title] stringValue]);
+	if ([[[self title] stringValue] isEqualToString:@"Applications"]) {
+		NSLog(@"here");
+	}
+	NSView *superview = [self superview];
+	if (! superview) {
+		NSLog(@"view doesn't ahve superview!!!");
+	}
+	// If indentation level was set, call the -setIndentationLeve: method
+	// once again to actually update constraints once the view is in the superview.
+	if (_indentationLevel)
+		[self setIndentationLevel:_indentationLevel];
+}*/
+
+
+- (void)updateConstraints {
+//	NSLog(@"view: %@ did move to superview", [[self title] stringValue]);
+//	if ([[[self title] stringValue] isEqualToString:@"Applications"]) {
+//		NSLog(@"here");
+//	}
+
+	// This method is called twice by AppKit: first time when the view is
+	// not added to superview (hence the check below) and second -- when
+	// the view did move to superview and all constraints are properly set.
+	// Same logic at -viewDidMoveToSuperview doesn't work: the first view
+	// being called doesn't have horizontal constraints installed (??),
+	// only vertical. Only starting from the second view everything seemed
+	// alright. The logic is in this method as a result.
+	
+	// If indentation level was set, call the -setIndentationLeve: method
+	// once again to actually update constraints once the view is in the superview.
+	if (_indentationLevel && [self superview])
+		[self setIndentationLevel:_indentationLevel];
+	
+	
+	[super updateConstraints];
+}
+
+
 
 - (BOOL)needsTracking {
 	return (_enabled) ? YES : NO;
@@ -383,6 +424,34 @@
 	} else {
 		[self setSelected:YES];
 	}
+}
+
+
+- (void)setIndentationLevel:(NSInteger)indentationLevel {
+	_indentationLevel = indentationLevel;
+//	NSLog(@"set indent for view: %@", [_title stringValue]);
+	// If the view hasn't been drawn yet, simply exit.
+	// This method will be called again later from -updateConstraints.
+	if ([self superview]) {
+		NSArray *constraints = [_state constraintsAffectingLayoutForOrientation:NSLayoutConstraintOrientationHorizontal];
+		NSLayoutConstraint *indentationConstraint = nil;
+		// Indentation is achieved by modifying constant of the leading constraint of
+		// the leftmost view (state view)
+		for (NSLayoutConstraint *constraint in constraints) {
+			if ([constraint firstAttribute] == NSLayoutAttributeLeading) {
+				indentationConstraint = constraint;
+				break;
+			}
+		}
+		if (indentationConstraint) {
+//			NSLog(@"indent constraint: %@", indentationConstraint);
+			[indentationConstraint setConstant:(indentationLevel * 11) + 6];
+		}
+	}
+}
+
+- (NSInteger)indentationLevel {
+	return _indentationLevel;
 }
 
 

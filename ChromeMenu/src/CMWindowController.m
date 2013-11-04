@@ -2014,7 +2014,9 @@ typedef struct tracking_primitive_s {
 //		NSEventMask blockingMask = [_owner eventBlockingMask];
 		
 		// NSSystemDefinedMask
-		if (! (eventMask & (NSMouseMovedMask | NSLeftMouseDraggedMask | NSRightMouseDraggedMask | NSOtherMouseDraggedMask))) {
+		// Added NSScrollWheelMask to suppres AppKit's:
+		// -_continuousScroll is deprecated for NSScrollWheel. Please use -hasPreciseScrollingDeltas
+		if (! (eventMask & (NSMouseMovedMask | NSLeftMouseDraggedMask | NSRightMouseDraggedMask | NSOtherMouseDraggedMask | NSScrollWheelMask))) {
 			XLog3("New RunLoop event:\n\tEvent: %@\n\tMenu frame owning RunLoop:\t%@ \"%@\"\n\tMenu frame of occurred event:\t%@",
 				  theEvent,
 				  NSStringFromRect([[self window] frame]),
@@ -2297,14 +2299,19 @@ typedef struct tracking_primitive_s {
 
 					} else if (modifierFlags & NSAlternateKeyMask) {
 						item = [_owner itemAtPoint:mouseLocation];
-						NSUInteger idx = (NSUInteger)[_owner indexOfItem:item];
+//						NSUInteger idx = (NSUInteger)[_owner indexOfItem:item];
 						if (item) {
 	//						[_owner removeItem:item animate:YES];
-							NSMutableIndexSet *indexes = [NSMutableIndexSet indexSet];
-							[indexes addIndex:(idx - 1)];
-							[indexes addIndex:idx];
-							[indexes addIndex:(idx + 2)];
-							[_owner removeItemsAtIndexes:indexes];
+//							NSMutableIndexSet *indexes = [NSMutableIndexSet indexSet];
+//							[indexes addIndex:(idx - 1)];
+//							[indexes addIndex:idx];
+//							[indexes addIndex:(idx + 2)];
+//							[_owner removeItemsAtIndexes:indexes];
+							NSInteger indent = [item indentationLevel];
+							++indent;
+							if (indent > 15)
+								indent = 0;
+							[item setIndentationLevel:indent];
 						}
 
 					} else if (modifierFlags & NSCommandKeyMask) {

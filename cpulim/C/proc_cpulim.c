@@ -39,7 +39,7 @@
 /* This option corresponds for how often proc_cpulim will wake up to monitor processes.
 	Value is in nanoseconds, for example 200000000 means proc_cpulim will be awake
 	every 0.2s to reschedule processes for sleep time. This value should never be zero. */
-uint64_t opt_task_schedule_interval = 3000000000;
+uint64_t opt_task_schedule_interval = 1000000000;
 short opt_verbose_level = 1;
 
 struct proc_taskstats_s {
