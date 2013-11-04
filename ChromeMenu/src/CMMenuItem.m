@@ -352,33 +352,31 @@
 }
 
 
-/*
- *
- */
+- (void)setIndentationLevel:(NSInteger)indentationLevel {
+	_indentationLevel = indentationLevel;
+}
+
+
+- (NSInteger)indentationLevel {
+	return _indentationLevel;
+}
+
+
 - (void)setTarget:(id)anObject {
 	_target = anObject;	// not retained?
 }
 
 
-/*
- *
- */
 - (id)target {
 	return  _target;
 }
 
 
-/*
- *
- */
 - (void)setAction:(SEL)aSelector {
 	_action =  aSelector;
 }
 
 
-/*
- *
- */
 - (SEL)action {
 	return _action;
 }

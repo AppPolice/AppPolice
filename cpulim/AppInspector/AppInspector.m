@@ -588,7 +588,7 @@
 //	NSLog(@"popover did show");
 	[_popover setAnimates:NO];
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(limitHintViewMouseUpNotification:) name:APAppLimitHintMouseDownNotification object:nil];
-	
+
 //	NSLog(@"post appinspector notification from popoverDidShow");
 	NSNotification *postNotification = [NSNotification notificationWithName:APAppInspectorPopoverDidShow object:self userInfo:nil];
 	[[NSNotificationQueue defaultQueue] enqueueNotification:postNotification

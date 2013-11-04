@@ -23,6 +23,7 @@
 	BOOL _isSeparatorItem;
 	NSInteger _state;
 	
+	NSInteger _indentationLevel;
 	id _target;
     SEL _action;
 	
@@ -69,6 +70,9 @@
 - (BOOL)isEnabled;
 
 - (BOOL)isSeparatorItem;
+
+- (void)setIndentationLevel:(NSInteger)indentationLevel;
+- (NSInteger)indentationLevel;
 
 - (void)setTarget:(id)anObject;
 - (id)target;

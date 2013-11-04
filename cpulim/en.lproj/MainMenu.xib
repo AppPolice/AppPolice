@@ -251,7 +251,7 @@
                                                             </connections>
                                                         </tableCellView>
                                                         <customView identifier="MyTableRowViewId" id="niF-K7-F82" customClass="MyTableRowView">
-                                                            <rect key="frame" x="1" y="18" width="236" height="19"/>
+                                                            <rect key="frame" x="1" y="17" width="236" height="19"/>
                                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                         </customView>
                                                     </prototypeCellViews>
@@ -336,8 +336,8 @@
                             <action selector="startRunLoop2:" target="494" id="1Su-Np-TQu"/>
                         </connections>
                     </button>
-                    <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="VId-BX-MBS">
-                        <rect key="frame" x="14" y="178" width="82" height="32"/>
+                    <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="VId-BX-MBS">
+                        <rect key="frame" x="14" y="178" width="95" height="32"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <buttonCell key="cell" type="push" title="Popover!" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="LuL-GQ-wIL">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -347,9 +347,12 @@
                             <action selector="showPopoverForButton:" target="CKn-Mw-7Oj" id="w4a-2Y-UHd"/>
                         </connections>
                     </button>
-                    <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Nys-3E-nf2">
+                    <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Nys-3E-nf2">
                         <rect key="frame" x="14" y="145" width="165" height="32"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="153" id="G8j-Ck-mgL"/>
+                        </constraints>
                         <buttonCell key="cell" type="push" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="Wsw-Hk-hw5">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <string key="title" base64-UTF8="YES">
@@ -387,6 +390,8 @@ EFRvZ2dsZSBNYWluIE1lbnU
                     <constraint firstItem="546" firstAttribute="top" secondItem="372" secondAttribute="top" constant="51" id="1956"/>
                     <constraint firstItem="536" firstAttribute="top" secondItem="372" secondAttribute="top" constant="22" id="2047"/>
                     <constraint firstItem="3aM-PP-Jf8" firstAttribute="leading" secondItem="372" secondAttribute="leading" constant="20" symbolic="YES" id="0R7-AL-z6J"/>
+                    <constraint firstItem="Nys-3E-nf2" firstAttribute="leading" secondItem="VId-BX-MBS" secondAttribute="leading" id="2Dd-nb-zhq"/>
+                    <constraint firstItem="Nys-3E-nf2" firstAttribute="leading" secondItem="Fvh-my-HXK" secondAttribute="leading" id="2MA-Oj-5Vs"/>
                     <constraint firstAttribute="trailing" secondItem="fGA-lt-rbg" secondAttribute="trailing" constant="71" id="3de-uz-3Mp"/>
                     <constraint firstItem="3Wf-hr-bnQ" firstAttribute="baseline" secondItem="Fvh-my-HXK" secondAttribute="baseline" id="CkD-OP-Ot5"/>
                     <constraint firstItem="3aM-PP-Jf8" firstAttribute="bottom" secondItem="578" secondAttribute="bottom" id="F4r-0m-RJo"/>
@@ -397,12 +402,14 @@ EFRvZ2dsZSBNYWluIE1lbnU
                     <constraint firstItem="ZC4-jI-ScC" firstAttribute="leading" secondItem="1673" secondAttribute="leading" id="M76-jf-5Ge"/>
                     <constraint firstItem="3Wf-hr-bnQ" firstAttribute="centerX" secondItem="3aM-PP-Jf8" secondAttribute="centerX" constant="-13.5" id="SH5-h6-UOD"/>
                     <constraint firstItem="ZC4-jI-ScC" firstAttribute="leading" secondItem="fGA-lt-rbg" secondAttribute="leading" id="UI0-Sw-1ld"/>
+                    <constraint firstAttribute="bottom" secondItem="Nys-3E-nf2" secondAttribute="bottom" constant="152" id="VcQ-BN-1GI"/>
                     <constraint firstItem="1ya-Cp-hLn" firstAttribute="top" secondItem="OrV-Re-ju5" secondAttribute="top" id="aOO-SS-v62"/>
                     <constraint firstItem="590" firstAttribute="top" secondItem="Fvh-my-HXK" secondAttribute="bottom" constant="177" id="b5w-7S-wCi"/>
                     <constraint firstItem="Mrz-h2-cuW" firstAttribute="top" secondItem="vNu-T7-NkF" secondAttribute="bottom" constant="8" symbolic="YES" id="bjv-aV-5U0"/>
                     <constraint firstItem="Mrz-h2-cuW" firstAttribute="trailing" secondItem="vNu-T7-NkF" secondAttribute="trailing" id="c86-LH-5YU"/>
                     <constraint firstItem="647" firstAttribute="leading" secondItem="3aM-PP-Jf8" secondAttribute="trailing" constant="28" id="cHP-2n-OMY"/>
                     <constraint firstItem="fGA-lt-rbg" firstAttribute="top" secondItem="ZC4-jI-ScC" secondAttribute="bottom" constant="7" id="dOf-7L-1hn"/>
+                    <constraint firstItem="Nys-3E-nf2" firstAttribute="top" secondItem="VId-BX-MBS" secondAttribute="bottom" constant="12" symbolic="YES" id="fAG-Jg-VIr"/>
                     <constraint firstItem="vNu-T7-NkF" firstAttribute="top" secondItem="ZC4-jI-ScC" secondAttribute="top" id="hpQ-eX-CRP"/>
                     <constraint firstItem="3aM-PP-Jf8" firstAttribute="top" secondItem="560" secondAttribute="top" id="iZz-lq-LYf"/>
                     <constraint firstItem="OrV-Re-ju5" firstAttribute="centerX" secondItem="1673" secondAttribute="centerX" id="mWo-MW-tHU"/>
@@ -421,7 +428,7 @@ EFRvZ2dsZSBNYWluIE1lbnU
                     <modifierMask key="keyEquivalentModifierMask"/>
                     <menu key="submenu" title="Running Apps" id="713"/>
                 </menuItem>
-                <menuItem title="Set manually..." id="706">
+                <menuItem title="Set manually..." indentationLevel="2" id="706">
                     <attributedString key="attributedTitle"/>
                     <modifierMask key="keyEquivalentModifierMask"/>
                 </menuItem>
@@ -921,7 +928,7 @@ ThBTQ2hhdFRoZWF0cmVUZW1wbGF0ZQ
                         </items>
                     </menu>
                 </menuItem>
-                <menuItem title="Donate" state="on" onStateImage="NSStatusAvailable" offStateImage="NSTrashFull" mixedStateImage="NSStatusPartiallyAvailable" id="711">
+                <menuItem title="Donate" image="NSActionTemplate" indentationLevel="1" id="711">
                     <modifierMask key="keyEquivalentModifierMask"/>
                     <connections>
                         <action selector="donateMenuAction2:" target="494" id="lyo-db-qBX"/>
@@ -1120,7 +1127,5 @@ ThBTQ2hhdFRoZWF0cmVUZW1wbGF0ZQ
         <image name="NSActionTemplate" width="14" height="14"/>
         <image name="NSMenuMixedStateTemplate" width="10" height="3"/>
         <image name="NSStatusAvailable" width="16" height="16"/>
-        <image name="NSStatusPartiallyAvailable" width="16" height="16"/>
-        <image name="NSTrashFull" width="32" height="32"/>
     </resources>
 </document>
