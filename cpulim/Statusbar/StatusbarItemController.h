@@ -8,11 +8,25 @@
 
 #import <Foundation/Foundation.h>
 
-@class CMMenu;
+@class CMMenu, StatusbarItemView;
 
 @interface StatusbarItemController : NSObject
+{
+	@private
+	NSStatusItem *_statusbarItem;
+	CMMenu *_menu;
+	NSImage *_image;
+	NSImage *_alternateImage;
+	StatusbarItemView *_view;
+}
 
-- (void)addItemToStatusbar;
+- (NSImage* )image;
+- (void)setImage:(NSImage*)image;
+
+- (NSImage *)alternateImage;
+- (void)setAlternateImage:(NSImage*)image;
+
+//- (void)addItemToStatusbar;
 - (void)setStatusbarItemMenu:(CMMenu *)menu;
 
 @end

@@ -27,49 +27,53 @@
 }
 
 //- (BOOL)canBecomeKeyWindow {
-//	return YES;
+//	NSLog(@"aksed if canBecomeKeyWindow");
+//	return NO;
 //}
 
 
-- (void)mouseDown:(NSEvent *)theEvent {
-	NSLog(@"Mouse Down");
-	
-	NSUInteger modifierFlags = [theEvent modifierFlags];
-    if (modifierFlags & NSShiftKeyMask)
-		initialLocation = [theEvent locationInWindow];
-	
-	[super mouseDown:theEvent];
-}
+
+//- (void)mouseDown:(NSEvent *)theEvent {
+//	NSLog(@"Mouse Down");
+//	
+////	[self makeKeyWindow];
+//	
+////	NSUInteger modifierFlags = [theEvent modifierFlags];
+////    if (modifierFlags & NSShiftKeyMask)
+////		initialLocation = [theEvent locationInWindow];
+//	
+//	[super mouseDown:theEvent];
+//}
 
 
 /*
  Once the user starts dragging the mouse, move the window with it. The window has no title bar for
  the user to drag (so we have to implement dragging ourselves)
  */
-- (void)mouseDragged:(NSEvent *)theEvent {
-    NSUInteger modifierFlags = [theEvent modifierFlags];
-	if ((modifierFlags & NSShiftKeyMask) == 0)
-		return;
-	
-	
-    NSRect screenVisibleFrame = [[NSScreen mainScreen] visibleFrame];
-    NSRect windowFrame = [self frame];
-    NSPoint newOrigin = windowFrame.origin;
-	
-    // Get the mouse location in window coordinates.
-    NSPoint currentLocation = [theEvent locationInWindow];
-    // Update the origin with the difference between the new mouse location and the old mouse location.
-    newOrigin.x += (currentLocation.x - initialLocation.x);
-    newOrigin.y += (currentLocation.y - initialLocation.y);
-	
-    // Don't let window get dragged up under the menu bar
-    if ((newOrigin.y + windowFrame.size.height) > (screenVisibleFrame.origin.y + screenVisibleFrame.size.height)) {
-        newOrigin.y = screenVisibleFrame.origin.y + (screenVisibleFrame.size.height - windowFrame.size.height);
-    }
-    
-    // Move the window to the new location
-    [self setFrameOrigin:newOrigin];
-}
+//- (void)mouseDragged:(NSEvent *)theEvent {
+//    NSUInteger modifierFlags = [theEvent modifierFlags];
+//	if ((modifierFlags & NSShiftKeyMask) == 0)
+//		return;
+//	
+//	
+//    NSRect screenVisibleFrame = [[NSScreen mainScreen] visibleFrame];
+//    NSRect windowFrame = [self frame];
+//    NSPoint newOrigin = windowFrame.origin;
+//	
+//    // Get the mouse location in window coordinates.
+//    NSPoint currentLocation = [theEvent locationInWindow];
+//    // Update the origin with the difference between the new mouse location and the old mouse location.
+//    newOrigin.x += (currentLocation.x - initialLocation.x);
+//    newOrigin.y += (currentLocation.y - initialLocation.y);
+//	
+//    // Don't let window get dragged up under the menu bar
+//    if ((newOrigin.y + windowFrame.size.height) > (screenVisibleFrame.origin.y + screenVisibleFrame.size.height)) {
+//        newOrigin.y = screenVisibleFrame.origin.y + (screenVisibleFrame.size.height - windowFrame.size.height);
+//    }
+//    
+//    // Move the window to the new location
+//    [self setFrameOrigin:newOrigin];
+//}
 
 
 //- (void)keyDown:(NSEvent *)theEvent {

@@ -8,6 +8,25 @@
 
 #import <Cocoa/Cocoa.h>
 
+#define StatusbarItemLeftMouseDownNotification @"statusbarItemLeftMouseDownNotification"
+#define StatusbarItemRightMouseDownNotification @"statusbarItemRightMouseDownNotification"
+
 @interface StatusbarItemView : NSView
+{
+	@private
+	NSImage *_image;
+	NSImage *_alternateImage;
+	NSImageView *_imageView;
+	BOOL _highlighted;
+}
+
+- (NSImage* )image;
+- (void)setImage:(NSImage*)image;
+
+- (NSImage *)alternateImage;
+- (void)setAlternateImage:(NSImage*)image;
+
+- (void)setHighlighted:(BOOL)highlighted;
+- (BOOL)highlighted;
 
 @end

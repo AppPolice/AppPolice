@@ -42,6 +42,10 @@
 - (NSString *)title;
 
 
+- (BOOL)popUpMenuPositioningItem:(NSMenuItem *)item atLocation:(NSPoint)location inView:(NSView *)view;
+
+- (void)popUpMenuForStatusItemWithRect:(NSRect)rect;
+
 
 /* Returns the menu containing the item that has the receiver as a submenu, or nil if this menu is not the submenu of an item in a menu. */
 - (CMMenu *)supermenu;
@@ -93,7 +97,7 @@
 /* this is an actual table reload, scary thing. must be taken care of */
 //- (void)update;
 
-- (void)start;
+//- (void)start;
 //- (void)showMenu;
 
 /* Dismisses the menu and ends all menu tracking */
@@ -124,7 +128,7 @@
 - (id <CMMenuDelegate>)delegate;
 
 
-- (void)showPopover:(NSPopover *)popover forItem:(CMMenuItem *)item;
+- (void)showPopover:(NSPopover *)popover forItem:(CMMenuItem *)item preferredEdge:(NSRectEdge)preferredEdge;
 
 
 /* Set the minimum width of the menu, in screen coordinates. The menu will prefer to not draw smaller than its minimum width, but may draw larger if it needs more space. The default value is 0.
@@ -148,3 +152,8 @@
 - (void)menuNeedsUpdate:(CMMenu *)menu;
 
 @end
+
+APPKIT_EXTERN NSString * const CMMenuDidBeginTrackingNotification;
+APPKIT_EXTERN NSString * const CMMenuDidEndTrackingNotification;
+APPKIT_EXTERN NSString * const CMMenuSuspendStatusDidChangeNotification;
+

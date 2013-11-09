@@ -11,14 +11,15 @@
 
 @interface ChromeMenuUnderlyingView : NSView
 {
-	NSArray *_borderRadius;
+	NSArray *_borderRadiuses;
 }
 
 /**
  * @abstract Designated initializer
  * @param radius Array of four radiuses for bottom left, top left, top right and bottom right radiuses.
  */
-- (id)initWithFrame:(NSRect)frameRect borderRadius:(NSArray *)radius;
+- (id)initWithFrame:(NSRect)frameRect borderRadiuses:(NSArray *)radiuses;
 
+- (void)setBorderRadiuses:(NSArray *)radiuses;
 
 @end

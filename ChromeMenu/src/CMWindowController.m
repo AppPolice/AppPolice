@@ -133,29 +133,27 @@ typedef struct tracking_primitive_s {
 
 - (id)initWithOwner:(CMMenu *)owner {
 	NSRect rect = {{0, 0}, {20, 20}};
-	NSWindow *window = [[ChromeMenuUnderlyingWindow alloc] initWithContentRect:rect defer:YES];
+	ChromeMenuUnderlyingWindow *window = [[ChromeMenuUnderlyingWindow alloc] initWithContentRect:rect defer:YES];
 	
 	self = [super initWithWindow:window];
 	if (self) {
 		_owner = owner;
 		
-		CGFloat borderRadius = [owner borderRadius];
+		NSNumber *radius = [NSNumber numberWithDouble:[owner borderRadius]];
 		NSArray *radiuses;
 		if ([owner supermenu]) {
-			radiuses = [NSArray arrayWithObjects:
-						[NSNumber numberWithDouble:borderRadius],
-						[NSNumber numberWithDouble:0.0],
-						[NSNumber numberWithDouble:borderRadius],
-						[NSNumber numberWithDouble:borderRadius], nil];
+//			if ([owner horizontalAlignment] == CMMenuAlignedRight) {
+				radiuses = @[radius, @0, radius, radius];
+//			} else {
+//				radiuses = @[radius, radius, @0, radius];
+//			}
+		} else if ([owner isAttachedToStatusItem]) {
+			radiuses = @[radius, @0, @0, radius];
 		} else {
-			radiuses = [NSArray arrayWithObjects:
-						[NSNumber numberWithDouble:borderRadius],
-						[NSNumber numberWithDouble:borderRadius],
-						[NSNumber numberWithDouble:borderRadius],
-						[NSNumber numberWithDouble:borderRadius], nil];
+			radiuses = @[radius, radius, radius, radius];
 		}
 		
-		ChromeMenuUnderlyingView *contentView = [[ChromeMenuUnderlyingView alloc] initWithFrame:rect borderRadius:radiuses];
+		ChromeMenuUnderlyingView *contentView = [[ChromeMenuUnderlyingView alloc] initWithFrame:rect borderRadiuses:radiuses];
 		window.contentView = contentView;
 		[contentView setAutoresizesSubviews:NO];
 		
@@ -163,6 +161,7 @@ typedef struct tracking_primitive_s {
 		[window setLevel:NSPopUpMenuWindowLevel + level];
 		++level;
 		[window setHidesOnDeactivate:NO];
+//		[window setAcceptsMouseMovedEvents:YES];
 		
 		_scrollView = [[CMScrollView alloc] initWithFrame:rect];
 		[_scrollView setBorderType:NSNoBorder];
@@ -245,6 +244,7 @@ typedef struct tracking_primitive_s {
 		[_scrollView setFrame:NSMakeRect(0, _verticalPadding, frame.size.width, frame.size.height - 2 * _verticalPadding)];
 		[[self window] orderFront:self];
 		[[self window] setAcceptsMouseMovedEvents:YES];
+//		[[self window] setAllowsToolTipsWhenApplicationIsInactive:YES];
 	} else {
 		updateOriginOnly = NSEqualSizes([[self window] frame].size, frame.size);
 		[[self window] disableScreenUpdatesUntilFlush];
@@ -282,7 +282,8 @@ typedef struct tracking_primitive_s {
 //		BOOL trackMouseMoved = (options & CMMenuOptionTrackMouseMoved);
 //		[self updateContentViewTrackingAreaTrackMouseMoved:trackMouseMoved];
 //		[self updateContentViewTrackingAreaTrackMouseMoved:YES];
-		[self updateTrackingPrimitivesIgnoreMouse:ignoreMouse];
+		if (options & CMMenuOptionUpdateTrackingPrimitives)
+			[self updateTrackingPrimitivesIgnoreMouse:ignoreMouse];
 		
 		// Flag is set back to NO. Whoever needs it must provide value each time.
 //		_ignoreMouse = NO;
@@ -342,20 +343,21 @@ typedef struct tracking_primitive_s {
 }
 
 
-- (void)beginTrackingWithEvent:(NSEvent *)event {
+- (void)beginTrackingWithEvent:(NSEvent *)event options:(CMMenuOptions)options {
 	if (_keepTracking)
 		return;
 	
 	_keepTracking = YES;
 
-
+	[self updateTrackingPrimitivesIgnoreMouse:(BOOL)(options & CMMenuOptionIgnoreMouse)];
+	
 	// Add to a run loop queue so that Cocoa finishes its preparations on the main thread in current loop.
-	// Tracking begins in another loop, for example, after tracking areas are properly installed by Cocoa.
-	if ([_owner supermenu]) {
-		[self performSelector:@selector(_beginTrackingWithEvent:) withObject:event];
-	} else {
-		[self performSelector:@selector(_beginTrackingWithEvent:) withObject:event afterDelay:0 inModes:[NSArray arrayWithObject:NSRunLoopCommonModes]];
-	}
+//	if ([_owner supermenu]) {
+//		[self performSelector:@selector(_beginTrackingWithEvent:) withObject:event];
+		[self _beginTrackingWithEvent:event];
+//	} else {
+//		[self performSelector:@selector(_beginTrackingWithEvent:) withObject:event afterDelay:0 inModes:[NSArray arrayWithObject:NSRunLoopCommonModes]];
+//	}
 }
 
 
@@ -377,6 +379,7 @@ typedef struct tracking_primitive_s {
 	NSEvent *customEvent = [NSEvent otherEventWithType:NSSystemDefined location:NSMakePoint(1, 1) modifierFlags:0 timestamp:0 windowNumber:0 context:nil subtype:0 data1:0 data2:0];
 //	NSEvent *customEvent = [NSEvent mouseEventWithType:NSLeftMouseDown location:NSMakePoint(1, 1) modifierFlags:0 timestamp:0 windowNumber:0 context:nil eventNumber:0 clickCount:1 pressure:0.0];
 	NSLog(@"resend last event: %@", customEvent);
+//	[NSApp discardEventsMatchingMask:NSAnyEventMask beforeEvent:[NSApp currentEvent]];
 	[NSApp postEvent:customEvent atStart:YES];
 }
 
@@ -421,6 +424,11 @@ typedef struct tracking_primitive_s {
 //	[[contentView animator] setAlphaValue:0.0];
 	[[[self window] animator] setAlphaValue:0.0];
 	[NSAnimationContext endGrouping];
+}
+
+
+- (void)setBorderRadiuses:(NSArray *)radiuses {
+	[(ChromeMenuUnderlyingView *)[[self window] contentView] setBorderRadiuses:radiuses];
 }
 
 
@@ -722,7 +730,7 @@ typedef struct tracking_primitive_s {
 	NSRect documentRect = [[_scrollView documentView] bounds];
 	NSRect visibleRect = [_scrollView documentVisibleRect];
 	
-	NSLog(@"update scroller");
+//	NSLog(@"update scroller");
 	
 	// Return from the function if:
 	//	1. visible rect is the same as document rect; AND
@@ -1345,18 +1353,19 @@ typedef struct tracking_primitive_s {
 	}
 	
 	NSRect trackingRect = [contentView bounds];
-	NSTrackingAreaOptions trackingOptions = NSTrackingMouseEnteredAndExited | NSTrackingActiveAlways | NSTrackingEnabledDuringMouseDrag;
-	if (trackMouseMoved)
-		trackingOptions |= NSTrackingMouseMoved;
+//	NSTrackingAreaOptions trackingOptions = NSTrackingMouseEnteredAndExited | NSTrackingActiveAlways | NSTrackingEnabledDuringMouseDrag;
+//	if (trackMouseMoved)
+//		trackingOptions |= NSTrackingMouseMoved;
+	NSTrackingAreaOptions trackingOptions = NSTrackingMouseMoved | NSTrackingActiveAlways;
 	
 	NSDictionary *trackingData = [NSDictionary dictionaryWithObjectsAndKeys:
 								  _owner, kUserDataMenuObjKey,
 								  [NSNumber numberWithUnsignedInteger:CMMenuEventMouseMenu], kUserDataEventTypeKey, nil];
-	NSTrackingArea *trackingArea = [[NSTrackingArea alloc] initWithRect:trackingRect options:trackingOptions owner:self userInfo:trackingData];
+	NSTrackingArea *trackingArea = [[NSTrackingArea alloc] initWithRect:trackingRect options:trackingOptions owner:self userInfo:nil];
 	[contentView addTrackingArea:trackingArea];
 	_contentViewTrackingArea = trackingArea;
 	
-//	CFRunLoopRunInMode(kCFRunLoopDefaultMode, 0, NO);
+	CFRunLoopRunInMode(kCFRunLoopDefaultMode, 0, NO);
 }
 
 
@@ -1466,7 +1475,7 @@ typedef struct tracking_primitive_s {
 
 
 - (void)updateTrackingPrimitivesIgnoreMouse:(BOOL)ignoreMouse {
-//	NSLog(@"update primitives");
+	NSLog(@"update primitives");
 	if (_trackingPrimitivesList) {
 
 		// free all objects
@@ -1984,6 +1993,9 @@ typedef struct tracking_primitive_s {
 		runLoopEventMask |= NSMouseMovedMask;
 	}
 	 */
+	
+	// temp var for moving menu
+	NSPoint initialLocation;
 
 	XLog2("\n \
 	--------------------------------------------------------\n \
@@ -1994,7 +2006,10 @@ typedef struct tracking_primitive_s {
 	
 
 	while (_keepTracking) {
-		NSEvent *theEvent = [NSApp nextEventMatchingMask:runLoopEventMask untilDate:[NSDate distantFuture] inMode:NSEventTrackingRunLoopMode dequeue:YES];
+		NSEvent *theEvent = [NSApp nextEventMatchingMask:runLoopEventMask
+											   untilDate:[NSDate distantFuture]
+												  inMode:NSEventTrackingRunLoopMode
+												 dequeue:YES];
 
 		if (! _keepTracking) {
 			NSLog(@"a-ha, final event: %@", theEvent);
@@ -2027,6 +2042,19 @@ typedef struct tracking_primitive_s {
 		if (eventType == NSSystemDefined)
 			continue;
 		
+//		NSLog(@"event window: %@", eventWindow);
+		
+		// Currently we calculate if there are any windows above menu only
+		// for %down and %up events. If we ever need to know it also for
+		// mouseMoved then we'd have to use these windows info.
+		// https://developer.apple.com/library/mac/documentation/Carbon/Reference/CGWindow_Reference/Reference/Functions.html
+//		CGWindowID windowID = (CGWindowID)[[self window] windowNumber];
+//		CFArrayRef windows = CGWindowListCopyWindowInfo(kCGWindowListOptionOnScreenAboveWindow, windowID);
+//		CFStringRef description = CFCopyDescription(windows);
+//		NSLog(@"CF windows: %@", description);
+//		CFRelease(description);
+//		CFRelease(windows);
+		
 //		BOOL eventWindowBelongsToAnyMenu __attribute__((deprecated));
 //		eventWindowBelongsToAnyMenu = NO;
 //		BOOL eventWindowBelongsToAnyMenu = [self eventWindowBelongsToAnyMenu:theEvent];
@@ -2043,7 +2071,8 @@ typedef struct tracking_primitive_s {
 		
 		CMMenu *candidateMenu = nil;
 		if (! mouseInsideWindow) {
-			candidateMenu = [_owner menuAtPoint:mouseLocation];
+			candidateMenu = [self candidateMenuForEvent:theEvent];
+			
 			// Mouse moved events are handled separately below because
 			// even if the candidate menu blocks this event, current menu
 			// needs to process moved event through tracking primitives.
@@ -2157,6 +2186,29 @@ typedef struct tracking_primitive_s {
 					[_owner mouseEventAtLocation:mouseLocation type:NSMouseMoved];
 				// Process tracking primitive event
 				[self eventOnTrackingPrimitiveAtLocation:mouseLocation mouseInside:YES];
+				
+				/* temp *//* {
+					NSUInteger modifierFlags = [theEvent modifierFlags];
+					if ((modifierFlags & NSShiftKeyMask) != 0) {
+						NSRect screenVisibleFrame = [[NSScreen mainScreen] visibleFrame];
+						NSRect windowFrame = [[self window] frame];
+						NSPoint newOrigin = windowFrame.origin;
+						
+						// Get the mouse location in window coordinates.
+						NSPoint currentLocation = [theEvent locationInWindow];
+						// Update the origin with the difference between the new mouse location and the old mouse location.
+						newOrigin.x += (currentLocation.x - initialLocation.x);
+						newOrigin.y += (currentLocation.y - initialLocation.y);
+						
+						// Don't let window get dragged up under the menu bar
+						if ((newOrigin.y + windowFrame.size.height) > (screenVisibleFrame.origin.y + screenVisibleFrame.size.height)) {
+							newOrigin.y = screenVisibleFrame.origin.y + (screenVisibleFrame.size.height - windowFrame.size.height);
+						}
+						
+						// Move the window to the new location
+						[[self window] setFrameOrigin:newOrigin];
+					}
+				} */ // temp
 			} else {
 	//				if (mouseInsideWindow) {		// mouse left window
 	//					mouseInsideWindow = NO;
@@ -2171,12 +2223,6 @@ typedef struct tracking_primitive_s {
 				// Possibly mouse entered another menu
 	//				CMMenu *candidateMenu = [_owner menuAtPoint:mouseLocation];
 				if (candidateMenu) {
-	//				CMMenu *menu = [_owner rootMenu];
-	//				do {
-	//					if (menu == _owner)
-	//						continue;
-	//
-	//					if (NSPointInRect(mouseLocation, [menu frame])) {
 					// If menu has subscribed to receive mouse moved event -- send it to it
 					if ([candidateMenu receivesMouseMovedEvents])
 						[candidateMenu mouseEventAtLocation:mouseLocation type:NSMouseMoved];
@@ -2184,7 +2230,7 @@ typedef struct tracking_primitive_s {
 					[candidateMenu mouseEventAtLocation:mouseLocation type:NSMouseEntered];
 					[[candidateMenu underlyingWindowController] eventOnTrackingPrimitiveAtLocation:mouseLocation mouseInside:YES];
 					if ([candidateMenu supermenu] == _owner) {				// entered submenu
-						[candidateMenu beginTrackingWithEvent:theEvent];
+						[candidateMenu beginTrackingWithEvent:theEvent options:CMMenuOptionDefaults];
 					} else {												// entered one of the supermenus
 						[self endTracking];
 	//							goto endTracking;
@@ -2228,11 +2274,31 @@ typedef struct tracking_primitive_s {
 //			if (eventWindow)
 //				mouseLocation = [eventWindow convertBaseToScreen:mouseLocation];
 			
+//			if (mouseInsideWindow) {
+//				if (! [[self window] isEqual:eventWindow])
+//					mouseInsideDisplayedMenusDuringEvent = NO;
+//			} else if (! [[[candidateMenu underlyingWindowController] window] isEqual:eventWindow]) {
+//				NSLog(@"canidate win: %@, event wint: %@", [[candidateMenu underlyingWindowController] window], eventWindow);
+//				mouseInsideDisplayedMenusDuringEvent = NO;
+//			}
+			
 			
 //			if (eventWindowBelongsToAnyMenu) {
 			if (mouseInsideDisplayedMenusDuringEvent) {
 				mouseIsDown = YES;
 				[_owner mouseEventAtLocation:mouseLocation type:eventType];
+				// temp
+				initialLocation = [theEvent locationInWindow];
+//				[eventWindow sendEvent:theEvent];
+//								[[self window] makeKeyAndOrderFront:self];
+//				[[self window] sendEvent:theEvent];
+				goto endEvent;
+			} else {
+				CMMenu *rootMenu = [_owner rootMenu];
+				if ([rootMenu isAttachedToStatusItem] && NSPointInRect(mouseLocation, [rootMenu statusItemRect])) {
+					[rootMenu cancelTracking];
+					goto endEvent;
+				}
 			}
 						
 //			if (NSPointInRect(mouseLocation, [[self window] frame])) {
@@ -2242,8 +2308,13 @@ typedef struct tracking_primitive_s {
 //			} else {
 //				if ([_owner cancelsTrackingOnMouseEventOutsideMenus] && ![self mouseInsideDisplayedMenusDuringEvent:theEvent]) {
 			if ([_owner cancelsTrackingOnMouseEventOutsideMenus] && !mouseInsideDisplayedMenusDuringEvent) {
-				NSLog(@"mouse is outside any menu during MOUSEDOWN!!!");
+				NSLog(@"mouse is outside any menu during MOUSEDOWN!!!, mouseloc: %@", NSStringFromPoint(mouseLocation));
 				[[_owner rootMenu] cancelTracking];
+//				NSLog(@"event window: %@", eventWindow);
+//				[eventWindow makeKeyAndOrderFront:NSApp];
+//				[eventWindow makeMainWindow];
+//				[eventWindow makeFirstResponder:eventWindow];
+//				[eventWindow sendEvent:theEvent];
 				goto endEvent;
 //				goto endTracking;
 			}
@@ -2264,6 +2335,11 @@ typedef struct tracking_primitive_s {
 			
 			if (mouseInsideDisplayedMenusDuringEvent) {
 				[_owner mouseEventAtLocation:mouseLocation type:eventType];
+			} else if ([_owner isAttachedToStatusItem] && NSPointInRect(mouseLocation, [_owner statusItemRect])) {
+				NSLog(@"status window: %@", [theEvent window]);
+//				[NSApp discardEventsMatchingMask:NSAnyEventMask beforeEvent:theEvent];
+//				[eventWindow sendEvent:theEvent];
+				goto endEvent;
 			} else if ([_owner cancelsTrackingOnMouseEventOutsideMenus]) {
 				NSLog(@"mouse is outside any menu during MOUSEUP!!!");
 				// this may not be needed, since menus are cancelled on mouseDown
@@ -2301,17 +2377,17 @@ typedef struct tracking_primitive_s {
 						item = [_owner itemAtPoint:mouseLocation];
 //						NSUInteger idx = (NSUInteger)[_owner indexOfItem:item];
 						if (item) {
-	//						[_owner removeItem:item animate:YES];
+						[_owner removeItem:item animate:YES];
 //							NSMutableIndexSet *indexes = [NSMutableIndexSet indexSet];
 //							[indexes addIndex:(idx - 1)];
 //							[indexes addIndex:idx];
 //							[indexes addIndex:(idx + 2)];
 //							[_owner removeItemsAtIndexes:indexes];
-							NSInteger indent = [item indentationLevel];
-							++indent;
-							if (indent > 15)
-								indent = 0;
-							[item setIndentationLevel:indent];
+//							NSInteger indent = [item indentationLevel];
+//							++indent;
+//							if (indent > 15)
+//								indent = 0;
+//							[item setIndentationLevel:indent];
 						}
 
 					} else if (modifierFlags & NSCommandKeyMask) {
@@ -2393,7 +2469,7 @@ typedef struct tracking_primitive_s {
 //		if ( !eventWindowBelongsToAnyMenu && eventType != NSKeyDown && eventWindow && ![_owner cancelsTrackingOnMouseEventOutsideMenus]) {
 		if ( !mouseInsideDisplayedMenusDuringEvent && eventType != NSKeyDown && eventWindow && ![_owner cancelsTrackingOnMouseEventOutsideMenus]) {
 //			if (eventType != NSScrollWheel) {
-//			NSLog(@"Sending event to non-menu window");
+			NSLog(@"Sending event to non-menu window");
 			[NSApp discardEventsMatchingMask:NSAnyEventMask beforeEvent:theEvent];
 			[eventWindow sendEvent:theEvent];
 //			}
@@ -2451,6 +2527,26 @@ typedef struct tracking_primitive_s {
 	
 	return NO;
 }
+
+
+- (CMMenu *)candidateMenuForEvent:(NSEvent *)theEvent {
+	NSPoint mouseLocation = [theEvent locationInWindow];
+	NSWindow *eventWindow = [theEvent window];
+	if (eventWindow)
+		mouseLocation = [eventWindow convertBaseToScreen:mouseLocation];
+	NSEventMask mask = NSEventMaskFromType([theEvent type]);
+	CMMenu *menu = [_owner menuAtPoint:mouseLocation];
+
+	if (mask & (NSLeftMouseDownMask | NSRightMouseDownMask | NSOtherMouseDownMask | NSLeftMouseUpMask | NSRightMouseUpMask | NSOtherMouseUpMask)) {
+		if ([[[menu underlyingWindowController] window] isEqual:eventWindow])
+			return menu;
+		else
+			return nil;
+	} else {
+		return menu;
+	}
+}
+
 
 /*
 - (BOOL)eventWindowBelongsToAnyMenu:(NSEvent *)theEvent {

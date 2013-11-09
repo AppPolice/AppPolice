@@ -33,9 +33,16 @@
 
 - (void)applicationWillFinishLaunching:(NSNotification *)notification {
 	_statusbarItemController = [[StatusbarItemController alloc] init];
-	[_statusbarItemController addItemToStatusbar];
+//	NSString *imagePath = [[NSBundle mainBundle] pathForResource:@"statusbar_image" ofType:@"tiff"];
+	NSString *imagePath = [[NSBundle mainBundle] pathForResource:@"status_icon" ofType:@"tiff"];
+	NSImage *ico = [[[NSImage alloc] initWithContentsOfFile:imagePath] autorelease];
+	imagePath = [[NSBundle mainBundle] pathForResource:@"status_icon_inv" ofType:@"tiff"];
+	NSImage *ico_alt = [[[NSImage alloc] initWithContentsOfFile:imagePath] autorelease];
+	[_statusbarItemController setImage:ico];
+	[_statusbarItemController setAlternateImage:ico_alt];
+//	[_statusbarItemController addItemToStatusbar];
 	
-	[self activateStatusbarItem];
+//	[self activateStatusbarItem];
 }
 
 
@@ -51,22 +58,27 @@
 	[_statusbarItemController setStatusbarItemMenu:mainMenu];
 	
 
+//	[NSApp activateIgnoringOtherApps:YES];
+//	[[self window] makeKeyAndOrderFront:self];
+	
 //	_statusbarMenu = [[StatusbarMenu alloc] init];
 //	NSLog(@"menu:%@", [_statusbarMenu mainMenu]);
-	[_statusbarMenu linkStatusbarItemWithMenu];
+//	[_statusbarMenu linkStatusbarItemWithMenu];
 	
 //	NSLog(@"!!!!!starting delay for menu update");
 //	[self performSelector:@selector(updateMenu:) withObject:nil afterDelay:4.0];
 //	[[NSRunLoop currentRunLoop] performSelector:@selector(delayAndUpdateMenu:) target:self argument:[statusbarMenuController statusbarMenu] order:0 modes:[NSArray arrayWithObject:NSEventTrackingRunLoopMode]];
 	
 //	NSLog(@"current run mode: %@", [[NSRunLoop currentRunLoop] currentMode]);
-	[self performSelector:@selector(updateMenuFunc:) withObject:[_statusbarMenu mainMenu] afterDelay:2.0 inModes:[NSArray arrayWithObject:NSRunLoopCommonModes]];
+//	[self performSelector:@selector(updateMenuFunc:) withObject:[_statusbarMenu mainMenu] afterDelay:2.0 inModes:[NSArray arrayWithObject:NSRunLoopCommonModes]];
 //	[self performSelector:@selector(updateMenuFunc:) withObject:[statusbarMenuController statusbarMenu] afterDelay:4.0];
 
 }
 
 - (void)awakeFromNib {
 	NSLog(@"%@ awakeFromNib", [self className]);
+	
+	NSLog(@"orientation: %lu", [NSApp userInterfaceLayoutDirection]);
 
 //	NSMutableArray *array = [[NSMutableArray alloc] initWithObjects:@3, @4, @7, @8, nil];
 //	NSLog(@"inex: %lu", [array indexOfObject:@7]);
@@ -122,7 +134,7 @@
 
 
 - (IBAction)toggleMainMenu:(id)sender {
-	[[_statusbarMenuController mainMenu] start];
+	[[_statusbarMenuController mainMenu] popUpMenuPositioningItem:nil atLocation:NSMakePoint(200, 800) inView:nil];
 }
 
 
@@ -131,12 +143,34 @@
 	_statusbarItem = [statusbar statusItemWithLength:NSVariableStatusItemLength];
 	[_statusbarItem retain];
 //	[_statusbarItem setView:[statusbarMenuController statusbarItemView]];
-	[_statusbarItem setTitle:NSLocalizedString(@"Ishimura", @"")];
+	
+	NSString *imagePath = [[NSBundle mainBundle] pathForResource:@"statusbar_image" ofType:@"tiff"];
+	NSImage *ico = [[[NSImage alloc] initWithContentsOfFile:imagePath] autorelease];
+	imagePath = [[NSBundle mainBundle] pathForResource:@"statusbar_image_inv" ofType:@"tiff"];
+	NSImage *ico_alt = [[[NSImage alloc] initWithContentsOfFile:imagePath] autorelease];
+
+//	[_statusbarItem setTitle:NSLocalizedString(@"Ishimura", @"")];
+	[_statusbarItem setImage:ico];
+	[_statusbarItem setAlternateImage:ico_alt];
 	[_statusbarItem setHighlightMode:YES];
 	[_statusbarItem setTarget:self];
-	[_statusbarItem setAction:@selector(statusbarItemAction)];
-//	[_statusbarItem sendActionOn:NSRightMouseDownMask];
-	[_statusbarItem setMenu:[_statusbarMenu mainMenu]];
+	[_statusbarItem setAction:@selector(statusbarItemAction:)];
+	[_statusbarItem sendActionOn:NSLeftMouseDownMask | NSRightMouseDownMask];
+//	[_statusbarItem setMenu:[_statusbarMenu mainMenu]];
+	
+//	NSView *view = [[NSView alloc] initWithFrame:NSMakeRect(0, 0, 21, 21)];
+//	[_statusbarItem setView:view];
+//	[view lockFocusIfCanDraw];
+//	[[NSColor redColor] set];
+//	NSFrameRect([view frame]);
+//	[view unlockFocus];
+}
+
+
+- (void)statusbarItemAction:(id)sender {
+	NSLog(@"clicked statusbar item: %@", sender);
+	//	[statusbarItem popUpStatusItemMenu:[statusbarMenuController dummyMenu]];
+	
 }
 
 
@@ -187,12 +221,6 @@
 	NSLog(@"timer fire");
 }
 
-- (void)statusbarItemAction {
-	NSLog(@"clicked statusbar item");
-//	[statusbarItem popUpStatusItemMenu:[statusbarMenuController dummyMenu]];
-
-}
-
 
 - (void)actionForMenuItem {
 	NSLog(@"item pressed");
@@ -241,7 +269,7 @@
 	}
 
 	while (keepRunning) {
-		NSEvent *theEvent = [NSApp nextEventMatchingMask:NSMouseEnteredMask | NSLeftMouseDownMask | NSLeftMouseUpMask untilDate:[NSDate distantFuture] inMode:NSDefaultRunLoopMode dequeue:YES];
+		NSEvent *theEvent = [NSApp nextEventMatchingMask:NSMouseEnteredMask | NSLeftMouseDownMask | NSLeftMouseUpMask untilDate:[NSDate distantFuture] inMode:NSEventTrackingRunLoopMode dequeue:YES];
 		
 		NSLog(@"run loop 1 event: %@", theEvent);
 		[[theEvent window] sendEvent:theEvent];

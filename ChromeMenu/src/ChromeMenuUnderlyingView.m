@@ -10,11 +10,11 @@
 
 @implementation ChromeMenuUnderlyingView
 
-- (id)initWithFrame:(NSRect)frameRect borderRadius:(NSArray *)radius {
+- (id)initWithFrame:(NSRect)frameRect borderRadiuses:(NSArray *)radiuses {
 	self = [super initWithFrame:frameRect];
 	if (self) {
-		if (radius)
-			_borderRadius = [radius retain];
+		if (radiuses)
+			_borderRadiuses = [radiuses retain];
 	}
 	
 	return self;
@@ -25,7 +25,7 @@
 //}
 
 - (void)dealloc {
-	[_borderRadius release];
+	[_borderRadiuses release];
 	
 	[super dealloc];
 }
@@ -35,13 +35,13 @@
 	NSBezierPath *windowBorder = [NSBezierPath bezierPath];
 	
 	NSRect rect = [self bounds];
-	if (! _borderRadius) {
+	if (! _borderRadiuses) {
 		[windowBorder appendBezierPathWithRect:rect];
 	} else {
-		CGFloat bottomLeft = [(NSNumber *)[_borderRadius objectAtIndex:0] doubleValue];
-		CGFloat topLeft = [(NSNumber *)[_borderRadius objectAtIndex:1] doubleValue];
-		CGFloat topRight = [(NSNumber *)[_borderRadius objectAtIndex:2] doubleValue];
-		CGFloat bottomRight = [(NSNumber *)[_borderRadius objectAtIndex:3] doubleValue];
+		CGFloat bottomLeft = [(NSNumber *)[_borderRadiuses objectAtIndex:0] doubleValue];
+		CGFloat topLeft = [(NSNumber *)[_borderRadiuses objectAtIndex:1] doubleValue];
+		CGFloat topRight = [(NSNumber *)[_borderRadiuses objectAtIndex:2] doubleValue];
+		CGFloat bottomRight = [(NSNumber *)[_borderRadiuses objectAtIndex:3] doubleValue];
 		
 		CGFloat width = rect.size.width;
 		CGFloat height = rect.size.height;
@@ -89,6 +89,49 @@
 	
 
 }
+
+
+- (void)setBorderRadiuses:(NSArray *)radiuses {
+	if (_borderRadiuses != radiuses) {
+		BOOL radiusesEqual = YES;
+		if (_borderRadiuses) {
+			NSUInteger len = [_borderRadiuses count];
+			NSUInteger i;
+			for (i = 0; i < len; ++i) {
+				if (! [_borderRadiuses[i] isEqualToNumber:radiuses[i]]) {
+					radiusesEqual = NO;
+					break;
+				}
+			}
+		} else {
+			radiusesEqual = NO;
+		}
+		
+		[_borderRadiuses release];
+		_borderRadiuses = [radiuses retain];
+		if (! radiusesEqual) {
+			[self setNeedsDisplay:YES];
+//			NSLog(@"new radisues are set!!!");
+		}
+	}
+}
+
+
+- (BOOL)shouldDelayWindowOrderingForEvent:(NSEvent *)theEvent {
+	NSLog(@"should delay: %@", theEvent);
+	return YES;
+}
+
+- (BOOL)acceptsFirstMouse:(NSEvent *)theEvent {
+	NSLog(@"accepts first mouse: %@", theEvent);
+	return YES;
+}
+
+
+- (void)mouseDown:(NSEvent *)theEvent {
+	[NSApp preventWindowOrdering];
+}
+
 
 
 @end

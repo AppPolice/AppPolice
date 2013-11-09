@@ -17,6 +17,8 @@
 /* The designated initializer. This window controller creates its own custom suggestions window. */
 - (id)initWithOwner:(CMMenu *)owner;
 
+- (void)setBorderRadiuses:(NSArray *)radiuses;
+
 - (void)layoutViews:(NSMutableArray *)viewControllers;
 
 /**
@@ -44,7 +46,7 @@
 - (void)updateDocumentView;
 
 - (BOOL)isTracking;
-- (void)beginTrackingWithEvent:(NSEvent *)event;
+- (void)beginTrackingWithEvent:(NSEvent *)event options:(CMMenuOptions)options;
 - (void)endTracking;
 
 - (NSSize)intrinsicContentSize;

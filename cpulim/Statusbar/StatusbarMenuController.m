@@ -143,6 +143,10 @@ static const int kPidFoundMask = 1 << (8 * sizeof(int) - 1);
 	[_mainMenu addItem:item];
 	
 	[self populateMenuWithRunningApplications:[[_mainMenu itemAtIndex:0] submenu]];
+	[[NSNotificationCenter defaultCenter] addObserver:self
+											 selector:@selector(menuDidEndTrackingNotificationHandler:)
+												 name:CMMenuDidEndTrackingNotification
+											   object:nil];
 }
 
 
@@ -583,7 +587,9 @@ static const int kPidFoundMask = 1 << (8 * sizeof(int) - 1);
 	}
 	
 	if ([newSysProcIndexes count]) {
-		NSUInteger offset = [_runningApplications count] + 2;
+		NSUInteger offset = [_runningApplications count];
+		if (gShowAllProcesses)
+			offset += 2;		// two separator items
 		NSImage *genericIcon = [[NSWorkspace sharedWorkspace] iconForFile:@"/bin/ls"];
 		[_runningSystemProcesses enumerateObjectsAtIndexes:newSysProcIndexes options:0 usingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
 			NSDictionary *procInfo = (NSDictionary *)obj;
@@ -600,6 +606,8 @@ static const int kPidFoundMask = 1 << (8 * sizeof(int) - 1);
 			[onStateImage setSize:NSMakeSize(12, 12)];
 			[item setOnStateImage:onStateImage];
 			[item setRepresentedObject:appInfo];
+			if (gShowAllProcesses)
+				[item setIndentationLevel:1];
 			[menu insertItem:item atIndex:(idx + offset) animate:NO];
 		}];
 	}
@@ -672,6 +680,8 @@ static const int kPidFoundMask = 1 << (8 * sizeof(int) - 1);
 	[onStateImage setSize:NSMakeSize(12, 12)];
 	[item setOnStateImage:onStateImage];
 	[item setRepresentedObject:appInfo];
+	if (gShowAllProcesses)
+		[item setIndentationLevel:1];
 	[[[_mainMenu itemAtIndex:0] submenu] insertItem:item atIndex:index animate:NO];
 	
 //	NSLog(@"launched %@ END", [[notification userInfo] objectForKey:@"NSApplicationName"]);
@@ -788,38 +798,63 @@ static const int kPidFoundMask = 1 << (8 * sizeof(int) - 1);
 		if ([attachedToItem state] == NSMixedState)
 			[attachedToItem setState:NSOffState];
 
+//		[popover setBehavior:NSPopoverBehaviorApplicationDefined];
 		if (attachedToItem == item) {
 			[popover setAnimates:YES];
 			[popover close];
+			[[NSNotificationCenter defaultCenter] removeObserver:self
+															name:CMMenuSuspendStatusDidChangeNotification
+														  object:nil];
 			[[item menu] setSuspendMenus:NO];
 			[[item menu] setCancelsTrackingOnMouseEventOutsideMenus:YES];
 			[appInspector setAttachedToItem:nil];
-			
-//			[item setEnabled:YES];
 		} else {
-//			NSDictionary *appInfo = [attachedToItem representedObject];
-//			NSNumber *limitNumber = [appInfo objectForKey:APApplicationInfoLimitKey];
-//			if ([limitNumber floatValue] == 0)
-//				[attachedToItem setState:NSOffState];
-//			if ([attachedToItem state] == NSMixedState)
-//				[attachedToItem setState:NSOffState];
 			[appInspector setAttachedToItem:item];
-			[[item menu] showPopover:popover forItem:item];
+			[[item menu] showPopover:popover forItem:item preferredEdge:NSMaxXEdge];
+//			[popover setBehavior:NSPopoverBehaviorTransient];
 			if ([item state] == NSOffState)
 				[item setState:NSMixedState];
 		}
 	} else {
 //		NSMutableDictionary *appInfo = [item representedObject];
 //		[appInspector setApplicationInfo:appInfo];
+//		NSLog(@"popover behavior: %ld", [popover behavior]);
 		[appInspector setAttachedToItem:item];
 		[[item menu] setSuspendMenus:YES];
 		[[item menu] setCancelsTrackingOnMouseEventOutsideMenus:NO];
-		[[item menu] showPopover:popover forItem:item];
+//		[popover setBehavior:NSPopoverBehaviorApplicationDefined];
+		[[item menu] showPopover:popover forItem:item preferredEdge:NSMaxXEdge];
 		if ([item state] == NSOffState)
 			[item setState:NSMixedState];
+		[[NSNotificationCenter defaultCenter] addObserver:self
+												 selector:@selector(menuSuspendStatusDidChangeNotificationHandler:)
+													 name:CMMenuSuspendStatusDidChangeNotification
+												   object:nil];
+//		[popover setBehavior:NSPopoverBehaviorTransient];
 
 //		[item setEnabled:NO];
 //		_itemWithAttachedPopover = item;
+	}
+}
+
+
+- (void)menuDidEndTrackingNotificationHandler:(NSNotification *)notification {
+	NSPopover *popover = [[self appInspector] popover];
+	if ([popover isShown]) {
+		[popover close];
+	}
+}
+
+
+- (void)menuSuspendStatusDidChangeNotificationHandler:(NSNotification *)notification {
+//	NSLog(@"suspend notification: %@", notification);
+	NSPopover *popover = [[self appInspector] popover];
+	if ([popover isShown]) {
+		[popover setAnimates:YES];
+		[popover close];
+		[[NSNotificationCenter defaultCenter] removeObserver:self
+														name:CMMenuSuspendStatusDidChangeNotification
+													  object:nil];
 	}
 }
 

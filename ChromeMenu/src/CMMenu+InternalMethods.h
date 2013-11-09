@@ -42,14 +42,22 @@ typedef enum : NSUInteger {
 
 
 enum {
-	CMMenuOptionDefault = 0x000,
+	CMMenuOptionDefaults = 0x000,
 	CMMenuOptionIgnoreMouse = 0x001,
-	CMMenuOptionTrackMouseMoved = 0x002,
+//	CMMenuOptionTrackMouseMoved = 0x002,
 	CMMenuOptionUpdateTrackingPrimitives = 0x004,
 	CMMenuOptionUpdateScrollers = 0x008
 };
 typedef NSUInteger CMMenuOptions;
 
+
+enum {
+	CMMenuAlignedRight = 1,
+	CMMenuAlignedLeft = 2,
+	CMMenuAlignedTop = 3,
+	CMMenuAlignedBottom = 4
+};
+typedef NSUInteger CMMenuAlignment;
 
 
 @class CMMenuItem, CMMenuScroller, CMWindowController;
@@ -69,6 +77,12 @@ typedef NSUInteger CMMenuOptions;
 - (CMMenu *)activeSubmenu;
 - (void)setActiveSubmenu:(CMMenu *)submenu;
 
+- (BOOL)isAttachedToStatusItem;
+- (NSRect)statusItemRect;
+
+- (CMMenuAlignment)horizontalAlignment;
+- (CMMenuAlignment)verticalAlignment;
+
 /* Update only particular menu items */
 //- (void)updateItemsAtIndexes:(NSIndexSet *)indexes;
 //- (void)updateFrame;
@@ -84,7 +98,7 @@ typedef NSUInteger CMMenuOptions;
 /**
  * @abstract Receiving menu begins tracking in NSEventTrackingRunLoopMode if it is not already.
  */
-- (void)beginTrackingWithEvent:(NSEvent *)theEvent;
+- (void)beginTrackingWithEvent:(NSEvent *)theEvent options:(CMMenuOptions)options;
 
 /**
  * @abstract End previously started tracking.

@@ -725,7 +725,7 @@ void cfnotificationCallback(CFNotificationCenterRef center, void *observer, CFSt
 	
 	static int i = 0;
 	if ((i % 2) == 0)
-		[menu start];
+		[menu popUpMenuPositioningItem:nil atLocation:NSMakePoint(200, 5) inView:nil];
 	else
 		[menu cancelTrackingWithoutAnimation];
 	
@@ -751,7 +751,7 @@ void cfnotificationCallback(CFNotificationCenterRef center, void *observer, CFSt
 - (IBAction)toggleSmallMenu:(id)sender {
 	static int i = 0;
 	if ((i % 2) == 0)
-		[smallMenu start];
+		[smallMenu popUpMenuPositioningItem:nil atLocation:NSMakePoint(200, 200) inView:nil];
 	else
 		[smallMenu cancelTrackingWithoutAnimation];
 	
@@ -768,7 +768,7 @@ void cfnotificationCallback(CFNotificationCenterRef center, void *observer, CFSt
 		[[item menu] setSuspendMenus:NO];
 	} else {
 		[[item menu] setSuspendMenus:YES];
-		[[item menu] showPopover:popover forItem:item];
+		[[item menu] showPopover:popover forItem:item preferredEdge:NSMaxXEdge];
 //		[[self appInspector] setAttachedToItem:item];
 	}
 }
@@ -776,7 +776,8 @@ void cfnotificationCallback(CFNotificationCenterRef center, void *observer, CFSt
 
 - (IBAction)showmenu:(id)sender {
 	NSLog(@"BBBBB");
-	[_mainMenu popUpMenuPositioningItem:[_mainMenu itemAtIndex:0] atLocation:NSMakePoint(200, 200) inView:nil];
+//	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(notificationDeliver:) name:NSMenuDidEndTrackingNotification object:nil];
+	[_mainMenu popUpMenuPositioningItem:nil atLocation:NSMakePoint(1920, 0) inView:nil];
 //	[statusbarMenu popUpMenuPositioningItem:nil atLocation:NSMakePoint(200, 200) inView:nil];
 }
 

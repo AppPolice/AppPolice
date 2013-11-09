@@ -577,7 +577,7 @@
 	NSLog(@"show item submenu: %@", _title);
 	_submenuIntervalIsSetToPopup = NO;
 //	[_submenu showMenu];
-	[_submenu showAsSubmenuOf:self withOptions:CMMenuOptionDefault];
+	[_submenu showAsSubmenuOf:self withOptions:CMMenuOptionDefaults];
 }
 
 
