@@ -12,7 +12,7 @@
 #define APApplicationsSortedByName 0
 #define APApplicationsSortedByPid 1
 
-@class /*CMMenu, CMMenuItem,*/ AppInspector;
+@class AppInspector;
 
 @interface StatusbarMenuController : NSObject<CMMenuDelegate>
 {
@@ -22,17 +22,12 @@
 	NSMutableArray *_runningSystemProcesses;
 	int _sortKey;
 	AppInspector *_appInspector;
-//	CMMenuItem *_itemWithAttachedPopover;
 }
 
 - (CMMenu *)mainMenu;
 
-// APApplicationsSortedByName is the default
+// Default is |APApplicationsSortedByName|
 - (int)sortKey;
 - (void)setSortKey:(int)sortKey;
-
-//extern NSString *const APApplicationsSortedByName;
-//extern NSString *const APApplicationsSortedByPid;
-
 
 @end

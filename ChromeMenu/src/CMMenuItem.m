@@ -67,6 +67,8 @@
 	[_offStateImage release];
 	[_onStateImage release];
 	[_mixedStateImage release];
+	[_representedObject release];
+	[_submenu release];
 	
 	[super dealloc];
 }
@@ -342,15 +344,17 @@
 
 
 - (void)setRepresentedObject:(id)anObject {
-	if (_representedObject == anObject)
-		return;
-	
-	if (_representedObject) {
-		[_representedObject release];
-		_representedObject = nil;
-	}
-	if (anObject)
-		_representedObject = [anObject retain];
+//	if (_representedObject == anObject)
+//		return;
+//	
+//	if (_representedObject) {
+//		[_representedObject release];
+//		_representedObject = nil;
+//	}
+//	if (anObject)
+//		_representedObject = [anObject retain];
+	[_representedObject autorelease];
+	_representedObject = [anObject retain];
 }
 
 

@@ -15,8 +15,8 @@
 	@private
 	NSStatusItem *_statusbarItem;
 	CMMenu *_menu;
-	NSImage *_image;
-	NSImage *_alternateImage;
+//	NSImage *_image;
+//	NSImage *_alternateImage;
 	StatusbarItemView *_view;
 }
 

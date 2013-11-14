@@ -35,21 +35,10 @@
 @synthesize state = _state;
 @synthesize icon = _icon;
 @synthesize title = _title;
-//@synthesize ownersIcon = _ownersIcon;
-//@synthesize mouseInside = _mouseInside;
-
-//- (id)initWithFrame:(NSRect)frame
-//{
-//    self = [super initWithFrame:frame];
-//    if (self) {
-//        // Initialization code here.
-//    }
-//    
-//    return self;
-//}
 
 
 - (void)dealloc {
+//	NSLog(@"release item view");
 	[_submenuIconView release];
 	[_submenuIconConstraints release];
 	[super dealloc];

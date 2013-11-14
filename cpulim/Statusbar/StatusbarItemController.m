@@ -22,7 +22,6 @@
 		[_statusbarItem retain];
 		
 		CGFloat thickness = [statusbar thickness];
-//		NSLog(@"thickness: %f", thickness);
 		_view = [[StatusbarItemView alloc] initWithFrame:NSMakeRect(0, 0, 21, thickness)];
 		[_statusbarItem setView:_view];
 		
@@ -33,7 +32,10 @@
 
 
 - (void)dealloc {
+	[[NSStatusBar systemStatusBar] removeStatusItem:_statusbarItem];
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
+//	[_image release];
+//	[_alternateImage release];
 	[_view release];
 	[_statusbarItem release];
 	[_menu release];
@@ -42,26 +44,26 @@
 
 
 - (void)setImage:(NSImage *)image {
-	[_image autorelease];
-	_image = [image retain];
+//	[_image autorelease];
+//	_image = [image retain];
 	[_view setImage:image];
 }
 
 
 - (NSImage *)image {
-	return _image;
+	return [_view image];
 }
 
 
 - (void)setAlternateImage:(NSImage *)image {
-	[_alternateImage autorelease];
-	_alternateImage = [image retain];
+//	[_alternateImage autorelease];
+//	_alternateImage = [image retain];
 	[_view setAlternateImage:image];
 }
 
 
 - (NSImage *)alternateImage {
-	return _alternateImage;
+	return [_view alternateImage];
 }
 
 
@@ -72,19 +74,6 @@
 	
 	
 	[_statusbarItem setView:_view];
-	
-//	NSString *imagePath = [[NSBundle mainBundle] pathForResource:@"statusbar_image" ofType:@"tiff"];
-//	NSImage *ico = [[[NSImage alloc] initWithContentsOfFile:imagePath] autorelease];
-//	imagePath = [[NSBundle mainBundle] pathForResource:@"statusbar_image_inv" ofType:@"tiff"];
-//	NSImage *ico_alt = [[[NSImage alloc] initWithContentsOfFile:imagePath] autorelease];
-//	
-//	//	[_statusbarItem setTitle:NSLocalizedString(@"Ishimura", @"")];
-//	[_statusbarItem setImage:ico];
-//	[_statusbarItem setAlternateImage:ico_alt];
-//	[_statusbarItem setHighlightMode:YES];
-//	[_statusbarItem setTarget:self];
-//	[_statusbarItem setAction:@selector(statusbarItemAction:)];
-//	[_statusbarItem sendActionOn:NSLeftMouseDownMask | NSRightMouseDownMask];
 }
 
 
@@ -95,7 +84,7 @@
 
 
 - (void)statusItemMouseDownNotificationHandler:(NSNotification *)notification {
-	NSLog(@"mouse down on status item notification: %@", notification);
+//	NSLog(@"mouse down on status item notification: %@", notification);
 	NSRect frame = [_view frame];
 	frame = [[_view window] convertRectToScreen:frame];
 	[_menu popUpMenuForStatusItemWithRect:frame];
@@ -106,7 +95,6 @@
 - (void)menuDidEndTrackingNotificationHandler:(NSNotification *)notification {
 	[_view setHighlighted:NO];
 	[[NSNotificationCenter defaultCenter] removeObserver:self name:CMMenuDidEndTrackingNotification object:nil];
-	NSLog(@"menu did end: %@", notification);
 }
 
 @end

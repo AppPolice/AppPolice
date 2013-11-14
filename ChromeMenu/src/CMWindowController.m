@@ -60,8 +60,6 @@ typedef struct tracking_primitive_s {
 	NSTimer *_scrollTimer;
 	
 	NSMutableArray *_viewControllers;
-	NSMutableArray *_trackingAreas;
-	NSTrackingArea *_contentViewTrackingArea;
 	CMTrackingPrimitive **_trackingPrimitives;
 	CMTrackingPrimitive *_trackingPrimitivesList;
 	
@@ -183,7 +181,8 @@ typedef struct tracking_primitive_s {
 
 - (void)dealloc {
 	[_viewControllers release];
-	[_trackingAreas release];
+	[_topScroller release];
+	[_bottomScroller release];
 	[_scrollView release];
 	[_keyEventInterpreter release];
 	
@@ -608,6 +607,9 @@ typedef struct tracking_primitive_s {
 		}
 	} else {
 		if (! _topScroller) {
+			// Keep scroller view retained up until the [CMWindowController dealloc],
+			// because the view can be added and removed from superview multiple times
+			// during menu scrolling.
 			_topScroller = [[CMMenuScroller alloc] initWithScrollerType:CMMenuScrollerTop];
 			[_topScroller setFrame:NSMakeRect(0, contentView.frame.size.height - MENU_SCROLLER_HEIGHT - _verticalPadding, documentRect.size.width, MENU_SCROLLER_HEIGHT)];
 		}
@@ -632,6 +634,7 @@ typedef struct tracking_primitive_s {
 	// BOTTOM scroller
 	if (distanceToBottom != 0) {
 		if (! _bottomScroller) {
+			// Same retain policy as _topScroller
 			_bottomScroller = [[CMMenuScroller alloc] initWithScrollerType:CMMenuScrollerBottom];
 			NSRect scrollerRect = NSMakeRect(0, _verticalPadding, documentRect.size.width, MENU_SCROLLER_HEIGHT);
 			[_bottomScroller setFrame:scrollerRect];
@@ -1197,7 +1200,7 @@ typedef struct tracking_primitive_s {
 			if ( !(eventMask & (NSMouseMovedMask | NSLeftMouseDraggedMask | NSRightMouseDraggedMask | NSOtherMouseDraggedMask))
 					&& candidateMenu
 					&& (eventMask & [candidateMenu eventBlockingMask])) {
-				NSLog(@"Event has been blocked. Conitnue.");
+//				NSLog(@"Event has been blocked. Conitnue.");
 				continue;
 			}
 		}
@@ -1245,7 +1248,7 @@ typedef struct tracking_primitive_s {
 				[self eventOnTrackingPrimitiveAtLocation:mouseLocation mouseInside:NO];
 				
 				if (candidateMenu && (eventMask & [candidateMenu eventBlockingMask])) {
-					NSLog(@"Event has been blocked. Conitnue.");
+//					NSLog(@"Event has been blocked. Conitnue.");
 					goto endEvent;
 				}
 				

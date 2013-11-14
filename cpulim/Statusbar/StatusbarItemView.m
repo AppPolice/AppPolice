@@ -12,16 +12,6 @@
 
 @implementation StatusbarItemView
 
-//- (id)initWithFrame:(NSRect)frame
-//{
-//    self = [super initWithFrame:frame];
-//    if (self) {
-//        // Initialization code here.
-//    }
-//    
-//    return self;
-//}
-
 
 - (void)dealloc {
 	[_image release];
@@ -133,10 +123,7 @@
 
 
 - (void)mouseDown:(NSEvent *)theEvent {
-//		NSLog(@"clicked on statusbar item %@", theEvent);
-//	NSLog(@"time: %f", [theEvent timestamp]);
 	NSRect frame = [self frame];
-////	frame = [self convertRect:frame toView:nil];
 	frame = [[self window] convertRectToScreen:frame];
 	NSLog(@"mouse down on status item rect: %@", NSStringFromRect(frame));
 	
@@ -156,7 +143,6 @@
 }
 
 - (void)rightMouseDown:(NSEvent *)theEvent {
-//	NSLog(@"right mouse down %@", theEvent);
 	[self setHighlighted:YES];
 	NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
 	[notificationCenter postNotificationName:StatusbarItemRightMouseDownNotification object:self];

@@ -14,15 +14,10 @@
 	NSImageView *_state;
 	NSImageView *_icon;
 	NSTextField *_title;
-//	NSImageView *_ownersIcon;	
 }
 
 @property (assign) IBOutlet NSImageView *state;
 @property (assign) IBOutlet NSImageView *icon;
 @property (assign) IBOutlet NSTextField *title;
-//@property (assign) IBOutlet NSImageView *ownersIcon;
-
-//@property (assign) BOOL mouseInside;
-
 
 @end

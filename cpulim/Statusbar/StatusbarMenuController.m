@@ -13,8 +13,6 @@
 #include "app_inspector_c.h"
 #include "proc_cpulim.h"
 
-//NSString *const APApplicationsSortedByName = @"APApplicationsSortedByName";
-//NSString *const APApplicationsSortedByPid = @"APApplicationsSortedByPid";
 
 static const int gShowAllProcesses = 1;
 static const int gShowOtherUsersProcesses = 0;
@@ -130,13 +128,16 @@ static const unsigned int kPidFoundMask = 1U << (8 * sizeof(int) - 1);
 	[_mainMenu addItem:[CMMenuItem separatorItem]];
 	
 	item = [[[CMMenuItem alloc] initWithTitle:@"Donate" action:NULL] autorelease];
+	[item setTarget:self];
 	[_mainMenu addItem:item];
 	item = [[[CMMenuItem alloc] initWithTitle:@"About" action:NULL] autorelease];
+	[item setTarget:self];
 	[_mainMenu addItem:item];
 
 	[_mainMenu addItem:[CMMenuItem separatorItem]];
 	
 	item = [[[CMMenuItem alloc] initWithTitle:@"Preferences" action:NULL] autorelease];
+	[item setTarget:self];
 	[_mainMenu addItem:item];
 	item = [[[CMMenuItem alloc] initWithTitle:@"Quit" action:@selector(terminateApplicationMenuAction:)] autorelease];
 	[item setTarget:self];
@@ -219,9 +220,6 @@ static const unsigned int kPidFoundMask = 1U << (8 * sizeof(int) - 1);
 		[item setOnStateImage:onStateImageActive];
 		if (gShowAllProcesses)
 			[item setIndentationLevel:1];
-//		NSImage *mixedStateImage = [NSImage imageNamed:NSImageNameStatusNone];
-//		[mixedStateImage setSize:NSMakeSize(12, 12)];
-//		[item setMixedStateImage:mixedStateImage];
 		[item setRepresentedObject:appInfo];
 		[menu addItem:item];
 	}
@@ -268,8 +266,6 @@ static const unsigned int kPidFoundMask = 1U << (8 * sizeof(int) - 1);
 				
 				CMMenuItem *item = [[[CMMenuItem alloc] initWithTitle:[procInfo objectForKey:kProcNameKey] icon:genericIcon action:@selector(selectProcessMenuItemAction:)] autorelease];
 				[item setTarget:self];
-//				NSImage *onStateImage = [NSImage imageNamed:NSImageNameStatusAvailable];
-//				[onStateImage setSize:NSMakeSize(12, 12)];
 				[item setOnStateImage:onStateImageActive];
 				[item setIndentationLevel:1];
 				[item setRepresentedObject:appInfo];
@@ -281,7 +277,7 @@ static const unsigned int kPidFoundMask = 1U << (8 * sizeof(int) - 1);
 	}
 	
 
-	/* temp */ {
+	/* temp */ { /*
 		NSMutableDictionary *appInfo = [NSMutableDictionary dictionaryWithObjectsAndKeys:
 										@"Some really long name for some unexistant applicaton", APApplicationInfoNameKey,
 										[NSImage imageNamed:NSImageNameBonjour], APApplicationInfoIconKey,
@@ -292,7 +288,7 @@ static const unsigned int kPidFoundMask = 1U << (8 * sizeof(int) - 1);
 		[item setTarget:self];
 		[item setRepresentedObject:appInfo];
 		[menu addItem:item];
-	} // temp
+*/	} // temp
 	
 
 	NSNotificationCenter *notificationCenter = [workspace notificationCenter];
@@ -441,6 +437,8 @@ static const unsigned int kPidFoundMask = 1U << (8 * sizeof(int) - 1);
 //		fprintf(stdout, "proc %d name: %s\n", proc_pids[n], namebuffer);
 //		fprintf(stdout, "\npid[%d] = %d\tpath: %s", n, proc_pids[n], pathbuffer);
 	}
+	
+	// Free used buffers
 	free(namebuffer);
 	free(pathbuffer);
 	free(proc_pids);
@@ -556,7 +554,7 @@ static const unsigned int kPidFoundMask = 1U << (8 * sizeof(int) - 1);
 	NSIndexSet *notfoundAppIndexes = [updateIndexSets objectForKey:kNotFoundAppIndexesKey];
 	NSIndexSet *notfoundSysProcIndexes = [updateIndexSets objectForKey:kNotFoundSysProcIndexesKey];
 	NSIndexSet *newSysProcIndexes = [updateIndexSets objectForKey:kNewSysProcIndexesKey];
-	NSLog(@"update indexes: %@", updateIndexSets);
+//	NSLog(@"update indexes: %@", updateIndexSets);
 	
 	
 	if ([notfoundAppIndexes count]) {
@@ -578,9 +576,6 @@ static const unsigned int kPidFoundMask = 1U << (8 * sizeof(int) - 1);
 		// If any of the processes represented by menu item was limited before
 		// pass its pid to limit handler method to remove it from array
 		[[menu itemArray] enumerateObjectsAtIndexes:shiftedIndexes options:0 usingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-//			NSDictionary *representedObj = [(CMMenuItem *)obj representedObject];
-//			if (representedObj)
-//				[self processPid:[representedObj objectForKey:APApplicationInfoPidKey] didChangeLimit:PROCESS_NOT_LIMITED];
 			[self processOfItem:(CMMenuItem *)obj didChangeLimit:PROCESS_NOT_LIMITED];
 		}];
 		
@@ -612,10 +607,6 @@ static const unsigned int kPidFoundMask = 1U << (8 * sizeof(int) - 1);
 			[menu insertItem:item atIndex:(idx + offset) animate:NO];
 		}];
 	}
-	
-//	[notfoundSysProcIndexes enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop) {
-//		NSLog(@"notfound proc: %@", [_runningSystemProcesses objectAtIndex:idx]);
-//	}];
 }
 
 
@@ -623,10 +614,7 @@ static const unsigned int kPidFoundMask = 1U << (8 * sizeof(int) - 1);
  *
  */
 - (void)appLaunchedNotificationHandler:(NSNotification *)notification {
-//	NSLog(@"launched %@ BEGIN", [[notification userInfo] objectForKey:@"NSApplicationName"]);
 	NSRunningApplication *app = [[notification userInfo] objectForKey:NSWorkspaceApplicationKey];
-//	NSLog(@"launched %@\n", app);
-	//	NSLog(@"App object: %@", app);
 	
 	NSUInteger elementsCount = [_runningApplications count];
 	NSUInteger index = elementsCount;
@@ -662,8 +650,6 @@ static const unsigned int kPidFoundMask = 1U << (8 * sizeof(int) - 1);
 //		index = elementsCount;
 	}
 	
-//	NSLog(@"inserting at index: %lu", index);
-	
 	[_runningApplications insertObject:app atIndex:index];
 	// If showing all processes the first menu item is "Applications". Offset index by 1.
 	if (gShowAllProcesses)
@@ -684,8 +670,6 @@ static const unsigned int kPidFoundMask = 1U << (8 * sizeof(int) - 1);
 	if (gShowAllProcesses)
 		[item setIndentationLevel:1];
 	[[[_mainMenu itemAtIndex:0] submenu] insertItem:item atIndex:index animate:NO];
-	
-//	NSLog(@"launched %@ END", [[notification userInfo] objectForKey:@"NSApplicationName"]);
 }
 
 
@@ -693,13 +677,7 @@ static const unsigned int kPidFoundMask = 1U << (8 * sizeof(int) - 1);
  *
  */
 - (void)appTerminatedNotificationHandler:(NSNotification *)notification {
-//	NSLog(@"terminated %@\n", [[notification userInfo] objectForKey:@"NSApplicationName"]);
 	NSRunningApplication *app = [[notification userInfo] objectForKey:NSWorkspaceApplicationKey];
-//	NSLog(@"terminated %@\n", app);
-//	NSUInteger index = [_runningApplications indexOfObject:app];
-//	NSUInteger index;
-	
-//	NSLog(@"running apps: %@", _runningApplications);
 	
 	for (NSRunningApplication *runningApp in _runningApplications) {
 		if ([app isEqual:runningApp]) {
@@ -719,11 +697,6 @@ static const unsigned int kPidFoundMask = 1U << (8 * sizeof(int) - 1);
 					[popover close];
 				}
 			}
-//			NSDictionary *representedObj = [item representedObject];
-//			if (representedObj) {
-//				NSNumber *pid = [representedObj objectForKey:APApplicationInfoPidKey];
-//				[self processPid:pid didChangeLimit:0.0];
-//			}
 			[self processOfItem:item didChangeLimit:PROCESS_NOT_LIMITED];
 			[menu removeItemAtIndex:menuIndex animate:NO];
 
@@ -738,9 +711,6 @@ static const unsigned int kPidFoundMask = 1U << (8 * sizeof(int) - 1);
  */
 - (void)processDidChangeLimitNotificationHandler:(NSNotification *)notification {
 	NSDictionary *userInfo = [notification userInfo];
-//	NSNumber *pid = [userInfo objectForKey:@"pid"];
-//	float limit = [(NSNumber *)[userInfo objectForKey:@"limit"] floatValue];
-//	[self processPid:pid didChangeLimit:limit];
 
 	CMMenuItem *item = [userInfo objectForKey:@"menuItem"];
 	NSDictionary *representedObj = [item representedObject];
@@ -772,8 +742,6 @@ static const unsigned int kPidFoundMask = 1U << (8 * sizeof(int) - 1);
 		[item setState:NSOnState];
 		if ([_limitedProcessItems indexOfObject:item] == NSNotFound)
 			[_limitedProcessItems addObject:item];
-//		[pauseItem setTitle:@"Pause all limits"];
-//		[pauseItem setRepresentedObject:[NSNumber numberWithInt:!ALL_LIMITS_PAUSED]];
 		if (! allLimitsPaused)
 			proc_cpulim_resume();
 	}
@@ -790,16 +758,13 @@ static const unsigned int kPidFoundMask = 1U << (8 * sizeof(int) - 1);
 - (void)selectProcessMenuItemAction:(id)sender {
 	CMMenuItem *item = (CMMenuItem *)sender;
 	AppInspector *appInspector = [self appInspector];
-//	NSDictionary *inspectorAppInfo = [appInspector applicationInfo];
 	NSPopover *popover = [appInspector popover];
 
-//	if (_itemWithAttachedPopover && [_itemWithAttachedPopover isEqual:item] && [popover isShown]) {
 	if ([popover isShown]) {
 		CMMenuItem *attachedToItem = [appInspector attachedToItem];
 		if ([attachedToItem state] == NSMixedState)
 			[attachedToItem setState:NSOffState];
 
-//		[popover setBehavior:NSPopoverBehaviorApplicationDefined];
 		if (attachedToItem == item) {
 			[popover setAnimates:YES];
 			[popover close];
@@ -812,18 +777,13 @@ static const unsigned int kPidFoundMask = 1U << (8 * sizeof(int) - 1);
 		} else {
 			[appInspector setAttachedToItem:item];
 			[[item menu] showPopover:popover forItem:item preferredEdge:NSMaxXEdge];
-//			[popover setBehavior:NSPopoverBehaviorTransient];
 			if ([item state] == NSOffState)
 				[item setState:NSMixedState];
 		}
 	} else {
-//		NSMutableDictionary *appInfo = [item representedObject];
-//		[appInspector setApplicationInfo:appInfo];
-//		NSLog(@"popover behavior: %ld", [popover behavior]);
 		[appInspector setAttachedToItem:item];
 		[[item menu] setSuspendMenus:YES];
 		[[item menu] setCancelsTrackingOnMouseEventOutsideMenus:NO];
-//		[popover setBehavior:NSPopoverBehaviorApplicationDefined];
 		[[item menu] showPopover:popover forItem:item preferredEdge:NSMaxXEdge];
 		if ([item state] == NSOffState)
 			[item setState:NSMixedState];
@@ -831,10 +791,6 @@ static const unsigned int kPidFoundMask = 1U << (8 * sizeof(int) - 1);
 												 selector:@selector(menuSuspendStatusDidChangeNotificationHandler:)
 													 name:CMMenuSuspendStatusDidChangeNotification
 												   object:nil];
-//		[popover setBehavior:NSPopoverBehaviorTransient];
-
-//		[item setEnabled:NO];
-//		_itemWithAttachedPopover = item;
 	}
 }
 
@@ -848,7 +804,6 @@ static const unsigned int kPidFoundMask = 1U << (8 * sizeof(int) - 1);
 
 
 - (void)menuSuspendStatusDidChangeNotificationHandler:(NSNotification *)notification {
-//	NSLog(@"suspend notification: %@", notification);
 	NSPopover *popover = [[self appInspector] popover];
 	if ([popover isShown]) {
 		[popover setAnimates:YES];
