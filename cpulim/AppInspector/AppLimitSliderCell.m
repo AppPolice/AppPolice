@@ -6,7 +6,9 @@
 //  Copyright (c) 2013 Maksym Stefanchuk. All rights reserved.
 //
 
+#import <AppKit/AppKit.h>
 #import "AppLimitSliderCell.h"
+
 
 @implementation AppLimitSliderCell
 

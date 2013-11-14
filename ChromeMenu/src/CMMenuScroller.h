@@ -29,7 +29,4 @@ typedef NSUInteger CMMenuScrollerType;
 
 - (CMMenuScrollerType)scrollerType;
 
-- (void)setTrackingArea:(NSTrackingArea *)trackingArea;
-- (NSTrackingArea *)trackingArea;
-
 @end

@@ -8,15 +8,14 @@
 
 //#import <Foundation/Foundation.h>
 
-@class NSObject;
-@protocol CMMenuKeyEventInterpreterDelegate;
+@class NSObject, NSEvent;
+@protocol CMMenuKeyEventInterpreterDelegate, NSObject;
 
 
 @interface CMMenuKeyEventInterpreter : NSObject
 {
 	@private
 	id _delegate;
-//	id _localEventMonitor;
 }
 /**
  * @abstract Create local monitor for Key Events and route interpreted actions to an owning menu.
@@ -27,8 +26,6 @@
 
 - (void)interpretEvent:(NSEvent *)theEvent;
 
-//- (void)start;
-//- (void)stop;
 
 @end
 

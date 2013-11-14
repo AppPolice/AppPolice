@@ -6,8 +6,7 @@
 //  Copyright (c) 2013 Maksym Stefanchuk. All rights reserved.
 //
 
-//#import <Cocoa/Cocoa.h>
-@class NSView;
+#import <AppKit/AppKit.h>
 
 @interface ChromeMenuUnderlyingView : NSView
 {

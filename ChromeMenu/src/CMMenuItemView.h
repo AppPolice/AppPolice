@@ -6,8 +6,7 @@
 //  Copyright (c) 2013 Maksym Stefanchuk. All rights reserved.
 //
 
-//#import <Cocoa/Cocoa.h>
-//@class NSTableCellView;
+#import <AppKit/AppKit.h>
 
 @interface CMMenuItemView : NSView
 {
@@ -15,11 +14,7 @@
 	NSImageView *_state;
 	NSImageView *_icon;
 	NSTextField *_title;
-//	NSImageView *_ownersIcon;
-	
-	BOOL _selected;
-	BOOL _enabled;
-	NSInteger _indentationLevel;
+//	NSImageView *_ownersIcon;	
 }
 
 @property (assign) IBOutlet NSImageView *state;
@@ -28,24 +23,6 @@
 //@property (assign) IBOutlet NSImageView *ownersIcon;
 
 //@property (assign) BOOL mouseInside;
-- (BOOL)isSelected;
-- (void)setSelected:(BOOL)selected;
 
-- (BOOL)isEnabled;
-- (void)setEnabled:(BOOL)enabled;
-
-- (void)fadeIn;
-- (void)fadeOutWithComplitionHandler:(void (^)(void))handler;
-- (void)blink;
-
-- (void)setIndentationLevel:(NSInteger)indentationLevel;
-- (NSInteger)indentationLevel;
-
-/**
- * @function needsTracking
- * @abstract Tells whether a view will have a tracking area created.
- * @discussion This method is meant to be overridden by the Separator View.
- */
-- (BOOL)needsTracking;
 
 @end

@@ -54,7 +54,7 @@
 	NSBitmapImageRep *bitmapImageRep = [self bitmapImageRepresentation];
 	//	NSLog(@"bitmap image rep: %@", bitmapImageRep);
 	
-	CIImage *ciImage = [[CIImage alloc] initWithBitmapImageRep:bitmapImageRep];
+	CIImage *ciImage = [[[CIImage alloc] initWithBitmapImageRep:bitmapImageRep] autorelease];
 	CIFilter *ciFilter = [CIFilter filterWithName:@"CIColorInvert"];
 	[ciFilter setValue:ciImage forKey:@"inputImage"];
 	CIImage *resultImage = [ciFilter valueForKey:@"outputImage"];

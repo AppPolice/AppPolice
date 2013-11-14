@@ -6,9 +6,9 @@
 //  Copyright (c) 2013 Maksym Stefanchuk. All rights reserved.
 //
 
-//#import <Foundation/Foundation.h>
-//#import "CMMenu.h"
-@class NSObject, NSImage, NSString, NSArray;
+
+#import <AppKit/AppKit.h>
+
 @class CMMenu;
 
 @interface CMMenuItem : NSObject
@@ -26,15 +26,7 @@
 	NSInteger _indentationLevel;
 	id _target;
     SEL _action;
-	
-	NSString *_viewNibName;
-//	NSString *_viewIdentifier;
-	NSArray *_viewPropertyNames;
 }
-
-@property (readonly) NSString *viewNibName;
-@property (readonly) NSString *viewIdentifier;
-@property (readonly) NSArray *viewPropertyNames;
 
 + (CMMenuItem *)separatorItem;
 
@@ -47,9 +39,6 @@
 - (BOOL)hasSubmenu;
 - (void)setSubmenu:(CMMenu *)submenu;
 - (CMMenu *)submenu;
-
-//- (void)setViewFromNibNamed:(NSString *)nibName withIdentifier:(NSString *)identifier andPropertyNames:(NSArray *)propertyNames;
-//- (void)setViewFromNibNamed:(NSString *)nibName andPropertyNames:(NSArray *)propertyNames;
 
 - (void)setTitle:(NSString *)aString;
 - (NSString *)title;

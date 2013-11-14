@@ -9,7 +9,7 @@
 //#import <QuartzCore/CoreImage.h>
 #import "CMMenuItemView.h"
 #import "CMMenuItemView+InternalMethods.h"
-#import "NSImage+CMMenuImageRepAdditions.h"
+//#import "NSImage+CMMenuImageRepAdditions.h"
 #import <QuartzCore/CAMediaTimingFunction.h>
 #import <objc/runtime.h>
 
@@ -21,6 +21,10 @@
 	NSImageView *_submenuIconView;
 	NSMutableArray *_submenuIconConstraints;
 	BOOL _isAnimating;
+	BOOL _selected;
+	BOOL _enabled;
+	NSInteger _indentationLevel;
+//	NSImage *_goRightImage;
 }
 
 @end
@@ -158,29 +162,9 @@
 	
 }
 
-/*
-- (void)viewDidMoveToSuperview {
-	NSLog(@"view: %@ did move to superview", [[self title] stringValue]);
-	if ([[[self title] stringValue] isEqualToString:@"Applications"]) {
-		NSLog(@"here");
-	}
-	NSView *superview = [self superview];
-	if (! superview) {
-		NSLog(@"view doesn't ahve superview!!!");
-	}
-	// If indentation level was set, call the -setIndentationLeve: method
-	// once again to actually update constraints once the view is in the superview.
-	if (_indentationLevel)
-		[self setIndentationLevel:_indentationLevel];
-}*/
 
 
 - (void)updateConstraints {
-//	NSLog(@"view: %@ did move to superview", [[self title] stringValue]);
-//	if ([[[self title] stringValue] isEqualToString:@"Applications"]) {
-//		NSLog(@"here");
-//	}
-
 	// This method is called twice by AppKit: first time when the view is
 	// not added to superview (hence the check below) and second -- when
 	// the view did move to superview and all constraints are properly set.
@@ -231,24 +215,6 @@
 }
 
 
-//- (void)setMouseInside:(BOOL)inside {
-//	if (_mouseInside != inside) {
-//		_mouseInside = inside;
-//		[self setNeedsDisplay:YES];
-//	}
-//}
-
-//- (NSImageView *)icon {
-//	return _icon;
-//}
-//
-//- (void)setIcon:(NSImageView *)aIcon {
-//	_icon = aIcon;
-//	[_icon setImage:aIcon];
-//}
-
-
-
 - (void)setIconProperty:(NSImage *)aImage {
 	[_icon setImage:aImage];
 }
@@ -258,44 +224,6 @@
 }
 
 
-//- (BOOL)acceptsFirstMouse:(NSEvent *)theEvent {
-//	return YES;
-//}
-
-
-//- (void)mouseDown:(NSEvent *)theEvent {
-////	NSLog(@"View mouse down");
-////	NSLog(@"contstraints: %@", [self constraints]);
-////	NSLog(@"subview: %@", [self subviews]);
-////	NSView *documentView = [self superview];
-////	NSSize size = [documentView frame].size;
-////	[[documentView animator] setFrame:NSMakeRect(0, 0, size.width, size.height - 19)];
-//	
-//	[super mouseDown:theEvent];
-//}
-
-//- (void)rightMouseDown:(NSEvent *)theEvent {
-//	NSLog(@"View right mouse down");
-//}
-
-
-//- (void)updateTrackingAreas {
-//	NSLog(@"Update tracking areas called");
-//	[super updateTrackingAreas];
-//}
-
-
-
-//- (void)viewDidMoveToSuperview {
-//	[[[self superview] window] visualizeConstraints:[self constraints]];
-//	NSLog(@"window: %@", [[self superview] window]);
-//	NSLog(@"contstraints: %@", [self constraints]);
-//}
-
-
-/*
- *
- */
 - (void)setHasSubmenuIcon:(BOOL)hasIcon {
 	if (hasIcon == NO) {
 		if (_submenuIconView) {
@@ -314,10 +242,17 @@
 	NSImage *goRightImage = [NSImage imageNamed:@"ImageNameMenuGoRightTemplate"];
 	if (! goRightImage) {
 //		NSLog(@"createing goRight image");
-		goRightImage = [[NSImage imageNamed:NSImageNameGoRightTemplate] copy];
+		goRightImage = [[[NSImage imageNamed:NSImageNameGoRightTemplate] copy] autorelease];
 		[goRightImage setSize:NSMakeSize(9, 10)];
 		[goRightImage setName:@"ImageNameMenuGoRightTemplate"];
 	}
+	
+//	if (! _goRightImage) {
+//		_goRightImage = [[NSImage imageNamed:NSImageNameGoRightTemplate] copy];
+//		[_goRightImage setSize:NSMakeSize(9, 10)];
+////		[goRightImage setName:@"ImageNameMenuGoRightTemplate"];
+//	}
+//	NSImage *goRightImage = _goRightImage;
 	
 //	NSImage *goRightImage = [NSImage imageNamed:NSImageNameGoRightTemplate];
 	// Caution! Changing image size changes its global state. If it's drawn somewhere else
@@ -459,7 +394,7 @@
  *
  */
 - (NSString *)description {
-	NSMutableString *description = [[NSMutableString alloc] initWithString:[super description]];
+	NSMutableString *description = [[[NSMutableString alloc] initWithString:[super description]] autorelease];
 	[description appendString:@" Properties: ("];
 	
 	id currentClass = [self class];

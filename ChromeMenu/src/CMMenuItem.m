@@ -6,9 +6,11 @@
 //  Copyright (c) 2013 Maksym Stefanchuk. All rights reserved.
 //
 
+
 #import "CMMenuItem.h"
 #import "CMMenu.h"
 #import "CMMenuItemView.h"
+#import "CMMenuItemView+InternalMethods.h"
 #import "CMMenu+InternalMethods.h"
 #import "CMMenuItem+InternalMethods.h"
 #import "CMDebug.h"
@@ -21,7 +23,8 @@
 @interface CMMenuItem()
 {
 	BOOL _isSelected;
-	BOOL _mouseOver;						// this doesn't mean the item is selected (e.g. during submenu tracking)
+	// Mouse can be over item if it is not selected (e.g. during submenu tracking)
+	BOOL _mouseOver;
 	BOOL _submenuIntervalIsSetToPopup;
 	NSViewController *_representedViewController;
 	
@@ -30,10 +33,6 @@
 	NSImage *_mixedStateImage;
 }
 
-
-//- (void)mouseEntered:(NSEvent *)theEvent;
-//- (void)mouseExited:(NSEvent *)theEvent;
-//- (void)mouseDown:(NSEvent *)theEvent;
 - (void)showItemSubmenu;
 
 @end
@@ -41,11 +40,6 @@
 
 
 @implementation CMMenuItem
-
-@synthesize viewNibName = _viewNibName;
-//@synthesize viewIdentifier = _viewIdentifier;
-@synthesize viewPropertyNames = _viewPropertyNames;
-
 
 
 - (id)initWithTitle:(NSString *)aTitle action:(SEL)aSelector {
@@ -74,18 +68,10 @@
 	[_onStateImage release];
 	[_mixedStateImage release];
 	
-	if (_viewNibName) {
-//		[_viewIdentifier release];
-		[_viewNibName release];
-		[_viewPropertyNames release];
-	}
 	[super dealloc];
 }
 
 
-/*
- *
- */
 + (CMMenuItem *)separatorItem {
 	CMMenuItem *instance = [[self alloc] init];
 	if (instance) {
@@ -95,17 +81,11 @@
 }
 
 
-/*
- *
- */
 - (CMMenu *)menu {
 	return _menu;
 }
 
 
-/*
- *
- */
 - (void)setTitle:(NSString *)aTitle {
 //	if (! aTitle) {
 //		[NSException raise:NSInvalidArgumentException format:@"No title provided for a menu item -setTitle:"];
@@ -130,17 +110,11 @@
 }
 
 
-/*
- *
- */
 - (NSString *)title {
 	return _title;
 }
 
 
-/*
- *
- */
 - (void)setIcon:(NSImage *)anImage {
 	if (_icon != anImage) {
 		if (_icon)
@@ -151,17 +125,11 @@
 }
 
 
-/*
- *
- */
 - (NSImage *)icon {
 	return _icon;
 }
 
 
-/*
- *
- */
 - (void)setState:(NSInteger)state {
 	if (_state != state) {
 		_state = state;
@@ -182,9 +150,6 @@
 }
 
 
-/*
- *
- */
 - (NSInteger)state {
 	return _state;
 }
@@ -290,9 +255,6 @@
 }
 
 
-/*
- *
- */
 - (void)setSubmenu:(CMMenu *)submenu {
 //	if (submenu == nil)
 //		[NSException raise:NSInvalidArgumentException format:@"Bad argument provided in -%@", NSStringFromSelector(_cmd)];
@@ -314,41 +276,18 @@
 }
 
 
-/*
- *
- */
 - (CMMenu *)submenu {
 	return _submenu;
 }
 
 
-/*
- *
- */
 - (BOOL)hasSubmenu {
 	return (_submenu) ? YES : NO;
 }
 
 
-/*
- *
- */
 - (BOOL)isSeparatorItem {
 	return _isSeparatorItem;
-}
-
-
-/*
- *
- */
-//- (void)setViewFromNibNamed:(NSString *)nibName withIdentifier:(NSString *)identifier andPropertyNames:(NSArray *)propertyNames {
-- (void)setViewFromNibNamed:(NSString *)nibName andPropertyNames:(NSArray *)propertyNames {
-//	if (nibName == nil || [nibName isEqualToString:@""] || identifier == nil || [identifier isEqualToString:@""] || propertyNames == nil)
-	if (nibName == nil || [nibName isEqualToString:@""] || propertyNames == nil)
-		[NSException raise:NSInvalidArgumentException format:@"Bad arguments provided in -%@", NSStringFromSelector(_cmd)];
-	_viewNibName = [nibName retain];
-//	_viewIdentifier = [identifier retain];
-	_viewPropertyNames = [propertyNames retain];
 }
 
 
@@ -397,51 +336,6 @@
 }
 
 
-/*
- *
- */
-- (void)performAction {
-	if ([self hasSubmenu])
-		return;
-	NSLog(@"performaction on item: %@", _title);
-	if (_action && _enabled) {
-		id target = _target;
-		if (! target) {		// application delegate could be the one to handle it
-			target = [NSApp delegate];
-		}
-		
-		if ([target respondsToSelector:_action]) {
-//			[target performSelector:_action withObject:self afterDelay:0.075 inModes:[NSArray arrayWithObject:NSRunLoopCommonModes]];
-			XLog2("Performing action on item: %@", self);
-			[NSApp sendAction:_action to:target from:self];
-		}
-	}
-
-	
-	if ([[self menu] cancelsTrackingOnAction]) {
-		[_menu endTracking];
-		if ( !_isSeparatorItem && _enabled) {
-			CMMenuItemView *view = (CMMenuItemView *)[[self representedView] view];
-			[view blink];
-			[self performSelector:@selector(delayedCancelTracking) withObject:nil afterDelay:0.075 inModes:[NSArray arrayWithObject:NSRunLoopCommonModes]];
-		} else {
-			[self delayedCancelTracking];
-		}
-	}
-}
-
-
-- (void)delayedCancelTracking {
-//	CMMenu *menu = [self menu];
-//	CMMenu *supermenu = menu;
-//	while ((menu = [menu supermenu]))
-//		supermenu = menu;
-	
-//	[supermenu cancelTracking];
-	[[_menu rootMenu] cancelTracking];
-}
-
-
 - (id)representedObject {
 	return _representedObject;
 }
@@ -463,8 +357,6 @@
 - (BOOL)isHighlighted {
 	return _isSelected;
 }
-
-
 
 
 #pragma mark -
@@ -574,13 +466,10 @@
  *
  */
 - (void)showItemSubmenu {
-	NSLog(@"show item submenu: %@", _title);
+//	NSLog(@"show item submenu: %@", _title);
 	_submenuIntervalIsSetToPopup = NO;
-//	[_submenu showMenu];
 	[_submenu showAsSubmenuOf:self withOptions:CMMenuOptionDefaults];
 }
-
-
 
 
 
@@ -639,13 +528,11 @@
 	NSArray *items = [_menu itemArray];
 	for (CMMenuItem *item in items) {
 		if (self != item && [item isSelected]) {
-//			NSLog(@"BEFORE SELECTING, DESELECT: %@", item);
 			[item deselect];
 		}
 	}
 	
 	_isSelected = YES;
-//	NSLog(@"AND NOW SELECTED: %@", self);
 	[(CMMenuItemView *)[_representedViewController view] setSelected:YES];
 }
 
@@ -654,13 +541,9 @@
 	if (_isSeparatorItem || !_enabled)
 		return;
 
-	//	_isSelected = YES;
-//	[(CMMenuItemView *)[_representedViewController view] setSelected:YES];
-	
 	[self select];
 
 	if ([self hasSubmenu] && [_submenu numberOfItems]) {
-//		[self performSelector:@selector(showItemSubmenu) withObject:nil afterDelay:delay];
 //		[self performSelector:@selector(showItemSubmenu) withObject:nil afterDelay:delay inModes:[NSArray arrayWithObject:NSEventTrackingRunLoopMode]];
 		[self performSelector:@selector(showItemSubmenu) withObject:nil afterDelay:delay inModes:[NSArray arrayWithObject:NSRunLoopCommonModes]];
 		_submenuIntervalIsSetToPopup = YES;
@@ -673,7 +556,6 @@
 		return;
 	
 	_isSelected = NO;
-//	NSLog(@"ITEM DESELECTED: %@", self);
 	[(CMMenuItemView *)[_representedViewController view] setSelected:NO];
 }
 

@@ -22,7 +22,7 @@
 	NSMutableArray *_runningSystemProcesses;
 	int _sortKey;
 	AppInspector *_appInspector;
-	CMMenuItem *_itemWithAttachedPopover;
+//	CMMenuItem *_itemWithAttachedPopover;
 }
 
 - (CMMenu *)mainMenu;

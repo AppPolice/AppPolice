@@ -9,7 +9,6 @@
 #ifndef CMMenuItem_InternalMethods
 #define CMMenuItem_InternalMethods
 
-//#include "CMMenuEventTypes.h"
 #import "CMMenu+InternalMethods.h"
 
 @interface CMMenuItem (CMMenuItemInternalMethods)
@@ -39,8 +38,6 @@
  */
 - (void)selectWithDelayForSubmenu:(NSTimeInterval)delay;
 - (void)deselect;
-
-- (void)performAction __attribute__((deprecated));
 
 @end
 

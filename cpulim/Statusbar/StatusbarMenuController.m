@@ -27,11 +27,11 @@ static const int gShowOtherUsersProcesses = 0;
 #define PROCESS_NOT_LIMITED 0.0
 #define ALL_LIMITS_PAUSED YES
 
-static const int kPidFoundMask = 1 << (8 * sizeof(int) - 1);
+static const unsigned int kPidFoundMask = 1U << (8 * sizeof(int) - 1);
 //#define kPidFoundMask (1 << (8 * sizeof(int) - 1))
 #define PID_MARK_FOUND(pid) (pid |= kPidFoundMask)
 #define PID_UNMARK(pid) (pid &= ~kPidFoundMask)
-#define PID_IS_MARKED(pid) ((pid & kPidFoundMask) ? 1 : 0)
+#define PID_IS_MARKED(pid) (((unsigned)pid & kPidFoundMask) ? 1 : 0)
 #define PROC_NAME_MAXLEN 128
 
 
@@ -173,7 +173,7 @@ static const int kPidFoundMask = 1 << (8 * sizeof(int) - 1);
 	NSUInteger i;
 	NSUInteger elementsCount = [_runningApplications count];
 	pid_t shared_pid = getpid();
-	NSUInteger shared_pid_index;
+	NSUInteger shared_pid_index = UINT_MAX;
 	CMMenuItem *item;
 	NSImage *onStateImageActive = [NSImage imageNamed:NSImageNameStatusAvailable];
 	NSImage *onStateImagePaused = [NSImage imageNamed:NSImageNameStatusPartiallyAvailable];
@@ -227,7 +227,8 @@ static const int kPidFoundMask = 1 << (8 * sizeof(int) - 1);
 	}
 	
 	// Remove ourselves from running applications array
-	[_runningApplications removeObjectAtIndex:shared_pid_index];
+	if (shared_pid_index != UINT_MAX)
+		[_runningApplications removeObjectAtIndex:shared_pid_index];
 	
 	// -----------------------------------------------------
 	//		Populate with System processes if option is set
@@ -354,7 +355,7 @@ static const int kPidFoundMask = 1 << (8 * sizeof(int) - 1);
 	
 	// Now is the turn to mark System processes that we're already showing.
 	for (idx = 0; idx < shownSystemProcessesCount; ++idx) {
-		int pid = [(NSNumber *)[[_runningSystemProcesses objectAtIndex:idx] objectForKey:kProcPidKey] intValue];
+		int pid = [(NSNumber *)[(NSDictionary *)[_runningSystemProcesses objectAtIndex:idx] objectForKey:kProcPidKey] intValue];
 		int found = 0;
 		for (n = 0; n < numpids; ++n) {
 			if (pid == proc_pids[n]) {
@@ -483,14 +484,14 @@ static const int kPidFoundMask = 1 << (8 * sizeof(int) - 1);
 	if (sortKey == APApplicationsSortedByName) {
 		NSString *name = [processInfo objectForKey:kProcNameKey];
 		NSUInteger i = 0;
-		while (i < elementsCount && [name localizedCompare:[[_runningSystemProcesses objectAtIndex:i] objectForKey:kProcNameKey]] == NSOrderedDescending)
+		while (i < elementsCount && [name localizedCompare:[(NSDictionary *)[_runningSystemProcesses objectAtIndex:i] objectForKey:kProcNameKey]] == NSOrderedDescending)
 			++i;
 		index = i;
 		
 	} else if (sortKey == APApplicationsSortedByPid) {
 		NSNumber *pid = [processInfo objectForKey:kProcPidKey];
 		NSUInteger i = 0;
-		while (i < elementsCount && [pid compare:[[_runningSystemProcesses objectAtIndex:i] objectForKey:kProcPidKey]] == NSOrderedDescending)
+		while (i < elementsCount && [pid compare:[(NSDictionary *)[_runningSystemProcesses objectAtIndex:i] objectForKey:kProcPidKey]] == NSOrderedDescending)
 			++i;
 		index = i;
 	}

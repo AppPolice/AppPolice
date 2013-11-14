@@ -10,7 +10,6 @@
 #ifndef CMMenu_InternalMethods
 #define CMMenu_InternalMethods
 
-//#include "CMMenuEventTypes.h"
 #import "CMMenu.h"
 #import "CMMenuKeyEventInterpreter.h"
 
@@ -61,7 +60,6 @@ typedef NSUInteger CMMenuAlignment;
 
 
 @class CMMenuItem, CMMenuScroller, CMWindowController;
-//@protocol CMMenuKeyEventInterpreterDelegate;
 
 
 @interface CMMenu (CMMenuInternalMethods) <CMMenuKeyEventInterpreterDelegate>
@@ -83,13 +81,6 @@ typedef NSUInteger CMMenuAlignment;
 - (CMMenuAlignment)horizontalAlignment;
 - (CMMenuAlignment)verticalAlignment;
 
-/* Update only particular menu items */
-//- (void)updateItemsAtIndexes:(NSIndexSet *)indexes;
-//- (void)updateFrame;
-//- (void)setFrame:(NSRect)frameRect options:(CMMenuOptions)options display:(BOOL)display;
-
-//- (BOOL)isAncestorTo:(CMMenu *)menu;
-
 /**
  * @discussion Returns YES if menu is currently in NSEventTrackingRunLoopMode, NO otherwise.
  */
@@ -108,8 +99,6 @@ typedef NSUInteger CMMenuAlignment;
 - (BOOL)isTrackingSubmenu;
 - (void)startTrackingSubmenu:(CMMenu *)submenu forItem:(CMMenuItem *)item;
 - (void)stopTrackingSubmenuReasonSuccess:(BOOL)reasonSuccess;
-- (void)updateTrackingAreaWithOptions:(CMMenuOptions)options;
-- (void)updateTrackingAreaForItem:(CMMenuItem *)item __attribute__((deprecated));
 - (void)updateTrackingPrimitiveForItem:(CMMenuItem *)item;
 
 /* Default 0: no event's are blocked */

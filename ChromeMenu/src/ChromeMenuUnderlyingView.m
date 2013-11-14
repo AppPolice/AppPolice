@@ -20,9 +20,6 @@
 	return self;
 }
 
-//- (BOOL)acceptsFirstResponder {
-//	return YES;
-//}
 
 - (void)dealloc {
 	[_borderRadiuses release];
@@ -117,20 +114,20 @@
 }
 
 
-- (BOOL)shouldDelayWindowOrderingForEvent:(NSEvent *)theEvent {
-	NSLog(@"should delay: %@", theEvent);
-	return YES;
-}
-
-- (BOOL)acceptsFirstMouse:(NSEvent *)theEvent {
-	NSLog(@"accepts first mouse: %@", theEvent);
-	return YES;
-}
-
-
-- (void)mouseDown:(NSEvent *)theEvent {
-	[NSApp preventWindowOrdering];
-}
+//- (BOOL)shouldDelayWindowOrderingForEvent:(NSEvent *)theEvent {
+//	NSLog(@"should delay: %@", theEvent);
+//	return YES;
+//}
+//
+//- (BOOL)acceptsFirstMouse:(NSEvent *)theEvent {
+//	NSLog(@"accepts first mouse: %@", theEvent);
+//	return YES;
+//}
+//
+//
+//- (void)mouseDown:(NSEvent *)theEvent {
+//	[NSApp preventWindowOrdering];
+//}
 
 
 

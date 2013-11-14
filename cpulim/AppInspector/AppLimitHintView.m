@@ -65,7 +65,7 @@
 		_trackingArea = nil;
 	}
 	
-	NSTrackingAreaOptions options = NSTrackingActiveInActiveApp | NSTrackingMouseEnteredAndExited;
+	NSTrackingAreaOptions options = NSTrackingActiveAlways | NSTrackingMouseEnteredAndExited;
 	_trackingArea = [[NSTrackingArea alloc] initWithRect:[self bounds] options:options owner:self userInfo:nil];
 	[self addTrackingArea:_trackingArea];
 	

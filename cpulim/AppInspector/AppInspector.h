@@ -6,8 +6,7 @@
 //  Copyright (c) 2013 Maksym Stefanchuk. All rights reserved.
 //
 
-//#import <AppKit/AppKit.h>
-
+#import <AppKit/AppKit.h>
 #define APApplicationInfoNameKey @"appInfoNameKey"
 #define APApplicationInfoIconKey @"appInfoIconKey"
 #define APApplicationInfoPidKey @"appInfoPidKey"
@@ -18,9 +17,9 @@
 #define APAppInspectorProcessDidChangeLimit @"appInspectorProcDidChangeLim"
 
 
-@class NSObject, NSView, NSViewController, NSPopover, NSSlider, NSLevelIndicator;
+//@class NSObject, NSView, NSViewController, NSPopover, NSSlider, NSLevelIndicator;
 @class CMMenuItem;
-@protocol NSPopoverDelegate;
+//@protocol NSPopoverDelegate;
 
 @interface AppInspector : NSObject <NSPopoverDelegate>
 {

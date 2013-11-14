@@ -6,17 +6,11 @@
 //  Copyright (c) 2013 Maksym Stefanchuk. All rights reserved.
 //
 
-//#import <Cocoa/Cocoa.h>
-//#import <Foundation/Foundation.h>
-//#import <AppKit/NSPanel.h>
 
-@class NSPanel;
+#import <AppKit/AppKit.h>
 
 @interface ChromeMenuUnderlyingWindow : NSPanel
-{
-	@private
-	NSPoint initialLocation;
-}
+
 
 - (id)initWithContentRect:(NSRect)contentRect defer:(BOOL)flag;
 

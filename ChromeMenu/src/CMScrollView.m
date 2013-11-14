@@ -64,18 +64,18 @@ static const short down = 1;
 	if (direction == down) {
 		CGFloat yBound = NSMaxY([[self documentView] bounds]) - NSHeight([[self contentView] bounds]);
 		if (yOrigin == yBound) {	// no need to update contentView
-			NSLog(@"no more down: %@", NSStringFromRect([[self contentView] bounds]));
+//			NSLog(@"no more down: %@", NSStringFromRect([[self contentView] bounds]));
 			return;
 		}
 		
 		yOrigin += amount;
 		if (yOrigin > yBound) {
-			NSLog(@"new yOrigin");
+//			NSLog(@"new yOrigin");
 			yOrigin = yBound;
 		}
 	} else {
 		if (yOrigin == 0) {	// no need to update contentView
-			NSLog(@"no more up: %@",  NSStringFromRect([[self contentView] bounds]));
+//			NSLog(@"no more up: %@",  NSStringFromRect([[self contentView] bounds]));
 			return;
 		}
 		yOrigin -= amount;

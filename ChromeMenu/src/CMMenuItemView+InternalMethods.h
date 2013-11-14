@@ -11,4 +11,24 @@
 
 - (void)setHasSubmenuIcon:(BOOL)hasIcon;
 
+- (BOOL)isSelected;
+- (void)setSelected:(BOOL)selected;
+
+- (BOOL)isEnabled;
+- (void)setEnabled:(BOOL)enabled;
+
+- (void)fadeIn;
+- (void)fadeOutWithComplitionHandler:(void (^)(void))handler;
+- (void)blink;
+
+- (void)setIndentationLevel:(NSInteger)indentationLevel;
+- (NSInteger)indentationLevel;
+
+/**
+ * @function needsTracking
+ * @abstract Tells whether a view will have a tracking area created.
+ * @discussion This method is meant to be overridden by the Separator View.
+ */
+- (BOOL)needsTracking;
+
 @end

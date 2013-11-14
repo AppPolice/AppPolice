@@ -6,6 +6,7 @@
 //  Copyright (c) 2013 Maksym Stefanchuk. All rights reserved.
 //
 
+#import <AppKit/AppKit.h>
 #import "AppLoadLevelIndicator.h"
 
 @implementation AppLoadLevelIndicator

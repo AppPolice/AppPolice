@@ -195,7 +195,7 @@
 	NSLog(@"current run mode: %@", [[NSRunLoop currentRunLoop] currentMode]);
 //	NSMenu *menu = [statusbarMenuController statusbarMenu];
 	NSMenuItem *newItem = [[NSMenuItem alloc] initWithTitle:@"New Item" action:@selector(actionForMenuItem) keyEquivalent:@""];
-	NSMenuItem *newItem2 = [[NSMenuItem alloc] initWithTitle:@"New Item 2" action:@selector(actionForItem2) keyEquivalent:@""];
+	NSMenuItem *newItem2 = [[NSMenuItem alloc] initWithTitle:@"New Item 2" action:NULL keyEquivalent:@""];
 	[menu insertItem:newItem atIndex:1];
 	[menu insertItem:newItem2 atIndex:2];
 	[newItem release];

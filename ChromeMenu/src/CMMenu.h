@@ -6,18 +6,10 @@
 //  Copyright (c) 2013 Maksym Stefanchuk. All rights reserved.
 //
 
-//#import <Foundation/Foundation.h>
-//#import "CMMenuItem.h"
+#import <AppKit/AppKit.h>
 
-@class NSString, NSArray, NSIndexSet;
 @class CMMenuItem;
 @protocol CMMenuDelegate;
-
-//enum {
-//	CMMenuAnimationEffectNone = 0x0,
-//	CMMenuAnimationEffectFade = 0x01
-//};
-//typedef NSUInteger CMMenuAnimationOptions;
 
 
 @interface CMMenu : NSObject
@@ -25,9 +17,6 @@
 	@private
 	NSString *_title;
 	CMMenu *_supermenu;
-//	IBOutlet ChromeMenuUnderlyingWindow *_underlyingWindow;
-//	IBOutlet ChromeMenuUnderlyingView *_underlyingView;
-//	IBOutlet NSTableView *_menuTableView;
 	
 	NSMutableArray *_menuItems;
 }
@@ -50,14 +39,8 @@
 /* Returns the menu containing the item that has the receiver as a submenu, or nil if this menu is not the submenu of an item in a menu. */
 - (CMMenu *)supermenu;
 
-
-//- (void)addItem:(CMMenuItem *)newItem;
-
-//- (void)setDefaultViewForItemsFromNibNamed:(NSString *)nibName andPropertyNames:(NSArray *)propertyNames;
-
 /* Same as [anItem setSubmenu:aMenu].  anItem may not be nil. */
 - (void)setSubmenu:(CMMenu *)aMenu forItem:(CMMenuItem *)anItem;
-
 
 /* Returns an array containing the receiver's menu items. */
 - (NSArray *)itemArray;
@@ -84,7 +67,6 @@
 - (void)addItem:(CMMenuItem *)newItem;
 - (void)addItem:(CMMenuItem *)newItem animate:(BOOL)animate;
 
-
 /* Removes the item at the given index, which must be at least zero and less than the number of items.  All subsequent items will shift down one index. */
 - (void)removeItemAtIndex:(NSInteger)index animate:(BOOL)animate;
 
@@ -93,12 +75,6 @@
 
 - (void)removeItemsAtIndexes:(NSIndexSet *)indexes;
 
-
-/* this is an actual table reload, scary thing. must be taken care of */
-//- (void)update;
-
-//- (void)start;
-//- (void)showMenu;
 
 /* Dismisses the menu and ends all menu tracking */
 - (void)cancelTracking;
@@ -113,11 +89,8 @@
 - (BOOL)cancelsTrackingOnMouseEventOutsideMenus;
 - (void)setCancelsTrackingOnMouseEventOutsideMenus:(BOOL)cancels;
 /* Reciever's parent menus (supermenus) will stop tracking mouse, allowing to make mouse movements outside of menu withough closing its tracking. */
-//- (BOOL)crystallizedSupermenus;
 - (BOOL)menusSuspended;
-//- (void)setCrystallizeSupermenus:(BOOL)crystallize;
 - (void)setSuspendMenus:(BOOL)suspend;
-
 
 /* Returns the highlighted item in the menu, or nil if no item in the menu is highlighted */
 - (CMMenuItem *)highlightedItem;
@@ -127,9 +100,8 @@
 - (void)setDelegate:(id <CMMenuDelegate>)anObject;
 - (id <CMMenuDelegate>)delegate;
 
-
+/* Provided popover is positioned relative to menu item */
 - (void)showPopover:(NSPopover *)popover forItem:(CMMenuItem *)item preferredEdge:(NSRectEdge)preferredEdge;
-
 
 /* Set the minimum width of the menu, in screen coordinates. The menu will prefer to not draw smaller than its minimum width, but may draw larger if it needs more space. The default value is 0.
  */
@@ -157,3 +129,8 @@ APPKIT_EXTERN NSString * const CMMenuDidBeginTrackingNotification;
 APPKIT_EXTERN NSString * const CMMenuDidEndTrackingNotification;
 APPKIT_EXTERN NSString * const CMMenuSuspendStatusDidChangeNotification;
 
+//enum {
+//	CMMenuAnimationEffectNone = 0x00,
+//	CMMenuAnimationEffectFade = 0x01
+//};
+//typedef NSUInteger CMMenuAnimationOptions;
