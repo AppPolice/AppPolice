@@ -32,10 +32,12 @@
 - (void)applicationWillFinishLaunching:(NSNotification *)notification {
 	_statusbarItemController = [[StatusbarItemController alloc] init];
 //	NSString *imagePath = [[NSBundle mainBundle] pathForResource:@"statusbar_image" ofType:@"tiff"];
-	NSString *imagePath = [[NSBundle mainBundle] pathForResource:@"status_icon" ofType:@"tiff"];
-	NSImage *ico = [[[NSImage alloc] initWithContentsOfFile:imagePath] autorelease];
-	imagePath = [[NSBundle mainBundle] pathForResource:@"status_icon_inv" ofType:@"tiff"];
-	NSImage *ico_alt = [[[NSImage alloc] initWithContentsOfFile:imagePath] autorelease];
+//	NSString *imagePath = [[NSBundle mainBundle] pathForResource:@"status_icon" ofType:@"tiff"];
+//	NSImage *ico = [[[NSImage alloc] initWithContentsOfFile:imagePath] autorelease];
+//	imagePath = [[NSBundle mainBundle] pathForResource:@"status_icon_inv" ofType:@"tiff"];
+//	NSImage *ico_alt = [[[NSImage alloc] initWithContentsOfFile:imagePath] autorelease];
+	NSImage *ico = [NSImage imageNamed:@"status_ico"];
+	NSImage *ico_alt = [NSImage imageNamed:@"status_ico_inv"];
 	[_statusbarItemController setImage:ico];
 	[_statusbarItemController setAlternateImage:ico_alt];
 //	[_statusbarItemController addItemToStatusbar];
