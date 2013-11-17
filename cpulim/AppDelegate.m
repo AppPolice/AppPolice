@@ -11,15 +11,13 @@
 #import "StatusbarMenuController.h"
 #import "CMMenu.h"
 #import "StatusbarMenu.h"
-//#include "C/def.h"
-#include "C/proc_cpulim.h"
 
-//#ifdef PROC_CPULIM_PROFILE
+#include "C/proc_cpulim.h"
 #include "C/selfprofile.h"
-//#endif
 
 
 @implementation AppDelegate
+
 
 - (void)dealloc {
 	[_statusbarItemController release];
@@ -31,18 +29,14 @@
 
 - (void)applicationWillFinishLaunching:(NSNotification *)notification {
 	_statusbarItemController = [[StatusbarItemController alloc] init];
-//	NSString *imagePath = [[NSBundle mainBundle] pathForResource:@"statusbar_image" ofType:@"tiff"];
 //	NSString *imagePath = [[NSBundle mainBundle] pathForResource:@"status_icon" ofType:@"tiff"];
 //	NSImage *ico = [[[NSImage alloc] initWithContentsOfFile:imagePath] autorelease];
 //	imagePath = [[NSBundle mainBundle] pathForResource:@"status_icon_inv" ofType:@"tiff"];
 //	NSImage *ico_alt = [[[NSImage alloc] initWithContentsOfFile:imagePath] autorelease];
-	NSImage *ico = [NSImage imageNamed:@"status_ico"];
-	NSImage *ico_alt = [NSImage imageNamed:@"status_ico_inv"];
+	NSImage *ico = [NSImage imageNamed:@"status_icon"];
+	NSImage *ico_alt = [NSImage imageNamed:@"status_icon_inv"];
 	[_statusbarItemController setImage:ico];
 	[_statusbarItemController setAlternateImage:ico_alt];
-//	[_statusbarItemController addItemToStatusbar];
-	
-//	[self activateStatusbarItem];
 }
 
 
@@ -53,30 +47,29 @@
 #endif
 	
 	_statusbarMenuController = [[StatusbarMenuController alloc] init];
-//	[_statusbarMenuController createMainMenu];
 	CMMenu *mainMenu = [_statusbarMenuController mainMenu];
 	[_statusbarItemController setStatusbarItemMenu:mainMenu];
 	
 	
-	CMMenuItem *item = [[[CMMenuItem alloc] initWithTitle:@"Free" action:@selector(freeMenus:)] autorelease];
-	[item setTarget:self];
-	[mainMenu addItem:item];
+//	CMMenuItem *item = [[[CMMenuItem alloc] initWithTitle:@"Free" action:@selector(freeMenus:)] autorelease];
+//	[item setTarget:self];
+//	[mainMenu addItem:item];
 
 
 }
 
 
-- (void)freeMenus:(id)sender {
-	[self performSelector:@selector(freeMenusHelper) withObject:nil afterDelay:0 inModes:[NSArray arrayWithObject:NSRunLoopCommonModes]];
-}
-
-- (void)freeMenusHelper {
-	NSLog(@"free menus");
-//	[_statusbarItemController setStatusbarItemMenu:nil];
-	[_statusbarItemController release];
-	[_statusbarMenuController release];
-	[_statusbarMenuController release];
-}
+//- (void)freeMenus:(id)sender {
+//	[self performSelector:@selector(freeMenusHelper) withObject:nil afterDelay:0 inModes:[NSArray arrayWithObject:NSRunLoopCommonModes]];
+//}
+//
+//- (void)freeMenusHelper {
+//	NSLog(@"free menus");
+////	[_statusbarItemController setStatusbarItemMenu:nil];
+//	[_statusbarItemController release];
+//	[_statusbarMenuController release];
+//	[_statusbarMenuController release];
+//}
 
 
 
@@ -87,18 +80,19 @@
 }
 
 
+
+
+
+
+
+
+
+
+
+
 - (IBAction)toggleMainMenu:(id)sender {
 	[[_statusbarMenuController mainMenu] popUpMenuPositioningItem:nil atLocation:NSMakePoint(200, 800) inView:nil];
 }
-
-
-
-
-
-
-
-
-
 
 
 - (void)timerFire:(NSTimer *)timer {

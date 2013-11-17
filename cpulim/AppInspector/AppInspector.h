@@ -46,14 +46,13 @@
 	IBOutlet NSTextField *_sliderLeftTextfield;
 	IBOutlet NSTextField *_sliderMiddleTextfield;
 	IBOutlet NSTextField *_sliderRightTextfield;
-//	IBOutlet NSTextField *_sliderBottomTextfield;
 	IBOutlet NSSlider *_slider;
 	IBOutlet NSLevelIndicator *_levelIndicator;
 	NSPopover *_hintPopover;
 }
 
 // temp method
-- (void)showPopoverRelativeTo:(NSView *)view;
+//- (void)showPopoverRelativeTo:(NSView *)view;
 - (NSPopover *)popover;
 - (void)setPopverDidCloseHandler:(void (^)(void))handler;
 

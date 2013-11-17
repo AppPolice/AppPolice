@@ -835,21 +835,6 @@ ThBTQ2hhdFRoZWF0cmVUZW1wbGF0ZQ
                         </items>
                     </menu>
                 </menuItem>
-                <menuItem title="Donate" image="NSActionTemplate" indentationLevel="1" id="711">
-                    <modifierMask key="keyEquivalentModifierMask"/>
-                    <connections>
-                        <action selector="donateMenuAction2:" target="494" id="lyo-db-qBX"/>
-                    </connections>
-                </menuItem>
-                <menuItem title="About" state="on" image="NSMenuMixedStateTemplate" onStateImage="NSStatusAvailable" enabled="NO" id="716">
-                    <modifierMask key="keyEquivalentModifierMask"/>
-                    <connections>
-                        <action selector="updateMenu:" target="494" id="afN-u9-y6G"/>
-                    </connections>
-                </menuItem>
-                <menuItem title="Item" state="mixed" id="tB8-l8-pY5">
-                    <modifierMask key="keyEquivalentModifierMask"/>
-                </menuItem>
                 <menuItem isSeparatorItem="YES" id="723"/>
                 <menuItem title="Preferences..." id="717">
                     <modifierMask key="keyEquivalentModifierMask"/>
@@ -883,9 +868,4 @@ ThBTQ2hhdFRoZWF0cmVUZW1wbGF0ZQ
         </customObject>
         <customObject id="420" customClass="NSFontManager"/>
     </objects>
-    <resources>
-        <image name="NSActionTemplate" width="14" height="14"/>
-        <image name="NSMenuMixedStateTemplate" width="10" height="3"/>
-        <image name="NSStatusAvailable" width="16" height="16"/>
-    </resources>
 </document>

@@ -25,7 +25,6 @@
 		A0154E851782EC6F008CF159 /* AppInspector.m in Sources */ = {isa = PBXBuildFile; fileRef = A0154E841782E972008CF159 /* AppInspector.m */; };
 		A02EFDE0182B7313000FE2CF /* MYQuiteView.m in Sources */ = {isa = PBXBuildFile; fileRef = A02EFDDF182B7313000FE2CF /* MYQuiteView.m */; };
 		A02EFDE3182B76DA000FE2CF /* MYWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = A02EFDE2182B76DA000FE2CF /* MYWindow.m */; };
-		A02EFDE6182BE4F5000FE2CF /* MYApplication.m in Sources */ = {isa = PBXBuildFile; fileRef = A02EFDE5182BE4F5000FE2CF /* MYApplication.m */; };
 		A0336A7F17DB9E3A004C2DDB /* CMMenuScroller.m in Sources */ = {isa = PBXBuildFile; fileRef = A0336A7E17DB9616004C2DDB /* CMMenuScroller.m */; };
 		A0346CBB17882A4E0095A6CF /* CMMenuItemIconView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A0346CB9178827C00095A6CF /* CMMenuItemIconView.xib */; };
 		A046C66317E70F0100E4F210 /* CMMenuKeyEventInterpreter.m in Sources */ = {isa = PBXBuildFile; fileRef = A046C66217E7099F00E4F210 /* CMMenuKeyEventInterpreter.m */; };
@@ -38,7 +37,7 @@
 		A063797B17492AEF006F2347 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = A063797A17492AEF006F2347 /* AppDelegate.m */; };
 		A063797E17492AF0006F2347 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = A063797C17492AF0006F2347 /* MainMenu.xib */; };
 		A063798717492D42006F2347 /* proc_cpulim.c in Sources */ = {isa = PBXBuildFile; fileRef = A063798617492D42006F2347 /* proc_cpulim.c */; };
-		A067A0B718369681003B677E /* Localizing.strings in Resources */ = {isa = PBXBuildFile; fileRef = A067A0B918369681003B677E /* Localizing.strings */; };
+		A067A0B718369681003B677E /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = A067A0B918369681003B677E /* Localizable.strings */; };
 		A067A0C618369782003B677E /* Media.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A067A0C518369782003B677E /* Media.xcassets */; };
 		A071B69517D8812500D3866E /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A071B69417D8812500D3866E /* XCTest.framework */; };
 		A071B69B17D8812500D3866E /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = A071B69917D8812500D3866E /* InfoPlist.strings */; };
@@ -53,7 +52,6 @@
 		A0ED12401790055C00244C3D /* CMWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = A0ED123F179004D800244C3D /* CMWindowController.m */; };
 		A0ED124317900A9000244C3D /* CMScrollDocumentView.m in Sources */ = {isa = PBXBuildFile; fileRef = A0ED124217900A8A00244C3D /* CMScrollDocumentView.m */; };
 		A0ED1249179043F900244C3D /* CMMenuItemView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A0ED12451790218700244C3D /* CMMenuItemView.xib */; };
-		A0FC76B51806AE8E00A92F96 /* HintPopoverTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = A0FC76B41806AE8E00A92F96 /* HintPopoverTextField.m */; };
 		A0FFE0A91805D673007F510E /* AppLimitHintView.m in Sources */ = {isa = PBXBuildFile; fileRef = A0FFE0A81805D673007F510E /* AppLimitHintView.m */; };
 /* End PBXBuildFile section */
 
@@ -102,8 +100,6 @@
 		A02EFDDF182B7313000FE2CF /* MYQuiteView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MYQuiteView.m; path = Controllers/MYQuiteView.m; sourceTree = "<group>"; };
 		A02EFDE1182B76DA000FE2CF /* MYWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MYWindow.h; path = Controllers/MYWindow.h; sourceTree = "<group>"; };
 		A02EFDE2182B76DA000FE2CF /* MYWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MYWindow.m; path = Controllers/MYWindow.m; sourceTree = "<group>"; };
-		A02EFDE4182BE4F5000FE2CF /* MYApplication.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MYApplication.h; path = Controllers/MYApplication.h; sourceTree = "<group>"; };
-		A02EFDE5182BE4F5000FE2CF /* MYApplication.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MYApplication.m; path = Controllers/MYApplication.m; sourceTree = "<group>"; };
 		A0336A7D17DB9616004C2DDB /* CMMenuScroller.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = CMMenuScroller.h; path = ChromeMenu/src/CMMenuScroller.h; sourceTree = SOURCE_ROOT; };
 		A0336A7E17DB9616004C2DDB /* CMMenuScroller.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = CMMenuScroller.m; path = ChromeMenu/src/CMMenuScroller.m; sourceTree = SOURCE_ROOT; };
 		A0346CBA178827C00095A6CF /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = ChromeMenu/en.lproj/CMMenuItemIconView.xib; sourceTree = SOURCE_ROOT; };
@@ -130,8 +126,8 @@
 		A063798517492D19006F2347 /* proc_cpulim.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = proc_cpulim.h; path = C/proc_cpulim.h; sourceTree = "<group>"; };
 		A063798617492D42006F2347 /* proc_cpulim.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = proc_cpulim.c; path = C/proc_cpulim.c; sourceTree = "<group>"; };
 		A067A0B61836966C003B677E /* ru */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = ru; path = ru.lproj/PopoverContentView.xib; sourceTree = "<group>"; };
-		A067A0B818369681003B677E /* en */ = {isa = PBXFileReference; lastKnownFileType = file; name = en; path = en.lproj/Localizing.strings; sourceTree = "<group>"; };
-		A067A0BA18369686003B677E /* ru */ = {isa = PBXFileReference; lastKnownFileType = file; name = ru; path = ru.lproj/Localizing.strings; sourceTree = "<group>"; };
+		A067A0B818369681003B677E /* en */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
+		A067A0BA18369686003B677E /* ru */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/Localizable.strings; sourceTree = "<group>"; };
 		A067A0C518369782003B677E /* Media.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Media.xcassets; sourceTree = "<group>"; };
 		A071B69317D8812500D3866E /* Ishimura Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Ishimura Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		A071B69417D8812500D3866E /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
@@ -161,8 +157,6 @@
 		A0ED12461790218700244C3D /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = ChromeMenu/en.lproj/CMMenuItemView.xib; sourceTree = SOURCE_ROOT; };
 		A0ED1248179040ED00244C3D /* CMMenu+InternalMethods.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "CMMenu+InternalMethods.h"; path = "ChromeMenu/src/CMMenu+InternalMethods.h"; sourceTree = SOURCE_ROOT; };
 		A0F03057179A96FC000C767D /* CMMenuItemView+InternalMethods.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "CMMenuItemView+InternalMethods.h"; path = "ChromeMenu/src/CMMenuItemView+InternalMethods.h"; sourceTree = SOURCE_ROOT; };
-		A0FC76B31806AE8E00A92F96 /* HintPopoverTextField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = HintPopoverTextField.h; path = AppInspector/HintPopoverTextField.h; sourceTree = "<group>"; };
-		A0FC76B41806AE8E00A92F96 /* HintPopoverTextField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = HintPopoverTextField.m; path = AppInspector/HintPopoverTextField.m; sourceTree = "<group>"; };
 		A0FFE0A71805D673007F510E /* AppLimitHintView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppLimitHintView.h; path = AppInspector/AppLimitHintView.h; sourceTree = "<group>"; };
 		A0FFE0A81805D673007F510E /* AppLimitHintView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppLimitHintView.m; path = AppInspector/AppLimitHintView.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -291,8 +285,6 @@
 				A0AED3B61802EA9E005F4F9D /* AppInfoBlockView.m */,
 				A0FFE0A71805D673007F510E /* AppLimitHintView.h */,
 				A0FFE0A81805D673007F510E /* AppLimitHintView.m */,
-				A0FC76B31806AE8E00A92F96 /* HintPopoverTextField.h */,
-				A0FC76B41806AE8E00A92F96 /* HintPopoverTextField.m */,
 			);
 			name = src;
 			sourceTree = "<group>";
@@ -349,8 +341,6 @@
 				A02EFDDF182B7313000FE2CF /* MYQuiteView.m */,
 				A02EFDE1182B76DA000FE2CF /* MYWindow.h */,
 				A02EFDE2182B76DA000FE2CF /* MYWindow.m */,
-				A02EFDE4182BE4F5000FE2CF /* MYApplication.h */,
-				A02EFDE5182BE4F5000FE2CF /* MYApplication.m */,
 				A063797317492AEF006F2347 /* main.m */,
 				A01191611807DE2C004777D9 /* Statusbar */,
 				A0154E7C1782DEDA008CF159 /* AppInspector */,
@@ -368,7 +358,7 @@
 				A063797C17492AF0006F2347 /* MainMenu.xib */,
 				A063796F17492AEF006F2347 /* Ishimura-Info.plist */,
 				A063797017492AEF006F2347 /* InfoPlist.strings */,
-				A067A0B918369681003B677E /* Localizing.strings */,
+				A067A0B918369681003B677E /* Localizable.strings */,
 				A063797517492AEF006F2347 /* Ishimura-Prefix.pch */,
 				A063797617492AEF006F2347 /* Credits.rtf */,
 				A067A0C518369782003B677E /* Media.xcassets */,
@@ -502,7 +492,7 @@
 				A063797817492AEF006F2347 /* Credits.rtf in Resources */,
 				A063797E17492AF0006F2347 /* MainMenu.xib in Resources */,
 				A067A0C618369782003B677E /* Media.xcassets in Resources */,
-				A067A0B718369681003B677E /* Localizing.strings in Resources */,
+				A067A0B718369681003B677E /* Localizable.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -525,7 +515,6 @@
 				A046C66317E70F0100E4F210 /* CMMenuKeyEventInterpreter.m in Sources */,
 				A00FBF5317DF68280083B482 /* NSImage+CMMenuImageRepAdditions.m in Sources */,
 				A00D28551803E85F00D71F71 /* AppLimitSliderCell.m in Sources */,
-				A0FC76B51806AE8E00A92F96 /* HintPopoverTextField.m in Sources */,
 				A0336A7F17DB9E3A004C2DDB /* CMMenuScroller.m in Sources */,
 				A0FFE0A91805D673007F510E /* AppLimitHintView.m in Sources */,
 				A07CEC24179D6FFD0016067E /* CMMenuItemSeparatorView.m in Sources */,
@@ -534,7 +523,6 @@
 				A0ED124317900A9000244C3D /* CMScrollDocumentView.m in Sources */,
 				A0ED12401790055C00244C3D /* CMWindowController.m in Sources */,
 				A0AED3B41802B571005F4F9D /* AppLoadLevelIndicator.m in Sources */,
-				A02EFDE6182BE4F5000FE2CF /* MYApplication.m in Sources */,
 				A05B788917859D6E00015156 /* CMMenuItem.m in Sources */,
 				A0100693182106A10017296D /* app_inspector_c.c in Sources */,
 				A01191641807DE88004777D9 /* StatusbarMenu.m in Sources */,
@@ -625,13 +613,13 @@
 			name = MainMenu.xib;
 			sourceTree = "<group>";
 		};
-		A067A0B918369681003B677E /* Localizing.strings */ = {
+		A067A0B918369681003B677E /* Localizable.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
 				A067A0B818369681003B677E /* en */,
 				A067A0BA18369686003B677E /* ru */,
 			);
-			name = Localizing.strings;
+			name = Localizable.strings;
 			sourceTree = "<group>";
 		};
 		A071B69917D8812500D3866E /* InfoPlist.strings */ = {

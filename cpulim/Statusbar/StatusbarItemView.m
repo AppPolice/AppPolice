@@ -125,7 +125,6 @@
 - (void)mouseDown:(NSEvent *)theEvent {
 	NSRect frame = [self frame];
 	frame = [[self window] convertRectToScreen:frame];
-	NSLog(@"mouse down on status item rect: %@", NSStringFromRect(frame));
 	
 	[self setHighlighted:YES];
 	
@@ -138,7 +137,6 @@
 
 
 - (void)mouseUp:(NSEvent *)theEvent {
-	NSLog(@"mouse up on status item");
 	[self setHighlighted:NO];
 }
 

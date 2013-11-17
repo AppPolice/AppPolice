@@ -22,7 +22,6 @@ typedef NSUInteger CMMenuScrollerType;
 {
 	@private
 	CMMenuScrollerType _scrollerType;
-	NSTrackingArea *_trackingArea;
 }
 
 - (id)initWithScrollerType:(CMMenuScrollerType)scrollerType;

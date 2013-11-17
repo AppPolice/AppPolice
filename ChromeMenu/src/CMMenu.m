@@ -919,7 +919,6 @@ typedef struct {
 	if ([menuItem isSeparatorItem]) {
 		viewController = [[NSViewController alloc] initWithNibName:@"CMMenuItemSeparatorView" bundle:nil];
 	} else {
-		
 		CMMenuItemView *view;
 		
 		if ([menuItem icon]) {

@@ -6,7 +6,7 @@
 //  Copyright (c) 2013 Maksym Stefanchuk. All rights reserved.
 //
 
-#import <Cocoa/Cocoa.h>
+#import <AppKit/AppKit.h>
 
 @protocol AppLimitHintViewDelegate;
 
@@ -17,15 +17,7 @@
 {
 	@private
 	IBOutlet NSImageView *_hintImage;
-//	IBOutlet id <AppLimitHintViewDelegate> _delegate;
 	NSTrackingArea *_trackingArea;
 	BOOL _observingAppInspectorNotifications;
 }
 @end
-
-
-//@protocol AppLimitHintViewDelegate <NSObject>
-
-//- (void)mouseUp:(id)sender;
-
-//@end

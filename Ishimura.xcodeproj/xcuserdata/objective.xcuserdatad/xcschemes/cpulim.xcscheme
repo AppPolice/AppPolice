@@ -73,6 +73,10 @@
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
+            argument = "-NSShowNonLocalizedStrings YES"
+            isEnabled = "YES">
+         </CommandLineArgument>
+         <CommandLineArgument
             argument = "OBJC_PRINT_REPLACED_METHODS=YES"
             isEnabled = "YES">
          </CommandLineArgument>

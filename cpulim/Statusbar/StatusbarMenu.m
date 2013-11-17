@@ -303,7 +303,6 @@ static NSString *tableData[] = {
 	[submenuItem5 release];
 	
 	
-	i = 0;
 	int lim = 14;
 	for (i = 0; i < lim; ++i) {
 		CMMenuItem *submenuItemA = [[CMMenuItem alloc] initWithTitle:@"Automatically generated" action:NULL];

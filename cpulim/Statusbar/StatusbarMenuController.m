@@ -112,7 +112,7 @@ static const unsigned int kPidFoundMask = 1U << (8 * sizeof(int) - 1);
 - (void)setupMenus {
 	_mainMenu = [[CMMenu alloc] initWithTitle:@"MainMenu"];
 	CMMenuItem *item;
-	item = [[[CMMenuItem alloc] initWithTitle:@"Running Apps" action:NULL] autorelease];
+	item = [[[CMMenuItem alloc] initWithTitle:NSLocalizedString(@"Running Apps", @"Menu Item") action:NULL] autorelease];
 	CMMenu *runningAppsMenu = [[[CMMenu alloc] initWithTitle:@"Running Apps Menu"] autorelease];
 	[runningAppsMenu setDelegate:self];
 	[runningAppsMenu setCancelsTrackingOnAction:NO];
@@ -120,26 +120,24 @@ static const unsigned int kPidFoundMask = 1U << (8 * sizeof(int) - 1);
 	[item setSubmenu:runningAppsMenu];
 	[_mainMenu addItem:item];
 	
-	item = [[[CMMenuItem alloc] initWithTitle:@"Pause all limits" action:@selector(toggleLimiterMenuAction:)] autorelease];
+	item = [[[CMMenuItem alloc] initWithTitle:NSLocalizedString(@"Pause all limits", @"Menu Item") action:@selector(toggleLimiterMenuAction:)] autorelease];
 	[item setTarget:self];
 	[item setEnabled:NO];
 	[_mainMenu addItem:item];
 	
 	[_mainMenu addItem:[CMMenuItem separatorItem]];
 	
-	item = [[[CMMenuItem alloc] initWithTitle:@"Donate" action:NULL] autorelease];
+//	item = [[[CMMenuItem alloc] initWithTitle:@"Donate" action:NULL] autorelease];
+//	[item setTarget:self];
+//	[_mainMenu addItem:item];
+	item = [[[CMMenuItem alloc] initWithTitle:NSLocalizedString(@"About AppPolice", @"Menu Item") action:NULL] autorelease];
 	[item setTarget:self];
 	[_mainMenu addItem:item];
-	item = [[[CMMenuItem alloc] initWithTitle:@"About" action:NULL] autorelease];
+	item = [[[CMMenuItem alloc] initWithTitle:NSLocalizedString(@"Preferences...", @"Menu Item") action:NULL] autorelease];
 	[item setTarget:self];
 	[_mainMenu addItem:item];
-
 	[_mainMenu addItem:[CMMenuItem separatorItem]];
-	
-	item = [[[CMMenuItem alloc] initWithTitle:@"Preferences" action:NULL] autorelease];
-	[item setTarget:self];
-	[_mainMenu addItem:item];
-	item = [[[CMMenuItem alloc] initWithTitle:@"Quit" action:@selector(terminateApplicationMenuAction:)] autorelease];
+	item = [[[CMMenuItem alloc] initWithTitle:NSLocalizedString(@"Quit AppPolice", @"Menu Item") action:@selector(terminateApplicationMenuAction:)] autorelease];
 	[item setTarget:self];
 	[_mainMenu addItem:item];
 	
@@ -183,7 +181,7 @@ static const unsigned int kPidFoundMask = 1U << (8 * sizeof(int) - 1);
 	
 	// Show Applications delimiter
 	if (gShowAllProcesses) {
-		item = [[[CMMenuItem alloc] initWithTitle:@"Applications" action:NULL] autorelease];
+		item = [[[CMMenuItem alloc] initWithTitle:NSLocalizedString(@"Applications", @"Delimiter Menu Item") action:NULL] autorelease];
 		[item setEnabled:NO];
 		[menu addItem:item];
 	}
@@ -232,7 +230,7 @@ static const unsigned int kPidFoundMask = 1U << (8 * sizeof(int) - 1);
 	//		Populate with System processes if option is set
 	// -----------------------------------------------------
 	if (gShowAllProcesses) {
-		item = [[[CMMenuItem alloc] initWithTitle:@"System" action:NULL] autorelease];
+		item = [[[CMMenuItem alloc] initWithTitle:NSLocalizedString(@"System", @"Delimiter Menu Item") action:NULL] autorelease];
 		[item setEnabled:NO];
 		[menu addItem:item];
 	
@@ -824,9 +822,8 @@ static const unsigned int kPidFoundMask = 1U << (8 * sizeof(int) - 1);
 
 	if (state == ALL_LIMITS_PAUSED) {	// resume
 		proc_cpulim_resume();
-//		[item setTitle:@"Pause all limits"];
 		[self performSelector:@selector(updateMenuItemWithTitle:)
-				   withObject:@{ @"item" : item, @"title" : @"Pause all limits" }
+				   withObject:@{ @"item" : item, @"title" : NSLocalizedString(@"Pause all limits", @"Menu Item") }
 				   afterDelay:0.2];
 		[item setRepresentedObject:[NSNumber numberWithBool:!ALL_LIMITS_PAUSED]];
 		for (CMMenuItem *item in _limitedProcessItems) {
@@ -834,9 +831,8 @@ static const unsigned int kPidFoundMask = 1U << (8 * sizeof(int) - 1);
 		}
 	} else {	// pause
 		proc_cpulim_suspend();
-//		[item setTitle:@"Resume"];
 		[self performSelector:@selector(updateMenuItemWithTitle:)
-				   withObject:@{ @"item" : item, @"title" : @"Resume" }
+				   withObject:@{ @"item" : item, @"title" : NSLocalizedString(@"Resume", @"Menu Item") }
 				   afterDelay:0.2];
 		[item setRepresentedObject:[NSNumber numberWithBool:ALL_LIMITS_PAUSED]];
 		for (CMMenuItem *item in _limitedProcessItems) {

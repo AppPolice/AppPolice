@@ -16,7 +16,7 @@
 @private
 	IBOutlet NSMenu *_mainMenu;
 	
-	NSMutableArray *runningApplications;
+//	NSMutableArray *runningApplications;
 }
 
 @property (assign) NSMenu *mainMenu;

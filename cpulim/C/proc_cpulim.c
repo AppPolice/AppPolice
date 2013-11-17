@@ -6,11 +6,6 @@
 //  Copyright (c) 2013 Maksym Stefanchuk. All rights reserved.
 //
 
-/* TODO
- * -1. Install signal actions for SIGINT, SIGTERM
- *
- */
-
 
 #include <stdio.h>
 #include <stdlib.h>					/* malloc */
