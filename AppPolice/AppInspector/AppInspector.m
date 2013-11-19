@@ -7,7 +7,6 @@
 //
 
 #import "AppInspector.h"
-#import "ChromeMenu.h"
 #import "AppLimitSliderCell.h"
 #import "AppLimitHintView.h"
 #include "app_inspector_c.h"

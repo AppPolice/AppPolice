@@ -41,7 +41,7 @@
 		A067A0C618369782003B677E /* Media.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A067A0C518369782003B677E /* Media.xcassets */; };
 		A071B69517D8812500D3866E /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A071B69417D8812500D3866E /* XCTest.framework */; };
 		A071B69B17D8812500D3866E /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = A071B69917D8812500D3866E /* InfoPlist.strings */; };
-		A071B69D17D8812500D3866E /* Ishimura_Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = A071B69C17D8812500D3866E /* Ishimura_Tests.m */; };
+		A071B69D17D8812500D3866E /* AppPolice_Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = A071B69C17D8812500D3866E /* AppPolice_Tests.m */; };
 		A07CEC24179D6FFD0016067E /* CMMenuItemSeparatorView.m in Sources */ = {isa = PBXBuildFile; fileRef = A07CEC23179D6FE20016067E /* CMMenuItemSeparatorView.m */; };
 		A07CEC25179D70040016067E /* CMMenuItemSeparatorView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A07CEC20179D6F6D0016067E /* CMMenuItemSeparatorView.xib */; };
 		A0ADD314174A1438002BAADE /* subroutines.c in Sources */ = {isa = PBXBuildFile; fileRef = A0ADD313174A1438002BAADE /* subroutines.c */; };
@@ -103,6 +103,7 @@
 		A0336A7D17DB9616004C2DDB /* CMMenuScroller.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = CMMenuScroller.h; path = ChromeMenu/src/CMMenuScroller.h; sourceTree = SOURCE_ROOT; };
 		A0336A7E17DB9616004C2DDB /* CMMenuScroller.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = CMMenuScroller.m; path = ChromeMenu/src/CMMenuScroller.m; sourceTree = SOURCE_ROOT; };
 		A0346CBA178827C00095A6CF /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = ChromeMenu/en.lproj/CMMenuItemIconView.xib; sourceTree = SOURCE_ROOT; };
+		A0448A5D183B7BD60056818A /* AppPolice.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = AppPolice.entitlements; sourceTree = "<group>"; };
 		A046C66117E7099F00E4F210 /* CMMenuKeyEventInterpreter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = CMMenuKeyEventInterpreter.h; path = ChromeMenu/src/CMMenuKeyEventInterpreter.h; sourceTree = SOURCE_ROOT; };
 		A046C66217E7099F00E4F210 /* CMMenuKeyEventInterpreter.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = CMMenuKeyEventInterpreter.m; path = ChromeMenu/src/CMMenuKeyEventInterpreter.m; sourceTree = SOURCE_ROOT; };
 		A04FA3D2174D4BD9002E688C /* selfprofile.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = selfprofile.c; path = C/selfprofile.c; sourceTree = "<group>"; };
@@ -110,15 +111,15 @@
 		A05B788317857FE600015156 /* ChromeMenu.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ChromeMenu.h; path = ChromeMenu/src/ChromeMenu.h; sourceTree = SOURCE_ROOT; };
 		A05B788717859CF200015156 /* CMMenuItem.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = CMMenuItem.h; path = ChromeMenu/src/CMMenuItem.h; sourceTree = SOURCE_ROOT; };
 		A05B788817859CF200015156 /* CMMenuItem.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = CMMenuItem.m; path = ChromeMenu/src/CMMenuItem.m; sourceTree = SOURCE_ROOT; };
-		A063796417492AEF006F2347 /* Ishimura.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Ishimura.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		A063796417492AEF006F2347 /* AppPolice.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AppPolice.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A063796717492AEF006F2347 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		A063796A17492AEF006F2347 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
 		A063796B17492AEF006F2347 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
 		A063796C17492AEF006F2347 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
-		A063796F17492AEF006F2347 /* Ishimura-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Ishimura-Info.plist"; sourceTree = "<group>"; };
+		A063796F17492AEF006F2347 /* AppPolice-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "AppPolice-Info.plist"; sourceTree = "<group>"; };
 		A063797117492AEF006F2347 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		A063797317492AEF006F2347 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
-		A063797517492AEF006F2347 /* Ishimura-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Ishimura-Prefix.pch"; sourceTree = "<group>"; };
+		A063797517492AEF006F2347 /* AppPolice-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "AppPolice-Prefix.pch"; sourceTree = "<group>"; };
 		A063797717492AEF006F2347 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; name = en; path = en.lproj/Credits.rtf; sourceTree = "<group>"; };
 		A063797917492AEF006F2347 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		A063797A17492AEF006F2347 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -129,16 +130,15 @@
 		A067A0B818369681003B677E /* en */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		A067A0BA18369686003B677E /* ru */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/Localizable.strings; sourceTree = "<group>"; };
 		A067A0C518369782003B677E /* Media.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Media.xcassets; sourceTree = "<group>"; };
-		A071B69317D8812500D3866E /* Ishimura Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Ishimura Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		A071B69317D8812500D3866E /* AppPolice Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "AppPolice Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		A071B69417D8812500D3866E /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
-		A071B69817D8812500D3866E /* Ishimura Tests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Ishimura Tests-Info.plist"; sourceTree = "<group>"; };
+		A071B69817D8812500D3866E /* AppPolice Tests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "AppPolice Tests-Info.plist"; sourceTree = "<group>"; };
 		A071B69A17D8812500D3866E /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
-		A071B69C17D8812500D3866E /* Ishimura_Tests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Ishimura_Tests.m; sourceTree = "<group>"; };
-		A071B69E17D8812500D3866E /* Ishimura Tests-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Ishimura Tests-Prefix.pch"; sourceTree = "<group>"; };
+		A071B69C17D8812500D3866E /* AppPolice_Tests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppPolice_Tests.m; sourceTree = "<group>"; };
+		A071B69E17D8812500D3866E /* AppPolice Tests-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "AppPolice Tests-Prefix.pch"; sourceTree = "<group>"; };
 		A07CEC21179D6F6D0016067E /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = ChromeMenu/en.lproj/CMMenuItemSeparatorView.xib; sourceTree = SOURCE_ROOT; };
 		A07CEC22179D6FE20016067E /* CMMenuItemSeparatorView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = CMMenuItemSeparatorView.h; path = ChromeMenu/src/CMMenuItemSeparatorView.h; sourceTree = SOURCE_ROOT; };
 		A07CEC23179D6FE20016067E /* CMMenuItemSeparatorView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = CMMenuItemSeparatorView.m; path = ChromeMenu/src/CMMenuItemSeparatorView.m; sourceTree = SOURCE_ROOT; };
-		A0A3AD151833A02000A5144F /* Ishimura.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = Ishimura.entitlements; sourceTree = SOURCE_ROOT; };
 		A0ADD312174A142A002BAADE /* subroutines.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = subroutines.h; path = C/subroutines.h; sourceTree = "<group>"; };
 		A0ADD313174A1438002BAADE /* subroutines.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = subroutines.c; path = C/subroutines.c; sourceTree = "<group>"; };
 		A0ADD315174A24A2002BAADE /* AppsInspector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppsInspector.h; path = Controllers/AppsInspector.h; sourceTree = "<group>"; };
@@ -292,8 +292,8 @@
 		A063795B17492AEF006F2347 = {
 			isa = PBXGroup;
 			children = (
-				A063796D17492AEF006F2347 /* Ishimura */,
-				A071B69617D8812500D3866E /* Ishimura Tests */,
+				A063796D17492AEF006F2347 /* AppPolice */,
+				A071B69617D8812500D3866E /* AppPolice Tests */,
 				A063796617492AEF006F2347 /* Frameworks */,
 				A063796517492AEF006F2347 /* Products */,
 			);
@@ -302,8 +302,8 @@
 		A063796517492AEF006F2347 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				A063796417492AEF006F2347 /* Ishimura.app */,
-				A071B69317D8812500D3866E /* Ishimura Tests.xctest */,
+				A063796417492AEF006F2347 /* AppPolice.app */,
+				A071B69317D8812500D3866E /* AppPolice Tests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -329,7 +329,7 @@
 			name = "Other Frameworks";
 			sourceTree = "<group>";
 		};
-		A063796D17492AEF006F2347 /* Ishimura */ = {
+		A063796D17492AEF006F2347 /* AppPolice */ = {
 			isa = PBXGroup;
 			children = (
 				A010F33717846F5E003A9E92 /* ChromeMenu */,
@@ -347,19 +347,18 @@
 				A063798417492CCB006F2347 /* C */,
 				A063796E17492AEF006F2347 /* Supporting Files */,
 			);
-			name = Ishimura;
-			path = cpulim;
+			path = AppPolice;
 			sourceTree = "<group>";
 		};
 		A063796E17492AEF006F2347 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				A0A3AD151833A02000A5144F /* Ishimura.entitlements */,
+				A0448A5D183B7BD60056818A /* AppPolice.entitlements */,
 				A063797C17492AF0006F2347 /* MainMenu.xib */,
-				A063796F17492AEF006F2347 /* Ishimura-Info.plist */,
+				A063796F17492AEF006F2347 /* AppPolice-Info.plist */,
 				A063797017492AEF006F2347 /* InfoPlist.strings */,
 				A067A0B918369681003B677E /* Localizable.strings */,
-				A063797517492AEF006F2347 /* Ishimura-Prefix.pch */,
+				A063797517492AEF006F2347 /* AppPolice-Prefix.pch */,
 				A063797617492AEF006F2347 /* Credits.rtf */,
 				A067A0C518369782003B677E /* Media.xcassets */,
 			);
@@ -381,21 +380,21 @@
 			name = C;
 			sourceTree = "<group>";
 		};
-		A071B69617D8812500D3866E /* Ishimura Tests */ = {
+		A071B69617D8812500D3866E /* AppPolice Tests */ = {
 			isa = PBXGroup;
 			children = (
-				A071B69C17D8812500D3866E /* Ishimura_Tests.m */,
+				A071B69C17D8812500D3866E /* AppPolice_Tests.m */,
 				A071B69717D8812500D3866E /* Supporting Files */,
 			);
-			path = "Ishimura Tests";
+			path = "AppPolice Tests";
 			sourceTree = "<group>";
 		};
 		A071B69717D8812500D3866E /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				A071B69817D8812500D3866E /* Ishimura Tests-Info.plist */,
+				A071B69817D8812500D3866E /* AppPolice Tests-Info.plist */,
 				A071B69917D8812500D3866E /* InfoPlist.strings */,
-				A071B69E17D8812500D3866E /* Ishimura Tests-Prefix.pch */,
+				A071B69E17D8812500D3866E /* AppPolice Tests-Prefix.pch */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -403,9 +402,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		A063796317492AEF006F2347 /* Ishimura */ = {
+		A063796317492AEF006F2347 /* AppPolice */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = A063798117492AF0006F2347 /* Build configuration list for PBXNativeTarget "Ishimura" */;
+			buildConfigurationList = A063798117492AF0006F2347 /* Build configuration list for PBXNativeTarget "AppPolice" */;
 			buildPhases = (
 				A063796017492AEF006F2347 /* Sources */,
 				A063796117492AEF006F2347 /* Frameworks */,
@@ -415,14 +414,14 @@
 			);
 			dependencies = (
 			);
-			name = Ishimura;
+			name = AppPolice;
 			productName = cpulim;
-			productReference = A063796417492AEF006F2347 /* Ishimura.app */;
+			productReference = A063796417492AEF006F2347 /* AppPolice.app */;
 			productType = "com.apple.product-type.application";
 		};
-		A071B69217D8812500D3866E /* Ishimura Tests */ = {
+		A071B69217D8812500D3866E /* AppPolice Tests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = A071B6A117D8812500D3866E /* Build configuration list for PBXNativeTarget "Ishimura Tests" */;
+			buildConfigurationList = A071B6A117D8812500D3866E /* Build configuration list for PBXNativeTarget "AppPolice Tests" */;
 			buildPhases = (
 				A071B68F17D8812500D3866E /* Sources */,
 				A071B69017D8812500D3866E /* Frameworks */,
@@ -433,9 +432,9 @@
 			dependencies = (
 				A071B6A017D8812500D3866E /* PBXTargetDependency */,
 			);
-			name = "Ishimura Tests";
+			name = "AppPolice Tests";
 			productName = "Ishimura Tests";
-			productReference = A071B69317D8812500D3866E /* Ishimura Tests.xctest */;
+			productReference = A071B69317D8812500D3866E /* AppPolice Tests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */
@@ -450,7 +449,7 @@
 					A063796317492AEF006F2347 = {
 						SystemCapabilities = {
 							com.apple.Sandbox = {
-								enabled = 0;
+								enabled = 1;
 							};
 						};
 					};
@@ -459,7 +458,7 @@
 					};
 				};
 			};
-			buildConfigurationList = A063795F17492AEF006F2347 /* Build configuration list for PBXProject "Ishimura" */;
+			buildConfigurationList = A063795F17492AEF006F2347 /* Build configuration list for PBXProject "AppPolice" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -472,8 +471,8 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				A063796317492AEF006F2347 /* Ishimura */,
-				A071B69217D8812500D3866E /* Ishimura Tests */,
+				A063796317492AEF006F2347 /* AppPolice */,
+				A071B69217D8812500D3866E /* AppPolice Tests */,
 			);
 		};
 /* End PBXProject section */
@@ -549,7 +548,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A071B69D17D8812500D3866E /* Ishimura_Tests.m in Sources */,
+				A071B69D17D8812500D3866E /* AppPolice_Tests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -558,7 +557,7 @@
 /* Begin PBXTargetDependency section */
 		A071B6A017D8812500D3866E /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = A063796317492AEF006F2347 /* Ishimura */;
+			target = A063796317492AEF006F2347 /* AppPolice */;
 			targetProxy = A071B69F17D8812500D3866E /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -716,9 +715,10 @@
 				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_IMPLICIT_SIGN_CONVERSION = YES;
 				CLANG_WARN_SUSPICIOUS_IMPLICIT_CONVERSION = YES;
+				CODE_SIGN_ENTITLEMENTS = AppPolice/AppPolice.entitlements;
 				COMBINE_HIDPI_IMAGES = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "cpulim/Ishimura-Prefix.pch";
+				GCC_PREFIX_HEADER = "AppPolice/AppPolice-Prefix.pch";
 				GCC_WARN_ABOUT_MISSING_NEWLINE = YES;
 				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
 				GCC_WARN_MULTIPLE_DEFINITION_TYPES_FOR_SELECTOR = NO;
@@ -727,9 +727,9 @@
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_LABEL = YES;
-				INFOPLIST_FILE = "cpulim/Ishimura-Info.plist";
+				INFOPLIST_FILE = "AppPolice/AppPolice-Info.plist";
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
-				PRODUCT_NAME = Ishimura;
+				PRODUCT_NAME = AppPolice;
 				SDKROOT = macosx;
 				WRAPPER_EXTENSION = app;
 			};
@@ -741,9 +741,10 @@
 				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_IMPLICIT_SIGN_CONVERSION = YES;
 				CLANG_WARN_SUSPICIOUS_IMPLICIT_CONVERSION = YES;
+				CODE_SIGN_ENTITLEMENTS = AppPolice/AppPolice.entitlements;
 				COMBINE_HIDPI_IMAGES = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "cpulim/Ishimura-Prefix.pch";
+				GCC_PREFIX_HEADER = "AppPolice/AppPolice-Prefix.pch";
 				GCC_WARN_ABOUT_MISSING_NEWLINE = YES;
 				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
 				GCC_WARN_MULTIPLE_DEFINITION_TYPES_FOR_SELECTOR = NO;
@@ -752,9 +753,9 @@
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_LABEL = YES;
-				INFOPLIST_FILE = "cpulim/Ishimura-Info.plist";
+				INFOPLIST_FILE = "AppPolice/AppPolice-Info.plist";
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
-				PRODUCT_NAME = Ishimura;
+				PRODUCT_NAME = AppPolice;
 				SDKROOT = macosx;
 				WRAPPER_EXTENSION = app;
 			};
@@ -763,7 +764,7 @@
 		A071B6A217D8812500D3866E /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/Ishimura.app/Contents/MacOS/Ishimura";
+				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/AppPolice.app/Contents/MacOS/AppPolice";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
@@ -774,7 +775,7 @@
 					"$(inherited)",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "Ishimura Tests/Ishimura Tests-Prefix.pch";
+				GCC_PREFIX_HEADER = "AppPolice Tests/AppPolice Tests-Prefix.pch";
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",
@@ -782,9 +783,9 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
 				GCC_WARN_UNUSED_FUNCTION = YES;
-				INFOPLIST_FILE = "Ishimura Tests/Ishimura Tests-Info.plist";
+				INFOPLIST_FILE = "AppPolice Tests/AppPolice Tests-Info.plist";
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = "AppPolice Tests";
 				TEST_HOST = "$(BUNDLE_LOADER)";
 				WRAPPER_EXTENSION = xctest;
 			};
@@ -793,7 +794,7 @@
 		A071B6A317D8812500D3866E /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/Ishimura.app/Contents/MacOS/Ishimura";
+				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/AppPolice.app/Contents/MacOS/AppPolice";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
@@ -805,13 +806,13 @@
 					"$(inherited)",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "Ishimura Tests/Ishimura Tests-Prefix.pch";
+				GCC_PREFIX_HEADER = "AppPolice Tests/AppPolice Tests-Prefix.pch";
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
 				GCC_WARN_UNUSED_FUNCTION = YES;
-				INFOPLIST_FILE = "Ishimura Tests/Ishimura Tests-Info.plist";
+				INFOPLIST_FILE = "AppPolice Tests/AppPolice Tests-Info.plist";
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = "AppPolice Tests";
 				TEST_HOST = "$(BUNDLE_LOADER)";
 				WRAPPER_EXTENSION = xctest;
 			};
@@ -820,7 +821,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		A063795F17492AEF006F2347 /* Build configuration list for PBXProject "Ishimura" */ = {
+		A063795F17492AEF006F2347 /* Build configuration list for PBXProject "AppPolice" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				A063797F17492AF0006F2347 /* Debug */,
@@ -829,7 +830,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		A063798117492AF0006F2347 /* Build configuration list for PBXNativeTarget "Ishimura" */ = {
+		A063798117492AF0006F2347 /* Build configuration list for PBXNativeTarget "AppPolice" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				A063798217492AF0006F2347 /* Debug */,
@@ -838,7 +839,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		A071B6A117D8812500D3866E /* Build configuration list for PBXNativeTarget "Ishimura Tests" */ = {
+		A071B6A117D8812500D3866E /* Build configuration list for PBXNativeTarget "AppPolice Tests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				A071B6A217D8812500D3866E /* Debug */,

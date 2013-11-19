@@ -7,7 +7,6 @@
 //
 
 #import "StatusbarMenuController.h"
-#import "ChromeMenu.h"
 #import "AppInspector.h"
 #include <libproc.h>
 #include "app_inspector_c.h"

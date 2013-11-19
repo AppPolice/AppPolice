@@ -7,8 +7,9 @@
 //
 
 #import <AppKit/AppKit.h>
+#import "ChromeMenu.h"
 
-@class CMMenu, StatusbarItemView;
+@class StatusbarItemView;
 
 @interface StatusbarItemController : NSObject
 {

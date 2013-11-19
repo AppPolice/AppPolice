@@ -9,7 +9,9 @@
 #import "AppDelegate.h"
 #import "StatusbarItemController.h"
 #import "StatusbarMenuController.h"
-#import "CMMenu.h"
+#import "ChromeMenu.h"
+
+// temp
 #import "StatusbarMenu.h"
 
 #include "C/proc_cpulim.h"

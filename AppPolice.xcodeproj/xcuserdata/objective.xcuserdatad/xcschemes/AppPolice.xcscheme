@@ -16,8 +16,8 @@
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "A063796317492AEF006F2347"
                BuildableName = "Ishimura.app"
-               BlueprintName = "Ishimura"
-               ReferencedContainer = "container:Ishimura.xcodeproj">
+               BlueprintName = "AppPolice"
+               ReferencedContainer = "container:AppPolice.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -34,8 +34,8 @@
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "A071B69217D8812500D3866E"
                BuildableName = "Ishimura Tests.xctest"
-               BlueprintName = "Ishimura Tests"
-               ReferencedContainer = "container:Ishimura.xcodeproj">
+               BlueprintName = "AppPolice Tests"
+               ReferencedContainer = "container:AppPolice.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -44,8 +44,8 @@
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "A063796317492AEF006F2347"
             BuildableName = "Ishimura.app"
-            BlueprintName = "Ishimura"
-            ReferencedContainer = "container:Ishimura.xcodeproj">
+            BlueprintName = "AppPolice"
+            ReferencedContainer = "container:AppPolice.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
    </TestAction>
@@ -63,8 +63,8 @@
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "A063796317492AEF006F2347"
             BuildableName = "Ishimura.app"
-            BlueprintName = "Ishimura"
-            ReferencedContainer = "container:Ishimura.xcodeproj">
+            BlueprintName = "AppPolice"
+            ReferencedContainer = "container:AppPolice.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
       <CommandLineArguments>
@@ -95,8 +95,8 @@
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "A063796317492AEF006F2347"
             BuildableName = "Ishimura.app"
-            BlueprintName = "Ishimura"
-            ReferencedContainer = "container:Ishimura.xcodeproj">
+            BlueprintName = "AppPolice"
+            ReferencedContainer = "container:AppPolice.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

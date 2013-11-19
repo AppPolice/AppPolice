@@ -8,7 +8,6 @@
 
 #import "StatusbarItemController.h"
 #import "StatusbarItemView.h"
-#import "ChromeMenu.h"
 
 @implementation StatusbarItemController
 

@@ -7,6 +7,8 @@
 //
 
 #import <AppKit/AppKit.h>
+#import "ChromeMenu.h"
+
 #define APApplicationInfoNameKey @"appInfoNameKey"
 #define APApplicationInfoIconKey @"appInfoIconKey"
 #define APApplicationInfoPidKey @"appInfoPidKey"
@@ -18,7 +20,7 @@
 
 
 //@class NSObject, NSView, NSViewController, NSPopover, NSSlider, NSLevelIndicator;
-@class CMMenuItem;
+//@class CMMenuItem;
 //@protocol NSPopoverDelegate;
 
 @interface AppInspector : NSObject <NSPopoverDelegate>
