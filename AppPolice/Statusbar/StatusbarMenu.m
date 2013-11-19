@@ -9,7 +9,8 @@
 #import "StatusbarMenu.h"
 
 #import "AppInspector.h"
-#import "ChromeMenu.h"
+//#import "ChromeMenu.h"
+#import <ChromeMenu/ChromeMenu.h>
 
 
 @interface StatusbarMenu()

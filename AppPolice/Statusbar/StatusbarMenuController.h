@@ -7,7 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "ChromeMenu.h"
+#import <ChromeMenu/ChromeMenu.h>
 
 #define APApplicationsSortedByName 0
 #define APApplicationsSortedByPid 1

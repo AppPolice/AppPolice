@@ -9,7 +9,7 @@
 #import "AppDelegate.h"
 #import "StatusbarItemController.h"
 #import "StatusbarMenuController.h"
-#import "ChromeMenu.h"
+#import <ChromeMenu/ChromeMenu.h>
 
 // temp
 #import "StatusbarMenu.h"

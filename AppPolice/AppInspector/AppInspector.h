@@ -7,7 +7,8 @@
 //
 
 #import <AppKit/AppKit.h>
-#import "ChromeMenu.h"
+//#import "ChromeMenu.h"
+#import <ChromeMenu/ChromeMenu.h>
 
 #define APApplicationInfoNameKey @"appInfoNameKey"
 #define APApplicationInfoIconKey @"appInfoIconKey"
