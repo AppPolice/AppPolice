@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "0460"
+   LastUpgradeVersion = "0500"
    version = "1.3">
    <BuildAction
       parallelizeBuildables = "YES"
@@ -15,7 +15,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "A063796317492AEF006F2347"
-               BuildableName = "Ishimura.app"
+               BuildableName = "AppPolice.app"
                BlueprintName = "AppPolice"
                ReferencedContainer = "container:AppPolice.xcodeproj">
             </BuildableReference>
@@ -33,7 +33,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "A071B69217D8812500D3866E"
-               BuildableName = "Ishimura Tests.xctest"
+               BuildableName = "AppPolice Tests.xctest"
                BlueprintName = "AppPolice Tests"
                ReferencedContainer = "container:AppPolice.xcodeproj">
             </BuildableReference>
@@ -43,7 +43,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "A063796317492AEF006F2347"
-            BuildableName = "Ishimura.app"
+            BuildableName = "AppPolice.app"
             BlueprintName = "AppPolice"
             ReferencedContainer = "container:AppPolice.xcodeproj">
          </BuildableReference>
@@ -62,7 +62,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "A063796317492AEF006F2347"
-            BuildableName = "Ishimura.app"
+            BuildableName = "AppPolice.app"
             BlueprintName = "AppPolice"
             ReferencedContainer = "container:AppPolice.xcodeproj">
          </BuildableReference>
@@ -94,7 +94,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "A063796317492AEF006F2347"
-            BuildableName = "Ishimura.app"
+            BuildableName = "AppPolice.app"
             BlueprintName = "AppPolice"
             ReferencedContainer = "container:AppPolice.xcodeproj">
          </BuildableReference>

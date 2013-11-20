@@ -8,7 +8,7 @@
 
 
 // It is for profiling currently running application in general
-#ifndef PROFILE_APPLICATION
+#if defined(DEBUG) && !defined(PROFILE_APPLICATION)
 # define PROFILE_APPLICATION
 #endif
 

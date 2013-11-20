@@ -866,6 +866,5 @@ ThBTQ2hhdFRoZWF0cmVUZW1wbGF0ZQ
                 <outlet property="_mainMenu" destination="704" id="n2R-0O-kwM"/>
             </connections>
         </customObject>
-        <customObject id="420" customClass="NSFontManager"/>
     </objects>
 </document>

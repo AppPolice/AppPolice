@@ -8,13 +8,10 @@
 
 #import <Cocoa/Cocoa.h>
 #include <signal.h>
-
-//#include "C/def.h"
 #include "C/proc_cpulim.h"
-
-//#ifdef PROC_CPULIM_PROFILE
 #include "C/selfprofile.h"
-//#endif
+
+int gAPAllLimitsPaused;
 
 void install_signal_handlers(void);
 void termination_handler(int signum);
@@ -26,12 +23,12 @@ int main(int argc, char *argv[]) {
 #ifdef PROFILE_APPLICATION
 	profiling_start();
 	if (atexit(profiling_print_stats) != 0)
-		fputs("\n[Ishimura] Error: Could not establish atexit() method", stderr);
+		fputs("[AppPolice] Error: Could not establish atexit() method", stderr);
 #endif
 
 
-	//rint dispatch_debug() logs to stderr
-	setenv("LIBDISPATCH_LOG", "stderr", 1);
+	// print dispatch_debug() logs to stderr
+	// setenv("LIBDISPATCH_LOG", "stderr", 1);
 
 	
 	install_signal_handlers();
@@ -68,7 +65,7 @@ void install_signal_handlers(void) {
 void termination_handler(int signum) {
 	struct sigaction new_action;
 	
-	fputs("\n[Ishimura] Info: Termination signal received. Let processes run freely.\n", stdout);
+	fputs("[AppPolice] Info: Termination signal received. Let processes run freely.\n", stdout);
 	fflush(stdout);
 	proc_cpulim_suspend_wait();
 	
@@ -76,7 +73,6 @@ void termination_handler(int signum) {
 	new_action.sa_handler = SIG_DFL;
 	sigfillset(&new_action.sa_mask);
 	new_action.sa_flags = 0;
-	
 	sigaction(signum, &new_action, NULL);
 	raise(signum);
 }
@@ -85,14 +81,14 @@ void termination_handler(int signum) {
 void tstp_handler(int signum) {
 	struct sigaction new_action;
 	
-	fputs("\n[Ishimura] Info: SIGTSTP signal received. Let processes run freely.\n", stdout);
+	fputs("[AppPolice] Info: SIGTSTP signal received. Let processes run freely.\n", stdout);
 	fflush(stdout);
 	proc_cpulim_suspend_wait();
 	
+	// set default action and re-raise signal
 	new_action.sa_handler = SIG_DFL;
 	sigemptyset(&new_action.sa_mask);
 	new_action.sa_flags = 0;
-	
 	sigaction(signum, &new_action, NULL);
 	raise(signum);
 }
@@ -101,19 +97,15 @@ void tstp_handler(int signum) {
 void cont_handler(int signum) {
 	struct sigaction tstp_action;
 	
+	// Restore the SIGTSTP handler back
 	tstp_action.sa_handler = tstp_handler;
 	sigfillset(&tstp_action.sa_mask);
 	tstp_action.sa_flags = 0;
-	
-//	cont_action.sa_handler = cont_handler;
-//	sigfillset(&cont_action.sa_mask);
-//	cont_action.sa_flags = 0;
-	
-//	sigaction(SIGCONT, &cont_action, NULL);
 	sigaction(SIGTSTP, &tstp_action, NULL);
 
-	fputs("\n[Ishimura] Info: SIGCONT signal received. Resume all limits.\n", stdout);
+	fputs("[AppPolice] Info: SIGCONT signal received. Resume all limits.\n", stdout);
 	fflush(stdout);
-	proc_cpulim_resume();
+	if (! gAPAllLimitsPaused)
+		proc_cpulim_resume();
 }
 

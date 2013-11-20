@@ -10,6 +10,7 @@
 
 #define StatusbarItemLeftMouseDownNotification @"statusbarItemLeftMouseDownNotification"
 #define StatusbarItemRightMouseDownNotification @"statusbarItemRightMouseDownNotification"
+#define StatusbarItemMouseUpNotification @"statusbarItemMouseUpNotification"
 
 @interface StatusbarItemView : NSView
 {

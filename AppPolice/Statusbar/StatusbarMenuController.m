@@ -8,6 +8,8 @@
 
 #import "StatusbarMenuController.h"
 #import "AppInspector.h"
+#import "APAboutWindowController.h"
+#import "APPreferencesController.h"
 #include <libproc.h>
 #include "app_inspector_c.h"
 #include "proc_cpulim.h"
@@ -31,11 +33,16 @@ static const unsigned int kPidFoundMask = 1U << (8 * sizeof(int) - 1);
 #define PID_IS_MARKED(pid) (((unsigned)pid & kPidFoundMask) ? 1 : 0)
 #define PROC_NAME_MAXLEN 128
 
+// Global state used in main.m during SIGCONT signal handler whether
+// to resume limits if they were running before SIGSTOP
+extern int gAPAllLimitsPaused;
 
 
 @interface StatusbarMenuController ()
 {
 	NSMutableArray *_limitedProcessItems;
+	APAboutWindowController *_aboutWindowConstroller;
+	APPreferencesController *_preferencesWindowController;
 }
 
 - (void)setupMenus;
@@ -65,7 +72,7 @@ static const unsigned int kPidFoundMask = 1U << (8 * sizeof(int) - 1);
 // Helper for |APAppInspectorProcessDidChangeLimit| notification handler
 //- (void)processPid:(NSNumber *)pid didChangeLimit:(float)limit;
 // Menu actions
-- (void)selectProcessMenuItemAction:(id)sender;
+- (void)selectProcessMenuAction:(id)sender;
 - (void)toggleLimiterMenuAction:(id)sender;
 /*!
  @discussion CMMenu is built to instantly update when either title,
@@ -73,7 +80,17 @@ static const unsigned int kPidFoundMask = 1U << (8 * sizeof(int) - 1);
 	after Action performs and menu is hidden.
 */
 - (void)updateMenuItemWithTitle:(NSDictionary *)itemAndTitle;
+- (void)showAboutWindowMenuAction:(id)sender;
+- (void)showPreferecesWindowMenuAction:(id)sender;
 - (void)terminateApplicationMenuAction:(id)sender;
+/*!
+ @discussion A dedicated method to process limit value change either by
+	the slider in AppInspector or when the process is terminated. It sets
+	appropriate menu item status icon (orange or green depending on Pause 
+	state) and enables or disables Pause menu item depending on the number
+	of processes currently being limited.
+ */
+- (void)processOfItem:(CMMenuItem *)item didChangeLimit:(float)limit;
 
 @end
 
@@ -129,10 +146,10 @@ static const unsigned int kPidFoundMask = 1U << (8 * sizeof(int) - 1);
 //	item = [[[CMMenuItem alloc] initWithTitle:@"Donate" action:NULL] autorelease];
 //	[item setTarget:self];
 //	[_mainMenu addItem:item];
-	item = [[[CMMenuItem alloc] initWithTitle:NSLocalizedString(@"About AppPolice", @"Menu Item") action:NULL] autorelease];
+	item = [[[CMMenuItem alloc] initWithTitle:NSLocalizedString(@"About AppPolice", @"Menu Item") action:@selector(showAboutWindowMenuAction:)] autorelease];
 	[item setTarget:self];
 	[_mainMenu addItem:item];
-	item = [[[CMMenuItem alloc] initWithTitle:NSLocalizedString(@"Preferences...", @"Menu Item") action:NULL] autorelease];
+	item = [[[CMMenuItem alloc] initWithTitle:NSLocalizedString(@"Preferences...", @"Menu Item") action:@selector(showPreferecesWindowMenuAction:)] autorelease];
 	[item setTarget:self];
 	[_mainMenu addItem:item];
 	[_mainMenu addItem:[CMMenuItem separatorItem]];
@@ -212,7 +229,7 @@ static const unsigned int kPidFoundMask = 1U << (8 * sizeof(int) - 1);
 										[NSNumber numberWithFloat:0], APApplicationInfoLimitKey,
 										nil];
 				
-		item = [[[CMMenuItem alloc] initWithTitle:[app localizedName] icon:icon action:@selector(selectProcessMenuItemAction:)] autorelease];
+		item = [[[CMMenuItem alloc] initWithTitle:[app localizedName] icon:icon action:@selector(selectProcessMenuAction:)] autorelease];
 		[item setTarget:self];
 		[item setOnStateImage:onStateImageActive];
 		if (gShowAllProcesses)
@@ -261,7 +278,7 @@ static const unsigned int kPidFoundMask = 1U << (8 * sizeof(int) - 1);
 												[NSNumber numberWithFloat:0], APApplicationInfoLimitKey,
 												nil];
 				
-				CMMenuItem *item = [[[CMMenuItem alloc] initWithTitle:[procInfo objectForKey:kProcNameKey] icon:genericIcon action:@selector(selectProcessMenuItemAction:)] autorelease];
+				CMMenuItem *item = [[[CMMenuItem alloc] initWithTitle:[procInfo objectForKey:kProcNameKey] icon:genericIcon action:@selector(selectProcessMenuAction:)] autorelease];
 				[item setTarget:self];
 				[item setOnStateImage:onStateImageActive];
 				[item setIndentationLevel:1];
@@ -281,7 +298,7 @@ static const unsigned int kPidFoundMask = 1U << (8 * sizeof(int) - 1);
 										[NSNumber numberWithInt:999], APApplicationInfoPidKey,
 										[NSNumber numberWithFloat:0], APApplicationInfoLimitKey, nil];
 		
-		CMMenuItem *item = [[[CMMenuItem alloc] initWithTitle:@"Some really long name for some unexistant applicaton" icon:[NSImage imageNamed:NSImageNameBonjour] action:@selector(selectProcessMenuItemAction:)] autorelease];
+		CMMenuItem *item = [[[CMMenuItem alloc] initWithTitle:@"Some really long name for some unexistant applicaton" icon:[NSImage imageNamed:NSImageNameBonjour] action:@selector(selectProcessMenuAction:)] autorelease];
 		[item setTarget:self];
 		[item setRepresentedObject:appInfo];
 		[menu addItem:item];
@@ -593,7 +610,7 @@ static const unsigned int kPidFoundMask = 1U << (8 * sizeof(int) - 1);
 											[NSNumber numberWithFloat:0], APApplicationInfoLimitKey,
 											nil];
 			
-			CMMenuItem *item = [[[CMMenuItem alloc] initWithTitle:[procInfo objectForKey:kProcNameKey] icon:genericIcon action:@selector(selectProcessMenuItemAction:)] autorelease];
+			CMMenuItem *item = [[[CMMenuItem alloc] initWithTitle:[procInfo objectForKey:kProcNameKey] icon:genericIcon action:@selector(selectProcessMenuAction:)] autorelease];
 			[item setTarget:self];
 			NSImage *onStateImage = [NSImage imageNamed:NSImageNameStatusAvailable];
 			[onStateImage setSize:NSMakeSize(12, 12)];
@@ -658,7 +675,7 @@ static const unsigned int kPidFoundMask = 1U << (8 * sizeof(int) - 1);
 									[NSNumber numberWithInt:[app processIdentifier]], APApplicationInfoPidKey,
 									[NSNumber numberWithFloat:0], APApplicationInfoLimitKey, nil];
 	
-	CMMenuItem *item = [[[CMMenuItem alloc] initWithTitle:[app localizedName] icon:[app icon] action:@selector(selectProcessMenuItemAction:)] autorelease];
+	CMMenuItem *item = [[[CMMenuItem alloc] initWithTitle:[app localizedName] icon:[app icon] action:@selector(selectProcessMenuAction:)] autorelease];
 	[item setTarget:self];
 	NSImage *onStateImage = [NSImage imageNamed:NSImageNameStatusAvailable];
 	[onStateImage setSize:NSMakeSize(12, 12)];
@@ -724,14 +741,14 @@ static const unsigned int kPidFoundMask = 1U << (8 * sizeof(int) - 1);
  */
 - (void)processOfItem:(CMMenuItem *)item didChangeLimit:(float)limit {
 	CMMenuItem *pauseItem = [_mainMenu itemAtIndex:1];
-	BOOL newState = YES;
+	BOOL pauseItemIsEnabled = YES;
 	BOOL allLimitsPaused = [[pauseItem representedObject] boolValue];
 	
 	if (limit == PROCESS_NOT_LIMITED) {
 		[item setState:NSMixedState];
 		[_limitedProcessItems removeObject:item];
 		if (! [_limitedProcessItems count])
-			newState = NO;
+			pauseItemIsEnabled = NO;
 	} else {
 		NSImage *image = (allLimitsPaused) ? [NSImage imageNamed:NSImageNameStatusPartiallyAvailable] : [NSImage imageNamed:NSImageNameStatusAvailable];
 		if (! [[item onStateImage] isEqual:image])
@@ -743,16 +760,15 @@ static const unsigned int kPidFoundMask = 1U << (8 * sizeof(int) - 1);
 			proc_cpulim_resume();
 	}
 	
-	if ([pauseItem isEnabled] != newState)
-		[pauseItem setEnabled:newState];
-	
+	if ([pauseItem isEnabled] != pauseItemIsEnabled)
+		[pauseItem setEnabled:pauseItemIsEnabled];
 }
 
 
 /*
  *
  */
-- (void)selectProcessMenuItemAction:(id)sender {
+- (void)selectProcessMenuAction:(id)sender {
 	CMMenuItem *item = (CMMenuItem *)sender;
 	AppInspector *appInspector = [self appInspector];
 	NSPopover *popover = [appInspector popover];
@@ -821,6 +837,7 @@ static const unsigned int kPidFoundMask = 1U << (8 * sizeof(int) - 1);
 
 	if (state == ALL_LIMITS_PAUSED) {	// resume
 		proc_cpulim_resume();
+		gAPAllLimitsPaused = 0;
 		[self performSelector:@selector(updateMenuItemWithTitle:)
 				   withObject:@{ @"item" : item, @"title" : NSLocalizedString(@"Pause all limits", @"Menu Item") }
 				   afterDelay:0.2];
@@ -830,6 +847,7 @@ static const unsigned int kPidFoundMask = 1U << (8 * sizeof(int) - 1);
 		}
 	} else {	// pause
 		proc_cpulim_suspend();
+		gAPAllLimitsPaused = 1;
 		[self performSelector:@selector(updateMenuItemWithTitle:)
 				   withObject:@{ @"item" : item, @"title" : NSLocalizedString(@"Resume", @"Menu Item") }
 				   afterDelay:0.2];
@@ -847,6 +865,38 @@ static const unsigned int kPidFoundMask = 1U << (8 * sizeof(int) - 1);
 	CMMenuItem *item = [itemAndTitle objectForKey:@"item"];
 	NSString *aString = [itemAndTitle objectForKey:@"title"];
 	[item setTitle:aString];
+}
+
+
+/*
+ *
+ */
+- (void)showAboutWindowMenuAction:(id)sender {
+	if (! _aboutWindowConstroller) {
+		_aboutWindowConstroller = [[APAboutWindowController alloc] init];
+	}
+	
+	NSRect screenFrame = [[NSScreen mainScreen] frame];
+	NSRect windowFrame = [[_aboutWindowConstroller window] frame];
+	[[_aboutWindowConstroller window] setFrameOrigin:NSMakePoint(((NSWidth(screenFrame) - NSWidth(windowFrame)) / 2), NSMaxY(screenFrame) - NSHeight(windowFrame) - 200)];
+	
+	[_aboutWindowConstroller showWindow:nil];
+}
+
+
+/*
+ *
+ */
+- (void)showPreferecesWindowMenuAction:(id)sender {
+	if (! _preferencesWindowController) {
+		_preferencesWindowController = [[APPreferencesController alloc] init];
+	}
+	
+	NSRect screenFrame = [[NSScreen mainScreen] frame];
+	NSRect windowFrame = [[_preferencesWindowController window] frame];
+	[[_preferencesWindowController window] setFrameOrigin:NSMakePoint(((NSWidth(screenFrame) - NSWidth(windowFrame)) / 2), NSMaxY(screenFrame) - NSHeight(windowFrame) - 200)];
+	
+	[_preferencesWindowController showWindow:nil];
 }
 
 

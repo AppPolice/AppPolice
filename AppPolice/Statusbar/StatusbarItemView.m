@@ -123,8 +123,8 @@
 
 
 - (void)mouseDown:(NSEvent *)theEvent {
-	NSRect frame = [self frame];
-	frame = [[self window] convertRectToScreen:frame];
+//	NSRect frame = [self frame];
+//	frame = [[self window] convertRectToScreen:frame];
 	
 	[self setHighlighted:YES];
 	
@@ -137,18 +137,33 @@
 
 
 - (void)mouseUp:(NSEvent *)theEvent {
-	[self setHighlighted:NO];
+//	NSLog(@"mouse up on item");
+//	[self setHighlighted:NO];
+	
+	NSDictionary *userInfo = @{
+	    @"timestamp" : [NSNumber numberWithDouble:[theEvent timestamp]]
+	};
+	NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
+	[notificationCenter postNotificationName:StatusbarItemMouseUpNotification object:self userInfo:userInfo];
 }
 
 - (void)rightMouseDown:(NSEvent *)theEvent {
 	[self setHighlighted:YES];
+	
+	NSDictionary *userInfo = @{
+		@"timestamp" : [NSNumber numberWithDouble:[theEvent timestamp]]
+	};
 	NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
-	[notificationCenter postNotificationName:StatusbarItemRightMouseDownNotification object:self];
-
+	[notificationCenter postNotificationName:StatusbarItemRightMouseDownNotification object:self userInfo:userInfo];
 }
 
 - (void)rightMouseUp:(NSEvent *)theEvent {
-	[self setHighlighted:NO];
+//	[self setHighlighted:NO];
+	NSDictionary *userInfo = @{
+		@"timestamp" : [NSNumber numberWithDouble:[theEvent timestamp]]
+	};
+	NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
+	[notificationCenter postNotificationName:StatusbarItemMouseUpNotification object:self userInfo:userInfo];
 }
 
 @end

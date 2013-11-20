@@ -20,6 +20,7 @@
 //	NSImage *_image;
 //	NSImage *_alternateImage;
 	StatusbarItemView *_view;
+	NSTimeInterval _timestamp;
 }
 
 - (NSImage* )image;

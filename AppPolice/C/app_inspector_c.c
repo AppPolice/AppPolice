@@ -48,7 +48,6 @@ char *get_proc_username(pid_t pid) {
 	int numbytes;
 	struct passwd *pwdinfo;
 	struct proc_bsdshortinfo bsdinfo;
-	//	char *pw_name;						// process name
 	
 	errno = 0;
 	numbytes = proc_pidinfo(pid, PROC_PIDT_SHORTBSDINFO, (uint64_t)0, &bsdinfo, PROC_PIDT_SHORTBSDINFO_SIZE);
@@ -58,7 +57,7 @@ char *get_proc_username(pid_t pid) {
 		return NULL;
 	}
 	pwdinfo = getpwuid(bsdinfo.pbsi_uid);
-	//	pw_name = pwdinfo->pw_name;
+	
 	return pwdinfo->pw_name;
 }
 
@@ -137,7 +136,7 @@ int proc_name_from_path(char name[], const char path[], int maxlen) {
 	
 	i = 0;
 	++pos;
-	//	while ((name[i++] = path[pos++]) != '\0' && i < maxlen)
+	// Copy substring
 	while ((name[i++] = path[pos++]) && i < maxlen)
 		;
 	// Make sure the string is always properly terminated

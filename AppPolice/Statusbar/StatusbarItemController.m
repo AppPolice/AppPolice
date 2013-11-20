@@ -24,7 +24,19 @@
 		_view = [[StatusbarItemView alloc] initWithFrame:NSMakeRect(0, 0, 21, thickness)];
 		[_statusbarItem setView:_view];
 		
-		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(statusItemMouseDownNotificationHandler:) name:StatusbarItemLeftMouseDownNotification object:nil];
+		[[NSNotificationCenter defaultCenter] addObserver:self
+												 selector:@selector(statusItemMouseDownNotificationHandler:)
+													 name:StatusbarItemLeftMouseDownNotification
+												   object:nil];
+		[[NSNotificationCenter defaultCenter] addObserver:self
+												 selector:@selector(statusItemMouseDownNotificationHandler:)
+													 name:StatusbarItemRightMouseDownNotification
+												   object:nil];
+		[[NSNotificationCenter defaultCenter] addObserver:self
+												 selector:@selector(statusItemMouseUpNotificationHandler:)
+													 name:StatusbarItemMouseUpNotification
+												   object:nil];
+		
 	}
 	return self;
 }
@@ -83,11 +95,23 @@
 
 
 - (void)statusItemMouseDownNotificationHandler:(NSNotification *)notification {
-//	NSLog(@"mouse down on status item notification: %@", notification);
+	_timestamp = [(NSNumber *)[[notification userInfo] objectForKey:@"timestamp"] doubleValue];
 	NSRect frame = [_view frame];
 	frame = [[_view window] convertRectToScreen:frame];
 	[_menu popUpMenuForStatusItemWithRect:frame];
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(menuDidEndTrackingNotificationHandler:) name:CMMenuDidEndTrackingNotification object:nil];
+	[[NSNotificationCenter defaultCenter] addObserver:self
+											 selector:@selector(menuDidEndTrackingNotificationHandler:)
+												 name:CMMenuDidEndTrackingNotification
+											   object:nil];
+}
+
+
+- (void)statusItemMouseUpNotificationHandler:(NSNotification *)notification {
+	NSTimeInterval timestamp = [(NSNumber *)[[notification userInfo] objectForKey:@"timestamp"] doubleValue];
+	// If mouse button was held down and released after some time period -- cancel menu tracking.
+	if (timestamp - _timestamp > 0.4) {
+		[_menu cancelTracking];
+	}
 }
 
 

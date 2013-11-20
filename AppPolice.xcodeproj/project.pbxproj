@@ -20,7 +20,7 @@
 		A02EFDE0182B7313000FE2CF /* MYQuiteView.m in Sources */ = {isa = PBXBuildFile; fileRef = A02EFDDF182B7313000FE2CF /* MYQuiteView.m */; };
 		A02EFDE3182B76DA000FE2CF /* MYWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = A02EFDE2182B76DA000FE2CF /* MYWindow.m */; };
 		A0448B5B183BBE7A0056818A /* ChromeMenu.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A0448B58183BBE490056818A /* ChromeMenu.framework */; };
-		A0448B61183BEB9D0056818A /* ChromeMenu.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = A0448B58183BBE490056818A /* ChromeMenu.framework */; };
+		A0448B61183BEB9D0056818A /* ChromeMenu.framework in Copy Files */ = {isa = PBXBuildFile; fileRef = A0448B58183BBE490056818A /* ChromeMenu.framework */; };
 		A04FA3D3174D4BD9002E688C /* selfprofile.c in Sources */ = {isa = PBXBuildFile; fileRef = A04FA3D2174D4BD9002E688C /* selfprofile.c */; };
 		A063796817492AEF006F2347 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A063796717492AEF006F2347 /* Cocoa.framework */; };
 		A063797217492AEF006F2347 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = A063797017492AEF006F2347 /* InfoPlist.strings */; };
@@ -34,6 +34,11 @@
 		A071B69517D8812500D3866E /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A071B69417D8812500D3866E /* XCTest.framework */; };
 		A071B69B17D8812500D3866E /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = A071B69917D8812500D3866E /* InfoPlist.strings */; };
 		A071B69D17D8812500D3866E /* AppPolice_Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = A071B69C17D8812500D3866E /* AppPolice_Tests.m */; };
+		A07E4B87183CB64900D773E5 /* APAboutWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = A07E4B85183CB64900D773E5 /* APAboutWindowController.m */; };
+		A07E4B89183CB66F00D773E5 /* APAboutWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = A07E4B8B183CB66F00D773E5 /* APAboutWindow.xib */; };
+		A07E4B90183CBD1900D773E5 /* APPreferencesController.m in Sources */ = {isa = PBXBuildFile; fileRef = A07E4B8E183CBD1900D773E5 /* APPreferencesController.m */; };
+		A07E4B91183CBD1900D773E5 /* APPreferencesWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = A07E4B8F183CBD1900D773E5 /* APPreferencesWindow.xib */; };
+		A07E4B94183CE46700D773E5 /* APURLTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = A07E4B93183CE46700D773E5 /* APURLTextField.m */; };
 		A0ADD314174A1438002BAADE /* subroutines.c in Sources */ = {isa = PBXBuildFile; fileRef = A0ADD313174A1438002BAADE /* subroutines.c */; };
 		A0ADD317174A24A2002BAADE /* AppsInspector.m in Sources */ = {isa = PBXBuildFile; fileRef = A0ADD316174A24A2002BAADE /* AppsInspector.m */; };
 		A0AED3B41802B571005F4F9D /* AppLoadLevelIndicator.m in Sources */ = {isa = PBXBuildFile; fileRef = A0AED3B31802B571005F4F9D /* AppLoadLevelIndicator.m */; };
@@ -74,14 +79,15 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		A0448B60183BEB670056818A /* CopyFiles */ = {
+		A0448B60183BEB670056818A /* Copy Files */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				A0448B61183BEB9D0056818A /* ChromeMenu.framework in CopyFiles */,
+				A0448B61183BEB9D0056818A /* ChromeMenu.framework in Copy Files */,
 			);
+			name = "Copy Files";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXCopyFilesBuildPhase section */
@@ -137,6 +143,15 @@
 		A071B69A17D8812500D3866E /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		A071B69C17D8812500D3866E /* AppPolice_Tests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppPolice_Tests.m; sourceTree = "<group>"; };
 		A071B69E17D8812500D3866E /* AppPolice Tests-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "AppPolice Tests-Prefix.pch"; sourceTree = "<group>"; };
+		A07E4B84183CB64900D773E5 /* APAboutWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = APAboutWindowController.h; path = Other/APAboutWindowController.h; sourceTree = "<group>"; };
+		A07E4B85183CB64900D773E5 /* APAboutWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = APAboutWindowController.m; path = Other/APAboutWindowController.m; sourceTree = "<group>"; };
+		A07E4B8A183CB66F00D773E5 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/APAboutWindow.xib; sourceTree = "<group>"; };
+		A07E4B8C183CB68400D773E5 /* ru */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = ru; path = ru.lproj/APAboutWindow.xib; sourceTree = "<group>"; };
+		A07E4B8D183CBD1900D773E5 /* APPreferencesController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = APPreferencesController.h; sourceTree = "<group>"; };
+		A07E4B8E183CBD1900D773E5 /* APPreferencesController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = APPreferencesController.m; sourceTree = "<group>"; };
+		A07E4B8F183CBD1900D773E5 /* APPreferencesWindow.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = APPreferencesWindow.xib; sourceTree = "<group>"; };
+		A07E4B92183CE46700D773E5 /* APURLTextField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = APURLTextField.h; path = Other/APURLTextField.h; sourceTree = "<group>"; };
+		A07E4B93183CE46700D773E5 /* APURLTextField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = APURLTextField.m; path = Other/APURLTextField.m; sourceTree = "<group>"; };
 		A0ADD312174A142A002BAADE /* subroutines.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = subroutines.h; path = C/subroutines.h; sourceTree = "<group>"; };
 		A0ADD313174A1438002BAADE /* subroutines.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = subroutines.c; path = C/subroutines.c; sourceTree = "<group>"; };
 		A0ADD315174A24A2002BAADE /* AppsInspector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppsInspector.h; path = Controllers/AppsInspector.h; sourceTree = "<group>"; };
@@ -289,6 +304,7 @@
 				A063797317492AEF006F2347 /* main.m */,
 				A01191611807DE2C004777D9 /* Statusbar */,
 				A0154E7C1782DEDA008CF159 /* AppInspector */,
+				A07E4B6F183CB3F600D773E5 /* Other */,
 				A063798417492CCB006F2347 /* C */,
 				A063796E17492AEF006F2347 /* Supporting Files */,
 			);
@@ -300,6 +316,8 @@
 			children = (
 				A0448A5D183B7BD60056818A /* AppPolice.entitlements */,
 				A063797C17492AF0006F2347 /* MainMenu.xib */,
+				A07E4B8B183CB66F00D773E5 /* APAboutWindow.xib */,
+				A07E4B8F183CBD1900D773E5 /* APPreferencesWindow.xib */,
 				A063796F17492AEF006F2347 /* AppPolice-Info.plist */,
 				A063797017492AEF006F2347 /* InfoPlist.strings */,
 				A067A0B918369681003B677E /* Localizable.strings */,
@@ -344,6 +362,19 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
+		A07E4B6F183CB3F600D773E5 /* Other */ = {
+			isa = PBXGroup;
+			children = (
+				A07E4B84183CB64900D773E5 /* APAboutWindowController.h */,
+				A07E4B85183CB64900D773E5 /* APAboutWindowController.m */,
+				A07E4B8D183CBD1900D773E5 /* APPreferencesController.h */,
+				A07E4B8E183CBD1900D773E5 /* APPreferencesController.m */,
+				A07E4B92183CE46700D773E5 /* APURLTextField.h */,
+				A07E4B93183CE46700D773E5 /* APURLTextField.m */,
+			);
+			name = Other;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -354,7 +385,7 @@
 				A063796017492AEF006F2347 /* Sources */,
 				A063796117492AEF006F2347 /* Frameworks */,
 				A063796217492AEF006F2347 /* Resources */,
-				A0448B60183BEB670056818A /* CopyFiles */,
+				A0448B60183BEB670056818A /* Copy Files */,
 			);
 			buildRules = (
 			);
@@ -390,7 +421,7 @@
 		A063795C17492AEF006F2347 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0460;
+				LastUpgradeCheck = 0500;
 				ORGANIZATIONNAME = "Maksym Stefanchuk";
 				TargetAttributes = {
 					A063796317492AEF006F2347 = {
@@ -455,7 +486,9 @@
 				A01453BE17833F5700FFFB39 /* PopoverContentView.xib in Resources */,
 				A01453BD17833F4D00FFFB39 /* AppInspector.xib in Resources */,
 				A063797217492AEF006F2347 /* InfoPlist.strings in Resources */,
+				A07E4B89183CB66F00D773E5 /* APAboutWindow.xib in Resources */,
 				A063797817492AEF006F2347 /* Credits.rtf in Resources */,
+				A07E4B91183CBD1900D773E5 /* APPreferencesWindow.xib in Resources */,
 				A063797E17492AF0006F2347 /* MainMenu.xib in Resources */,
 				A067A0C618369782003B677E /* Media.xcassets in Resources */,
 				A067A0B718369681003B677E /* Localizable.strings in Resources */,
@@ -484,6 +517,7 @@
 				A0AED3B41802B571005F4F9D /* AppLoadLevelIndicator.m in Sources */,
 				A0100693182106A10017296D /* app_inspector_c.c in Sources */,
 				A01191641807DE88004777D9 /* StatusbarMenu.m in Sources */,
+				A07E4B87183CB64900D773E5 /* APAboutWindowController.m in Sources */,
 				A011916A1807E2EF004777D9 /* StatusbarMenuController.m in Sources */,
 				A01191671807DEF8004777D9 /* StatusbarItemView.m in Sources */,
 				A063797417492AEF006F2347 /* main.m in Sources */,
@@ -492,10 +526,12 @@
 				A02EFDE3182B76DA000FE2CF /* MYWindow.m in Sources */,
 				A0ADD314174A1438002BAADE /* subroutines.c in Sources */,
 				A0ADD317174A24A2002BAADE /* AppsInspector.m in Sources */,
+				A07E4B94183CE46700D773E5 /* APURLTextField.m in Sources */,
 				A02EFDE0182B7313000FE2CF /* MYQuiteView.m in Sources */,
 				A04FA3D3174D4BD9002E688C /* selfprofile.c in Sources */,
 				A011916D1807E812004777D9 /* StatusbarItemController.m in Sources */,
 				A0154E851782EC6F008CF159 /* AppInspector.m in Sources */,
+				A07E4B90183CBD1900D773E5 /* APPreferencesController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -581,6 +617,15 @@
 			name = InfoPlist.strings;
 			sourceTree = "<group>";
 		};
+		A07E4B8B183CB66F00D773E5 /* APAboutWindow.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				A07E4B8A183CB66F00D773E5 /* en */,
+				A07E4B8C183CB68400D773E5 /* ru */,
+			);
+			name = APAboutWindow.xib;
+			sourceTree = "<group>";
+		};
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
@@ -588,7 +633,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
@@ -622,7 +666,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
@@ -714,6 +757,7 @@
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				COMBINE_HIDPI_IMAGES = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(DEVELOPER_FRAMEWORKS_DIR)",
 					"$(inherited)",
@@ -744,6 +788,7 @@
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				COMBINE_HIDPI_IMAGES = YES;
 				ENABLE_NS_ASSERTIONS = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(DEVELOPER_FRAMEWORKS_DIR)",
