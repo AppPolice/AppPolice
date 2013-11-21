@@ -10,13 +10,26 @@
 
 @implementation APURLTextField
 
-- (id)initWithFrame:(NSRect)frame {
-    self = [super initWithFrame:frame];
-    if (self) {
-		//
-    }
-    return self;
+@synthesize URLAttribute;
+@synthesize preferredColor;
+
+//- (id)initWithFrame:(NSRect)frame {
+//    self = [super initWithFrame:frame];
+//    if (self) {
+//		//
+//    }
+//    return self;
+//}
+
+
+- (id)init {
+	self = [super init];
+	if (self) {
+		[self setupDefaultParameters];
+	}
+	return self;
 }
+
 
 //- (void)drawRect:(NSRect)dirtyRect {
 //	[super drawRect:dirtyRect];
@@ -26,21 +39,44 @@
 
 
 - (void)dealloc {
+//	[_URLAttribute release];
+//	[_preferredColor release];
+	[self setURLAttribute:nil];
+	[self setPreferredColor:nil];
 	[_attributedString release];
 	[super dealloc];
 }
 
 
-- (void)viewDidMoveToWindow {
+- (void)setupDefaultParameters {
+	[self setBordered:NO];
+	[self setBezeled:NO];
+	[self setBezelStyle:NSTextFieldSquareBezel];
+	[self setDrawsBackground:NO];
+	[self setEditable:NO];
+	[self setRefusesFirstResponder:YES];
+}
+
+
+- (void)viewDidMoveToSuperview {
+	NSLog(@"url textfield did move to window");
 	NSString *string = [self stringValue];
 	NSDictionary *attributes = @{
 		NSFontAttributeName : [NSFont fontWithName:@"Lucida Grande" size:11.0],
 		NSUnderlineStyleAttributeName : [NSNumber numberWithInt:NSUnderlineStyleSingle],
-		NSForegroundColorAttributeName : [NSColor blueColor]
+		NSForegroundColorAttributeName : ([self preferredColor]) ? [self preferredColor] : [NSColor blueColor]
 	};
 	_attributedString = [[NSMutableAttributedString alloc] initWithString:string attributes:attributes];
 	[self setAttributedStringValue:_attributedString];
 	
+//	NSLog(@"bounds: %@", NSStringFromRect([self bounds]));
+//	_trackingRect = [self addTrackingRect:[self bounds] owner:self userData:nil assumeInside:NO];
+}
+
+
+- (void)layout {
+	[super layout];
+//	NSLog(@"after layout, bounds: %@", NSStringFromRect([self bounds]));
 	_trackingRect = [self addTrackingRect:[self bounds] owner:self userData:nil assumeInside:NO];
 }
 
@@ -53,6 +89,7 @@
 
 
 - (void)mouseExited:(NSEvent *)theEvent {
+	NSLog(@"mouse exit");
 	// Update cursor
 	[[NSCursor arrowCursor] set];
 	// Update string underline attribute
@@ -69,8 +106,14 @@
 
 
 - (void)mouseUp:(NSEvent *)theEvent {
-	if (NSPointInRect([theEvent locationInWindow], [self frame]))
-		(void) [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://google.com"]];
+	NSPoint mouseLocation = [theEvent locationInWindow];
+	mouseLocation = [[self superview] convertPoint:mouseLocation fromView:nil];
+//	NSLog(@"mouse up: %@, %@", NSStringFromPoint(mouseLocation), NSStringFromRect([self frame]));
+	
+	NSLog(@"url: %@", [self URLAttribute]);
+	
+	if (NSPointInRect(mouseLocation, [self frame]) && [self URLAttribute])
+		(void) [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:[self URLAttribute]]];
 //	[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:[self stringValue]]];
 }
 

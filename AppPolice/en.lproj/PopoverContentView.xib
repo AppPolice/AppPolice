@@ -200,22 +200,20 @@
                 <constraint firstItem="Bg4-V0-TsV" firstAttribute="leading" secondItem="1W4-jN-jWo" secondAttribute="leading" constant="20" id="Qx9-l3-R67"/>
                 <constraint firstItem="lFy-YF-2XL" firstAttribute="top" secondItem="Bg4-V0-TsV" secondAttribute="bottom" constant="8" id="Wec-Md-4wb"/>
                 <constraint firstAttribute="trailing" secondItem="qg9-Gu-Ryt" secondAttribute="trailing" id="YLE-L6-X0b"/>
-                <constraint firstItem="Bg4-V0-TsV" firstAttribute="trailing" secondItem="1SJ-Bs-YWD" secondAttribute="trailing" constant="14" id="c0x-6p-RrU"/>
+                <constraint firstItem="Bg4-V0-TsV" firstAttribute="trailing" secondItem="1SJ-Bs-YWD" secondAttribute="trailing" constant="14" placeholder="YES" id="c0x-6p-RrU"/>
                 <constraint firstItem="mNg-eT-yNB" firstAttribute="leading" secondItem="Bg4-V0-TsV" secondAttribute="trailing" constant="-12" id="fBS-HK-oyI"/>
                 <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="ucT-ZZ-kLz" secondAttribute="trailing" constant="20" id="kAl-DC-EON"/>
                 <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="mNg-eT-yNB" secondAttribute="trailing" constant="8" id="nRE-ry-WEO"/>
                 <constraint firstItem="1fc-8w-npb" firstAttribute="leading" secondItem="1W4-jN-jWo" secondAttribute="leading" id="rXu-bR-taq"/>
                 <constraint firstItem="Gb2-Vs-cx2" firstAttribute="trailing" secondItem="Bg4-V0-TsV" secondAttribute="trailing" id="rfw-As-4ac"/>
-                <constraint firstAttribute="centerX" secondItem="lFy-YF-2XL" secondAttribute="centerX" constant="11" id="rqg-ej-xOL"/>
+                <constraint firstAttribute="centerX" secondItem="lFy-YF-2XL" secondAttribute="centerX" constant="11" placeholder="YES" id="rqg-ej-xOL"/>
                 <constraint firstItem="mNg-eT-yNB" firstAttribute="top" secondItem="Bg4-V0-TsV" secondAttribute="bottom" constant="8" id="sPL-na-rxd"/>
                 <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="Bg4-V0-TsV" secondAttribute="trailing" constant="20" id="tOt-tM-UPf"/>
                 <constraint firstItem="MJq-Rw-T1a" firstAttribute="leading" secondItem="1W4-jN-jWo" secondAttribute="leading" constant="23" id="xxN-sg-MZk"/>
             </constraints>
             <connections>
                 <outlet property="_centerTextfield" destination="lFy-YF-2XL" id="Q0y-oy-Pgc"/>
-                <outlet property="_centerTextfieldConstraint" destination="rqg-ej-xOL" id="0Ql-Om-jbo"/>
                 <outlet property="_rightTextfield" destination="1SJ-Bs-YWD" id="6UI-Ck-yhc"/>
-                <outlet property="_rightTextfieldConstraint" destination="c0x-6p-RrU" id="5hy-4o-ISU"/>
                 <outlet property="_slider" destination="Bg4-V0-TsV" id="fGe-Yc-s8Q"/>
             </connections>
         </customView>

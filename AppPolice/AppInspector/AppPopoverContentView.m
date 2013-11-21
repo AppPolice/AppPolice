@@ -17,11 +17,15 @@
 	// We want the textfield to align its center to the penultimate tick mark even
 	// when the slider width changes.
 	// This update happens just once when the popover is displayed first time.
-	if (_rightTextfieldConstraint) {
-		[self removeConstraint:_rightTextfieldConstraint];
-		[self removeConstraint:_centerTextfieldConstraint];
-		_rightTextfieldConstraint = nil;
-		_centerTextfieldConstraint = nil;
+	static int addedConstraints = 0;
+	if (! addedConstraints) {
+		addedConstraints = 1;
+//	if (_rightTextfieldConstraint) {
+//		[self removeConstraint:_rightTextfieldConstraint];
+//		[self removeConstrainnt:_centerTextfieldConstraint];
+//		_rightTextfieldConstraint = nil;
+//		_centerTextfieldConstraint = nil;
+		
 		// 0.905: (11 sectors - 1 sector) / 11 sectors
 		// 16: 32 is the label width. Offset to align to the center.
 		NSLayoutConstraint *rightTextfieldConstraint = [NSLayoutConstraint constraintWithItem:_rightTextfield attribute:NSLayoutAttributeRight relatedBy:NSLayoutRelationEqual toItem:_slider attribute:NSLayoutAttributeRight multiplier:0.905 constant:16];

@@ -130,6 +130,7 @@ extern int gAPAllLimitsPaused;
 	CMMenuItem *item;
 	item = [[[CMMenuItem alloc] initWithTitle:NSLocalizedString(@"Running Apps", @"Menu Item") action:NULL] autorelease];
 	CMMenu *runningAppsMenu = [[[CMMenu alloc] initWithTitle:@"Running Apps Menu"] autorelease];
+	[runningAppsMenu setPerformsActionInstantly:YES];
 	[runningAppsMenu setDelegate:self];
 	[runningAppsMenu setCancelsTrackingOnAction:NO];
 //	[runningAppsMenu setCancelsTrackingOnMouseEventOutsideMenus:NO];
@@ -876,9 +877,11 @@ extern int gAPAllLimitsPaused;
 		_aboutWindowConstroller = [[APAboutWindowController alloc] init];
 	}
 	
-	NSRect screenFrame = [[NSScreen mainScreen] frame];
-	NSRect windowFrame = [[_aboutWindowConstroller window] frame];
-	[[_aboutWindowConstroller window] setFrameOrigin:NSMakePoint(((NSWidth(screenFrame) - NSWidth(windowFrame)) / 2), NSMaxY(screenFrame) - NSHeight(windowFrame) - 200)];
+	if (! [[_aboutWindowConstroller window] isVisible]) {
+		NSRect screenFrame = [[NSScreen mainScreen] frame];
+		NSRect windowFrame = [[_aboutWindowConstroller window] frame];
+		[[_aboutWindowConstroller window] setFrameOrigin:NSMakePoint(((NSWidth(screenFrame) - NSWidth(windowFrame)) / 2), NSMaxY(screenFrame) - NSHeight(windowFrame) - 200)];
+	}
 	
 	[_aboutWindowConstroller showWindow:nil];
 }
@@ -892,9 +895,11 @@ extern int gAPAllLimitsPaused;
 		_preferencesWindowController = [[APPreferencesController alloc] init];
 	}
 	
-	NSRect screenFrame = [[NSScreen mainScreen] frame];
-	NSRect windowFrame = [[_preferencesWindowController window] frame];
-	[[_preferencesWindowController window] setFrameOrigin:NSMakePoint(((NSWidth(screenFrame) - NSWidth(windowFrame)) / 2), NSMaxY(screenFrame) - NSHeight(windowFrame) - 200)];
+	if (! [[_aboutWindowConstroller window] isVisible]) {
+		NSRect screenFrame = [[NSScreen mainScreen] frame];
+		NSRect windowFrame = [[_preferencesWindowController window] frame];
+		[[_preferencesWindowController window] setFrameOrigin:NSMakePoint(((NSWidth(screenFrame) - NSWidth(windowFrame)) / 2), NSMaxY(screenFrame) - NSHeight(windowFrame) - 200)];
+	}
 	
 	[_preferencesWindowController showWindow:nil];
 }

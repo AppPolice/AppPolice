@@ -37,13 +37,13 @@
 		A07E4B87183CB64900D773E5 /* APAboutWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = A07E4B85183CB64900D773E5 /* APAboutWindowController.m */; };
 		A07E4B89183CB66F00D773E5 /* APAboutWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = A07E4B8B183CB66F00D773E5 /* APAboutWindow.xib */; };
 		A07E4B90183CBD1900D773E5 /* APPreferencesController.m in Sources */ = {isa = PBXBuildFile; fileRef = A07E4B8E183CBD1900D773E5 /* APPreferencesController.m */; };
-		A07E4B91183CBD1900D773E5 /* APPreferencesWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = A07E4B8F183CBD1900D773E5 /* APPreferencesWindow.xib */; };
 		A07E4B94183CE46700D773E5 /* APURLTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = A07E4B93183CE46700D773E5 /* APURLTextField.m */; };
 		A0ADD314174A1438002BAADE /* subroutines.c in Sources */ = {isa = PBXBuildFile; fileRef = A0ADD313174A1438002BAADE /* subroutines.c */; };
 		A0ADD317174A24A2002BAADE /* AppsInspector.m in Sources */ = {isa = PBXBuildFile; fileRef = A0ADD316174A24A2002BAADE /* AppsInspector.m */; };
 		A0AED3B41802B571005F4F9D /* AppLoadLevelIndicator.m in Sources */ = {isa = PBXBuildFile; fileRef = A0AED3B31802B571005F4F9D /* AppLoadLevelIndicator.m */; };
 		A0AED3B71802EA9E005F4F9D /* AppInfoBlockView.m in Sources */ = {isa = PBXBuildFile; fileRef = A0AED3B61802EA9E005F4F9D /* AppInfoBlockView.m */; };
 		A0B5AD3418259455006E9898 /* AppPopoverContentView.m in Sources */ = {isa = PBXBuildFile; fileRef = A0B5AD3318259455006E9898 /* AppPopoverContentView.m */; };
+		A0BD1BEA183E10680054FC06 /* APPreferencesWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = A0BD1BEC183E10680054FC06 /* APPreferencesWindow.xib */; };
 		A0FFE0A91805D673007F510E /* AppLimitHintView.m in Sources */ = {isa = PBXBuildFile; fileRef = A0FFE0A81805D673007F510E /* AppLimitHintView.m */; };
 /* End PBXBuildFile section */
 
@@ -147,9 +147,8 @@
 		A07E4B85183CB64900D773E5 /* APAboutWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = APAboutWindowController.m; path = Other/APAboutWindowController.m; sourceTree = "<group>"; };
 		A07E4B8A183CB66F00D773E5 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/APAboutWindow.xib; sourceTree = "<group>"; };
 		A07E4B8C183CB68400D773E5 /* ru */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = ru; path = ru.lproj/APAboutWindow.xib; sourceTree = "<group>"; };
-		A07E4B8D183CBD1900D773E5 /* APPreferencesController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = APPreferencesController.h; sourceTree = "<group>"; };
-		A07E4B8E183CBD1900D773E5 /* APPreferencesController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = APPreferencesController.m; sourceTree = "<group>"; };
-		A07E4B8F183CBD1900D773E5 /* APPreferencesWindow.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = APPreferencesWindow.xib; sourceTree = "<group>"; };
+		A07E4B8D183CBD1900D773E5 /* APPreferencesController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = APPreferencesController.h; path = Other/APPreferencesController.h; sourceTree = "<group>"; };
+		A07E4B8E183CBD1900D773E5 /* APPreferencesController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = APPreferencesController.m; path = Other/APPreferencesController.m; sourceTree = "<group>"; };
 		A07E4B92183CE46700D773E5 /* APURLTextField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = APURLTextField.h; path = Other/APURLTextField.h; sourceTree = "<group>"; };
 		A07E4B93183CE46700D773E5 /* APURLTextField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = APURLTextField.m; path = Other/APURLTextField.m; sourceTree = "<group>"; };
 		A0ADD312174A142A002BAADE /* subroutines.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = subroutines.h; path = C/subroutines.h; sourceTree = "<group>"; };
@@ -162,6 +161,8 @@
 		A0AED3B61802EA9E005F4F9D /* AppInfoBlockView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppInfoBlockView.m; path = AppInspector/AppInfoBlockView.m; sourceTree = "<group>"; };
 		A0B5AD3218259455006E9898 /* AppPopoverContentView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppPopoverContentView.h; path = AppInspector/AppPopoverContentView.h; sourceTree = "<group>"; };
 		A0B5AD3318259455006E9898 /* AppPopoverContentView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppPopoverContentView.m; path = AppInspector/AppPopoverContentView.m; sourceTree = "<group>"; };
+		A0BD1BEB183E10680054FC06 /* en */ = {isa = PBXFileReference; lastKnownFileType = file; name = en; path = en.lproj/APPreferencesWindow.xib; sourceTree = "<group>"; };
+		A0BD1BED183E106F0054FC06 /* ru */ = {isa = PBXFileReference; lastKnownFileType = file; name = ru; path = ru.lproj/APPreferencesWindow.xib; sourceTree = "<group>"; };
 		A0FFE0A71805D673007F510E /* AppLimitHintView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppLimitHintView.h; path = AppInspector/AppLimitHintView.h; sourceTree = "<group>"; };
 		A0FFE0A81805D673007F510E /* AppLimitHintView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppLimitHintView.m; path = AppInspector/AppLimitHintView.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -206,24 +207,6 @@
 		A0154E7C1782DEDA008CF159 /* AppInspector */ = {
 			isa = PBXGroup;
 			children = (
-				A0154E7E1782DF37008CF159 /* src */,
-				A0154E7D1782DF16008CF159 /* Resources */,
-			);
-			name = AppInspector;
-			sourceTree = "<group>";
-		};
-		A0154E7D1782DF16008CF159 /* Resources */ = {
-			isa = PBXGroup;
-			children = (
-				A0154E811782E300008CF159 /* AppInspector.xib */,
-				A0154E7F1782E05B008CF159 /* PopoverContentView.xib */,
-			);
-			name = Resources;
-			sourceTree = "<group>";
-		};
-		A0154E7E1782DF37008CF159 /* src */ = {
-			isa = PBXGroup;
-			children = (
 				A0154E831782E972008CF159 /* AppInspector.h */,
 				A0154E841782E972008CF159 /* AppInspector.m */,
 				A0B5AD3218259455006E9898 /* AppPopoverContentView.h */,
@@ -236,8 +219,18 @@
 				A0AED3B61802EA9E005F4F9D /* AppInfoBlockView.m */,
 				A0FFE0A71805D673007F510E /* AppLimitHintView.h */,
 				A0FFE0A81805D673007F510E /* AppLimitHintView.m */,
+				A0154E7D1782DF16008CF159 /* Resources */,
 			);
-			name = src;
+			name = AppInspector;
+			sourceTree = "<group>";
+		};
+		A0154E7D1782DF16008CF159 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				A0154E811782E300008CF159 /* AppInspector.xib */,
+				A0154E7F1782E05B008CF159 /* PopoverContentView.xib */,
+			);
+			name = Resources;
 			sourceTree = "<group>";
 		};
 		A0448B53183BBE490056818A /* Products */ = {
@@ -317,7 +310,7 @@
 				A0448A5D183B7BD60056818A /* AppPolice.entitlements */,
 				A063797C17492AF0006F2347 /* MainMenu.xib */,
 				A07E4B8B183CB66F00D773E5 /* APAboutWindow.xib */,
-				A07E4B8F183CBD1900D773E5 /* APPreferencesWindow.xib */,
+				A0BD1BEC183E10680054FC06 /* APPreferencesWindow.xib */,
 				A063796F17492AEF006F2347 /* AppPolice-Info.plist */,
 				A063797017492AEF006F2347 /* InfoPlist.strings */,
 				A067A0B918369681003B677E /* Localizable.strings */,
@@ -488,7 +481,7 @@
 				A063797217492AEF006F2347 /* InfoPlist.strings in Resources */,
 				A07E4B89183CB66F00D773E5 /* APAboutWindow.xib in Resources */,
 				A063797817492AEF006F2347 /* Credits.rtf in Resources */,
-				A07E4B91183CBD1900D773E5 /* APPreferencesWindow.xib in Resources */,
+				A0BD1BEA183E10680054FC06 /* APPreferencesWindow.xib in Resources */,
 				A063797E17492AF0006F2347 /* MainMenu.xib in Resources */,
 				A067A0C618369782003B677E /* Media.xcassets in Resources */,
 				A067A0B718369681003B677E /* Localizable.strings in Resources */,
@@ -624,6 +617,15 @@
 				A07E4B8C183CB68400D773E5 /* ru */,
 			);
 			name = APAboutWindow.xib;
+			sourceTree = "<group>";
+		};
+		A0BD1BEC183E10680054FC06 /* APPreferencesWindow.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				A0BD1BEB183E10680054FC06 /* en */,
+				A0BD1BED183E106F0054FC06 /* ru */,
+			);
+			name = APPreferencesWindow.xib;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */

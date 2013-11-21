@@ -14,8 +14,8 @@
 	IBOutlet NSSlider *_slider;
 	IBOutlet NSTextField *_centerTextfield;
 	IBOutlet NSTextField *_rightTextfield;
-	IBOutlet NSLayoutConstraint *_centerTextfieldConstraint;
-	IBOutlet NSLayoutConstraint *_rightTextfieldConstraint;
+//	IBOutlet NSLayoutConstraint *_centerTextfieldConstraint;
+//	IBOutlet NSLayoutConstraint *_rightTextfieldConstraint;
 }
 
 

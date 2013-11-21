@@ -14,4 +14,7 @@
 	NSMutableAttributedString *_attributedString;
 }
 
+@property (copy) NSString *URLAttribute;
+@property (copy) NSColor *preferredColor;
+
 @end
