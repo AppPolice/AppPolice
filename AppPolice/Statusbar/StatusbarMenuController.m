@@ -15,9 +15,6 @@
 #include "proc_cpulim.h"
 
 
-static const int gShowAllProcesses = 1;
-static const int gShowOtherUsersProcesses = 0;
-
 #define kProcPidKey @"pid"
 #define kProcNameKey @"name"
 #define kNotFoundAppIndexesKey @"nfAppIdx"
@@ -40,6 +37,8 @@ extern int gAPAllLimitsPaused;
 
 @interface StatusbarMenuController ()
 {
+	BOOL _showAllProcesses;
+	BOOL _showOtherUsersProcesses;
 	NSMutableArray *_limitedProcessItems;
 	APAboutWindowController *_aboutWindowConstroller;
 	APPreferencesController *_preferencesWindowController;
@@ -101,6 +100,15 @@ extern int gAPAllLimitsPaused;
 - (id)init {
 	self = [super init];
 	if (self) {
+		NSUserDefaults *preferences = [NSUserDefaults standardUserDefaults];
+		NSInteger sortByPreferences = [preferences integerForKey:@"APSortBy"];
+//		NSString *orderPreferences = [preferences stringForKey:@"APOrder"];
+		_sortKey = (sortByPreferences == 0) ? APApplicationsSortedByName : APApplicationsSortedByPid;
+//		_orderAsc = ([orderPreferences isEqualToString:@"Asc"]) ? 1 : 0;
+		_orderAsc = [preferences boolForKey:@"APOrderAsc"];
+		_showAllProcesses = [preferences boolForKey:@"APShowSystemProcesses"];
+		// For now do not show processes not run by user
+		_showOtherUsersProcesses = 0;
 		_limitedProcessItems = [[NSMutableArray alloc] init];
 		[self setupMenus];
 	}
@@ -182,7 +190,7 @@ extern int gAPAllLimitsPaused;
 	// This method is run just once at startup. So the array is guaranteed to
 	// have not been previously used.
 	_runningApplications = [[workspace runningApplications] mutableCopy];
-	[self sortApplicationsByKey:[self sortKey]];
+	[self sortApplicationsByKey:[self sortKey] Asc:_orderAsc];
 //	[self sortApplicationsByKey:APApplicationsSortedByPid];
 	
 
@@ -197,7 +205,7 @@ extern int gAPAllLimitsPaused;
 	[onStateImagePaused setSize:NSMakeSize(12, 12)];
 	
 	// Show Applications delimiter
-	if (gShowAllProcesses) {
+	if (_showAllProcesses) {
 		item = [[[CMMenuItem alloc] initWithTitle:NSLocalizedString(@"Applications", @"Delimiter Menu Item") action:NULL] autorelease];
 		[item setEnabled:NO];
 		[menu addItem:item];
@@ -233,7 +241,7 @@ extern int gAPAllLimitsPaused;
 		item = [[[CMMenuItem alloc] initWithTitle:[app localizedName] icon:icon action:@selector(selectProcessMenuAction:)] autorelease];
 		[item setTarget:self];
 		[item setOnStateImage:onStateImageActive];
-		if (gShowAllProcesses)
+		if (_showAllProcesses)
 			[item setIndentationLevel:1];
 		[item setRepresentedObject:appInfo];
 		[menu addItem:item];
@@ -246,7 +254,7 @@ extern int gAPAllLimitsPaused;
 	// -----------------------------------------------------
 	//		Populate with System processes if option is set
 	// -----------------------------------------------------
-	if (gShowAllProcesses) {
+	if (_showAllProcesses) {
 		item = [[[CMMenuItem alloc] initWithTitle:NSLocalizedString(@"System", @"Delimiter Menu Item") action:NULL] autorelease];
 		[item setEnabled:NO];
 		[menu addItem:item];
@@ -410,7 +418,7 @@ extern int gAPAllLimitsPaused;
 	if (shownSystemProcessesCount)
 		insert_indexes = (int *)malloc((size_t)numpids * sizeof(int));
 
-	if (!gShowOtherUsersProcesses)
+	if ( !_showOtherUsersProcesses)
 		shared_uid = getuid();
 
 
@@ -421,7 +429,7 @@ extern int gAPAllLimitsPaused;
 		if (PID_IS_MARKED(proc_pids[n]) || proc_pids[n] == shared_pid)
 			continue;
 		
-		if (!gShowOtherUsersProcesses) {
+		if (! _showOtherUsersProcesses) {
 			uid_t proc_uid = get_proc_uid(proc_pids[n]);
 //			printf("skipg pid: %d\n", proc_pids[n]);
 			if (proc_uid != shared_uid)
@@ -464,7 +472,7 @@ extern int gAPAllLimitsPaused;
 			[newSysProcIndexes addIndex:(NSUInteger)insert_indexes[insert_index_i]];
 		free(insert_indexes);
 	} else {
-		[self sortSystemProcessesByKey:[self sortKey]];
+		[self sortSystemProcessesByKey:[self sortKey] Asc:_orderAsc];
 		[newSysProcIndexes addIndexesInRange:NSMakeRange(0, [_runningSystemProcesses count])];
 	}
 	
@@ -518,16 +526,16 @@ extern int gAPAllLimitsPaused;
 /*
  *
  */
-- (void)sortApplicationsByKey:(int)sortKey {
+- (void)sortApplicationsByKey:(int)sortKey Asc:(BOOL)Asc {
 	NSSortDescriptor *descriptor;
 
 	if (! [_runningApplications count])
 		return;
 	
 	if (sortKey == APApplicationsSortedByName) {
-		descriptor = [[NSSortDescriptor alloc] initWithKey:@"localizedName" ascending:YES selector:@selector(localizedCompare:)];
+		descriptor = [[NSSortDescriptor alloc] initWithKey:@"localizedName" ascending:Asc selector:@selector(localizedCompare:)];
 	} else if (sortKey == APApplicationsSortedByPid) {
-		descriptor = [[NSSortDescriptor alloc] initWithKey:@"processIdentifier" ascending:YES];
+		descriptor = [[NSSortDescriptor alloc] initWithKey:@"processIdentifier" ascending:Asc];
 	} else {
 		NSLog(@"Provided sort key is not valid");
 		return;
@@ -541,16 +549,16 @@ extern int gAPAllLimitsPaused;
 /*
  *
  */
-- (void)sortSystemProcessesByKey:(int)sortKey {
+- (void)sortSystemProcessesByKey:(int)sortKey Asc:(BOOL)Asc {
 	NSSortDescriptor *descriptor;
 	
 	if (! [_runningSystemProcesses count])
 		return;
 	
 	if (sortKey == APApplicationsSortedByName) {
-		descriptor = [[NSSortDescriptor alloc] initWithKey:kProcNameKey ascending:YES selector:@selector(localizedCompare:)];
+		descriptor = [[NSSortDescriptor alloc] initWithKey:kProcNameKey ascending:Asc selector:@selector(localizedCompare:)];
 	} else if (sortKey == APApplicationsSortedByPid) {
-		descriptor = [[NSSortDescriptor alloc] initWithKey:kProcPidKey ascending:YES];
+		descriptor = [[NSSortDescriptor alloc] initWithKey:kProcPidKey ascending:Asc];
 	} else {
 		NSLog(@"Provided sort key is not valid");
 		return;
@@ -599,7 +607,7 @@ extern int gAPAllLimitsPaused;
 	
 	if ([newSysProcIndexes count]) {
 		NSUInteger offset = [_runningApplications count];
-		if (gShowAllProcesses)
+		if (_showAllProcesses)
 			offset += 2;		// two separator items
 		NSImage *genericIcon = [[NSWorkspace sharedWorkspace] iconForFile:@"/bin/ls"];
 		[_runningSystemProcesses enumerateObjectsAtIndexes:newSysProcIndexes options:0 usingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
@@ -617,7 +625,7 @@ extern int gAPAllLimitsPaused;
 			[onStateImage setSize:NSMakeSize(12, 12)];
 			[item setOnStateImage:onStateImage];
 			[item setRepresentedObject:appInfo];
-			if (gShowAllProcesses)
+			if (_showAllProcesses)
 				[item setIndentationLevel:1];
 			[menu insertItem:item atIndex:(idx + offset) animate:NO];
 		}];
@@ -633,6 +641,7 @@ extern int gAPAllLimitsPaused;
 	
 	NSUInteger elementsCount = [_runningApplications count];
 	NSUInteger index = elementsCount;
+	NSComparisonResult orderedComparisonResult = (_orderAsc) ? NSOrderedDescending : NSOrderedAscending;
 	
 	/*----------------------------------------------------------------------------------------------------/
 	  ASSUMTION:
@@ -646,7 +655,7 @@ extern int gAPAllLimitsPaused;
 	if (sortKey == APApplicationsSortedByName) {
 		NSString *appName = [app localizedName];
 		NSUInteger i = 0;
-		while (i < elementsCount && [appName localizedCompare:[[_runningApplications objectAtIndex:i] localizedName]] == NSOrderedDescending)
+		while (i < elementsCount && [appName localizedCompare:[[_runningApplications objectAtIndex:i] localizedName]] == orderedComparisonResult)
 			++i;
 
 		//		while (i < elementsCount) {
@@ -661,13 +670,12 @@ extern int gAPAllLimitsPaused;
 
 	} else if (sortKey == APApplicationsSortedByPid) {
 		// New apps most likely will have pid greater then the pid of last app in array
-		// TODO: take into account the Asc/Desc
-//		index = elementsCount;
+		index = (_orderAsc) ? elementsCount : 0;
 	}
 	
 	[_runningApplications insertObject:app atIndex:index];
 	// If showing all processes the first menu item is "Applications". Offset index by 1.
-	if (gShowAllProcesses)
+	if (_showAllProcesses)
 		++index;
 	
 	NSMutableDictionary *appInfo = [NSMutableDictionary dictionaryWithObjectsAndKeys:
@@ -682,7 +690,7 @@ extern int gAPAllLimitsPaused;
 	[onStateImage setSize:NSMakeSize(12, 12)];
 	[item setOnStateImage:onStateImage];
 	[item setRepresentedObject:appInfo];
-	if (gShowAllProcesses)
+	if (_showAllProcesses)
 		[item setIndentationLevel:1];
 	[[[_mainMenu itemAtIndex:0] submenu] insertItem:item atIndex:index animate:NO];
 }
@@ -699,7 +707,7 @@ extern int gAPAllLimitsPaused;
 			NSUInteger index = [_runningApplications indexOfObject:runningApp];
 			[_runningApplications removeObjectAtIndex:index];
 			// If showing all process, the first menu item is "Applications". Shift index by 1
-			NSInteger menuIndex = (gShowAllProcesses) ? (NSInteger)(index + 1) : (NSInteger)index;
+			NSInteger menuIndex = (_showAllProcesses) ? (NSInteger)(index + 1) : (NSInteger)index;
 			
 			CMMenu *menu = [[_mainMenu itemAtIndex:0] submenu];
 			CMMenuItem *item = [menu itemAtIndex:menuIndex];
@@ -935,14 +943,16 @@ extern int gAPAllLimitsPaused;
 
 
 - (void)setSortKey:(int)sortKey {
-	if ( sortKey != APApplicationsSortedByName
-	  && sortKey != APApplicationsSortedByPid) {
+	if (sortKey != APApplicationsSortedByName
+		&& sortKey != APApplicationsSortedByPid) {
 		NSLog(@"Provided sortKey does not exist");
 		return;
 	}
 	
 	if (_sortKey != sortKey) {
 		_sortKey = sortKey;
+		if ([_runningApplications count] == 0)
+			return;
 
 		// update menu here
 		

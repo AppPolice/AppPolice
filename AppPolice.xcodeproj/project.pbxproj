@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		A00C3B2E183F8937005E596C /* UserDefaults.plist in Resources */ = {isa = PBXBuildFile; fileRef = A00C3B2D183F8937005E596C /* UserDefaults.plist */; };
 		A00D28551803E85F00D71F71 /* AppLimitSliderCell.m in Sources */ = {isa = PBXBuildFile; fileRef = A00D28541803E85F00D71F71 /* AppLimitSliderCell.m */; };
 		A00FBF4D17DF54BF0083B482 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A00FBF4C17DF54BF0083B482 /* QuartzCore.framework */; };
 		A0100693182106A10017296D /* app_inspector_c.c in Sources */ = {isa = PBXBuildFile; fileRef = A0100692182106A10017296D /* app_inspector_c.c */; };
@@ -93,6 +94,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		A00C3B2D183F8937005E596C /* UserDefaults.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = UserDefaults.plist; sourceTree = "<group>"; };
 		A00D28531803E85F00D71F71 /* AppLimitSliderCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppLimitSliderCell.h; path = AppInspector/AppLimitSliderCell.h; sourceTree = "<group>"; };
 		A00D28541803E85F00D71F71 /* AppLimitSliderCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppLimitSliderCell.m; path = AppInspector/AppLimitSliderCell.m; sourceTree = "<group>"; };
 		A00FBF4C17DF54BF0083B482 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
@@ -161,8 +163,8 @@
 		A0AED3B61802EA9E005F4F9D /* AppInfoBlockView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppInfoBlockView.m; path = AppInspector/AppInfoBlockView.m; sourceTree = "<group>"; };
 		A0B5AD3218259455006E9898 /* AppPopoverContentView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppPopoverContentView.h; path = AppInspector/AppPopoverContentView.h; sourceTree = "<group>"; };
 		A0B5AD3318259455006E9898 /* AppPopoverContentView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppPopoverContentView.m; path = AppInspector/AppPopoverContentView.m; sourceTree = "<group>"; };
-		A0BD1BEB183E10680054FC06 /* en */ = {isa = PBXFileReference; lastKnownFileType = file; name = en; path = en.lproj/APPreferencesWindow.xib; sourceTree = "<group>"; };
-		A0BD1BED183E106F0054FC06 /* ru */ = {isa = PBXFileReference; lastKnownFileType = file; name = ru; path = ru.lproj/APPreferencesWindow.xib; sourceTree = "<group>"; };
+		A0BD1BEB183E10680054FC06 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/APPreferencesWindow.xib; sourceTree = "<group>"; };
+		A0BD1BED183E106F0054FC06 /* ru */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = ru; path = ru.lproj/APPreferencesWindow.xib; sourceTree = "<group>"; };
 		A0FFE0A71805D673007F510E /* AppLimitHintView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppLimitHintView.h; path = AppInspector/AppLimitHintView.h; sourceTree = "<group>"; };
 		A0FFE0A81805D673007F510E /* AppLimitHintView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppLimitHintView.m; path = AppInspector/AppLimitHintView.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -314,6 +316,7 @@
 				A063796F17492AEF006F2347 /* AppPolice-Info.plist */,
 				A063797017492AEF006F2347 /* InfoPlist.strings */,
 				A067A0B918369681003B677E /* Localizable.strings */,
+				A00C3B2D183F8937005E596C /* UserDefaults.plist */,
 				A063797517492AEF006F2347 /* AppPolice-Prefix.pch */,
 				A063797617492AEF006F2347 /* Credits.rtf */,
 				A067A0C518369782003B677E /* Media.xcassets */,
@@ -477,6 +480,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A01453BE17833F5700FFFB39 /* PopoverContentView.xib in Resources */,
+				A00C3B2E183F8937005E596C /* UserDefaults.plist in Resources */,
 				A01453BD17833F4D00FFFB39 /* AppInspector.xib in Resources */,
 				A063797217492AEF006F2347 /* InfoPlist.strings in Resources */,
 				A07E4B89183CB66F00D773E5 /* APAboutWindow.xib in Resources */,

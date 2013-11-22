@@ -7,6 +7,10 @@
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="APPreferencesController">
             <connections>
+                <outlet property="launchAtLoginButton" destination="7cy-7N-Nnp" id="m6K-Vv-K91"/>
+                <outlet property="orderMatrix" destination="onM-ec-R4w" id="wme-MW-zco"/>
+                <outlet property="showSystemProcessesButton" destination="zOK-6a-GlU" id="9IT-eZ-arZ"/>
+                <outlet property="sortByMatrix" destination="vlZ-Rz-eYj" id="3Ah-id-rDi"/>
                 <outlet property="window" destination="1" id="3"/>
             </connections>
         </customObject>
@@ -15,25 +19,28 @@
         <window title="AppPolice Preferences" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" releasedWhenClosed="NO" showsToolbarButton="NO" wantsToBeColor="NO" visibleAtLaunch="NO" animationBehavior="default" id="1">
             <windowStyleMask key="styleMask" titled="YES" closable="YES"/>
             <windowPositionMask key="initialPositionMask" topStrut="YES"/>
-            <rect key="contentRect" x="196" y="614" width="488" height="230"/>
+            <rect key="contentRect" x="196" y="614" width="402" height="220"/>
             <rect key="screenRect" x="0.0" y="0.0" width="1920" height="1058"/>
             <view key="contentView" id="2">
-                <rect key="frame" x="0.0" y="0.0" width="488" height="230"/>
+                <rect key="frame" x="0.0" y="0.0" width="402" height="220"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <button fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="7cy-7N-Nnp">
-                        <rect key="frame" x="156" y="38" width="186" height="18"/>
+                        <rect key="frame" x="113" y="32" width="186" height="18"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <buttonCell key="cell" type="check" title="Start AppPolice at login" bezelStyle="regularSquare" imagePosition="left" inset="2" id="xTX-0r-NG1">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                             <font key="font" metaFont="system"/>
                         </buttonCell>
+                        <connections>
+                            <action selector="changeLaunchAtLoginPreferences:" target="-2" id="0PE-bU-AMa"/>
+                        </connections>
                     </button>
                     <matrix verticalHuggingPriority="750" fixedFrame="YES" allowsEmptySelection="NO" autorecalculatesCellSize="YES" translatesAutoresizingMaskIntoConstraints="NO" id="vlZ-Rz-eYj">
-                        <rect key="frame" x="176" y="158" width="164" height="38"/>
+                        <rect key="frame" x="133" y="152" width="136" height="38"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                        <size key="cellSize" width="133" height="18"/>
+                        <size key="cellSize" width="136" height="18"/>
                         <size key="intercellSpacing" width="4" height="2"/>
                         <buttonCell key="prototype" type="radio" title="Radio" imagePosition="left" alignment="left" inset="2" id="CvC-Z4-lX1">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -51,12 +58,15 @@
                                 </buttonCell>
                             </column>
                         </cells>
+                        <connections>
+                            <action selector="changeSortByPreferences:" target="-2" id="LJv-Vd-1oP"/>
+                        </connections>
                     </matrix>
                     <matrix verticalHuggingPriority="750" fixedFrame="YES" allowsEmptySelection="NO" autorecalculatesCellSize="YES" translatesAutoresizingMaskIntoConstraints="NO" id="onM-ec-R4w">
-                        <rect key="frame" x="178" y="105" width="200" height="38"/>
+                        <rect key="frame" x="135" y="99" width="134" height="38"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                        <size key="cellSize" width="96" height="18"/>
+                        <size key="cellSize" width="134" height="18"/>
                         <size key="intercellSpacing" width="4" height="2"/>
                         <buttonCell key="prototype" type="radio" title="Radio" imagePosition="left" alignment="left" inset="2" id="BJe-nX-TAb">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -74,9 +84,12 @@
                                 </buttonCell>
                             </column>
                         </cells>
+                        <connections>
+                            <action selector="changeOrderPreferences:" target="-2" id="Jbn-mc-xAX"/>
+                        </connections>
                     </matrix>
                     <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="RDK-sN-PzT">
-                        <rect key="frame" x="108" y="179" width="75" height="17"/>
+                        <rect key="frame" x="65" y="173" width="75" height="17"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Sort by:" id="RuJ-ca-kUV">
                             <font key="font" metaFont="system"/>
@@ -85,15 +98,18 @@
                         </textFieldCell>
                     </textField>
                     <button fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="zOK-6a-GlU">
-                        <rect key="frame" x="156" y="58" width="186" height="18"/>
+                        <rect key="frame" x="113" y="52" width="186" height="18"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <buttonCell key="cell" type="check" title="Show System processes" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="pPl-7n-jfa">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                             <font key="font" metaFont="system"/>
                         </buttonCell>
+                        <connections>
+                            <action selector="changeShowSystemProcessesPreferences:" target="-2" id="cIC-yz-Izc"/>
+                        </connections>
                     </button>
                     <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="bkv-kB-Keh">
-                        <rect key="frame" x="108" y="126" width="57" height="17"/>
+                        <rect key="frame" x="65" y="120" width="57" height="17"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Order:" id="4Di-07-seC">
                             <font key="font" metaFont="system"/>

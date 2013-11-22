@@ -21,6 +21,7 @@
 	NSMutableArray *_runningApplications;
 	NSMutableArray *_runningSystemProcesses;
 	int _sortKey;
+	BOOL _orderAsc;
 	AppInspector *_appInspector;
 }
 

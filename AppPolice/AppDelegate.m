@@ -53,6 +53,11 @@
 	[_statusbarItemController setStatusbarItemMenu:mainMenu];
 	
 	
+	NSString *defaultsPath = [[NSBundle mainBundle] pathForResource:@"UserDefaults" ofType:@"plist"];
+	NSDictionary *defaults = [NSDictionary dictionaryWithContentsOfFile:defaultsPath];
+	[[NSUserDefaults standardUserDefaults] registerDefaults:defaults];
+	
+	
 //	CMMenuItem *item = [[[CMMenuItem alloc] initWithTitle:@"Free" action:@selector(freeMenus:)] autorelease];
 //	[item setTarget:self];
 //	[mainMenu addItem:item];
@@ -82,6 +87,11 @@
 }
 
 
+//- (void)setupDefaultPreferences {
+//	NSString *defaultsPath = [[NSBundle mainBundle] pathForResource:@"UserDefaults" ofType:@"plist"];
+//	NSDictionary *defaults = [NSDictionary dictionaryWithContentsOfFile:defaultsPath];
+//	[[NSUserDefaults standardUserDefaults] registerDefaults:defaults];
+//}
 
 
 

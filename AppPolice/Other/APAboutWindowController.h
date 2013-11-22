@@ -15,6 +15,9 @@
 	NSURLConnection *_connection;
 	NSMutableData *_receivedData;	// used during NSURLConnection
 	NSTextField *_statusTextField;
+	struct {
+		int update_available;
+	} _flags;
 }
 
 - (IBAction)checkUpdates:(id)sender;
