@@ -59,7 +59,6 @@
 
 
 - (void)viewDidMoveToSuperview {
-	NSLog(@"url textfield did move to window");
 	NSString *string = [self stringValue];
 	NSDictionary *attributes = @{
 		NSFontAttributeName : [NSFont fontWithName:@"Lucida Grande" size:11.0],
@@ -89,7 +88,6 @@
 
 
 - (void)mouseExited:(NSEvent *)theEvent {
-	NSLog(@"mouse exit");
 	// Update cursor
 	[[NSCursor arrowCursor] set];
 	// Update string underline attribute
@@ -108,9 +106,6 @@
 - (void)mouseUp:(NSEvent *)theEvent {
 	NSPoint mouseLocation = [theEvent locationInWindow];
 	mouseLocation = [[self superview] convertPoint:mouseLocation fromView:nil];
-//	NSLog(@"mouse up: %@, %@", NSStringFromPoint(mouseLocation), NSStringFromRect([self frame]));
-	
-	NSLog(@"url: %@", [self URLAttribute]);
 	
 	if (NSPointInRect(mouseLocation, [self frame]) && [self URLAttribute])
 		(void) [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:[self URLAttribute]]];

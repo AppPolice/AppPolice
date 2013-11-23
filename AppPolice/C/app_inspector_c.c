@@ -1,6 +1,6 @@
 //
 //  app_inspector_c.c
-//  Ishimura
+//  AppPolice
 //
 //  Created by Maksym on 30/10/13.
 //  Copyright (c) 2013 Maksym Stefanchuk. All rights reserved.

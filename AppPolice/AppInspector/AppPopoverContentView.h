@@ -1,6 +1,6 @@
 //
 //  AppPopoverContentView.h
-//  Ishimura
+//  AppPolice
 //
 //  Created by Maksym on 02/11/13.
 //  Copyright (c) 2013 Maksym Stefanchuk. All rights reserved.

@@ -1,13 +1,13 @@
 //
 //  app_inspector_c.h
-//  Ishimura
+//  AppPolice
 //
 //  Created by Maksym on 30/10/13.
 //  Copyright (c) 2013 Maksym Stefanchuk. All rights reserved.
 //
 
-#ifndef Ishimura_app_inspector_c_h
-#define Ishimura_app_inspector_c_h
+#ifndef AppPolice_app_inspector_c_h
+#define AppPolice_app_inspector_c_h
 
 #include <sys/types.h>
 #include <stdint.h>

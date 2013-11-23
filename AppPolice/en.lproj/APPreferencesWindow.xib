@@ -16,7 +16,7 @@
         </customObject>
         <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
         <customObject id="-3" userLabel="Application"/>
-        <window title="AppPolice Preferences" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" releasedWhenClosed="NO" showsToolbarButton="NO" wantsToBeColor="NO" visibleAtLaunch="NO" animationBehavior="default" id="1">
+        <window title="AppPolice Preferences" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" releasedWhenClosed="NO" showsToolbarButton="NO" wantsToBeColor="NO" visibleAtLaunch="NO" animationBehavior="default" id="1" propertyAccessControl="all">
             <windowStyleMask key="styleMask" titled="YES" closable="YES"/>
             <windowPositionMask key="initialPositionMask" topStrut="YES"/>
             <rect key="contentRect" x="196" y="614" width="402" height="220"/>
@@ -25,8 +25,8 @@
                 <rect key="frame" x="0.0" y="0.0" width="402" height="220"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <button fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="7cy-7N-Nnp">
-                        <rect key="frame" x="113" y="32" width="186" height="18"/>
+                    <button translatesAutoresizingMaskIntoConstraints="NO" id="7cy-7N-Nnp">
+                        <rect key="frame" x="113" y="32" width="170" height="18"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <buttonCell key="cell" type="check" title="Start AppPolice at login" bezelStyle="regularSquare" imagePosition="left" inset="2" id="xTX-0r-NG1">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -36,11 +36,11 @@
                             <action selector="changeLaunchAtLoginPreferences:" target="-2" id="0PE-bU-AMa"/>
                         </connections>
                     </button>
-                    <matrix verticalHuggingPriority="750" fixedFrame="YES" allowsEmptySelection="NO" autorecalculatesCellSize="YES" translatesAutoresizingMaskIntoConstraints="NO" id="vlZ-Rz-eYj">
-                        <rect key="frame" x="133" y="152" width="136" height="38"/>
+                    <matrix verticalHuggingPriority="750" allowsEmptySelection="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vlZ-Rz-eYj">
+                        <rect key="frame" x="146" y="150" width="133" height="38"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                        <size key="cellSize" width="136" height="18"/>
+                        <size key="cellSize" width="133" height="18"/>
                         <size key="intercellSpacing" width="4" height="2"/>
                         <buttonCell key="prototype" type="radio" title="Radio" imagePosition="left" alignment="left" inset="2" id="CvC-Z4-lX1">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -62,11 +62,11 @@
                             <action selector="changeSortByPreferences:" target="-2" id="LJv-Vd-1oP"/>
                         </connections>
                     </matrix>
-                    <matrix verticalHuggingPriority="750" fixedFrame="YES" allowsEmptySelection="NO" autorecalculatesCellSize="YES" translatesAutoresizingMaskIntoConstraints="NO" id="onM-ec-R4w">
-                        <rect key="frame" x="135" y="99" width="134" height="38"/>
+                    <matrix verticalHuggingPriority="750" allowsEmptySelection="NO" translatesAutoresizingMaskIntoConstraints="NO" id="onM-ec-R4w">
+                        <rect key="frame" x="146" y="97" width="96" height="38"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                        <size key="cellSize" width="134" height="18"/>
+                        <size key="cellSize" width="96" height="18"/>
                         <size key="intercellSpacing" width="4" height="2"/>
                         <buttonCell key="prototype" type="radio" title="Radio" imagePosition="left" alignment="left" inset="2" id="BJe-nX-TAb">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -88,8 +88,8 @@
                             <action selector="changeOrderPreferences:" target="-2" id="Jbn-mc-xAX"/>
                         </connections>
                     </matrix>
-                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="RDK-sN-PzT">
-                        <rect key="frame" x="65" y="173" width="75" height="17"/>
+                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="RDK-sN-PzT">
+                        <rect key="frame" x="78" y="171" width="53" height="17"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Sort by:" id="RuJ-ca-kUV">
                             <font key="font" metaFont="system"/>
@@ -97,10 +97,10 @@
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <button fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="zOK-6a-GlU">
-                        <rect key="frame" x="113" y="52" width="186" height="18"/>
+                    <button translatesAutoresizingMaskIntoConstraints="NO" id="zOK-6a-GlU">
+                        <rect key="frame" x="113" y="52" width="171" height="18"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                        <buttonCell key="cell" type="check" title="Show System processes" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="pPl-7n-jfa">
+                        <buttonCell key="cell" type="check" title="Show system processes" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="pPl-7n-jfa">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                             <font key="font" metaFont="system"/>
                         </buttonCell>
@@ -108,8 +108,8 @@
                             <action selector="changeShowSystemProcessesPreferences:" target="-2" id="cIC-yz-Izc"/>
                         </connections>
                     </button>
-                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="bkv-kB-Keh">
-                        <rect key="frame" x="65" y="120" width="57" height="17"/>
+                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="bkv-kB-Keh">
+                        <rect key="frame" x="78" y="118" width="45" height="17"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Order:" id="4Di-07-seC">
                             <font key="font" metaFont="system"/>
@@ -118,6 +118,20 @@
                         </textFieldCell>
                     </textField>
                 </subviews>
+                <constraints>
+                    <constraint firstItem="vlZ-Rz-eYj" firstAttribute="leading" secondItem="2" secondAttribute="leading" constant="146" id="1X3-SC-rYX"/>
+                    <constraint firstItem="bkv-kB-Keh" firstAttribute="top" secondItem="2" secondAttribute="top" constant="85" id="F8t-7L-tZu"/>
+                    <constraint firstItem="zOK-6a-GlU" firstAttribute="top" secondItem="2" secondAttribute="top" constant="152" id="FMa-EQ-QJE"/>
+                    <constraint firstItem="onM-ec-R4w" firstAttribute="leading" secondItem="2" secondAttribute="leading" constant="146" id="Li6-Md-0o6"/>
+                    <constraint firstItem="7cy-7N-Nnp" firstAttribute="leading" secondItem="2" secondAttribute="leading" constant="115" id="MPq-pS-ouk"/>
+                    <constraint firstItem="zOK-6a-GlU" firstAttribute="leading" secondItem="2" secondAttribute="leading" constant="115" id="N1l-3h-mVv"/>
+                    <constraint firstItem="RDK-sN-PzT" firstAttribute="leading" secondItem="2" secondAttribute="leading" constant="80" id="QdD-bn-l57"/>
+                    <constraint firstItem="7cy-7N-Nnp" firstAttribute="top" secondItem="2" secondAttribute="top" constant="172" id="RUd-cM-94S"/>
+                    <constraint firstItem="RDK-sN-PzT" firstAttribute="top" secondItem="2" secondAttribute="top" constant="32" id="d4r-X6-hVm"/>
+                    <constraint firstItem="onM-ec-R4w" firstAttribute="top" secondItem="2" secondAttribute="top" constant="85" id="dq1-JL-P78"/>
+                    <constraint firstItem="vlZ-Rz-eYj" firstAttribute="top" secondItem="2" secondAttribute="top" constant="32" id="hnR-kE-ADo"/>
+                    <constraint firstItem="bkv-kB-Keh" firstAttribute="leading" secondItem="2" secondAttribute="leading" constant="80" id="mYN-3E-Woo"/>
+                </constraints>
             </view>
             <connections>
                 <outlet property="delegate" destination="-2" id="4"/>

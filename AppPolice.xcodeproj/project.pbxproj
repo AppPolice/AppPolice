@@ -11,15 +11,12 @@
 		A00D28551803E85F00D71F71 /* AppLimitSliderCell.m in Sources */ = {isa = PBXBuildFile; fileRef = A00D28541803E85F00D71F71 /* AppLimitSliderCell.m */; };
 		A00FBF4D17DF54BF0083B482 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A00FBF4C17DF54BF0083B482 /* QuartzCore.framework */; };
 		A0100693182106A10017296D /* app_inspector_c.c in Sources */ = {isa = PBXBuildFile; fileRef = A0100692182106A10017296D /* app_inspector_c.c */; };
-		A01191641807DE88004777D9 /* StatusbarMenu.m in Sources */ = {isa = PBXBuildFile; fileRef = A01191631807DE88004777D9 /* StatusbarMenu.m */; };
 		A01191671807DEF8004777D9 /* StatusbarItemView.m in Sources */ = {isa = PBXBuildFile; fileRef = A01191661807DEF8004777D9 /* StatusbarItemView.m */; };
 		A011916A1807E2EF004777D9 /* StatusbarMenuController.m in Sources */ = {isa = PBXBuildFile; fileRef = A01191691807E2EF004777D9 /* StatusbarMenuController.m */; };
 		A011916D1807E812004777D9 /* StatusbarItemController.m in Sources */ = {isa = PBXBuildFile; fileRef = A011916C1807E812004777D9 /* StatusbarItemController.m */; };
 		A01453BD17833F4D00FFFB39 /* AppInspector.xib in Resources */ = {isa = PBXBuildFile; fileRef = A0154E811782E300008CF159 /* AppInspector.xib */; };
 		A01453BE17833F5700FFFB39 /* PopoverContentView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A0154E7F1782E05B008CF159 /* PopoverContentView.xib */; };
 		A0154E851782EC6F008CF159 /* AppInspector.m in Sources */ = {isa = PBXBuildFile; fileRef = A0154E841782E972008CF159 /* AppInspector.m */; };
-		A02EFDE0182B7313000FE2CF /* MYQuiteView.m in Sources */ = {isa = PBXBuildFile; fileRef = A02EFDDF182B7313000FE2CF /* MYQuiteView.m */; };
-		A02EFDE3182B76DA000FE2CF /* MYWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = A02EFDE2182B76DA000FE2CF /* MYWindow.m */; };
 		A0448B5B183BBE7A0056818A /* ChromeMenu.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A0448B58183BBE490056818A /* ChromeMenu.framework */; };
 		A0448B61183BEB9D0056818A /* ChromeMenu.framework in Copy Files */ = {isa = PBXBuildFile; fileRef = A0448B58183BBE490056818A /* ChromeMenu.framework */; };
 		A04FA3D3174D4BD9002E688C /* selfprofile.c in Sources */ = {isa = PBXBuildFile; fileRef = A04FA3D2174D4BD9002E688C /* selfprofile.c */; };
@@ -40,7 +37,6 @@
 		A07E4B90183CBD1900D773E5 /* APPreferencesController.m in Sources */ = {isa = PBXBuildFile; fileRef = A07E4B8E183CBD1900D773E5 /* APPreferencesController.m */; };
 		A07E4B94183CE46700D773E5 /* APURLTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = A07E4B93183CE46700D773E5 /* APURLTextField.m */; };
 		A0ADD314174A1438002BAADE /* subroutines.c in Sources */ = {isa = PBXBuildFile; fileRef = A0ADD313174A1438002BAADE /* subroutines.c */; };
-		A0ADD317174A24A2002BAADE /* AppsInspector.m in Sources */ = {isa = PBXBuildFile; fileRef = A0ADD316174A24A2002BAADE /* AppsInspector.m */; };
 		A0AED3B41802B571005F4F9D /* AppLoadLevelIndicator.m in Sources */ = {isa = PBXBuildFile; fileRef = A0AED3B31802B571005F4F9D /* AppLoadLevelIndicator.m */; };
 		A0AED3B71802EA9E005F4F9D /* AppInfoBlockView.m in Sources */ = {isa = PBXBuildFile; fileRef = A0AED3B61802EA9E005F4F9D /* AppInfoBlockView.m */; };
 		A0B5AD3418259455006E9898 /* AppPopoverContentView.m in Sources */ = {isa = PBXBuildFile; fileRef = A0B5AD3318259455006E9898 /* AppPopoverContentView.m */; };
@@ -100,8 +96,6 @@
 		A00FBF4C17DF54BF0083B482 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		A0100691182106900017296D /* app_inspector_c.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = app_inspector_c.h; path = C/app_inspector_c.h; sourceTree = "<group>"; };
 		A0100692182106A10017296D /* app_inspector_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = app_inspector_c.c; path = C/app_inspector_c.c; sourceTree = "<group>"; };
-		A01191621807DE88004777D9 /* StatusbarMenu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = StatusbarMenu.h; path = Statusbar/StatusbarMenu.h; sourceTree = "<group>"; };
-		A01191631807DE88004777D9 /* StatusbarMenu.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = StatusbarMenu.m; path = Statusbar/StatusbarMenu.m; sourceTree = "<group>"; };
 		A01191651807DEF8004777D9 /* StatusbarItemView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = StatusbarItemView.h; path = Statusbar/StatusbarItemView.h; sourceTree = "<group>"; };
 		A01191661807DEF8004777D9 /* StatusbarItemView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = StatusbarItemView.m; path = Statusbar/StatusbarItemView.m; sourceTree = "<group>"; };
 		A01191681807E2EF004777D9 /* StatusbarMenuController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = StatusbarMenuController.h; path = Statusbar/StatusbarMenuController.h; sourceTree = "<group>"; };
@@ -112,10 +106,6 @@
 		A0154E821782E300008CF159 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/AppInspector.xib; sourceTree = "<group>"; };
 		A0154E831782E972008CF159 /* AppInspector.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = AppInspector.h; path = AppInspector/AppInspector.h; sourceTree = "<group>"; };
 		A0154E841782E972008CF159 /* AppInspector.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = AppInspector.m; path = AppInspector/AppInspector.m; sourceTree = "<group>"; };
-		A02EFDDE182B7313000FE2CF /* MYQuiteView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MYQuiteView.h; path = Controllers/MYQuiteView.h; sourceTree = "<group>"; };
-		A02EFDDF182B7313000FE2CF /* MYQuiteView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MYQuiteView.m; path = Controllers/MYQuiteView.m; sourceTree = "<group>"; };
-		A02EFDE1182B76DA000FE2CF /* MYWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MYWindow.h; path = Controllers/MYWindow.h; sourceTree = "<group>"; };
-		A02EFDE2182B76DA000FE2CF /* MYWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MYWindow.m; path = Controllers/MYWindow.m; sourceTree = "<group>"; };
 		A0448A5D183B7BD60056818A /* AppPolice.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = AppPolice.entitlements; sourceTree = "<group>"; };
 		A0448B52183BBE490056818A /* ChromeMenu.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ChromeMenu.xcodeproj; path = ../ChromeMenu/ChromeMenu.xcodeproj; sourceTree = "<group>"; };
 		A04FA3D2174D4BD9002E688C /* selfprofile.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = selfprofile.c; path = C/selfprofile.c; sourceTree = "<group>"; };
@@ -155,8 +145,6 @@
 		A07E4B93183CE46700D773E5 /* APURLTextField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = APURLTextField.m; path = Other/APURLTextField.m; sourceTree = "<group>"; };
 		A0ADD312174A142A002BAADE /* subroutines.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = subroutines.h; path = C/subroutines.h; sourceTree = "<group>"; };
 		A0ADD313174A1438002BAADE /* subroutines.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = subroutines.c; path = C/subroutines.c; sourceTree = "<group>"; };
-		A0ADD315174A24A2002BAADE /* AppsInspector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppsInspector.h; path = Controllers/AppsInspector.h; sourceTree = "<group>"; };
-		A0ADD316174A24A2002BAADE /* AppsInspector.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppsInspector.m; path = Controllers/AppsInspector.m; sourceTree = "<group>"; };
 		A0AED3B21802B571005F4F9D /* AppLoadLevelIndicator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppLoadLevelIndicator.h; path = AppInspector/AppLoadLevelIndicator.h; sourceTree = "<group>"; };
 		A0AED3B31802B571005F4F9D /* AppLoadLevelIndicator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppLoadLevelIndicator.m; path = AppInspector/AppLoadLevelIndicator.m; sourceTree = "<group>"; };
 		A0AED3B51802EA9E005F4F9D /* AppInfoBlockView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppInfoBlockView.h; path = AppInspector/AppInfoBlockView.h; sourceTree = "<group>"; };
@@ -198,8 +186,6 @@
 				A01191691807E2EF004777D9 /* StatusbarMenuController.m */,
 				A011916B1807E812004777D9 /* StatusbarItemController.h */,
 				A011916C1807E812004777D9 /* StatusbarItemController.m */,
-				A01191621807DE88004777D9 /* StatusbarMenu.h */,
-				A01191631807DE88004777D9 /* StatusbarMenu.m */,
 				A01191651807DEF8004777D9 /* StatusbarItemView.h */,
 				A01191661807DEF8004777D9 /* StatusbarItemView.m */,
 			);
@@ -290,12 +276,6 @@
 			children = (
 				A063797917492AEF006F2347 /* AppDelegate.h */,
 				A063797A17492AEF006F2347 /* AppDelegate.m */,
-				A0ADD315174A24A2002BAADE /* AppsInspector.h */,
-				A0ADD316174A24A2002BAADE /* AppsInspector.m */,
-				A02EFDDE182B7313000FE2CF /* MYQuiteView.h */,
-				A02EFDDF182B7313000FE2CF /* MYQuiteView.m */,
-				A02EFDE1182B76DA000FE2CF /* MYWindow.h */,
-				A02EFDE2182B76DA000FE2CF /* MYWindow.m */,
 				A063797317492AEF006F2347 /* main.m */,
 				A01191611807DE2C004777D9 /* Statusbar */,
 				A0154E7C1782DEDA008CF159 /* AppInspector */,
@@ -513,18 +493,14 @@
 				A0B5AD3418259455006E9898 /* AppPopoverContentView.m in Sources */,
 				A0AED3B41802B571005F4F9D /* AppLoadLevelIndicator.m in Sources */,
 				A0100693182106A10017296D /* app_inspector_c.c in Sources */,
-				A01191641807DE88004777D9 /* StatusbarMenu.m in Sources */,
 				A07E4B87183CB64900D773E5 /* APAboutWindowController.m in Sources */,
 				A011916A1807E2EF004777D9 /* StatusbarMenuController.m in Sources */,
 				A01191671807DEF8004777D9 /* StatusbarItemView.m in Sources */,
 				A063797417492AEF006F2347 /* main.m in Sources */,
 				A063797B17492AEF006F2347 /* AppDelegate.m in Sources */,
 				A063798717492D42006F2347 /* proc_cpulim.c in Sources */,
-				A02EFDE3182B76DA000FE2CF /* MYWindow.m in Sources */,
 				A0ADD314174A1438002BAADE /* subroutines.c in Sources */,
-				A0ADD317174A24A2002BAADE /* AppsInspector.m in Sources */,
 				A07E4B94183CE46700D773E5 /* APURLTextField.m in Sources */,
-				A02EFDE0182B7313000FE2CF /* MYQuiteView.m in Sources */,
 				A04FA3D3174D4BD9002E688C /* selfprofile.c in Sources */,
 				A011916D1807E812004777D9 /* StatusbarItemController.m in Sources */,
 				A0154E851782EC6F008CF159 /* AppInspector.m in Sources */,

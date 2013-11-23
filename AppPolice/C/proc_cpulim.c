@@ -21,7 +21,7 @@
 #include "proc_cpulim.h"
 
 
-
+#define TASK_SCHEDULE_INTERVAL_MIN 1000000		// 1ms
 #define DISPATCH_QUEUE_LIMITER 0
 #define DISPATCH_QUEUE_UPDTASKSTATS	1
 
@@ -29,11 +29,7 @@
 /**************** Private Declarations ****************/
 
 /* options */
-/* This option corresponds for how often proc_cpulim will wake up to monitor processes.
-	Value is in nanoseconds, for example 200000000 means proc_cpulim will be awake
-	every 0.2s to reschedule processes for sleep time. This value should never be zero. */
-uint64_t opt_task_schedule_interval = 100000000;
-short opt_verbose_level = 1;
+static short opt_verbose_level = 0;
 
 struct proc_taskstats_s {
 	pid_t pid;
@@ -47,7 +43,16 @@ typedef struct proc_taskstats_s *proc_taskstats_t;
 
 static proc_taskstats_t _proc_taskstats_list;	/* pointer to the first task in list */
 
-static int _keep_limiter_running;							// flag for a limiter
+/* This option corresponds for how often proc_cpulim will wake up to monitor processes.
+ Value is in nanoseconds, for example 200000000 means proc_cpulim will be awake
+ every 0.2s to reschedule processes for sleep time. This value should never be zero. */
+static uint64_t _task_schedule_interval = 30000000;		// default is 30ms
+static int _keep_limiter_running;
+// Global variable _keep_limiter_running specifies whether limiter should run
+// or not. When _keep_limiter_running is set to 0 limiter could still be running
+// until all tasks in queue are processed. _limit_is_running on other other hand
+// tells whether limiter is running at this moment or not.
+static int _limiter_is_running;
 static volatile int32_t _managing_dispatch_queue_locked;	// safely create, return or release queue
 
 static void do_proc_cpulim_set(int pid, float newlim);
@@ -162,16 +167,10 @@ static void do_proc_cpulim_set(int pid, float newlim) {
  *
  */
 void proc_cpulim_resume(void) {
-	// Global variable _keep_limiter_running specifies whether limiter should run
-	// or not. When _keep_limiter_running is set to 0 limiter could still be running
-	// until all tasks in queue are processed. If in this time window this method
-	// is called |limiter_is_running| tells the caller that limiter is busy.
-	static int limiter_is_running = 0;
-	
 	if (_keep_limiter_running)
 		return;
 	
-	if (limiter_is_running) {
+	if (_limiter_is_running) {
 		if (opt_verbose_level) {
 			fputs("[proc_cpulim] Info: Limiter is still running. Try when it's fully stopped.\n", stdout);
 			fflush(stdout);
@@ -180,7 +179,7 @@ void proc_cpulim_resume(void) {
 	}
 	
 	
-	limiter_is_running = 1;
+	_limiter_is_running = 1;
 	_keep_limiter_running = 1;
 	dispatch_queue_t limiter_queue = get_dispatch_queue(DISPATCH_QUEUE_LIMITER);
 	
@@ -195,7 +194,7 @@ void proc_cpulim_resume(void) {
 		//    - internally, when there are no tasks left with non-zero limit level.
 			
 		release_dispatch_queue(DISPATCH_QUEUE_LIMITER);
-		limiter_is_running = 0;
+		_limiter_is_running = 0;
 	});
 }
 
@@ -210,7 +209,7 @@ static void proc_limiter_resume(void) {
 	dispatch_queue_t updtaskstats_queue;
 	
 	/* before resuming, make sure some values are valid */
-	if (opt_task_schedule_interval < 1)
+	if (_task_schedule_interval < 1)
 		return;
 	
 	updtaskstats_queue = get_dispatch_queue(DISPATCH_QUEUE_UPDTASKSTATS);
@@ -231,7 +230,7 @@ static void proc_limiter_resume(void) {
 			loop_slept = do_sleep_loop();
 		});
 		
-		sleepns = (int64_t)(opt_task_schedule_interval - loop_slept);
+		sleepns = (int64_t)(_task_schedule_interval - loop_slept);
 		if (sleepns > 0) {
 			sleepspec = timespec_from_ns(sleepns);
 			nanosleep(&sleepspec, NULL);
@@ -302,26 +301,26 @@ static uint proc_tasks_calcsleeptime(void) {
 		
 		
 		time_diff = task->time - time_prev;
-		cpuload = (float)time_diff / opt_task_schedule_interval;
+		cpuload = (float)time_diff / _task_schedule_interval;
 
-		work_time = (int64_t)(opt_task_schedule_interval - task->sleep_time);
+		work_time = (int64_t)(_task_schedule_interval - task->sleep_time);
 		if (work_time == 0) {
 			// If work_time of a process is nearly zero (highloaded and throttled extensively) flipping it to an opposite value
 			//	of sleep_time won't be a big deal because of the expression (cpuload - task->lim) ---> to zero, so the sleep_time
 			//	will balance in the same ranges.
 			//	But in this case, if the limit is raised the sleep_time will be able to correlate with the new limit. In other words
-			//	sleep_time will be dropping from nearly 'opt_task_schedule_interval' values down letting process run freely.
-			//	Otherwise, zero value of work_time will hang the process sleeping 'opt_task_schedule_interval' nanoseconds always
+			//	sleep_time will be dropping from nearly '_task_schedule_interval' values down letting process run freely.
+			//	Otherwise, zero value of work_time will hang the process sleeping '_task_schedule_interval' nanoseconds always
 			//	despite raising the limit. E.g:
 			//		sleep_time = sleep_time + 0 * (0.01 - 0.5) / 0.5;	will yield constant sleep_time
-			work_time = (int64_t)opt_task_schedule_interval;
+			work_time = (int64_t)_task_schedule_interval;
 		}
 		sleep_time = (int64_t)floor(task->sleep_time + work_time * (cpuload - task->lim) / MAX(cpuload, task->lim));
 
 		if (sleep_time < 0) {
 			sleep_time = 0;
-		} else if (sleep_time > (int64_t)opt_task_schedule_interval) {
-			sleep_time = (int64_t)opt_task_schedule_interval;
+		} else if (sleep_time > (int64_t)_task_schedule_interval) {
+			sleep_time = (int64_t)_task_schedule_interval;
 		}
 		
 		task->sleep_time = (uint64_t)sleep_time;
@@ -566,6 +565,33 @@ static struct timespec timespec_from_ns(int64_t nanoseconds) {
 	}
 	
 	return timef;
+}
+
+
+/*
+ *
+ */
+int proc_cpulim_schedule_interval(unsigned int new_interval, unsigned int *old_interval) {
+	if (old_interval) {
+		*old_interval = (unsigned int)_task_schedule_interval;
+	}
+	
+	if (new_interval) {
+		if (new_interval < TASK_SCHEDULE_INTERVAL_MIN)
+			return(1);
+		
+		if (_limiter_is_running) {
+			dispatch_queue_t updtaskstats_queue = get_dispatch_queue(DISPATCH_QUEUE_UPDTASKSTATS);
+			dispatch_async(updtaskstats_queue, ^{
+				_task_schedule_interval = new_interval;
+				release_dispatch_queue(DISPATCH_QUEUE_UPDTASKSTATS);
+			});
+		} else {
+			_task_schedule_interval = new_interval;
+		}
+	}
+	
+	return(0);
 }
 
 

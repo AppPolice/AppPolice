@@ -11,6 +11,6 @@
 	<key>APLaunchAtLogin</key>
 	<false/>
 	<key>APProcCpulimTaskScheduleInterval</key>
-	<integer>100000000</integer>
+	<integer>30000000</integer>
 </dict>
 </plist>

@@ -1,12 +1,12 @@
 //
 //  AppLimitSliderCell.h
-//  Ishimura
+//  AppPolice
 //
 //  Created by Maksym on 10/8/13.
 //  Copyright (c) 2013 Maksym Stefanchuk. All rights reserved.
 //
 
-#import <AppKit/AppKit.h>
+#import <Cocoa/Cocoa.h>
 
 @interface AppLimitSliderCell : NSSliderCell
 {

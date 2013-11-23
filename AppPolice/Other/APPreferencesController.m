@@ -7,6 +7,7 @@
 //
 
 #import "APPreferencesController.h"
+#include "proc_cpulim.h"
 
 @implementation APPreferencesController
 

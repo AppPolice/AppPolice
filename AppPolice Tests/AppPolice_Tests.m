@@ -1,19 +1,19 @@
 //
-//  Ishimura_Tests.m
-//  Ishimura Tests
+//  AppPolice_Tests.m
+//  AppPolice Tests
 //
 //  Created by Maksym on 9/5/13.
 //  Copyright (c) 2013 Maksym Stefanchuk. All rights reserved.
 //
 
 #import <XCTest/XCTest.h>
-#import "CMMenu.h"
+#import <ChromeMenu/ChromeMenu.h>
 
-@interface Ishimura_Tests : XCTestCase
+@interface AppPolice_Tests : XCTestCase
 
 @end
 
-@implementation Ishimura_Tests
+@implementation AppPolice_Tests
 
 - (void)setUp {
     [super setUp];

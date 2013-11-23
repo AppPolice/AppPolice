@@ -1,12 +1,12 @@
 //
 //  AppLimitHintView.h
-//  Ishimura
+//  AppPolice
 //
 //  Created by Maksym on 10/9/13.
 //  Copyright (c) 2013 Maksym Stefanchuk. All rights reserved.
 //
 
-#import <AppKit/AppKit.h>
+#import <Cocoa/Cocoa.h>
 
 @protocol AppLimitHintViewDelegate;
 

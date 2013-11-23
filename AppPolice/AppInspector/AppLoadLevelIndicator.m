@@ -1,12 +1,12 @@
 //
 //  AppLoadLevelIndicator.m
-//  Ishimura
+//  AppPolice
 //
 //  Created by Maksym on 10/7/13.
 //  Copyright (c) 2013 Maksym Stefanchuk. All rights reserved.
 //
 
-#import <AppKit/AppKit.h>
+#import <Cocoa/Cocoa.h>
 #import "AppLoadLevelIndicator.h"
 
 @implementation AppLoadLevelIndicator

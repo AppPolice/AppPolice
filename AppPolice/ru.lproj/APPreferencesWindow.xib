@@ -7,33 +7,40 @@
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="APPreferencesController">
             <connections>
+                <outlet property="launchAtLoginButton" destination="7cy-7N-Nnp" id="m6K-Vv-K91"/>
+                <outlet property="orderMatrix" destination="onM-ec-R4w" id="wme-MW-zco"/>
+                <outlet property="showSystemProcessesButton" destination="zOK-6a-GlU" id="9IT-eZ-arZ"/>
+                <outlet property="sortByMatrix" destination="vlZ-Rz-eYj" id="3Ah-id-rDi"/>
                 <outlet property="window" destination="1" id="3"/>
             </connections>
         </customObject>
         <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
         <customObject id="-3" userLabel="Application"/>
-        <window title="AppPolice Preferences" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" releasedWhenClosed="NO" showsToolbarButton="NO" wantsToBeColor="NO" animationBehavior="default" id="1">
+        <window title="AppPolice Настройки" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" releasedWhenClosed="NO" showsToolbarButton="NO" wantsToBeColor="NO" visibleAtLaunch="NO" animationBehavior="default" id="1" propertyAccessControl="all">
             <windowStyleMask key="styleMask" titled="YES" closable="YES"/>
             <windowPositionMask key="initialPositionMask" topStrut="YES"/>
-            <rect key="contentRect" x="196" y="614" width="470" height="230"/>
+            <rect key="contentRect" x="196" y="614" width="402" height="220"/>
             <rect key="screenRect" x="0.0" y="0.0" width="1920" height="1058"/>
             <view key="contentView" id="2">
-                <rect key="frame" x="0.0" y="0.0" width="470" height="230"/>
+                <rect key="frame" x="0.0" y="0.0" width="402" height="220"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <button fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="7cy-7N-Nnp">
-                        <rect key="frame" x="156" y="38" width="186" height="18"/>
+                    <button translatesAutoresizingMaskIntoConstraints="NO" id="7cy-7N-Nnp">
+                        <rect key="frame" x="56" y="32" width="290" height="18"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                        <buttonCell key="cell" type="check" title="Start AppPolice at login" bezelStyle="regularSquare" imagePosition="left" inset="2" id="xTX-0r-NG1">
+                        <buttonCell key="cell" type="check" title="Запускать AppPolice при входе в систему" bezelStyle="regularSquare" imagePosition="left" inset="2" id="xTX-0r-NG1">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                             <font key="font" metaFont="system"/>
                         </buttonCell>
+                        <connections>
+                            <action selector="changeLaunchAtLoginPreferences:" target="-2" id="0PE-bU-AMa"/>
+                        </connections>
                     </button>
-                    <matrix verticalHuggingPriority="750" fixedFrame="YES" allowsEmptySelection="NO" autorecalculatesCellSize="YES" translatesAutoresizingMaskIntoConstraints="NO" id="vlZ-Rz-eYj">
-                        <rect key="frame" x="176" y="158" width="164" height="38"/>
+                    <matrix verticalHuggingPriority="750" allowsEmptySelection="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vlZ-Rz-eYj">
+                        <rect key="frame" x="173" y="151" width="170" height="38"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                        <size key="cellSize" width="133" height="18"/>
+                        <size key="cellSize" width="170" height="18"/>
                         <size key="intercellSpacing" width="4" height="2"/>
                         <buttonCell key="prototype" type="radio" title="Radio" imagePosition="left" alignment="left" inset="2" id="CvC-Z4-lX1">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -41,22 +48,25 @@
                         </buttonCell>
                         <cells>
                             <column>
-                                <buttonCell type="radio" title="Application name" imagePosition="left" alignment="left" state="on" tag="1" inset="2" id="sjx-8G-8Xo">
+                                <buttonCell type="radio" title="Названию приложения" imagePosition="left" alignment="left" state="on" tag="1" inset="2" id="sjx-8G-8Xo">
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
-                                <buttonCell type="radio" title="Process ID" imagePosition="left" alignment="left" inset="2" id="mT1-12-EdP">
+                                <buttonCell type="radio" title="ID приложения" imagePosition="left" alignment="left" inset="2" id="mT1-12-EdP">
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
                             </column>
                         </cells>
+                        <connections>
+                            <action selector="changeSortByPreferences:" target="-2" id="LJv-Vd-1oP"/>
+                        </connections>
                     </matrix>
-                    <matrix verticalHuggingPriority="750" fixedFrame="YES" allowsEmptySelection="NO" autorecalculatesCellSize="YES" translatesAutoresizingMaskIntoConstraints="NO" id="onM-ec-R4w">
-                        <rect key="frame" x="178" y="105" width="200" height="38"/>
+                    <matrix verticalHuggingPriority="750" allowsEmptySelection="NO" translatesAutoresizingMaskIntoConstraints="NO" id="onM-ec-R4w">
+                        <rect key="frame" x="173" y="98" width="107" height="38"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                        <size key="cellSize" width="96" height="18"/>
+                        <size key="cellSize" width="107" height="18"/>
                         <size key="intercellSpacing" width="4" height="2"/>
                         <buttonCell key="prototype" type="radio" title="Radio" imagePosition="left" alignment="left" inset="2" id="BJe-nX-TAb">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -64,44 +74,64 @@
                         </buttonCell>
                         <cells>
                             <column>
-                                <buttonCell type="radio" title="Ascending" bezelStyle="regularSquare" imagePosition="left" alignment="left" state="on" tag="1" inset="2" id="uog-E2-4gL">
+                                <buttonCell type="radio" title="Возрастанию" bezelStyle="regularSquare" imagePosition="left" alignment="left" state="on" tag="1" inset="2" id="uog-E2-4gL">
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
-                                <buttonCell type="radio" title="Descending" imagePosition="left" alignment="left" inset="2" id="35c-pl-JkA">
+                                <buttonCell type="radio" title="Убыванию" imagePosition="left" alignment="left" inset="2" id="35c-pl-JkA">
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
                             </column>
                         </cells>
+                        <connections>
+                            <action selector="changeOrderPreferences:" target="-2" id="Jbn-mc-xAX"/>
+                        </connections>
                     </matrix>
-                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="RDK-sN-PzT">
-                        <rect key="frame" x="108" y="179" width="75" height="17"/>
+                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="RDK-sN-PzT">
+                        <rect key="frame" x="43" y="172" width="112" height="17"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Sort by:" id="RuJ-ca-kUV">
+                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Сортировать по:" id="RuJ-ca-kUV">
                             <font key="font" metaFont="system"/>
                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <button fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="zOK-6a-GlU">
-                        <rect key="frame" x="156" y="58" width="186" height="18"/>
+                    <button translatesAutoresizingMaskIntoConstraints="NO" id="zOK-6a-GlU">
+                        <rect key="frame" x="56" y="52" width="237" height="18"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                        <buttonCell key="cell" type="check" title="Show System processes" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="pPl-7n-jfa">
+                        <buttonCell key="cell" type="check" title="Показывать системные процессы" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="pPl-7n-jfa">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                             <font key="font" metaFont="system"/>
                         </buttonCell>
+                        <connections>
+                            <action selector="changeShowSystemProcessesPreferences:" target="-2" id="cIC-yz-Izc"/>
+                        </connections>
                     </button>
-                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="bkv-kB-Keh">
-                        <rect key="frame" x="108" y="126" width="57" height="17"/>
+                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="bkv-kB-Keh">
+                        <rect key="frame" x="43" y="119" width="113" height="17"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Order:" id="4Di-07-seC">
+                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Упорядочить по:" id="4Di-07-seC">
                             <font key="font" metaFont="system"/>
                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
                 </subviews>
+                <constraints>
+                    <constraint firstItem="onM-ec-R4w" firstAttribute="leading" secondItem="2" secondAttribute="leading" constant="173" id="9a8-Yi-PYi"/>
+                    <constraint firstItem="onM-ec-R4w" firstAttribute="top" secondItem="2" secondAttribute="top" constant="84" id="BJC-0M-7F1"/>
+                    <constraint firstItem="zOK-6a-GlU" firstAttribute="leading" secondItem="2" secondAttribute="leading" constant="58" id="FPb-Sf-FFA"/>
+                    <constraint firstItem="RDK-sN-PzT" firstAttribute="leading" secondItem="2" secondAttribute="leading" constant="45" id="IDs-Gn-42Z"/>
+                    <constraint firstItem="vlZ-Rz-eYj" firstAttribute="top" secondItem="2" secondAttribute="top" constant="31" id="ewU-QH-baS"/>
+                    <constraint firstItem="7cy-7N-Nnp" firstAttribute="leading" secondItem="2" secondAttribute="leading" constant="58" id="fTK-vM-vYa"/>
+                    <constraint firstItem="bkv-kB-Keh" firstAttribute="leading" secondItem="2" secondAttribute="leading" constant="45" id="m5K-Mn-tTd"/>
+                    <constraint firstItem="vlZ-Rz-eYj" firstAttribute="leading" secondItem="2" secondAttribute="leading" constant="173" id="nl6-uo-s7I"/>
+                    <constraint firstItem="zOK-6a-GlU" firstAttribute="top" secondItem="2" secondAttribute="top" constant="152" id="nnr-2M-W0R"/>
+                    <constraint firstItem="7cy-7N-Nnp" firstAttribute="top" secondItem="2" secondAttribute="top" constant="172" id="vPF-ns-GfB"/>
+                    <constraint firstItem="RDK-sN-PzT" firstAttribute="top" secondItem="2" secondAttribute="top" constant="31" id="zHG-5h-JJX"/>
+                    <constraint firstItem="bkv-kB-Keh" firstAttribute="top" secondItem="2" secondAttribute="top" constant="84" id="zwn-R0-iAW"/>
+                </constraints>
             </view>
             <connections>
                 <outlet property="delegate" destination="-2" id="4"/>

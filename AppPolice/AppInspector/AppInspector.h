@@ -1,13 +1,12 @@
 //
 //  AppInspectorController.h
-//  Ishimura
+//  AppPolice
 //
 //  Created by Maksym on 7/2/13.
 //  Copyright (c) 2013 Maksym Stefanchuk. All rights reserved.
 //
 
-#import <AppKit/AppKit.h>
-//#import "ChromeMenu.h"
+#import <Cocoa/Cocoa.h>
 #import <ChromeMenu/ChromeMenu.h>
 
 #define APApplicationInfoNameKey @"appInfoNameKey"

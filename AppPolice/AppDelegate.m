@@ -1,6 +1,6 @@
 //
 //  AppDelegate.m
-//  cpulim
+//  AppPolice
 //
 //  Created by Maksym on 5/19/13.
 //  Copyright (c) 2013 Maksym Stefanchuk. All rights reserved.
@@ -10,9 +10,6 @@
 #import "StatusbarItemController.h"
 #import "StatusbarMenuController.h"
 #import <ChromeMenu/ChromeMenu.h>
-
-// temp
-#import "StatusbarMenu.h"
 
 #include "C/proc_cpulim.h"
 #include "C/selfprofile.h"
@@ -24,7 +21,6 @@
 - (void)dealloc {
 	[_statusbarItemController release];
 	[_statusbarMenuController release];
-	
     [super dealloc];
 }
 
@@ -48,36 +44,21 @@
 	profiling_print_stats();
 #endif
 	
+	// Add status item with menu
 	_statusbarMenuController = [[StatusbarMenuController alloc] init];
 	CMMenu *mainMenu = [_statusbarMenuController mainMenu];
 	[_statusbarItemController setStatusbarItemMenu:mainMenu];
 	
-	
+	// Register default preferences
 	NSString *defaultsPath = [[NSBundle mainBundle] pathForResource:@"UserDefaults" ofType:@"plist"];
 	NSDictionary *defaults = [NSDictionary dictionaryWithContentsOfFile:defaultsPath];
-	[[NSUserDefaults standardUserDefaults] registerDefaults:defaults];
+	NSUserDefaults *preferences = [NSUserDefaults standardUserDefaults];
+	[preferences registerDefaults:defaults];
 	
-	
-//	CMMenuItem *item = [[[CMMenuItem alloc] initWithTitle:@"Free" action:@selector(freeMenus:)] autorelease];
-//	[item setTarget:self];
-//	[mainMenu addItem:item];
-
-
+	// Set default task schedule interval
+	unsigned int task_schedule_interval = (unsigned int)[preferences integerForKey:@"APProcCpulimTaskScheduleInterval"];
+	(void) proc_cpulim_schedule_interval(task_schedule_interval, NULL);
 }
-
-
-//- (void)freeMenus:(id)sender {
-//	[self performSelector:@selector(freeMenusHelper) withObject:nil afterDelay:0 inModes:[NSArray arrayWithObject:NSRunLoopCommonModes]];
-//}
-//
-//- (void)freeMenusHelper {
-//	NSLog(@"free menus");
-////	[_statusbarItemController setStatusbarItemMenu:nil];
-//	[_statusbarItemController release];
-//	[_statusbarMenuController release];
-//	[_statusbarMenuController release];
-//}
-
 
 
 - (void)applicationWillTerminate:(NSNotification *)notification {
@@ -86,84 +67,6 @@
 	proc_cpulim_suspend_wait();
 }
 
-
-//- (void)setupDefaultPreferences {
-//	NSString *defaultsPath = [[NSBundle mainBundle] pathForResource:@"UserDefaults" ofType:@"plist"];
-//	NSDictionary *defaults = [NSDictionary dictionaryWithContentsOfFile:defaultsPath];
-//	[[NSUserDefaults standardUserDefaults] registerDefaults:defaults];
-//}
-
-
-
-
-
-
-
-
-
-
-- (IBAction)toggleMainMenu:(id)sender {
-	[[_statusbarMenuController mainMenu] popUpMenuPositioningItem:nil atLocation:NSMakePoint(200, 800) inView:nil];
-}
-
-
-- (void)timerFire:(NSTimer *)timer {
-	NSLog(@"timer fire");
-}
-
-
-- (void)actionForMenuItem {
-	NSLog(@"item pressed");
-}
-
-- (IBAction)someAction:(id)sender {
-//	[self performSelector:@selector(delayedNSlog) withObject:nil afterDelay:5.0 inModes:[NSArray arrayWithObject:NSRunLoopCommonModes]];
-	NSLog(@"delay 5 sec before nslog");
-	[self performSelector:@selector(delayedNSlog) withObject:nil afterDelay:5.0];
-}
-
-- (void)delayedNSlog {
-	NSLog(@"\n\n\n!!!!!!!!!!!!!!!!!!!!!!! delayed nslog button click!!\n\n");
-}
-
-
-- (IBAction)startRunLoop1:(id)sender {
-	static BOOL keepRunning = false;
-	if (! keepRunning) {
-		keepRunning = true;
-		NSLog(@"Starting run loop 1");
-	} else {
-		keepRunning = false;
-		NSLog(@"Stopping run loop 1");
-	}
-
-	while (keepRunning) {
-		NSEvent *theEvent = [NSApp nextEventMatchingMask:NSMouseEnteredMask | NSLeftMouseDownMask | NSLeftMouseUpMask untilDate:[NSDate distantFuture] inMode:NSEventTrackingRunLoopMode dequeue:YES];
-		
-		NSLog(@"run loop 1 event: %@", theEvent);
-		[[theEvent window] sendEvent:theEvent];
-	}
-}
-
-
-- (IBAction)startRunLoop2:(id)sender {
-	static BOOL keepRunning = false;
-	
-	if (! keepRunning) {
-		keepRunning = true;
-		NSLog(@"Starting run loop 2");
-	} else {
-		keepRunning = false;
-		NSLog(@"Stopping run loop 2");
-	}
-	while (keepRunning) {
-		NSEvent *theEvent = [NSApp nextEventMatchingMask:NSMouseEnteredMask | NSLeftMouseDownMask untilDate:[NSDate distantFuture] inMode:NSEventTrackingRunLoopMode dequeue:YES];
-		
-		NSLog(@"run loop 2 event: %@", theEvent);
-		[[theEvent window] sendEvent:theEvent];
-	}
-
-}
 
 
 @end
