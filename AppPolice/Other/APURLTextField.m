@@ -67,15 +67,13 @@
 	};
 	_attributedString = [[NSMutableAttributedString alloc] initWithString:string attributes:attributes];
 	[self setAttributedStringValue:_attributedString];
-	
-//	NSLog(@"bounds: %@", NSStringFromRect([self bounds]));
-//	_trackingRect = [self addTrackingRect:[self bounds] owner:self userData:nil assumeInside:NO];
 }
 
 
 - (void)layout {
 	[super layout];
-//	NSLog(@"after layout, bounds: %@", NSStringFromRect([self bounds]));
+	if (_trackingRect)
+		[self removeTrackingRect:_trackingRect];
 	_trackingRect = [self addTrackingRect:[self bounds] owner:self userData:nil assumeInside:NO];
 }
 
@@ -109,7 +107,6 @@
 	
 	if (NSPointInRect(mouseLocation, [self frame]) && [self URLAttribute])
 		(void) [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:[self URLAttribute]]];
-//	[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:[self stringValue]]];
 }
 
 @end

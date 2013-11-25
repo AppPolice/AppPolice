@@ -22,7 +22,6 @@
 
 
 - (void)dealloc {
-//	[_receivedData release];
 	[_statusTextField release];
 	[[self checkUpdatesButton] release];
 	[super dealloc];
@@ -39,7 +38,7 @@
 	
 	NSDictionary *bundleInfo = [[NSBundle mainBundle] infoDictionary];
 	[[self versionTextField] setStringValue:[NSString stringWithFormat:NSLocalizedString(@"Version: %@", @"About window"), [bundleInfo objectForKey:@"CFBundleShortVersionString"]]];
-	[[self homepageTextField] setURLAttribute:@"http://www.google.com/"];
+	[[self homepageTextField] setURLAttribute:@"http://definemac.com/"];
 }
 
 
@@ -112,9 +111,7 @@
 	NSDictionary *bundleInfo = [[NSBundle mainBundle] infoDictionary];
 	NSString *version = [bundleInfo objectForKey:@"CFBundleShortVersionString"];
 	NSString *availableVersion = [serverInfo objectForKey:kRemoteAvaibleVersionKey];
-	
-//	NSLog(@"v: %@, new: %@", version, availableVersion);
-	
+		
 	if ([availableVersion compare:version] == NSOrderedDescending) {
 		_flags.update_available = 1;
 		[_statusTextField setStringValue:NSLocalizedString(@"New version is available.", @"About window")];
@@ -138,15 +135,12 @@
 	} else {
 		[_statusTextField setStringValue:NSLocalizedString(@"AppPolice is up to date", @"About window")];
 	}
-	
-//	[[self window] visualizeConstraints:[[self updateStatusView] constraints]];
 }
 
 
 #pragma mark *** Connection delegate methods ***
 
 - (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response {
-//	NSLog(@"response: %@", response);
 	// In case of redirect empty data
 	[_receivedData setLength:0];
 }
@@ -154,23 +148,16 @@
 
 - (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data {
 	[_receivedData appendData:data];
-//	NSLog(@"data: %@", data);
-//	NSError *error = [[NSError alloc] init];
-//	[data writeToFile:@"/Users/objective/Desktop/response.html" options:NSDataWritingAtomic error:&error];
 }
 
 
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection {
-//	NSLog(@"finish loading connection: %@", _receivedData);
 	NSError *error = nil;
 	id JSONObject = [NSJSONSerialization JSONObjectWithData:_receivedData options:0 error:&error];
 	if (error) {
-		[_statusTextField setStringValue:NSLocalizedString(@"Error occurred while processing data.", @"About window")];
+		[_statusTextField setStringValue:NSLocalizedString(@"Error occurred while processing data.", @"About window, received data from remote server is not valid")];
 		NSLog(@"Error occurred while processing data received from server: %@", [error localizedDescription]);
 	} else {
-		NSDictionary *dict = (NSDictionary *)JSONObject;
-		NSLog(@"json: %@", dict);
-		
 		[self interpretReceivedResult:(NSDictionary *)JSONObject];
 	}
 	[_connection release];
