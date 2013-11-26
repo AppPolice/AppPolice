@@ -9,7 +9,7 @@
 #import "APAboutWindowController.h"
 #import "APURLTextField.h"
 
-#define AP_UPDATES_SERVER @"http://www.rk.loc/checkupdate"
+#define AP_UPDATES_SERVER @"http://definemac.com/checkupdate"
 #define kRemoteAvaibleVersionKey @"version"
 #define kRemoteDownloadURLKey @"download_url"
 

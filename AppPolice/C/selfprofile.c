@@ -6,12 +6,15 @@
 //  Copyright (c) 2013 Maksym Stefanchuk. All rights reserved.
 //
 
-#include <stdio.h>
-#include <time.h>
 #include "selfprofile.h"
 
-clock_t clocks_start, clocks_end;
-time_t time_start, time_end;
+#ifdef PROFILE_APPLICATION
+
+#include <stdio.h>
+#include <time.h>
+
+static clock_t clocks_start, clocks_end;
+static time_t time_start, time_end;
 
 
 void profiling_start(void) {
@@ -32,3 +35,5 @@ void profiling_print_stats(void) {
 	fprintf(stdout, "Elapsed time from launch: %lu second(s)", (time_end - time_start));
 	fputs("\n-----------------------\n", stdout);
 }
+
+#endif
