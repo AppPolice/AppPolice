@@ -42,10 +42,11 @@ extern int gAPAllLimitsPaused;
 	NSMutableArray *_limitedProcessItems;
 	APAboutWindowController *_aboutWindowConstroller;
 	APPreferencesController *_preferencesWindowController;
+	BOOL _userDefaultsDidChange;
 }
 
 - (void)setupMenus;
-- (void)populateMenuWithRunningApplications:(CMMenu *)menu;
+- (void)populateMenu:(CMMenu *)menu withApplications:(NSArray *)runningApplications andSystemProcesses:(NSArray *)runningSystemProcesses;
 /*!
   @abstract Makes changes to _runningApplications  and _runningSystemProcesses arrays
  	by removing processes that are no longer running, and adding new ones in
@@ -68,6 +69,7 @@ extern int gAPAllLimitsPaused;
 - (void)appTerminatedNotificationHandler:(NSNotification *)notification;
 // |APAppInspectorProcessDidChangeLimit| notification handler
 - (void)processDidChangeLimitNotificationHandler:(NSNotification *)notification;
+- (void)userDefaultsDidChangeNotificationHandler:(NSNotification *)notification;
 // Helper for |APAppInspectorProcessDidChangeLimit| notification handler
 //- (void)processPid:(NSNumber *)pid didChangeLimit:(float)limit;
 // Menu actions
@@ -101,10 +103,9 @@ extern int gAPAllLimitsPaused;
 	self = [super init];
 	if (self) {
 		NSUserDefaults *preferences = [NSUserDefaults standardUserDefaults];
-		NSInteger sortByPreferences = [preferences integerForKey:@"APSortBy"];
-//		NSString *orderPreferences = [preferences stringForKey:@"APOrder"];
-		_sortKey = (sortByPreferences == 0) ? APApplicationsSortedByName : APApplicationsSortedByPid;
-//		_orderAsc = ([orderPreferences isEqualToString:@"Asc"]) ? 1 : 0;
+//		NSInteger sortByPreferences = [preferences integerForKey:@"APSortBy"];
+//		_sortKey = (sortByPreferences == APApplicationsSortedByName) ? APApplicationsSortedByName : APApplicationsSortedByPid;
+		_sortKey = (int)[preferences integerForKey:@"APSortBy"];;
 		_orderAsc = [preferences boolForKey:@"APOrderAsc"];
 		_showAllProcesses = [preferences boolForKey:@"APShowSystemProcesses"];
 		// For now do not show processes not run by user
@@ -134,10 +135,13 @@ extern int gAPAllLimitsPaused;
  *
  */
 - (void)setupMenus {
-	_mainMenu = [[CMMenu alloc] initWithTitle:@"MainMenu"];
+	CMMenu *runningAppsMenu;
 	CMMenuItem *item;
-	item = [[[CMMenuItem alloc] initWithTitle:NSLocalizedString(@"Running Apps", @"Menu Item") action:NULL] autorelease];
-	CMMenu *runningAppsMenu = [[[CMMenu alloc] initWithTitle:@"Running Apps Menu"] autorelease];
+	
+	_mainMenu = [[CMMenu alloc] initWithTitle:@"MainMenu"];
+	item = [[[CMMenuItem alloc] initWithTitle:NSLocalizedString(@"Running Apps", @"Menu Item")
+									   action:NULL] autorelease];
+	runningAppsMenu = [[[CMMenu alloc] initWithTitle:@"Running Apps Menu"] autorelease];
 	[runningAppsMenu setPerformsActionInstantly:YES];
 	[runningAppsMenu setDelegate:self];
 	[runningAppsMenu setCancelsTrackingOnAction:NO];
@@ -145,7 +149,8 @@ extern int gAPAllLimitsPaused;
 	[item setSubmenu:runningAppsMenu];
 	[_mainMenu addItem:item];
 	
-	item = [[[CMMenuItem alloc] initWithTitle:NSLocalizedString(@"Pause all limits", @"Menu Item") action:@selector(toggleLimiterMenuAction:)] autorelease];
+	item = [[[CMMenuItem alloc] initWithTitle:NSLocalizedString(@"Pause all limits", @"Menu Item")
+									   action:@selector(toggleLimiterMenuAction:)] autorelease];
 	[item setTarget:self];
 	[item setEnabled:NO];
 	[_mainMenu addItem:item];
@@ -155,49 +160,85 @@ extern int gAPAllLimitsPaused;
 //	item = [[[CMMenuItem alloc] initWithTitle:@"Donate" action:NULL] autorelease];
 //	[item setTarget:self];
 //	[_mainMenu addItem:item];
-	item = [[[CMMenuItem alloc] initWithTitle:NSLocalizedString(@"About AppPolice", @"Menu Item") action:@selector(showAboutWindowMenuAction:)] autorelease];
+	item = [[[CMMenuItem alloc] initWithTitle:NSLocalizedString(@"About AppPolice", @"Menu Item")
+									   action:@selector(showAboutWindowMenuAction:)] autorelease];
 	[item setTarget:self];
 	[_mainMenu addItem:item];
-	item = [[[CMMenuItem alloc] initWithTitle:NSLocalizedString(@"Preferences...", @"Menu Item") action:@selector(showPreferecesWindowMenuAction:)] autorelease];
+	item = [[[CMMenuItem alloc] initWithTitle:NSLocalizedString(@"Preferences...", @"Menu Item")
+									   action:@selector(showPreferecesWindowMenuAction:)] autorelease];
 	[item setTarget:self];
 	[_mainMenu addItem:item];
 	[_mainMenu addItem:[CMMenuItem separatorItem]];
-	item = [[[CMMenuItem alloc] initWithTitle:NSLocalizedString(@"Quit AppPolice", @"Menu Item") action:@selector(terminateApplicationMenuAction:)] autorelease];
+	item = [[[CMMenuItem alloc] initWithTitle:NSLocalizedString(@"Quit AppPolice", @"Menu Item")
+									   action:@selector(terminateApplicationMenuAction:)] autorelease];
 	[item setTarget:self];
 	[_mainMenu addItem:item];
 	
-	[self populateMenuWithRunningApplications:[[_mainMenu itemAtIndex:0] submenu]];
-	[[NSNotificationCenter defaultCenter] addObserver:self
-											 selector:@selector(menuDidEndTrackingNotificationHandler:)
-												 name:CMMenuDidEndTrackingNotification
-											   object:nil];
+	
+	NSWorkspace *workspace = [NSWorkspace sharedWorkspace];
+	// This method is run just once at startup. So the array is guaranteed to
+	// have not been previously used.
+	_runningApplications = [[workspace runningApplications] mutableCopy];
+	pid_t shared_pid = getpid();
+	for (NSRunningApplication *app in _runningApplications) {
+		if ([app processIdentifier] == shared_pid) {
+			[_runningApplications removeObject:app];
+			break;
+		}
+	}
+	[self sortApplicationsByKey:[self sortKey] Asc:_orderAsc];
+	if (_showAllProcesses) {
+		_runningSystemProcesses = [[NSMutableArray alloc] init];
+		(void) [self updateRunningProcesses];
+	}
+	
+	[self populateMenu:runningAppsMenu
+	  withApplications:_runningApplications
+	andSystemProcesses:_runningSystemProcesses];
+	
+//	[self populateMenuWithRunningApplications:[[_mainMenu itemAtIndex:0] submenu]];
+
+	
+	// Subscribe to notifications
+	NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
+	[notificationCenter addObserver:self
+						   selector:@selector(menuDidEndTrackingNotificationHandler:)
+							   name:CMMenuDidEndTrackingNotification
+							 object:nil];
+	[notificationCenter addObserver:self
+						   selector:@selector(processDidChangeLimitNotificationHandler:)
+							   name:APAppInspectorProcessDidChangeLimit
+							 object:nil];
+	[notificationCenter addObserver:self
+						   selector:@selector(userDefaultsDidChangeNotificationHandler:)
+							   name:NSUserDefaultsDidChangeNotification
+							 object:nil];
+	
+	NSNotificationCenter *workspaceNotificationCenter = [[NSWorkspace sharedWorkspace] notificationCenter];
+	[workspaceNotificationCenter addObserver:self
+								 selector:@selector(appLaunchedNotificationHandler:)
+									 name:NSWorkspaceDidLaunchApplicationNotification
+								   object:nil];
+	[workspaceNotificationCenter addObserver:self
+								 selector:@selector(appTerminatedNotificationHandler:)
+									 name:NSWorkspaceDidTerminateApplicationNotification
+								   object:nil];
 }
 
 
 /*
  *
  */
-- (void)populateMenuWithRunningApplications:(CMMenu *)menu {
+- (void)populateMenu:(CMMenu *)menu withApplications:(NSArray *)runningApplications andSystemProcesses:(NSArray *)runningSystemProcesses {
 	if (! menu)
 		return;
 	
-//	if (_runningApplications) {
-//		[_runningApplications removeAllObjects];
-//		[_runningApplications release];
-//	}
-	
-	NSWorkspace *workspace = [NSWorkspace sharedWorkspace];
-	// This method is run just once at startup. So the array is guaranteed to
-	// have not been previously used.
-	_runningApplications = [[workspace runningApplications] mutableCopy];
-	[self sortApplicationsByKey:[self sortKey] Asc:_orderAsc];
-//	[self sortApplicationsByKey:APApplicationsSortedByPid];
-	
-
-	NSUInteger i;
-	NSUInteger elementsCount = [_runningApplications count];
-	pid_t shared_pid = getpid();
-	NSUInteger shared_pid_index = UINT_MAX;
+//	NSUInteger i;
+//	NSUInteger elementsCount = [_runningApplications count];
+//	NSUInteger elementsCount = [runningApplications count];
+//	pid_t shared_pid = getpid();
+//	NSUInteger shared_pid_index = UINT_MAX;
+	NSUInteger systemProcessesCount = [runningSystemProcesses count];
 	CMMenuItem *item;
 	NSImage *onStateImageActive = [NSImage imageNamed:NSImageNameStatusAvailable];
 	NSImage *onStateImagePaused = [NSImage imageNamed:NSImageNameStatusPartiallyAvailable];
@@ -205,8 +246,10 @@ extern int gAPAllLimitsPaused;
 	[onStateImagePaused setSize:NSMakeSize(12, 12)];
 	
 	// Show Applications delimiter
-	if (_showAllProcesses) {
-		item = [[[CMMenuItem alloc] initWithTitle:NSLocalizedString(@"Applications", @"Delimiter Menu Item") action:NULL] autorelease];
+//	if (_showAllProcesses) {
+	if (systemProcessesCount) {
+		item = [[[CMMenuItem alloc] initWithTitle:NSLocalizedString(@"Applications", @"Delimiter Menu Item")
+										   action:NULL] autorelease];
 		[item setEnabled:NO];
 		[menu addItem:item];
 	}
@@ -214,12 +257,13 @@ extern int gAPAllLimitsPaused;
 	// --------------------------------------------------
 	//		Populate with Applications
 	// --------------------------------------------------
-	for (i = 0; i < elementsCount; ++i) {
-		NSRunningApplication *app = [_runningApplications objectAtIndex:i];
-		if (shared_pid == [app processIdentifier]) {
-			shared_pid_index = i;
-			continue;
-		}
+//	for (i = 0; i < elementsCount; ++i) {
+	for (NSRunningApplication *app in runningApplications) {
+//		NSRunningApplication *app = [runningApplications objectAtIndex:i];
+//		if (shared_pid == [app processIdentifier]) {
+//			shared_pid_index = i;
+//			continue;
+//		}
 		
 		NSImage *icon = [app icon];
 		if (! icon) {
@@ -238,48 +282,54 @@ extern int gAPAllLimitsPaused;
 										[NSNumber numberWithFloat:0], APApplicationInfoLimitKey,
 										nil];
 				
-		item = [[[CMMenuItem alloc] initWithTitle:[app localizedName] icon:icon action:@selector(selectProcessMenuAction:)] autorelease];
+		item = [[[CMMenuItem alloc] initWithTitle:[app localizedName]
+											 icon:icon
+										   action:@selector(selectProcessMenuAction:)] autorelease];
 		[item setTarget:self];
 		[item setOnStateImage:onStateImageActive];
-		if (_showAllProcesses)
+//		if (_showAllProcesses)
+		if (systemProcessesCount)
 			[item setIndentationLevel:1];
 		[item setRepresentedObject:appInfo];
 		[menu addItem:item];
 	}
 	
 	// Remove ourselves from running applications array
-	if (shared_pid_index != UINT_MAX)
-		[_runningApplications removeObjectAtIndex:shared_pid_index];
+//	if (shared_pid_index != UINT_MAX)
+//		[_runningApplications removeObjectAtIndex:shared_pid_index];
 	
 	// -----------------------------------------------------
 	//		Populate with System processes if option is set
 	// -----------------------------------------------------
-	if (_showAllProcesses) {
-		item = [[[CMMenuItem alloc] initWithTitle:NSLocalizedString(@"System", @"Delimiter Menu Item") action:NULL] autorelease];
+//	if (_showAllProcesses) {
+	if (systemProcessesCount) {
+		item = [[[CMMenuItem alloc] initWithTitle:NSLocalizedString(@"System", @"Delimiter Menu Item")
+										   action:NULL] autorelease];
 		[item setEnabled:NO];
 		[menu addItem:item];
 	
-		if (! _runningSystemProcesses)
-			_runningSystemProcesses = [[NSMutableArray alloc] init];
+//		if (! _runningSystemProcesses)
+//			_runningSystemProcesses = [[NSMutableArray alloc] init];
 
-		
-		NSDictionary *updateIndexes = [self updateRunningProcesses];
-		NSIndexSet *notfoundAppIndexes = [updateIndexes objectForKey:kNotFoundAppIndexesKey];
-		NSIndexSet *newSysProcIndexes = [updateIndexes objectForKey:kNewSysProcIndexesKey];
-		
-		if ([notfoundAppIndexes count]) {
-			// Because of first menu item "Applications" shift indexes by 1
-			NSMutableIndexSet *shiftedIndexes = [NSMutableIndexSet indexSet];
-			[notfoundAppIndexes enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop) {
-				[shiftedIndexes addIndex:(idx + 1)];
-			}];
-			[menu removeItemsAtIndexes:shiftedIndexes];
-		}
-		
-		if ([newSysProcIndexes count]) {
+//		
+//		NSDictionary *updateIndexes = [self updateRunningProcesses];
+//		NSIndexSet *notfoundAppIndexes = [updateIndexes objectForKey:kNotFoundAppIndexesKey];
+//		NSIndexSet *newSysProcIndexes = [updateIndexes objectForKey:kNewSysProcIndexesKey];
+//		
+//		if ([notfoundAppIndexes count]) {
+//			// Because of first menu item "Applications" shift indexes by 1
+//			NSMutableIndexSet *shiftedIndexes = [NSMutableIndexSet indexSet];
+//			[notfoundAppIndexes enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop) {
+//				[shiftedIndexes addIndex:(idx + 1)];
+//			}];
+//			[menu removeItemsAtIndexes:shiftedIndexes];
+//		}
+//		
+//		if ([newSysProcIndexes count]) {
 			NSImage *genericIcon = [[NSWorkspace sharedWorkspace] iconForFile:@"/bin/ls"];
-			[_runningSystemProcesses enumerateObjectsAtIndexes:newSysProcIndexes options:0 usingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-				NSDictionary *procInfo = (NSDictionary *)obj;
+//			[_runningSystemProcesses enumerateObjectsAtIndexes:newSysProcIndexes options:0 usingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+		for (NSDictionary *procInfo in runningSystemProcesses) {
+//				NSDictionary *procInfo = (NSDictionary *)obj;
 				NSMutableDictionary *appInfo = [NSMutableDictionary dictionaryWithObjectsAndKeys:
 												[procInfo objectForKey:kProcNameKey], APApplicationInfoNameKey,
 												genericIcon, APApplicationInfoIconKey,
@@ -287,13 +337,15 @@ extern int gAPAllLimitsPaused;
 												[NSNumber numberWithFloat:0], APApplicationInfoLimitKey,
 												nil];
 				
-				CMMenuItem *item = [[[CMMenuItem alloc] initWithTitle:[procInfo objectForKey:kProcNameKey] icon:genericIcon action:@selector(selectProcessMenuAction:)] autorelease];
+				CMMenuItem *item = [[[CMMenuItem alloc] initWithTitle:[procInfo objectForKey:kProcNameKey]
+																 icon:genericIcon
+															   action:@selector(selectProcessMenuAction:)] autorelease];
 				[item setTarget:self];
 				[item setOnStateImage:onStateImageActive];
 				[item setIndentationLevel:1];
 				[item setRepresentedObject:appInfo];
 				[menu addItem:item];
-			}];
+//			}];
 		}
 		
 //		NSLog(@"not found indexes: %@", updateIndexes);
@@ -313,11 +365,6 @@ extern int gAPAllLimitsPaused;
 		[menu addItem:item];
 */	} // temp
 	
-
-	NSNotificationCenter *notificationCenter = [workspace notificationCenter];
-	[notificationCenter addObserver:self selector:@selector(appLaunchedNotificationHandler:) name:NSWorkspaceDidLaunchApplicationNotification object:nil];
-	[notificationCenter addObserver:self selector:@selector(appTerminatedNotificationHandler:) name:NSWorkspaceDidTerminateApplicationNotification object:nil];
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(processDidChangeLimitNotificationHandler:) name:APAppInspectorProcessDidChangeLimit object:nil];
 }
 
 
@@ -429,6 +476,7 @@ extern int gAPAllLimitsPaused;
 		if (PID_IS_MARKED(proc_pids[n]) || proc_pids[n] == shared_pid)
 			continue;
 		
+		// Skip processes not belonging to the user
 		if (! _showOtherUsersProcesses) {
 			uid_t proc_uid = get_proc_uid(proc_pids[n]);
 //			printf("skipg pid: %d\n", proc_pids[n]);
@@ -436,7 +484,6 @@ extern int gAPAllLimitsPaused;
 				continue;
 		}
 		
-		//			int pid = PID_UNMARK(proc_pids[n]);
 		proc_pidpath(proc_pids[n], pathbuffer, PROC_PIDPATHINFO_MAXSIZE);
 		int len = proc_name_from_path(namebuffer, pathbuffer, PROC_NAME_MAXLEN);
 		if (! len)	// process doesn't have a name?
@@ -573,62 +620,114 @@ extern int gAPAllLimitsPaused;
  *
  */
 - (void)menuNeedsUpdate:(CMMenu *)menu {
-	NSDictionary *updateIndexSets = [self updateRunningProcesses];
-	NSIndexSet *notfoundAppIndexes = [updateIndexSets objectForKey:kNotFoundAppIndexesKey];
-	NSIndexSet *notfoundSysProcIndexes = [updateIndexSets objectForKey:kNotFoundSysProcIndexesKey];
-	NSIndexSet *newSysProcIndexes = [updateIndexSets objectForKey:kNewSysProcIndexesKey];
-//	NSLog(@"update indexes: %@", updateIndexSets);
+	BOOL userDefaultsDidChange = NO;
 	
-	
-	if ([notfoundAppIndexes count]) {
-		// Because of first menu item "Applications" shift indexes by 1
-		NSMutableIndexSet *shiftedIndexes = [NSMutableIndexSet indexSet];
-		[notfoundAppIndexes enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop) {
-			[shiftedIndexes addIndex:(idx + 1)];
-		}];
-		[menu removeItemsAtIndexes:shiftedIndexes];
-	}
-	
-	if ([notfoundSysProcIndexes count]) {
-		NSUInteger offset = [_runningApplications count] + 2;
-		// Shift indexes by amount of Application items and two delimeters
-		NSMutableIndexSet *shiftedIndexes = [NSMutableIndexSet indexSet];
-		[notfoundSysProcIndexes enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop) {
-			[shiftedIndexes addIndex:(idx + offset)];
-		}];
-		// If any of the processes represented by menu item was limited before
-		// pass its pid to limit handler method to remove it from array
-		[[menu itemArray] enumerateObjectsAtIndexes:shiftedIndexes options:0 usingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-			[self processOfItem:(CMMenuItem *)obj didChangeLimit:PROCESS_NOT_LIMITED];
-		}];
+	// Verify if defaults did change from the last time menu was displayed
+	// and that those changes are unique (e.g. not turned off and back on)
+	if (_userDefaultsDidChange) {
+		// Reset flag
+		_userDefaultsDidChange = NO;
+		NSUserDefaults *preferences = [NSUserDefaults standardUserDefaults];
+		int currentSortKey = (int)[preferences integerForKey:@"APSortBy"];;
+		BOOL currentOrderAsc = [preferences boolForKey:@"APOrderAsc"];
+		BOOL currentShowAllProcesses = [preferences boolForKey:@"APShowSystemProcesses"];
 		
-		[menu removeItemsAtIndexes:shiftedIndexes];
+
+		if (currentSortKey != _sortKey) {
+			userDefaultsDidChange = YES;
+			_sortKey = currentSortKey;
+			_orderAsc = currentOrderAsc;
+			[self sortApplicationsByKey:_sortKey Asc:_orderAsc];
+			// If systems processes are already displayed and new option doesn't disable
+			// them -- sort them too.
+			if (_showAllProcesses == currentShowAllProcesses && currentShowAllProcesses)
+				[self sortSystemProcessesByKey:_sortKey Asc:_orderAsc];
+		} else if (currentOrderAsc != _orderAsc) {
+			userDefaultsDidChange = YES;
+			_orderAsc = currentOrderAsc;
+			[self sortApplicationsByKey:_sortKey Asc:_orderAsc];
+			if (_showAllProcesses == currentShowAllProcesses && currentShowAllProcesses)
+				[self sortSystemProcessesByKey:_sortKey Asc:_orderAsc];
+		}
+		
+		if (_showAllProcesses != currentShowAllProcesses) {
+			userDefaultsDidChange = YES;
+			_showAllProcesses = currentShowAllProcesses;
+			if (_showAllProcesses) {
+				if (! _runningSystemProcesses)
+					_runningSystemProcesses = [[NSMutableArray alloc] init];
+				(void) [self updateRunningProcesses];
+			} else {
+				if (_runningSystemProcesses)
+					[_runningSystemProcesses removeAllObjects];
+			}
+		}
 	}
 	
-	if ([newSysProcIndexes count]) {
-		NSUInteger offset = [_runningApplications count];
-		if (_showAllProcesses)
-			offset += 2;		// two separator items
-		NSImage *genericIcon = [[NSWorkspace sharedWorkspace] iconForFile:@"/bin/ls"];
-		[_runningSystemProcesses enumerateObjectsAtIndexes:newSysProcIndexes options:0 usingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-			NSDictionary *procInfo = (NSDictionary *)obj;
-			NSMutableDictionary *appInfo = [NSMutableDictionary dictionaryWithObjectsAndKeys:
-											[procInfo objectForKey:kProcNameKey], APApplicationInfoNameKey,
-											genericIcon, APApplicationInfoIconKey,
-											[procInfo objectForKey:kProcPidKey], APApplicationInfoPidKey,
-											[NSNumber numberWithFloat:0], APApplicationInfoLimitKey,
-											nil];
+	// If user changed defaults that control menu display recreate items with new settings (set above)
+	if (userDefaultsDidChange) {
+		[menu removeAllItems];
+		[self populateMenu:menu withApplications:_runningApplications andSystemProcesses:_runningSystemProcesses];
+	} else {
+		NSDictionary *updateIndexSets = [self updateRunningProcesses];
+		NSIndexSet *notfoundAppIndexes = [updateIndexSets objectForKey:kNotFoundAppIndexesKey];
+		NSIndexSet *notfoundSysProcIndexes = [updateIndexSets objectForKey:kNotFoundSysProcIndexesKey];
+		NSIndexSet *newSysProcIndexes = [updateIndexSets objectForKey:kNewSysProcIndexesKey];
+	//	NSLog(@"update indexes: %@", updateIndexSets);
+		
+		
+		if ([notfoundAppIndexes count]) {
+			// Because of first menu item "Applications" shift indexes by 1
+			NSMutableIndexSet *shiftedIndexes = [NSMutableIndexSet indexSet];
+			[notfoundAppIndexes enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop) {
+				[shiftedIndexes addIndex:(idx + 1)];
+			}];
+			[menu removeItemsAtIndexes:shiftedIndexes];
+		}
+		
+		if ([notfoundSysProcIndexes count]) {
+			NSUInteger offset = [_runningApplications count] + 2;
+			// Shift indexes by amount of Application items and two delimeters
+			NSMutableIndexSet *shiftedIndexes = [NSMutableIndexSet indexSet];
+			[notfoundSysProcIndexes enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop) {
+				[shiftedIndexes addIndex:(idx + offset)];
+			}];
+			// If any of the processes represented by menu item was limited before
+			// pass its pid to limit handler method to remove it from array
+			[[menu itemArray] enumerateObjectsAtIndexes:shiftedIndexes options:0 usingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+				[self processOfItem:(CMMenuItem *)obj didChangeLimit:PROCESS_NOT_LIMITED];
+			}];
 			
-			CMMenuItem *item = [[[CMMenuItem alloc] initWithTitle:[procInfo objectForKey:kProcNameKey] icon:genericIcon action:@selector(selectProcessMenuAction:)] autorelease];
-			[item setTarget:self];
-			NSImage *onStateImage = [NSImage imageNamed:NSImageNameStatusAvailable];
-			[onStateImage setSize:NSMakeSize(12, 12)];
-			[item setOnStateImage:onStateImage];
-			[item setRepresentedObject:appInfo];
+			[menu removeItemsAtIndexes:shiftedIndexes];
+		}
+		
+		if ([newSysProcIndexes count]) {
+			NSUInteger offset = [_runningApplications count];
 			if (_showAllProcesses)
-				[item setIndentationLevel:1];
-			[menu insertItem:item atIndex:(idx + offset) animate:NO];
-		}];
+				offset += 2;		// two separator items
+			NSImage *genericIcon = [[NSWorkspace sharedWorkspace] iconForFile:@"/bin/ls"];
+			[_runningSystemProcesses enumerateObjectsAtIndexes:newSysProcIndexes options:0 usingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+				NSDictionary *procInfo = (NSDictionary *)obj;
+				NSMutableDictionary *appInfo = [NSMutableDictionary dictionaryWithObjectsAndKeys:
+												[procInfo objectForKey:kProcNameKey], APApplicationInfoNameKey,
+												genericIcon, APApplicationInfoIconKey,
+												[procInfo objectForKey:kProcPidKey], APApplicationInfoPidKey,
+												[NSNumber numberWithFloat:0], APApplicationInfoLimitKey,
+												nil];
+				
+				CMMenuItem *item = [[[CMMenuItem alloc] initWithTitle:[procInfo objectForKey:kProcNameKey]
+																 icon:genericIcon
+															   action:@selector(selectProcessMenuAction:)] autorelease];
+				[item setTarget:self];
+				NSImage *onStateImage = [NSImage imageNamed:NSImageNameStatusAvailable];
+				[onStateImage setSize:NSMakeSize(12, 12)];
+				[item setOnStateImage:onStateImage];
+				[item setRepresentedObject:appInfo];
+				if (_showAllProcesses)
+					[item setIndentationLevel:1];
+				[menu insertItem:item atIndex:(idx + offset) animate:NO];
+			}];
+		}
 	}
 }
 
@@ -684,7 +783,9 @@ extern int gAPAllLimitsPaused;
 									[NSNumber numberWithInt:[app processIdentifier]], APApplicationInfoPidKey,
 									[NSNumber numberWithFloat:0], APApplicationInfoLimitKey, nil];
 	
-	CMMenuItem *item = [[[CMMenuItem alloc] initWithTitle:[app localizedName] icon:[app icon] action:@selector(selectProcessMenuAction:)] autorelease];
+	CMMenuItem *item = [[[CMMenuItem alloc] initWithTitle:[app localizedName]
+													 icon:[app icon]
+												   action:@selector(selectProcessMenuAction:)] autorelease];
 	[item setTarget:self];
 	NSImage *onStateImage = [NSImage imageNamed:NSImageNameStatusAvailable];
 	[onStateImage setSize:NSMakeSize(12, 12)];
@@ -837,6 +938,11 @@ extern int gAPAllLimitsPaused;
 }
 
 
+- (void)userDefaultsDidChangeNotificationHandler:(NSNotification *)notification {
+	_userDefaultsDidChange = YES;
+}
+
+
 /*
  *
  */
@@ -953,9 +1059,6 @@ extern int gAPAllLimitsPaused;
 		_sortKey = sortKey;
 		if ([_runningApplications count] == 0)
 			return;
-
-		// update menu here
-		
 	}
 }
 
