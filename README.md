@@ -1,29 +1,19 @@
-Googalexa
+AppPolice
 =========
 
-Minimalistic Firefox add-on for Google and Alexa site statistics
+An app for Mac OS X with a minimalistic UI which lets you quickly throttle down the CPU usage of any of the running  processes.
 
-## Install
 
-Install Googalexa from [Mozilla Add-ons page](https://addons.mozilla.org/en-US/firefox/addon/googalexa/).
+## Build
 
-## Configure
+The project requires a dependancy [ChromeMenu.Framework](https://github.com/fuyu/ChromeMenu). Clone both ``AppPolice`` and ``ChromeMenu`` into the same directory.
 
-You can configure the representation and rounding of values:
 
-```
-Format numbers (1234567 => 1,234,567)
-Round thousands (123456 => 123K)
-Round millions (1234567 => 1.2M)
-```
+## Requirements
 
-..as well as label styles by using regular CSS:
+An app requires OS X Lion 10.7 and up.
 
-```
-color:#222222;
-font:12px Arial;
-```
 
-## Example
+## Download
 
-![alt tag](https://addons.cdn.mozilla.net/img/uploads/previews/full/112/112537.png)
+You can download a .dmg file from the [homepage](http://definemac.com/).
