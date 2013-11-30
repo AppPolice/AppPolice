@@ -257,7 +257,6 @@ extern int gAPAllLimitsPaused;
 	// --------------------------------------------------
 	//		Populate with Applications
 	// --------------------------------------------------
-//	for (i = 0; i < elementsCount; ++i) {
 	for (NSRunningApplication *app in runningApplications) {
 //		NSRunningApplication *app = [runningApplications objectAtIndex:i];
 //		if (shared_pid == [app processIdentifier]) {
@@ -290,6 +289,7 @@ extern int gAPAllLimitsPaused;
 //		if (_showAllProcesses)
 		if (systemProcessesCount)
 			[item setIndentationLevel:1];
+				
 		[item setRepresentedObject:appInfo];
 		[menu addItem:item];
 	}

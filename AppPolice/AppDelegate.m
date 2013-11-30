@@ -48,7 +48,7 @@
 	_statusbarMenuController = [[StatusbarMenuController alloc] init];
 	CMMenu *mainMenu = [_statusbarMenuController mainMenu];
 	[_statusbarItemController setStatusbarItemMenu:mainMenu];
-	
+
 	// Register default preferences
 	NSString *defaultsPath = [[NSBundle mainBundle] pathForResource:@"UserDefaults" ofType:@"plist"];
 	NSDictionary *defaults = [NSDictionary dictionaryWithContentsOfFile:defaultsPath];
