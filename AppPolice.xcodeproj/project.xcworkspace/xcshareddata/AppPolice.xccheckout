@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>4B9E28C5-30A0-4A35-80DD-8B58980CF6D4</string>
+	<key>IDESourceControlProjectName</key>
+	<string>AppPolice</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>707DFEAE-8A57-427D-871A-8873CA89AE26</key>
+		<string>ssh://github.com/fuyu/AppPolice.git</string>
+		<key>DF554948-A31A-4DB7-878D-A5CA1E9E2B40</key>
+		<string>ssh://github.com/fuyu/ChromeMenu.git</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>AppPolice.xcodeproj/project.xcworkspace</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>707DFEAE-8A57-427D-871A-8873CA89AE26</key>
+		<string>../..</string>
+		<key>DF554948-A31A-4DB7-878D-A5CA1E9E2B40</key>
+		<string>../../../ChromeMenu</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>ssh://github.com/fuyu/AppPolice.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>110</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>707DFEAE-8A57-427D-871A-8873CA89AE26</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>707DFEAE-8A57-427D-871A-8873CA89AE26</string>
+			<key>IDESourceControlWCCName</key>
+			<string>AppPolice</string>
+		</dict>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>DF554948-A31A-4DB7-878D-A5CA1E9E2B40</string>
+			<key>IDESourceControlWCCName</key>
+			<string>ChromeMenu</string>
+		</dict>
+	</array>
+</dict>
+</plist>
