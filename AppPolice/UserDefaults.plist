@@ -10,6 +10,8 @@
 	<false/>
 	<key>APLaunchAtLogin</key>
 	<false/>
+	<key>APRestoreApplicationLimits</key>
+	<false/>
 	<key>APProcCpulimTaskScheduleInterval</key>
 	<integer>30000000</integer>
 </dict>

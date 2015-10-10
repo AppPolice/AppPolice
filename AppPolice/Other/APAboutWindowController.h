@@ -26,6 +26,7 @@
 @property (assign) IBOutlet NSTextField *versionTextField;
 @property (assign) IBOutlet NSView *updateStatusView;
 @property (assign) IBOutlet NSButton *checkUpdatesButton;
+@property (assign) IBOutlet NSTextField *copyrightTextField;
 @property (assign) IBOutlet APURLTextField *homepageTextField;
 
 @end

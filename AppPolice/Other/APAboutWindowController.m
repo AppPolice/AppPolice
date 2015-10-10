@@ -39,6 +39,9 @@
 	NSDictionary *bundleInfo = [[NSBundle mainBundle] infoDictionary];
 	[[self versionTextField] setStringValue:[NSString stringWithFormat:NSLocalizedString(@"Version: %@", @"About window"), [bundleInfo objectForKey:@"CFBundleShortVersionString"]]];
 	[[self homepageTextField] setURLAttribute:@"http://definemac.com/"];
+
+    NSString *copyright = [bundleInfo valueForKey:@"NSHumanReadableCopyright"];
+    [[self copyrightTextField] setStringValue:copyright];
 }
 
 
