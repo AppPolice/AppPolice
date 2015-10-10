@@ -1,0 +1,30 @@
+{
+  "DVTSourceControlWorkspaceBlueprintPrimaryRemoteRepositoryKey" : "0ED10799ADEDBDBDFC451785415C2F5F26ACCAB6",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyRepositoryLocationsKey" : {
+
+  },
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
+    "78DF898BEC1190EEB5909754834CBE0BE39026BC" : 0,
+    "0ED10799ADEDBDBDFC451785415C2F5F26ACCAB6" : 0
+  },
+  "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "4B9E28C5-30A0-4A35-80DD-8B58980CF6D4",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
+    "78DF898BEC1190EEB5909754834CBE0BE39026BC" : "ChromeMenu\/",
+    "0ED10799ADEDBDBDFC451785415C2F5F26ACCAB6" : "AppPolice\/"
+  },
+  "DVTSourceControlWorkspaceBlueprintNameKey" : "AppPolice",
+  "DVTSourceControlWorkspaceBlueprintVersion" : 204,
+  "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "AppPolice.xcodeproj",
+  "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "github.com:fuyu\/AppPolice.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "0ED10799ADEDBDBDFC451785415C2F5F26ACCAB6"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "github.com:fuyu\/ChromeMenu.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "78DF898BEC1190EEB5909754834CBE0BE39026BC"
+    }
+  ]
+}

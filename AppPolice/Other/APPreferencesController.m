@@ -22,12 +22,14 @@
 	NSUserDefaults *preferences = [NSUserDefaults standardUserDefaults];
 	NSInteger sortByValue = [preferences integerForKey:@"APSortBy"];
 	BOOL orderAsc = [preferences boolForKey:@"APOrderAsc"];
+    BOOL restoreApplicationLimits = [preferences boolForKey:kPrefRestoreApplicationLimits];
 	BOOL showSystemProcesses = [preferences boolForKey:@"APShowSystemProcesses"];
 	BOOL launchAtLogin = [preferences boolForKey:@"APLaunchAtLogin"];
 	LSSharedFileListItemRef item = [self copyLoginItem];
 	
 	[[self sortByMatrix] selectCellAtRow:sortByValue column:0];
 	[[self orderMatrix] selectCellAtRow:(orderAsc ? 0 : 1) column:0];
+    [[self restoreApplicationLimitsButton] setIntegerValue:(restoreApplicationLimits) ? 1 : 0];
 	[[self showSystemProcessesButton] setIntegerValue:(showSystemProcesses) ? 1 : 0];
 	// Synchronize "Lauch at login" with real presence of login item in Mac OS X prefs
 	if (item) {
@@ -61,6 +63,13 @@
 	NSInteger value = [matrix selectedRow];
 	NSUserDefaults *preferences = [NSUserDefaults standardUserDefaults];
 	[preferences setBool:(value == 0) forKey:@"APOrderAsc"];
+}
+
+
+- (IBAction)changeRestoreApplicationLimitsPreferences:(id)sender {
+	NSButton *button = (NSButton *)sender;
+	NSUserDefaults *preferences = [NSUserDefaults standardUserDefaults];
+	[preferences setBool:([button intValue] == 1) forKey:kPrefRestoreApplicationLimits];
 }
 
 

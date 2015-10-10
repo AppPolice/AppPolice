@@ -232,6 +232,11 @@ extern int gAPAllLimitsPaused;
 - (void)populateMenu:(CMMenu *)menu withApplications:(NSArray *)runningApplications andSystemProcesses:(NSArray *)runningSystemProcesses {
 	if (! menu)
 		return;
+    
+    NSUserDefaults *preferences = [NSUserDefaults standardUserDefaults];
+    NSDictionary *storedApplicationLimits = [preferences objectForKey:kPrefApplicationLimits];
+    BOOL restoreApplicationLimits = [preferences boolForKey:kPrefRestoreApplicationLimits];
+    
 	
 //	NSUInteger i;
 //	NSUInteger elementsCount = [_runningApplications count];
@@ -273,13 +278,21 @@ extern int gAPAllLimitsPaused;
 			if (! icon)
 				icon = [[NSWorkspace sharedWorkspace] iconForFileType:NSFileTypeForHFSTypeCode(kGenericApplicationIcon)];
 		}
+        
+        NSString *applicationName = [app localizedName];
+        NSNumber *limit = @0.0;
+        if (restoreApplicationLimits && [storedApplicationLimits objectForKey:applicationName] != nil) {
+            limit = (NSNumber *)[storedApplicationLimits objectForKey:applicationName];
+            NSLog(@"Restoring limit for %@: %@", applicationName, limit);
+            proc_cpulim_set([app processIdentifier], [limit floatValue]);
+        }
 		
-		NSMutableDictionary *appInfo = [NSMutableDictionary dictionaryWithObjectsAndKeys:
-										[app localizedName], APApplicationInfoNameKey,
-										icon, APApplicationInfoIconKey,
-										[NSNumber numberWithInt:[app processIdentifier]], APApplicationInfoPidKey,
-										[NSNumber numberWithFloat:0], APApplicationInfoLimitKey,
-										nil];
+        NSMutableDictionary *appInfo = [[@{
+            APApplicationInfoNameKey: applicationName,
+            APApplicationInfoIconKey: icon,
+            APApplicationInfoPidKey: [NSNumber numberWithInt:[app processIdentifier]],
+            APApplicationInfoLimitKey: limit
+        } mutableCopy] autorelease];
 				
 		item = [[[CMMenuItem alloc] initWithTitle:[app localizedName]
 											 icon:icon
@@ -292,6 +305,10 @@ extern int gAPAllLimitsPaused;
 				
 		[item setRepresentedObject:appInfo];
 		[menu addItem:item];
+
+        if ([limit floatValue] > 0.0) {
+            [self processOfItem:item didChangeLimit:[limit floatValue]];
+        }
 	}
 	
 	// Remove ourselves from running applications array
@@ -302,54 +319,45 @@ extern int gAPAllLimitsPaused;
 	//		Populate with System processes if option is set
 	// -----------------------------------------------------
 //	if (_showAllProcesses) {
-	if (systemProcessesCount) {
-		item = [[[CMMenuItem alloc] initWithTitle:NSLocalizedString(@"System", @"Delimiter Menu Item")
-										   action:NULL] autorelease];
-		[item setEnabled:NO];
-		[menu addItem:item];
-	
-//		if (! _runningSystemProcesses)
-//			_runningSystemProcesses = [[NSMutableArray alloc] init];
+    if (systemProcessesCount) {
+        item = [[[CMMenuItem alloc] initWithTitle:NSLocalizedString(@"System", @"Delimiter Menu Item")
+                                           action:NULL] autorelease];
+        [item setEnabled:NO];
+        [menu addItem:item];
 
-//		
-//		NSDictionary *updateIndexes = [self updateRunningProcesses];
-//		NSIndexSet *notfoundAppIndexes = [updateIndexes objectForKey:kNotFoundAppIndexesKey];
-//		NSIndexSet *newSysProcIndexes = [updateIndexes objectForKey:kNewSysProcIndexesKey];
-//		
-//		if ([notfoundAppIndexes count]) {
-//			// Because of first menu item "Applications" shift indexes by 1
-//			NSMutableIndexSet *shiftedIndexes = [NSMutableIndexSet indexSet];
-//			[notfoundAppIndexes enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop) {
-//				[shiftedIndexes addIndex:(idx + 1)];
-//			}];
-//			[menu removeItemsAtIndexes:shiftedIndexes];
-//		}
-//		
-//		if ([newSysProcIndexes count]) {
-			NSImage *genericIcon = [[NSWorkspace sharedWorkspace] iconForFile:@"/bin/ls"];
-//			[_runningSystemProcesses enumerateObjectsAtIndexes:newSysProcIndexes options:0 usingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-		for (NSDictionary *procInfo in runningSystemProcesses) {
-//				NSDictionary *procInfo = (NSDictionary *)obj;
-				NSMutableDictionary *appInfo = [NSMutableDictionary dictionaryWithObjectsAndKeys:
-												[procInfo objectForKey:kProcNameKey], APApplicationInfoNameKey,
-												genericIcon, APApplicationInfoIconKey,
-												[procInfo objectForKey:kProcPidKey], APApplicationInfoPidKey,
-												[NSNumber numberWithFloat:0], APApplicationInfoLimitKey,
-												nil];
-				
-				CMMenuItem *item = [[[CMMenuItem alloc] initWithTitle:[procInfo objectForKey:kProcNameKey]
-																 icon:genericIcon
-															   action:@selector(selectProcessMenuAction:)] autorelease];
-				[item setTarget:self];
-				[item setOnStateImage:onStateImageActive];
-				[item setIndentationLevel:1];
-				[item setRepresentedObject:appInfo];
-				[menu addItem:item];
-//			}];
-		}
-		
-//		NSLog(@"not found indexes: %@", updateIndexes);
-	}
+
+        NSImage *genericIcon = [[NSWorkspace sharedWorkspace] iconForFile:@"/bin/ls"];
+        for (NSDictionary *procInfo in runningSystemProcesses) {
+            NSString *processName = [procInfo objectForKey:kProcNameKey];
+            NSNumber *processId = [procInfo objectForKey:kProcPidKey];
+            NSNumber *limit = @0.0;
+            if (restoreApplicationLimits && [storedApplicationLimits objectForKey:processName] != nil) {
+                limit = (NSNumber *)[storedApplicationLimits objectForKey:processName];
+                NSLog(@"Restoring limit for %@: %@", processName, limit);
+                proc_cpulim_set([processId intValue], [limit floatValue]);
+            }
+            
+            NSMutableDictionary *appInfo = [[@{
+                APApplicationInfoNameKey: processName,
+                APApplicationInfoIconKey: genericIcon,
+                APApplicationInfoPidKey: processId,
+                APApplicationInfoLimitKey: limit
+            } mutableCopy] autorelease];
+            
+            CMMenuItem *item = [[[CMMenuItem alloc] initWithTitle:processName
+                                                             icon:genericIcon
+                                                           action:@selector(selectProcessMenuAction:)] autorelease];
+            [item setTarget:self];
+            [item setOnStateImage:onStateImageActive];
+            [item setIndentationLevel:1];
+            [item setRepresentedObject:appInfo];
+            [menu addItem:item];
+
+            if ([limit floatValue] > 0.0) {
+                [self processOfItem:item didChangeLimit:[limit floatValue]];
+            }
+        }
+    }
 	
 
 	/* temp */ { /*
@@ -702,18 +710,31 @@ extern int gAPAllLimitsPaused;
 		}
 		
 		if ([newSysProcIndexes count]) {
+            NSUserDefaults *preferences = [NSUserDefaults standardUserDefaults];
+            NSDictionary *storedApplicationLimits = [preferences objectForKey:kPrefApplicationLimits];
+            BOOL restoreApplicationLimits = [preferences boolForKey:kPrefRestoreApplicationLimits];
+            
 			NSUInteger offset = [_runningApplications count];
 			if (_showAllProcesses)
 				offset += 2;		// two separator items
 			NSImage *genericIcon = [[NSWorkspace sharedWorkspace] iconForFile:@"/bin/ls"];
 			[_runningSystemProcesses enumerateObjectsAtIndexes:newSysProcIndexes options:0 usingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
 				NSDictionary *procInfo = (NSDictionary *)obj;
-				NSMutableDictionary *appInfo = [NSMutableDictionary dictionaryWithObjectsAndKeys:
-												[procInfo objectForKey:kProcNameKey], APApplicationInfoNameKey,
-												genericIcon, APApplicationInfoIconKey,
-												[procInfo objectForKey:kProcPidKey], APApplicationInfoPidKey,
-												[NSNumber numberWithFloat:0], APApplicationInfoLimitKey,
-												nil];
+                NSString *processName = [procInfo objectForKey:kProcNameKey];
+                NSNumber *processId = [procInfo objectForKey:kProcPidKey];
+                NSNumber *limit = @0.0;
+                if (restoreApplicationLimits && [storedApplicationLimits objectForKey:processName] != nil) {
+                    limit = (NSNumber *)[storedApplicationLimits objectForKey:processName];
+                    NSLog(@"Restoring limit for %@: %@", processName, limit);
+                    proc_cpulim_set([processId intValue], [limit floatValue]);
+                }
+                
+                NSMutableDictionary *appInfo = [[@{
+                    APApplicationInfoNameKey: processName,
+                    APApplicationInfoIconKey: genericIcon,
+                    APApplicationInfoPidKey: processId,
+                    APApplicationInfoLimitKey: limit
+                } mutableCopy] autorelease];
 				
 				CMMenuItem *item = [[[CMMenuItem alloc] initWithTitle:[procInfo objectForKey:kProcNameKey]
 																 icon:genericIcon
@@ -726,6 +747,10 @@ extern int gAPAllLimitsPaused;
 				if (_showAllProcesses)
 					[item setIndentationLevel:1];
 				[menu insertItem:item atIndex:(idx + offset) animate:NO];
+                
+                if ([limit floatValue] > 0.0) {
+                    [self processOfItem:item didChangeLimit:[limit floatValue]];
+                }
 			}];
 		}
 	}
@@ -737,6 +762,10 @@ extern int gAPAllLimitsPaused;
  */
 - (void)appLaunchedNotificationHandler:(NSNotification *)notification {
 	NSRunningApplication *app = [[notification userInfo] objectForKey:NSWorkspaceApplicationKey];
+    
+    NSUserDefaults *preferences = [NSUserDefaults standardUserDefaults];
+    NSDictionary *storedApplicationLimits = [preferences objectForKey:kPrefApplicationLimits];
+    BOOL restoreApplicationLimits = [preferences boolForKey:kPrefRestoreApplicationLimits];
 	
 	NSUInteger elementsCount = [_runningApplications count];
 	NSUInteger index = elementsCount;
@@ -777,11 +806,21 @@ extern int gAPAllLimitsPaused;
 	if (_showAllProcesses)
 		++index;
 	
-	NSMutableDictionary *appInfo = [NSMutableDictionary dictionaryWithObjectsAndKeys:
-									[app localizedName], APApplicationInfoNameKey,
-									[app icon], APApplicationInfoIconKey,
-									[NSNumber numberWithInt:[app processIdentifier]], APApplicationInfoPidKey,
-									[NSNumber numberWithFloat:0], APApplicationInfoLimitKey, nil];
+    
+    NSString *applicationName = [app localizedName];
+    NSNumber *limit = @0.0;
+    if (restoreApplicationLimits && [storedApplicationLimits objectForKey:applicationName] != nil) {
+        limit = (NSNumber *)[storedApplicationLimits objectForKey:applicationName];
+        NSLog(@"Restoring limit for %@: %@", applicationName, limit);
+        proc_cpulim_set([app processIdentifier], [limit floatValue]);
+    }
+    
+    NSMutableDictionary *appInfo = [[@{
+        APApplicationInfoNameKey: applicationName,
+        APApplicationInfoIconKey: [app icon],
+        APApplicationInfoPidKey: [NSNumber numberWithInt:[app processIdentifier]],
+        APApplicationInfoLimitKey: limit
+    } mutableCopy] autorelease];
 	
 	CMMenuItem *item = [[[CMMenuItem alloc] initWithTitle:[app localizedName]
 													 icon:[app icon]
@@ -794,6 +833,10 @@ extern int gAPAllLimitsPaused;
 	if (_showAllProcesses)
 		[item setIndentationLevel:1];
 	[[[_mainMenu itemAtIndex:0] submenu] insertItem:item atIndex:index animate:NO];
+    
+    if ([limit floatValue] > 0.0) {
+        [self processOfItem:item didChangeLimit:[limit floatValue]];
+    }
 }
 
 

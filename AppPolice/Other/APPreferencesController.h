@@ -8,10 +8,14 @@
 
 #import <Cocoa/Cocoa.h>
 
+#define kPrefRestoreApplicationLimits @"APRestoreApplicationLimits"
+#define kPrefApplicationLimits @"APApplicationLimits"
+
 @interface APPreferencesController : NSWindowController
 
 @property (assign) IBOutlet NSMatrix *sortByMatrix;
 @property (assign) IBOutlet NSMatrix *orderMatrix;
+@property (assign) IBOutlet NSButton *restoreApplicationLimitsButton;
 @property (assign) IBOutlet NSButton *showSystemProcessesButton;
 @property (assign) IBOutlet NSButton *launchAtLoginButton;
 

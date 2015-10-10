@@ -7,6 +7,7 @@
 //
 
 #import "AppInspector.h"
+#import "APPreferencesController.h"
 #import "AppLimitSliderCell.h"
 #import "AppLimitHintView.h"
 #include "app_inspector_c.h"
@@ -286,6 +287,23 @@
 	
 	NSMutableDictionary *applicationInfo = [_attachedToItem representedObject];
 	[applicationInfo setObject:[NSNumber numberWithFloat:limit] forKey:APApplicationInfoLimitKey];
+    
+    NSString *applicationName = [applicationInfo valueForKey:APApplicationInfoNameKey];
+    if (applicationName != nil && [applicationName length] > 0) {
+        NSUserDefaults *preferences = [NSUserDefaults standardUserDefaults];
+        NSMutableDictionary *storedApplicationLimits = [[preferences valueForKey:kPrefApplicationLimits] mutableCopy];
+        if (storedApplicationLimits == nil) {
+            storedApplicationLimits = [NSMutableDictionary new];
+        }
+        if (limit == NO_LIMIT) {
+            if ([storedApplicationLimits objectForKey:applicationName] != nil) {
+                [storedApplicationLimits removeObjectForKey:applicationName];
+            }
+        } else {
+            [storedApplicationLimits setValue:[NSNumber numberWithFloat:limit] forKey:applicationName];
+        }
+        [preferences setObject:storedApplicationLimits forKey:kPrefApplicationLimits];
+    }
 	
 	NSNumber *pid_n = [applicationInfo objectForKey:APApplicationInfoPidKey];
 	pid_t pid = [pid_n intValue];
