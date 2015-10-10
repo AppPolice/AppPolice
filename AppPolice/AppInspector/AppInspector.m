@@ -64,6 +64,13 @@
 	[_levelIndicator setCriticalValue:7.5];
 	[_sliderMiddleTextfield setStringValue:[NSString stringWithFormat:@"%d%%", (ncpu > 2) ? 100 : ncpu / 2 * 100]];
 	[_sliderRightTextfield setStringValue:[NSString stringWithFormat:@"%d%%", ncpu * 100]];
+    
+    [_applicationNameTextfield setDrawsBackground:YES];
+    [_applicationNameTextfield setBackgroundColor:[NSColor clearColor]];
+    [_applicationUserTextfield setDrawsBackground:YES];
+    [_applicationUserTextfield setBackgroundColor:[NSColor clearColor]];
+    [_applicationCPUTextfield setDrawsBackground:YES];
+    [_applicationCPUTextfield setBackgroundColor:[NSColor clearColor]];
 }
 
 
