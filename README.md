@@ -1,8 +1,21 @@
 AppPolice
 =========
 
-An app for Mac OS X with a minimalistic UI which lets you quickly throttle down the CPU usage of any of the running  processes.
+An app for Mac OS X with a minimalistic UI which lets you quickly throttle down the CPU usage of any running  process.
 
+![Main](https://cloud.githubusercontent.com/assets/1557716/12860549/fdffd054-cc65-11e5-8405-cc224ea4ab3b.png)
+
+![Main 2](https://cloud.githubusercontent.com/assets/1557716/12860551/ffff72d8-cc65-11e5-9304-4f1341657b5a.png)
+
+On initial run you will be presented with the following notification:
+
+![Warning](https://cloud.githubusercontent.com/assets/1557716/12860557/118f5fcc-cc66-11e5-8822-dc85cbe7bbb9.png)
+
+Simply right click and choose "Open". You'll have to do it just once:
+
+![Open](https://cloud.githubusercontent.com/assets/1557716/12860558/11908a78-cc66-11e5-9998-b4bec11dbfeb.png)
+
+![Open](https://cloud.githubusercontent.com/assets/1557716/12860559/1193fe42-cc66-11e5-9d4f-8b8af842ea72.png)
 
 ## Build
 
@@ -16,4 +29,4 @@ An app requires OS X Lion 10.7 and up.
 
 ## Download
 
-You can download a .dmg file from the [homepage](http://definemac.com/).
+Go to [Releases](https://github.com/fuyu/AppPolice/releases) to get the latest .dmg file.
