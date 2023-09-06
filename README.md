@@ -1,9 +1,11 @@
 AppPolice
 =========
 
-An app for Mac OS X with a minimalistic UI which lets you quickly throttle down the CPU usage of any running  process.
+An app for Mac OS X til to macOS Ventura with a minimalistic UI which lets you quickly throttle down the CPU usage of any running  process.
 
 ![Main](https://cloud.githubusercontent.com/assets/1557716/12860549/fdffd054-cc65-11e5-8405-cc224ea4ab3b.png)
+
+![Main3](https://github.com/AppPolice/AppPolice/assets/125807528/a4ee0233-d779-4815-99a1-df8c6696969a)
 
 ![Main 2](https://cloud.githubusercontent.com/assets/1557716/12860551/ffff72d8-cc65-11e5-9304-4f1341657b5a.png)
 
